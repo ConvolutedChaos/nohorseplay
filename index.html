@@ -6,6 +6,15 @@
 	<title>E-Dog - Welcome</title>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<link rel="icon" href="favicon.ico" type="image/x-icon" />
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/chartist.min.css" rel="stylesheet" />
+    <link href="/css/bootstrap-toggle.min.css" rel="stylesheet" />
+    <link href="/css/fontawesome-all.min.css" rel="stylesheet" />
+    <script src="/js/paho-mqtt.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/chartist.min.js"></script>
+    <script src="/js/bootstrap-toggle.min.js"></script>
 
 	<style type="text/css">
 		a {
@@ -167,7 +176,7 @@
 			<a href="/contact.html">Contact</a>
 			<input type="text" placeholder="Search..">
 		  </div>
-		  <br>
+		  <img src="/img/account-circle_119476.png"><h5 id="name">Log In</h5>
 		<p style="text-align:center; font-size: 54pt; font-weight: bold; font-style: italic;">
 			Welcome To the E-Dog Homepage!
 		</p>
@@ -267,15 +276,10 @@
 			  </video>
 			<script>
 				alert("Hello. Welcome to E-Dog! Please. Have a seat. Wait.. I don't have chairs (or tea) but I bet you can find a place.")
-				var name = prompt("What should we call you?");
-				console.log("Hello " + name);
-                if (name == "E-Dog") {
-					console.log("Welcome Administrator E-Dog!");
-					alert("Welcome Administrator E-Dog!");
-				} else {
-					console.log("Hello " + name);
-					alert("Hello " + name);
-				}
+				var headingElement = document.getElementById("name");
+console.log(headingElement.innerHTML);
+var newHeadingText = prompt("What would you like to order?");
+headingElement.innerHTML = newHeadingText;
 			</script>
 		</p>
 		<style>
