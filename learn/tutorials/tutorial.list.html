@@ -9,6 +9,75 @@
 	<p style="text-align:center; font-size: 54pt; font-weight: bold; font-style: italic;">
 		Look at some tutorials here. 
 	</p>
+	
+		If you want to learn more about these tutorials, click&nbsp;&nbsp;<div class="popup" onclick="myFunction()">here
+			<span class="popuptext" id="myPopup">These tutorials are about no specific topic, they are just about random things that I think people would like to learn (if they don't already).</span>
+		  </div>.
+	<br>
+	<br>
+	<br>
+	<br>
+	<style>
+		/* Popup container */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.popup .popuptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+	</style>
+	<script>
+		// When the user clicks on <div>, open the popup
+		function myFunction() {
+		  var popup = document.getElementById("myPopup");
+		  popup.classList.toggle("show");
+		}
+		</script>
 	<p>
 		If you want to learn some basic <em><strong>long division</strong></em>, click <a href="/learn/tutorials/2022/divison.long/longdiv1.html" title="Get Smart with E-Dog!" >here</a>.
 	</p>
