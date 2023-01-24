@@ -166,7 +166,9 @@
 			<a href="/contact.html">Contact</a>
 			<input type="text" placeholder="Search..">
 		  </div>
-		  <img src="/img/account-circle_119476.png"><h5 id="name">Log In</h5>
+		  <img src="/img/account-circle_119476.png">
+		  <br>
+		  <button id="name" onclick="myFunction()">Log In</button>
 		<p style="text-align:center; font-size: 54pt; font-weight: bold; font-style: italic;">
 			Welcome To the E-Dog Homepage!
 		</p>
@@ -266,6 +268,7 @@
 			  </video>
 			<script>
 				alert("Hello. Welcome to E-Dog! Please. Have a seat. Wait.. I don't have chairs (or tea) but I bet you can find a place.")
+				prompt("What should we call you?")
 				var headingElement = document.getElementById("name");
 console.log(headingElement.innerHTML);
 headingElement.innerHTML = newHeadingText;
@@ -288,6 +291,14 @@ a:active {
   text-decoration: none;
 }
 		</style>
+		<script>
+			function myFunction() {
+				var headingElement = document.getElementById("name");
+console.log(headingElement.innerHTML);
+var newHeadingText = prompt("What should we call you?");
+headingElement.innerHTML = newHeadingText;
+			}
+			</script>
 			<hr>
 			<p style="text-align:center; font-size: 13pt; font-weight: bold;">
 				Fun <img src="/img/assets/svg/fa/face-laugh-beam-solid.png">
