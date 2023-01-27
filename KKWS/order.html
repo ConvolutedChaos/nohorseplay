@@ -386,13 +386,15 @@
 		</select>
 	</span>
 	<p>
-		Order: <b id="main-heading">Krabby Patty</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/KKWS/img/14dbd48408c1bd2a0799beee713be805.jpg" title="Menu">Menu</a>
+		Order: <button onclick="order()" id="main-heading">Krabby Patty</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/KKWS/img/14dbd48408c1bd2a0799beee713be805.jpg" title="Menu">Menu</a>
 	</p>
 	<script>
+		function order() {
 		var headingElement = document.getElementById("main-heading");
 console.log(headingElement.innerHTML);
 var newHeadingText = prompt("What would you like to order?");
 headingElement.innerHTML = newHeadingText;
+}
 	</script>
 	<img src="/KKWS/img/krabby-patty-2.jpg">
 	<br>
