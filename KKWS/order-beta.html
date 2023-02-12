@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <head>
+            <title>
+                Order --(beta)
+            </title>
+        </head>
+        <h1>Does this look right?</h1>
+        <b>Main Order:</b> <button onclick="changeCurrentMainOrderCauseYouDidntEnterItRightBuddy()" id="main-order"></button>
+        <br>
+        <br>
+        <b>Sides:</b> <button onclick="changeCurrentSidesOrderCauseYouDidntEnterItRightBuddy()" id="sides"></button>
+        <br>
+        <br>
+        <b>Drinks:</b> <button onclick="changeCurrentDrinksOrderCauseYouDidntEnterItRightBuddy()" id="drinks"></button>
+        <br>
+        <br>
+        <br>
+        <br>
+        <b>Extras:</b> <button onclick="changeCurrentExtrasOrderCauseYouDidntEnterItRightBuddy()" id="random"></button>
+        <br>
+        <br>
+        <button onclick="submitOrder()">Submit Order</button>
+        
+        <script>
+            function changeCurrentMainOrderCauseYouDidntEnterItRightBuddy() {
+                var headingElement = document.getElementById("main-order");
+var mainOrder = prompt("What do you want your main course to be?");
+headingElement.innerHTML = mainOrder;
+            }
+            function changeCurrentSidesOrderCauseYouDidntEnterItRightBuddy() {
+                var headingElement = document.getElementById("sides");
+var anySides = prompt("Would you like to order any sides today?");
+headingElement.innerHTML = anySides;
+            }
+
+            function changeCurrentDrinksOrderCauseYouDidntEnterItRightBuddy() {
+                var headingElement = document.getElementById("drinks");
+var anyDrinks = prompt("Would you like to order any drinks today?");
+headingElement.innerHTML = anyDrinks;
+            }
+            function changeCurrentExtrasOrderCauseYouDidntEnterItRightBuddy() {
+                var headingElement = document.getElementById("random");
+var anythingElse = prompt("Anything else?");
+headingElement.innerHTML = anythingElse;
+            }
+        </script>
+        <script>
+            var wantsToOrder = confirm("Would you like to order?\n\n(Keep the menu open in another tab.)")
+
+            if (wantsToOrder) {
+                console.log("Great")
+                console.log("Just Great.")
+                console.error("WHY ARE YOU USING THIS SITE")
+            }
+            else {
+                window.location.href = 'https://nohorseplay.com/KKWS/index.html';
+            }
+
+            var headingElement = document.getElementById("main-order");
+var mainOrder = prompt("What do you want your main course to be?");
+headingElement.innerHTML = mainOrder;
+
+var headingElement = document.getElementById("sides");
+var anySides = prompt("Would you like to order any sides today?");
+headingElement.innerHTML = anySides;
+
+var headingElement = document.getElementById("drinks");
+var anyDrinks = prompt("Would you like to order any drinks today?");
+headingElement.innerHTML = anyDrinks;
+
+var headingElement = document.getElementById("random");
+var anythingElse = prompt("Anything else?");
+headingElement.innerHTML = anythingElse;
+
+function submitOrder() {
+    var isThisOrderCorrectEnoughForYouYouFreakingSmartAleck = confirm("Just to make sure just one more time, is this right?\n\nMain Order: " + mainOrder + "\n\nSides: " + anySides + "\n\nDrinks: " + anyDrinks + "\n\nExtras: " + anythingElse);
+
+    if (isThisOrderCorrectEnoughForYouYouFreakingSmartAleck) {
+        window.location.href = 'https://nohorseplay.com/KKWS/yup';
+    }
+    else {
+        alert("Check Again");
+    }
+
+}
+        </script>
+    </body>
+</html>
