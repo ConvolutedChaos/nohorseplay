@@ -125,7 +125,7 @@ return;
 this.segments.unshift(newHead);
 
 if (newHead.equal(apple.position)) {
-score++;
+alert("MUNCH");
 apple.move();
 
 } else {
