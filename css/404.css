@@ -1,0 +1,10 @@
+hr {width: 1555px; height: 2px; background-color: rgb(56, 56, 56); margin-right: auto; margin-left: auto; margin-top: 1px; margin-bottom: 1px; }
+
+p.bigheading {
+    font-size: 45pt;
+    font-family: fantasy;
+}
+.goback {
+    background-color: #4CAF50;
+    font-size: 30px;
+}
