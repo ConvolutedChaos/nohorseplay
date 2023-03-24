@@ -194,3 +194,126 @@ a:hover {
 a:active {
     text-decoration: none;
 }
+
+#baconexplorer {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 700px;
+    height: 500px;
+    position: absolute;
+    background: #FBFBF0;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+textarea {
+    resize: none;
+}
+
+#imac {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 700px;
+    height: 700px;
+    position: absolute;
+    background: #e0e3f1;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+p.imac-article {
+    font-size: small;
+}
+
+#funwithjs {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    background: #e0e3f1;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#fileexplorer {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 640px;
+    height: 640px;
+    position: absolute;
+    background: #a11e1e;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#nohorseplaysite {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 640px;
+    height: 360px;
+    position: absolute;
+    background: #ffffff;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#systemsettings {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 640px;
+    height: 640px;
+    position: absolute;
+    background: #ffffff;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+    background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
+}
+
+#aboutedogos {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 400px;
+    height: 500px;
+    position: absolute;
+    background: #1eac48;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+    text-align: center;
+}
+
