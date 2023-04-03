@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/css/w3.css">
+    <script src="/js/drag.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,35 +12,39 @@
 </head>
 
 <body>
-    <style type="text/css">
-        #baconexplorer {
-            margin: 0;
-            margin-left: 40%;
-            margin-right: 40%;
-            margin-top: 50px;
-            padding-top: 10px;
-            width: 700px;
-            height: 500px;
+
+
+    <style>
+        #mydiv {
             position: absolute;
-            background: #FBFBF0;
-            border: solid #000000 2px;
             z-index: 9;
-            font-family: arial;
+            background-color: #f1f1f1;
+            border: 1px solid #d3d3d3;
+            width: 640px;
+            height: 640px;
             visibility: hidden;
         }
 
-        textarea {
-            resize: none;
+        #mydivheader {
+            padding: 10px;
+            cursor: move;
+            z-index: 10;
+            background-color: #c2c2c2;
+            color: #fff;
         }
     </style>
-    </head>
 
     <body>
-        <div id="baconexplorer">
-            <a href="javascript:baconexplorer('hide')" title="Close">
-                <img height="28" width="28"
-                    src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
-            </a>
+
+
+
+        <div id="mydiv">
+            <div id="mydivheader">
+                <a href="javascript:mydiv('hide')" title="Close">
+                    <img height="28" width="28"
+                        src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
+                </a>
+            </div>
             <style type="text/css">
                 #imac {
                     margin: 0;
@@ -118,7 +123,7 @@
             </div>
             <style type="text/css">
                 hr {
-                    width: 700px;
+                    width: 640px;
                     height: 2px;
                     background-color: rgb(56, 56, 56);
                     margin-right: auto;
@@ -143,324 +148,429 @@
             </p>
             </p>
         </div>
-        <style type="text/css">
-            #fileexplorer {
-                margin: 0;
-                margin-left: 40%;
-                margin-right: 40%;
-                margin-top: 50px;
-                padding-top: 10px;
-                width: 640px;
-                height: 640px;
-                position: absolute;
-                background: #a11e1e;
-                border: solid #000000 2px;
-                z-index: 9;
-                font-family: arial;
-                visibility: hidden;
-            }
-        </style>
+
+
         <script>
-            function changeWallpaperToTheBowlOfFruit() {
-                document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/f494bfba58260f60bf53f91a7d7c1bdd.jpg')";
+            function mydiv(showhide) {
+                if (showhide == "show") {
+                    document.getElementById('mydiv').style.visibility = "visible";
+                } else if (showhide == "hide") {
+                    document.getElementById('mydiv').style.visibility = "hidden";
+                }
             }
 
-            function changeWallpaperToTheFlowers() {
-                document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg')";
+            //Make the DIV element draggagle:
+            dragElement(document.getElementById("mydiv"));
+
+            function dragElement(elmnt) {
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (document.getElementById(elmnt.id + "header")) {
+                    /* if present, the header is where you move the DIV from:*/
+                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                } else {
+                    /* otherwise, move the DIV from anywhere inside the DIV:*/
+                    elmnt.onmousedown = dragMouseDown;
+                }
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // calculate the new cursor position:
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // set the element's new position:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    /* stop moving when mouse button is released:*/
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
             }
 
-            function changeWallpaperToTychusFindlayFromSC2() {
-                document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/d5b76f7c228e8b1030e2df64a09f60d5.jpg')";
-            }
+            //Make the DIV element draggagle:
+dragElement(document.getElementById("fileexplorer"));
 
-            function changeWallpaperToThePuppy() {
-                document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/435688-free-cute-dogs-and-puppies-wallpaper-2560x1600-for-pc.jpg')";
-            }
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
 
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
         </script>
-        <div id="fileexplorer">
+
+    </body>
+
+
+
+
+    <style type="text/css">
+        #fileexplorer {
+            margin: 0;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 50px;
+            padding-top: 10px;
+            width: 640px;
+            height: 640px;
+            position: absolute;
+            background: #a11e1e;
+            border: solid #000000 2px;
+            z-index: 9;
+            font-family: arial;
+            visibility: hidden;
+        }
+
+        #fileexplorerheader {
+            padding: 10px;
+            cursor: move;
+            z-index: 10;
+            background-color: #c2c2c2;
+            color: #fff;
+        }
+    </style>
+    <script>
+        function changeWallpaperToTheBowlOfFruit() {
+            document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/f494bfba58260f60bf53f91a7d7c1bdd.jpg')";
+        }
+
+        function changeWallpaperToTheFlowers() {
+            document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg')";
+        }
+
+        function changeWallpaperToTychusFindlayFromSC2() {
+            document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/d5b76f7c228e8b1030e2df64a09f60d5.jpg')";
+        }
+
+        function changeWallpaperToThePuppy() {
+            document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/435688-free-cute-dogs-and-puppies-wallpaper-2560x1600-for-pc.jpg')";
+        }
+
+    </script>
+    <div id="fileexplorer">
             <button onclick="fileexplorer('hide')">Close</button>
-            <br>
-            <img src="https://img.freepik.com/icone-gratis/documento-pixel_318-84866.jpg?size=338&ext=jpg">
-            <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/New Text Document 1.txt"
-                    target="_blank">New Text Document 1.txt</a></p>
-            <img
-                src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp">
-            <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp"
-                    target="_blank">Rubber Duck.png</a></p>
-        </div>
-        <style type="text/css">
-            body {
-                background-image: url(/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg);
-            }
+        <br>
+        <img src="https://img.freepik.com/icone-gratis/documento-pixel_318-84866.jpg?size=338&ext=jpg">
+        <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/New Text Document 1.txt"
+                target="_blank">New Text Document 1.txt</a></p>
+        <img
+            src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp">
+        <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp"
+                target="_blank">Rubber Duck.png</a></p>
+    </div>
+    <style type="text/css">
+        body {
+            background-image: url(/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg);
+        }
 
-            #nohorseplaysite {
-                margin: 0;
-                margin-left: 40%;
-                margin-right: 40%;
-                margin-top: 50px;
-                padding-top: 10px;
-                width: 640px;
-                height: 360px;
-                position: absolute;
-                background: #ffffff;
-                border: solid #000000 2px;
-                z-index: 9;
-                font-family: arial;
-                visibility: hidden;
-            }
+        #nohorseplaysite {
+            margin: 0;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 50px;
+            padding-top: 10px;
+            width: 640px;
+            height: 360px;
+            position: absolute;
+            background: #ffffff;
+            border: solid #000000 2px;
+            z-index: 9;
+            font-family: arial;
+            visibility: hidden;
+        }
 
-            #systemsettings {
-                margin: 0;
-                margin-left: 40%;
-                margin-right: 40%;
-                margin-top: 50px;
-                padding-top: 10px;
-                width: 640px;
-                height: 640px;
-                position: absolute;
-                background: #ffffff;
-                border: solid #000000 2px;
-                z-index: 9;
-                font-family: arial;
-                visibility: hidden;
-                background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
-            }
+        #systemsettings {
+            margin: 0;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 50px;
+            padding-top: 10px;
+            width: 640px;
+            height: 640px;
+            position: absolute;
+            background: #ffffff;
+            border: solid #000000 2px;
+            z-index: 9;
+            font-family: arial;
+            visibility: hidden;
+            background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
+        }
 
-            #aboutedogos {
-                margin: 0;
-                margin-left: 40%;
-                margin-right: 40%;
-                margin-top: 50px;
-                padding-top: 10px;
-                width: 400px;
-                height: 275px;
-                position: absolute;
-                background: #12a136;
-                border: solid #000000 2px;
-                z-index: 9;
-                font-family: arial;
-                visibility: hidden;
-                text-align: center;
-            }
+        #aboutedogos {
+            margin: 0;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 50px;
+            padding-top: 10px;
+            width: 400px;
+            height: 275px;
+            position: absolute;
+            background: #12a136;
+            border: solid #000000 2px;
+            z-index: 9;
+            font-family: arial;
+            visibility: hidden;
+            text-align: center;
+        }
 
-            #changeWallpaper {
-                margin: 0;
-                margin-left: 40%;
-                margin-right: 40%;
-                margin-top: 50px;
-                padding-top: 10px;
-                width: 400px;
-                height: 275px;
-                position: static;
-                background: #a009ad;
-                border: solid #000000 2px;
-                z-index: 9;
-                font-family: arial;
-                visibility: hidden;
-                text-align: center;
-            }
+        #changeWallpaper {
+            margin: 0;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 50px;
+            padding-top: 10px;
+            width: 400px;
+            height: 275px;
+            position: static;
+            background: #a009ad;
+            border: solid #000000 2px;
+            z-index: 9;
+            font-family: arial;
+            visibility: hidden;
+            text-align: center;
+        }
 
-            table,
-            th,
-            td {
-                border: 1px solid black;
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function baconexplorer(showhide) {
+            if (showhide == "show") {
+                document.getElementById('baconexplorer').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('baconexplorer').style.visibility = "hidden";
             }
-        </style>
-        <script>
-            function baconexplorer(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('baconexplorer').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('baconexplorer').style.visibility = "hidden";
-                }
-            }
+        }
 
-            function funwithjs(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('funwithjs').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('funwithjs').style.visibility = "hidden";
-                }
+        function funwithjs(showhide) {
+            if (showhide == "show") {
+                document.getElementById('funwithjs').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('funwithjs').style.visibility = "hidden";
             }
+        }
 
-            function funwithjs(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('funwithjs').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('funwithjs').style.visibility = "hidden";
-                }
+        function nohorseplaysite(showhide) {
+            if (showhide == "show") {
+                document.getElementById('nohorseplaysite').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('nohorseplaysite').style.visibility = "hidden";
             }
+        }
 
-            function nohorseplaysite(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('nohorseplaysite').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('nohorseplaysite').style.visibility = "hidden";
-                }
+        function aboutedogos(showhide) {
+            if (showhide == "show") {
+                document.getElementById('aboutedogos').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('aboutedogos').style.visibility = "hidden";
             }
+        }
 
-            function aboutedogos(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('aboutedogos').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('aboutedogos').style.visibility = "hidden";
-                }
+        function systemsettings(showhide) {
+            if (showhide == "show") {
+                document.getElementById('systemsettings').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('systemsettings').style.visibility = "hidden";
             }
+        }
 
-            function systemsettings(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('systemsettings').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('systemsettings').style.visibility = "hidden";
-                }
+        function changeWallpaper(showhide) {
+            if (showhide == "show") {
+                document.getElementById('changeWallpaper').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('changeWallpaper').style.visibility = "hidden";
             }
+        }
 
-            function changeWallpaper(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('changeWallpaper').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('changeWallpaper').style.visibility = "hidden";
-                }
+        function fileexplorer(showhide) {
+            if (showhide == "show") {
+                document.getElementById('fileexplorer').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('fileexplorer').style.visibility = "hidden";
             }
+        }
 
-            function fileexplorer(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('fileexplorer').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('fileexplorer').style.visibility = "hidden";
-                }
+        function imac(showhide) {
+            if (showhide == "show") {
+                document.getElementById('imac').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('imac').style.visibility = "hidden";
             }
-
-            function imac(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('imac').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('imac').style.visibility = "hidden";
-                }
-            }
+        }
 
             //document.location=""
-        </script>
-        <div id="systemsettings">
-            <a href="javascript:systemsettings('hide')" title="Close">
-                <img height="28" width="28"
-                    src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
-            </a>
-            <style type="text/css">
-                #haha {
-                    width: 640px;
-                    height: 2px;
-                    background-color: rgb(56, 56, 56);
-                    margin-right: auto;
-                    margin-left: auto;
-                    margin-top: 1px;
-                    margin-bottom: 1px;
-                }
-            </style>
-            <div id="haha"></div>
-            <haha>
-                <br>
-                <a href="javascript:aboutedogos('show')" title="About E-Dog OS">
-                    <img height="64" width="64" src="/A-Random-Website-once-again/wow/img/img_134315.png">
-                </a>
-                <div id="aboutedogos">
-                    <a href="javascript:aboutedogos('hide')" title="Close">
-                        <img height="28" width="28"
-                            src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
-                    </a>
-                    <br>
-                    <h2>About E-Dog OS</h2>
-                    <br>
-                    <table style="text-align: center;">
-                        <tr>
-                            <th>OS Version</th>
-                            <th>Installed RAM</th>
-                            <th>Processor</th>
-                            <th>GPU</th>
-                        </tr>
-                        <tr>
-                            <td>7.5.3</td>
-                            <td>256 MB</td>
-                            <td>Intel Core -i3 10k</td>
-                            <td>ATI Rage with 10 KB VRAM</td>
-                        </tr>
-                    </table>
-                </div>
-                <a href="javascript:changeWallpaper('show')" title="Change Wallpaper">
-                    <img height="83.5" width="129"
-                        src="/A-Random-Website-once-again/wow/img/istockphoto-1270369623-170667a.jpg">
-                </a>
-                <div id="changeWallpaper">
-                    <a href="javascript:changeWallpaper('hide')" title="Close">
-                        <img height="28" width="28"
-                            src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
-                    </a>
-                    <h1>Change Your Wallpaper</h1>
-                    Default Photos
-                    <p>-------------------------------</p>
-
-                    <button onclick="changeWallpaperToTheFlowers()">Flowers (default)</button>
-                    <button onclick="changeWallpaperToTheBowlOfFruit()">Bowl Of Fruit</button>
-                    <button onclick="changeWallpaperToTychusFindlayFromSC2()()">Tychus Findlay</button>
-                    <button onclick="changeWallpaperToThePuppy()">Puppy</button>
-
-
-                </div>
-        </div>
-        <div id="nohorseplaysite">
-            <p><button onclick="nohorseplaysite('hide')">Close</button></p>
-            <iframe src="https://nohorseplay.com" width="640" height="400"></iframe>
-        </div>
-        <div class="w3-container w3-teal">
-            <div id="date-div"></div>
-            <a href="javascript:baconexplorer('show')" title="Bacon Explorer">
-                <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
-            </a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="javascript:fileexplorer('show')" title="File Explorer">
-                <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/usiiik-Folder-Icon.png">
-            </a>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="javascript:systemsettings('show')" title="System Settings">
-                <img height="60px" width="60px"
-                    src="/A-Random-Website-once-again/wow/img/drag-lock-settings-0-ba4e48ed.png">
-            </a>
-            <script>
-                const dateDiv = document.getElementById('date-div');
-
-                function myDateFunction() {
-                    const now = new Date();
-                    const nowStr = now.toLocaleString('en-US');
-                    dateDiv.innerHTML = nowStr;
-                }
-                setInterval(myDateFunction, 1000);
-            </script>
-        </div>
-        <script>
-            document.getElementById('dateandtime').innerHTML = Date()
-        </script>
-        <script>
-            var url_string = window.location.href; //window.location.href
-            var url = new URL(url_string);
-         
-            var c = url.searchParams.get("name");
-          
-            if (c === "nohorseplay.com") {
-                nohorseplaysite('show')
-                console.log("The URL '" + c + "' has been loaded! :)")
-            } else if (c === "https://nohorseplay.com") {
-                nohorseplaysite('show')
-                console.log("The URL '" + c + "' has been loaded! :)")
-            } else if (c === "http://nohorseplay.com") {
-                nohorseplaysite('show')
-                console.log("The URL '" + c + "' has been loaded! :)")
-            } else {
-                console.error("The URL '" + c + "' is not valid.")
+    </script>
+    <div id="systemsettings">
+        <a href="javascript:systemsettings('hide')" title="Close">
+            <img height="28" width="28"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
+        </a>
+        <style type="text/css">
+            #haha {
+                width: 640px;
+                height: 2px;
+                background-color: rgb(56, 56, 56);
+                margin-right: auto;
+                margin-left: auto;
+                margin-top: 1px;
+                margin-bottom: 1px;
             }
+        </style>
+        <div id="haha"></div>
+        <haha>
+            <br>
+            <a href="javascript:aboutedogos('show')" title="About E-Dog OS">
+                <img height="64" width="64" src="/A-Random-Website-once-again/wow/img/img_134315.png">
+            </a>
+            <div id="aboutedogos">
+                <a href="javascript:aboutedogos('hide')" title="Close">
+                    <img height="28" width="28"
+                        src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
+                </a>
+                <br>
+                <h2>About E-Dog OS</h2>
+                <br>
+                <table style="text-align: center;">
+                    <tr>
+                        <th>OS Version</th>
+                        <th>Installed RAM</th>
+                        <th>Processor</th>
+                        <th>GPU</th>
+                    </tr>
+                    <tr>
+                        <td>7.5.3</td>
+                        <td>256 MB</td>
+                        <td>Intel Core -i3 10k</td>
+                        <td>ATI Rage with 10 KB VRAM</td>
+                    </tr>
+                </table>
+            </div>
+            <a href="javascript:changeWallpaper('show')" title="Change Wallpaper">
+                <img height="83.5" width="129"
+                    src="/A-Random-Website-once-again/wow/img/istockphoto-1270369623-170667a.jpg">
+            </a>
+            <div id="changeWallpaper">
+                <a href="javascript:changeWallpaper('hide')" title="Close">
+                    <img height="28" width="28"
+                        src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
+                </a>
+                <h1>Change Your Wallpaper</h1>
+                Default Photos
+                <p>-------------------------------</p>
+
+                <button onclick="changeWallpaperToTheFlowers()">Flowers (default)</button>
+                <button onclick="changeWallpaperToTheBowlOfFruit()">Bowl Of Fruit</button>
+                <button onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
+                <button onclick="changeWallpaperToThePuppy()">Puppy</button>
 
 
+            </div>
+    </div>
+    <div id="nohorseplaysite">
+        <p><button onclick="nohorseplaysite('hide')">Close</button></p>
+        <iframe src="https://nohorseplay.com" width="640" height="400"></iframe>
+    </div>
+    <div class="w3-container w3-teal">
+        <div id="date-div"></div>
+        <a href="javascript:mydiv('show')" title="Bacon Explorer">
+            <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="javascript:fileexplorer('show')" title="File Explorer">
+            <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/usiiik-Folder-Icon.png">
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="javascript:systemsettings('show')" title="System Settings">
+            <img height="60px" width="60px"
+                src="/A-Random-Website-once-again/wow/img/drag-lock-settings-0-ba4e48ed.png">
+        </a>
+        <script>
+            const dateDiv = document.getElementById('date-div');
+
+            function myDateFunction() {
+                const now = new Date();
+                const nowStr = now.toLocaleString('en-US');
+                dateDiv.innerHTML = nowStr;
+            }
+            setInterval(myDateFunction, 1000);
         </script>
-    </body>
+    </div>
+    <script>
+        document.getElementById('dateandtime').innerHTML = Date()
+    </script>
+    <script>
+        var url_string = window.location.href; //window.location.href
+        var url = new URL(url_string);
+
+        var c = url.searchParams.get("name");
+
+        if (c === "nohorseplay.com") {
+            nohorseplaysite('show')
+            console.log("The URL '" + c + "' has been loaded! :)")
+        } else if (c === "https://nohorseplay.com") {
+            nohorseplaysite('show')
+            console.log("The URL '" + c + "' has been loaded! :)")
+        } else if (c === "http://nohorseplay.com") {
+            nohorseplaysite('show')
+            console.log("The URL '" + c + "' has been loaded! :)")
+        } else {
+            console.error("The URL '" + c + "' is not valid.")
+        }
+
+
+    </script>
+</body>
 
 </html>
