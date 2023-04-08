@@ -57,12 +57,23 @@ footer {
     color: rgb(66, 96, 116);
 }
 
+button {
+    cursor: pointer;
+}
+
 .gotolongdiv {
     height: 50px;
     width: 200px;
     border: 2px solid darkred;
     border-radius: 10px;
     background-color: red;
+}
+.gotolongdiv:hover {
+    height: 50px;
+    width: 200px;
+    border: 2px solid rgb(87, 0, 0);
+    border-radius: 10px;
+    background-color: darkred;
 }
 
 .gotohtml {
