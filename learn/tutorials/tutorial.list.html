@@ -1,158 +1,41 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title>List Of Tutorials</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/tutorials.css">
+  <title>List of Tutorials</title>
 </head>
-<body lang="en-US" dir="ltr">
-  <div style="text-align:center; font-size: 20pt; ">
-		<div class="topnav">
-			<a href="https://nohorseplay.com/">Home</a>
-			<a href="/about.html">About</a>
-			<a href="/fun/more_links.html">More Stuff</a>
-			<a class="active" href="/learn/tutorials/tutorial.list.html">Learn</a>
-      <a href="/fun/games/snake/snake-selection.html">Snake</a>
-			<input type="text" placeholder="Search..">
-		  </div>
-	<div style="text-align:center; font-size: 20pt; "></div>
-	<p style="text-align:center; font-size: 54pt; font-weight: bold; font-style: italic;">
-		Look at some tutorials here. 
-	</p>
-	
-		If you want to learn more about these tutorials, click&nbsp;&nbsp;<div class="popup" onclick="myFunction()">here
-			<span class="popuptext" id="myPopup">These tutorials are about no specific topic, they are just about random things that I think people would like to learn (if they don't already).</span>
-		  </div>.
-	<br>
-	<br>
-	<br>
-	<br>
-	<style>
-    	div.text {
-			font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-		}
-		p {
-			font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-		}
-		a {
-			color: #000000;
-			text-decoration: underline
-		}
-		/* Add a black background color to the top navigation bar */
-.topnav {
-  overflow: hidden;
-  background-color: #e9e9e9;
-}
 
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: black;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Style the "active" element to highlight the current page */
-.topnav a.active {
-  background-color: #2196F3;
-  color: white;
-}
-
-/* Style the search box inside the navigation bar */
-.topnav input[type=text] {
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
-  font-size: 17px;
-}
-
-/* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
-@media screen and (max-width: 600px) {
-  .topnav a, .topnav input[type=text] {
-    float: none;
-    display: block;
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    padding: 14px;
-  }
-  .topnav input[type=text] {
-    border: 1px solid #ccc;
-  }
-}
-* {box-sizing:border-box}
-		/* Popup container */
-.popup {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-/* The actual popup (appears on top) */
-.popup .popuptext {
-  visibility: hidden;
-  width: 160px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 8px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -80px;
-}
-
-/* Popup arrow */
-.popup .popuptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-/* Toggle this class when clicking on the popup container (hide and show the popup) */
-.popup .show {
-  visibility: visible;
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s
-}
-
-/* Add animation (fade in the popup) */
-@-webkit-keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity:1 ;}
-}
-	</style>
-	<script>
-		// When the user clicks on <div>, open the popup
-		function myFunction() {
-		  var popup = document.getElementById("myPopup");
-		  popup.classList.toggle("show");
-		}
-		</script>
-	<p>
-		If you want to learn some basic <em><strong>long division</strong></em>, click <a href="/learn/tutorials/2022/divison.long/longdiv1.html" title="Get Smart with E-Dog!" >here</a>.
-	</p>
+<body>
+  <div class="topnav">
+    <a class="main-logo-image" href="https://nohorseplay.com/"><img width="100px" height="70px" src="/logo.png"
+        alt="Our Logo"></a>
+    <a href="/fun/more_links.html">More Stuff</a>
+    <a href="/learn/tutorials/tutorial.list.html">Tutorials</a>
+    <a href="/gallery.html">Photo Gallery</a>
+    <a href="">Games</a>
+    <a href="/about.html">About</a>
+    <a href="https://nohorseplay.com/">Home</a>
+    <br><br><br><br><br>
+  </div>
+  <header>
+    <p class="tutorials-heeader">Tutorials</p>
+  </header>
+  <h1 style="text-align: center;">Below is a list of tutorials. <i>Enjoy!</i></h1>
+  <hr>
+  <p style="text-align: center;"><button class="gotolongdiv" onclick="document.location='/learn/tutorials/2022/divison.long/longdiv1.html'">Learn Long Division</button></p>
+  <p style="text-align: center;"><button class="gotohtml" onclick="document.location='/learn/tutorials/2023/HTML/html.html'">Learn HTML</button></p>
+  <p style="text-align: center;"><button class="gotojs" onclick="document.location='/learn/tutorials/2022/divison.long/longdiv1.html'">Learn JavaScript</button></p>
+  <p style="text-align: center;"><button class="gotocss" onclick="document.location='/learn/tutorials/2022/divison.long/longdiv1.html'">Learn CSS</button></p>
+  <footer>
+    &copy; Copyright <i>nohorseplay.com</i> 2023
+    <br>
+    <br>
+    <a style="text-decoration: underline;" href="https://www.amazon.com/Great-Value-9Watts-60Watts-Equivalent/dp/B06WVDS7SQ/ref=asc_df_B06WVDS7SQ?hvadid=80401905752488&hvnetw=s&hvqmt=e&hvbmt=be&hvdev=c&hvlocint=&hvlocphy=&hvtargid=pla-4584001431255768&psc=1">Click here to buy some lightbulbs</a>
+  </footer>
 </body>
+
 </html>

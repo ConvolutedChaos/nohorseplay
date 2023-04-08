@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        header {
+            border: 1px solid #000;
+            padding-top: 230px;
+            padding-bottom: 230px;
+            background-image: url(/img/man-holding-computer-programmer.jpg);
+            background-size: 100% 100%;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        a:active {
+            text-decoration: none;
+        }
+
+        .topnav a.main-logo-image {
+            float: left;
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+        .topnav {
+            background-color: #d4d4d4;
+            position: -webkit-sticky;
+            /*<-- For Safari */
+            position: sticky;
+            top: 0;
+        }
+
+        .topnav img {
+            float: left;
+            display: block;
+            padding-top: 14px;
+            padding-right: 7px;
+        }
+
+        .topnav a {
+            float: right;
+            display: block;
+            color: black;
+            text-align: center;
+            padding: 30px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            transition: 50ms;
+            color: rgb(66, 96, 116);
+        }
+
+        .whatintheworlddoescross-platformmean {
+            border: 2px dotted violet ;
+        }
+
+        pre {
+            padding-top: 20px;
+            padding-bottom: 5px;
+            font-family: monospace;
+            background-color: #b3b3b3;
+            
+        }
+
+        footer {
+            padding-top: 60px;
+            padding-bottom: 60px;
+            text-align: center;
+            background-color: #808080;
+        }
+    </style>
+</head>
+
+<body
+    style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+    <div class="topnav">
+        <a class="main-logo-image" href="https://nohorseplay.com/"><img width="100px" height="70px" src="/logo.png"
+                alt="Our Logo"></a>
+        <a href="/fun/more_links.html">More Stuff</a>
+        <a href="/learn/tutorials/tutorial.list.html">Tutorials</a>
+        <a href="/gallery.html">Photo Gallery</a>
+        <a href="">Games</a>
+        <a href="/about.html">About</a>
+        <a href="https://nohorseplay.com/">Home</a>
+        <br><br><br><br><br>
+    </div>
+    <br>
+    <header>
+        <p style="font-size: 50pt; text-align: center;">How To Learn HTML</p>
+    </header>
+    <div>
+        <p>HTML is the programming language that empowers the web today. Being invented in 1993 by Tim Berners-Lee, HTML
+            has gone through multiple changes.<br>HTML elements have come and gone, and old ways of styling pages aren't
+            supported anymore.</p>
+        <p>But here you will learn the basics of HTML so you can create a cool looking page yourself.</p>
+        <div class="whatintheworlddoescross-platformmean">
+            <h4>Note:</h4>
+            <p>
+                <i>Cross-platform</i> means that a piece of software is available for <i>multiple platforms</i>, mostly <i>Windows</i>, <i>Mac OS</i>, and <i>Linux</i>.
+            </p>
+        </div>
+        <h1>First steps</h1>
+        <h3>Code editors</h3>
+        <p>Though there are many options out there, I use Visual Studio Code. Some other cross-platform options are:</p>
+        <ul>
+            <li>Visual Studio Code</li>
+            <li>Sublime text (Fee / $99)</li>
+            <li>VSCodium</li>
+            <li>Notepad++ (for Windows)</li>
+        </ul>
+        <hr>
+        To make a new HTML document, we go to <b>File &rightarrow; New File</b>, or find something similar to this.
+        Let's create a nice looking page about Rocky Mountain National Park. Paste the following code into your empty file The code is shown below:
+        <pre>
+            Rocky Mountain National Park is an American National Park 55 miles away from Denver, Colorado. RMNP is mostly based on the Rocky Mountain Range.
+            <br>
+            <br>
+            Specs:
+            <br>
+            <br>
+            -Act was signed by President Woodrow Wilson on January 26, 1915
+            -The Civilian Conservation Corps built the main automobile route, Trail Ridge Road, in the 1930s.
+            -Thousands of acres in size
+        
+        </pre>
+
+        Make sure to save your brand-new document as a HTML file. Once you have that done, double-click on it and it should open in your browser.<br>
+        <br>
+        Oh no! The browser clearly skimmed across all of our careful formatting and just spat it out in one big block of text!
+        <br>
+        Here's a screenshot of mine:
+        <br>
+        <br>
+        <img style=" width: 100%; border: 3px solid black; border-radius: 15px;" src="/learn/tutorials/2023/HTML/img/img1.png" alt="Our first document.">
+        We clearly put in a paragraph at the top there, and we want it back!
+        <br>
+        We can use the &lt;p&gt; tag to mark the beginning and end of paragraphs. First, we make the opening and closing tags like this:
+        <pre>
+            &lt;p&gt;This is a paragraph.&lt;/p&gt;
+            <br>
+            
+        </pre>
+        HTML will always ignore line breaks in your code. We can get around this by using the &lt;br/&gt; tag. "br" is short for <i>break</i>, as in <i>line break.</i>. Also, if you put in more than one space in next to each other, HTML will omit the other ones so that there only appears to be one.
+        <br>
+        We can fix this by using &amp;nbsp; in our code. Let's look at this in action:
+        <pre>
+            &lt;p&gt;Hello world!&lt;/p&gt;
+            &lt;p&gt;Hello &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; world!&lt;p&gt;
+        </pre>
+        A screenshot of mine is shown below:
+        <img src="" alt="Using the &amp;nbsp; tag.">
+        <footer>
+            All info found here:<br><a href="https://en.wikipedia.org/wiki/Rocky_Mountain_National_Park">https://en.wikipedia.org/wiki/Rocky_Mountain_National_Park</a>
+            <br>
+            <br>
+            &copy; Copyright <i>nohorseplay.com</i> 2023
+        </footer>
+    </div>
+</body>
+
+</html>
