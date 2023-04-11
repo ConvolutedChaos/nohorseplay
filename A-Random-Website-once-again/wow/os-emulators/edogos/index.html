@@ -2,9 +2,12 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/css/w3.css">
     <script src="/js/drag.js"></script>
+    <script src="/js/jquery.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -160,7 +163,7 @@
             }
 
             //Make the DIV element draggagle:
-            dragElement(document.getElementById("mydiv"));
+            dragElement(document.getElementById("nohorseplaysite"));
 
             function dragElement(elmnt) {
                 var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -203,49 +206,7 @@
                 }
             }
 
-            //Make the DIV element draggagle:
-dragElement(document.getElementById("fileexplorer"));
 
-function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-        /* if present, the header is where you move the DIV from:*/
-        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-        /* otherwise, move the DIV from anywhere inside the DIV:*/
-        elmnt.onmousedown = dragMouseDown;
-    }
-
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
-
-    function closeDragElement() {
-        /* stop moving when mouse button is released:*/
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-}
         </script>
 
     </body>
@@ -297,7 +258,7 @@ function dragElement(elmnt) {
 
     </script>
     <div id="fileexplorer">
-            <button onclick="fileexplorer('hide')">Close</button>
+        <button onclick="fileexplorer('hide')">Close</button>
         <br>
         <img src="https://img.freepik.com/icone-gratis/documento-pixel_318-84866.jpg?size=338&ext=jpg">
         <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/New Text Document 1.txt"
@@ -310,6 +271,8 @@ function dragElement(elmnt) {
     <style type="text/css">
         body {
             background-image: url(/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
         }
 
         #nohorseplaysite {
@@ -318,14 +281,22 @@ function dragElement(elmnt) {
             margin-right: 40%;
             margin-top: 50px;
             padding-top: 10px;
-            width: 640px;
-            height: 360px;
+            width: 1280px;
+            height: 800px;
             position: absolute;
             background: #ffffff;
             border: solid #000000 2px;
             z-index: 9;
             font-family: arial;
             visibility: hidden;
+        }
+
+        #nohorseplaysiteheader {
+            padding: 10px;
+            cursor: move;
+            z-index: 10;
+            background-color: #c2c2c2;
+            color: #fff;
         }
 
         #systemsettings {
@@ -369,7 +340,7 @@ function dragElement(elmnt) {
             margin-top: 50px;
             padding-top: 10px;
             width: 400px;
-            height: 275px;
+            height: 500px;
             position: static;
             background: #a009ad;
             border: solid #000000 2px;
@@ -450,7 +421,11 @@ function dragElement(elmnt) {
             }
         }
 
-            //document.location=""
+        //document.location=""
+
+        function hhg() {
+
+        }
     </script>
     <div id="systemsettings">
         <a href="javascript:systemsettings('hide')" title="Close">
@@ -466,6 +441,51 @@ function dragElement(elmnt) {
                 margin-left: auto;
                 margin-top: 1px;
                 margin-bottom: 1px;
+            }
+
+            .dropbtn {
+                background-image: url(/android-chrome-192x192.png);
+                background-size: 100% 100%;
+                cursor: pointer;
+                height: 60px;
+                width: 60px;
+                color: white;
+                padding: 0px;
+                font-size: 16px;
+                border: none;
+            }
+
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #f1f1f1;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                z-index: 1;
+            }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+            .dropdown-content a:hover {
+                background-color: #ddd;
+            }
+
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+
+            .dropdown:hover .dropbtn {
+                background-color: #3e8e41;
             }
         </style>
         <div id="haha"></div>
@@ -515,15 +535,72 @@ function dragElement(elmnt) {
                 <button onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
                 <button onclick="changeWallpaperToThePuppy()">Puppy</button>
 
+                <p>-------------------------------</p>
+                Upload file<br>
+                -------<br>
+                <input type="file" id="files" accept="image" multiple />
+                <output id="list"></output>
+                <script>
+                    function handleFileSelect(evt) {
+                        var files = evt.target.files;
+
+                        // Loop through the FileList and render image files as thumbnails.
+                        for (var i = 0, f; f = files[i]; i++) {
+
+                            // Only process image files.
+                            if (!f.type.match('image.*')) {
+                                continue;
+                            }
+
+                            var reader = new FileReader();
+
+                            // Closure to capture the file information.
+                            reader.onload = (function (theFile) {
+                                return function (e) {
+                                    // Render thumbnail.
+                                    var span = document.createElement('span');
+                                    span.innerHTML =
+                                        [
+                                            '<p>Current picture:</p><img style="height: 75px; border: 1px solid #000; margin: 5px" src="',
+                                            e.target.result,
+                                            '" title="', escape(theFile.name),
+                                            '"/>'
+                                        ].join('');
+                                    $('body').attr('style', 'background-image:url(' + e.target.result + ')');
+                                    document.getElementById('list').insertBefore(span, null);
+                                };
+                            })(f);
+
+                            // Read in the image file as a data URL.
+                            reader.readAsDataURL(f);
+                        }
+                    }
+
+                    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+                </script>
+
 
             </div>
     </div>
     <div id="nohorseplaysite">
-        <p><button onclick="nohorseplaysite('hide')">Close</button></p>
-        <iframe src="https://nohorseplay.com" width="640" height="400"></iframe>
+        <div id="nohorseplaysiteheader"><button onclick="nohorseplaysite('hide')">Close</button></div>
+        <iframe src="https://nohorseplay.com" width="1280" height="720"></iframe>
     </div>
     <div class="w3-container w3-teal">
-        <div id="date-div"></div>
+        <div style="border-radius: 5px; border: 1px solid #111111; float: right;">
+        <div style="font-size: 15pt; float: right; padding: 15px 15px;" id="date-div"></div><i title="Bluetooth is off" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-bluetooth"></i><i title="Wifi   Connected to: Network" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-wifi"></i><i title="No battery!" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-battery-0"></i>
+        </div>
+        <div>
+            <div class="dropdown">
+                <button class="dropbtn">&nbsp;</button>
+                <div class="dropdown-content">
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="javascript:mydiv('show')" title="Bacon Explorer">
             <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
         </a>
@@ -536,6 +613,7 @@ function dragElement(elmnt) {
             <img height="60px" width="60px"
                 src="/A-Random-Website-once-again/wow/img/drag-lock-settings-0-ba4e48ed.png">
         </a>
+        </div>
         <script>
             const dateDiv = document.getElementById('date-div');
 
@@ -545,11 +623,11 @@ function dragElement(elmnt) {
                 dateDiv.innerHTML = nowStr;
             }
             setInterval(myDateFunction, 1000);
+
+            document.getElementById('dateandtime').innerHTML = Date()
         </script>
     </div>
-    <script>
-        document.getElementById('dateandtime').innerHTML = Date()
-    </script>
+
     <script>
         var url_string = window.location.href; //window.location.href
         var url = new URL(url_string);
@@ -568,8 +646,6 @@ function dragElement(elmnt) {
         } else {
             console.error("The URL '" + c + "' is not valid.")
         }
-
-
     </script>
 </body>
 
