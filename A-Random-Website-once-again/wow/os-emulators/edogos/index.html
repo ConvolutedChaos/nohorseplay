@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>E-Dog OS</title>
 </head>
 
 <body>
@@ -421,6 +421,30 @@
             }
         }
 
+        function startmenu(showhide) {
+            if (showhide == "show") {
+                document.getElementById('startmenu').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('startmenu').style.visibility = "hidden";
+            }
+        }
+
+        function error(showhide) {
+            if (showhide == "show") {
+                document.getElementById('error').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('error').style.visibility = "hidden";
+            }
+        }
+
+        function bluescreen(showhide) {
+            if (showhide == "show") {
+                document.getElementById('bluescreen').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('bluescreen').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -486,6 +510,57 @@
 
             .dropdown:hover .dropbtn {
                 background-color: #3e8e41;
+            }
+
+            .startmenubutton {
+                width: 60px;
+                height: 60px;
+                background-image: url(/android-chrome-192x192.png);
+                background-size: 100% 100%;
+            }
+
+            #startmenu {
+                width: 400px;
+                height: 400px;
+                top: 62px;
+                left: 0px;
+                position: absolute;
+                background: #665252;
+                border: solid #000000 2px;
+                z-index: 9;
+                font-family: arial;
+                visibility: hidden;
+            }
+
+            #error {
+                width: 350px;
+                height: 200px;
+                visibility: hidden;
+            }
+
+            #bluescreen {
+                padding-top: 15px;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                color: #ffffff;
+                background: #10129e;
+                z-index: 1000;
+                font-family: 'Courier New', Courier, monospace;
+                visibility: hidden;
+            }
+
+            .panel {
+                background-color: #3053c7;
+                height: 62px;
+            }
+
+            .allthatstuffontheside {
+                border-radius: 5px;
+                border: 1px solid #111111;
+                float: right;
             }
         </style>
         <div id="haha"></div>
@@ -579,6 +654,14 @@
                     document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
                 </script>
+                <script>
+                    document.addEventListener('mouseup', function (e) {
+                        var container = document.getElementById('startmenu');
+                        if (!container.contains(e.target)) {
+                            container.style.visibility = 'hidden';
+                        }
+                    });
+                </script>
 
 
             </div>
@@ -587,32 +670,33 @@
         <div id="nohorseplaysiteheader"><button onclick="nohorseplaysite('hide')">Close</button></div>
         <iframe src="https://nohorseplay.com" width="1280" height="720"></iframe>
     </div>
-    <div class="w3-container w3-teal">
-        <div style="border-radius: 5px; border: 1px solid #111111; float: right;">
-        <div style="font-size: 15pt; float: right; padding: 15px 15px;" id="date-div"></div><i title="Bluetooth is off" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-bluetooth"></i><i title="Wifi   Connected to: Network" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-wifi"></i><i title="No battery!" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-battery-0"></i>
+    <div class="panel">
+        <div class="allthatstuffontheside">
+            <div style="font-size: 15pt; float: right; padding: 15px 15px;" id="date-div"></div><i
+                title="Bluetooth is off" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-bluetooth"></i><i
+                title="Wifi         Connected to: Network" style="font-size: 20pt; padding: 15px 15px;"
+                class="fa fa-wifi"></i><i title="No battery!" style="font-size: 20pt; padding: 15px 15px;"
+                class="fa fa-battery-0"></i>
         </div>
         <div>
-            <div class="dropdown">
-                <button class="dropbtn">&nbsp;</button>
-                <div class="dropdown-content">
-                    <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                </div>
+            <div>
+                <button onclick="startmenu('show')" class="startmenubutton">
+                    <br>
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="javascript:bluescreen('show')" title="Bacon Explorer">
+                    <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="javascript:fileexplorer('show')" title="File Explorer">
+                    <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/usiiik-Folder-Icon.png">
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="javascript:systemsettings('show')" title="System Settings">
+                    <img height="60px" width="60px"
+                        src="/A-Random-Website-once-again/wow/img/drag-lock-settings-0-ba4e48ed.png">
+                </a>
             </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="javascript:mydiv('show')" title="Bacon Explorer">
-            <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="javascript:fileexplorer('show')" title="File Explorer">
-            <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/usiiik-Folder-Icon.png">
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="javascript:systemsettings('show')" title="System Settings">
-            <img height="60px" width="60px"
-                src="/A-Random-Website-once-again/wow/img/drag-lock-settings-0-ba4e48ed.png">
-        </a>
         </div>
         <script>
             const dateDiv = document.getElementById('date-div');
@@ -627,6 +711,10 @@
             document.getElementById('dateandtime').innerHTML = Date()
         </script>
     </div>
+    <div id="startmenu">
+        startmenu
+    </div>
+
 
     <script>
         var url_string = window.location.href; //window.location.href
@@ -640,13 +728,14 @@
         } else if (c === "https://nohorseplay.com") {
             nohorseplaysite('show')
             console.log("The URL '" + c + "' has been loaded! :)")
-        } else if (c === "http://nohorseplay.com") {
+        } else if (c === "http://nohorsew3-container w3-tealplay.com") {
             nohorseplaysite('show')
             console.log("The URL '" + c + "' has been loaded! :)")
         } else {
             console.error("The URL '" + c + "' is not valid.")
         }
     </script>
+    <div id="bluescreen"><p>A problem has been detected and e-dog os has been shut down to prevent damage to your computer.</p><br><p>A process or thread crucial to system operation has unexpectedly exited or been terminated.</p><br><p>If this is the first time you've seen this stop error screen, reload the page. If this screen appears again, follow these steps:</p><br><p>Check to make sure any new hardware or software is properly loaded.<br>If this is a new installation, ask stack overflow or w3schools for any page updates you might need.</p><br><p>If problems continue, disable or remove any newly installed hardware or software. Disable BIOS memory options such as caching or shadowing. If you need to eat some bacon, press F8 to select Advanced Startup Options, and then select Eat Bacon.</p><p>Technical information:</p><p>*** STOP: 0x000000 (0x0000000000000003,0xFFFFFA8009F66060,0xFFFFFA8009F66340,0xFFFFF800019CA240)</p></div>
 </body>
 
 </html>
