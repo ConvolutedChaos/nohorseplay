@@ -1,0 +1,335 @@
+#mydiv {
+    position: absolute;
+    top: 80px;
+    left: 500px;
+    z-index: 9;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+    width: 640px;
+    height: 640px;
+    visibility: hidden;
+}
+
+#mydivheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #c2c2c2;
+    color: #fff;
+}
+
+#imac {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 700px;
+    height: 700px;
+    position: absolute;
+    background: #e0e3f1;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+p.imac-article {
+    font-size: small;
+}
+
+#funwithjs {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    background: #e0e3f1;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+hr {
+    width: 640px;
+    height: 2px;
+    background-color: rgb(56, 56, 56);
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+#fileexplorer {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 640px;
+    height: 700px;
+    position: absolute;
+    background: #a11e1e;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#fileexplorerheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #c2c2c2;
+    color: #fff;
+}
+
+body {
+    background-image: url(/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#nohorseplaysite {
+    top: 70px;
+    left: 410px;
+    width: 1280px;
+    height: 800px;
+    position: absolute;
+    background: #ffffff;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#nohorseplaysiteheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #c2c2c2;
+    color: #fff;
+}
+
+#systemsettings {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 640px;
+    height: 640px;
+    position: absolute;
+    background: #ffffff;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+    background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
+}
+
+#aboutedogos {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 400px;
+    height: 275px;
+    position: absolute;
+    background: #12a136;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+    text-align: center;
+}
+
+#changeWallpaper {
+    margin: 0;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 50px;
+    padding-top: 10px;
+    width: 400px;
+    height: 500px;
+    position: static;
+    background: #a009ad;
+    border: solid #000000 2px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+    text-align: center;
+}
+
+table,
+th,
+td {
+    border: 1px solid black;
+}
+
+#haha {
+    width: 640px;
+    height: 2px;
+    background-color: rgb(56, 56, 56);
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.dropbtn {
+    background-image: url(/android-chrome-192x192.png);
+    background-size: 100% 100%;
+    cursor: pointer;
+    height: 60px;
+    width: 60px;
+    color: white;
+    padding: 0px;
+    font-size: 16px;
+    border: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+.startmenubutton {
+    width: 60px;
+    height: 60px;
+    background-image: url(/android-chrome-192x192.png);
+    background-size: 100% 100%;
+}
+.startmenubutton:hover {
+    border-radius: 5px;
+    border: 5px solid #000;
+    transition: 750ms;
+}
+
+#startmenu {
+    padding-left: 60px;
+    width: 400px;
+    height: 400px;
+    top: 62px;
+    left: 0px;
+    position: absolute;
+    background: #1f3681;
+    border: solid #000000 2px;
+    border-radius: 7px;
+    z-index: 9;
+    font-family: arial;
+    visibility: hidden;
+}
+
+#error {
+    width: 350px;
+    height: 200px;
+    visibility: hidden;
+}
+
+#bluescreen {
+    padding-top: 15px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    color: #ffffff;
+    background: #10129e;
+    z-index: 1000;
+    font-family: 'Courier New', Courier, monospace;
+    visibility: hidden;
+}
+
+#vscode {
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding-left: 15px;
+    padding-top: 15px;
+    top: 70px;
+    left: 425px;
+    width: 1000px;
+    height: 600px;
+    position: fixed;
+    background: #353535;
+    z-index: 1000;
+    font-family: 'Courier New', Courier, monospace;
+    visibility: hidden;
+}
+
+.panel {
+    background-color: #3053c7;
+    height: 62px;
+}
+
+.allthatstuffontheside {
+    border-radius: 5px;
+    border: 1px solid #111111;
+    float: right;
+}
+
+/* The sidebar menu */
+.sidenav {
+    height: 396px;
+    /* Full-height: remove this if you want "auto" height */
+    width: 80px;
+    /* Set the width of the sidebar */
+    position: fixed;
+    /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1;
+    /* Stay on top */
+    top: 64px;
+    /* Stay at the top */
+    left: 0;
+    background-color: #160bb1;
+    /* Black */
+    overflow-x: hidden;
+    /* Disable horizontal scroll */
+    padding-top: 20px;
+}
+
+.sidenav a {
+    padding: 10px;
+}
+
+textarea {
+    background-color: #555;
+    border: 3px solid #000;
+    border-radius: 9px;
+    resize: none;
+    width: 950px;
+    height: 400px;
+}
