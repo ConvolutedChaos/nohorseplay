@@ -2,7 +2,7 @@
     position: absolute;
     top: 80px;
     left: 500px;
-    z-index: 9;
+    z-index: 1;
     background-color: #f1f1f1;
     border: 1px solid #d3d3d3;
     width: 640px;
@@ -29,7 +29,7 @@
     position: absolute;
     background: #e0e3f1;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 100;
     font-family: arial;
     visibility: hidden;
 }
@@ -49,7 +49,7 @@ p.imac-article {
     position: absolute;
     background: #e0e3f1;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
 }
@@ -75,7 +75,7 @@ hr {
     position: absolute;
     background: #a11e1e;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
 }
@@ -102,7 +102,7 @@ body {
     position: absolute;
     background: #ffffff;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
 }
@@ -126,7 +126,7 @@ body {
     position: absolute;
     background: #ffffff;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
     background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
@@ -143,7 +143,7 @@ body {
     position: absolute;
     background: #12a136;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
     text-align: center;
@@ -160,7 +160,7 @@ body {
     position: static;
     background: #a009ad;
     border: solid #000000 2px;
-    z-index: 9;
+    z-index: 1;
     font-family: arial;
     visibility: hidden;
     text-align: center;
@@ -233,6 +233,7 @@ td {
     background-image: url(/android-chrome-192x192.png);
     background-size: 100% 100%;
 }
+
 .startmenubutton:hover {
     border-radius: 5px;
     border: 5px solid #000;
@@ -249,7 +250,7 @@ td {
     background: #1f3681;
     border: solid #000000 2px;
     border-radius: 7px;
-    z-index: 9;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
 }
@@ -285,12 +286,12 @@ td {
     height: 600px;
     position: fixed;
     background: #353535;
-    z-index: 1000;
+    z-index: 1;
     font-family: 'Courier New', Courier, monospace;
     visibility: hidden;
 }
 
-.panel {
+#panel {
     background-color: #3053c7;
     height: 62px;
 }
@@ -332,4 +333,53 @@ textarea {
     resize: none;
     width: 950px;
     height: 400px;
+}
+
+#edogpaint {
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding-left: 15px;
+    padding-top: 15px;
+    top: 70px;
+    left: 450px;
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    background: #d8d8d8;
+    z-index: 1; 
+    font-family: Arial, Helvetica, sans-serif;
+    visibility: hidden;
+}
+
+#setupbox {
+    border: 2px solid #000;
+    border-radius: 4px;
+    top: 70px;
+    left: 450px;
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    background: #d8d8d8;
+    z-index: 1;
+    font-family: Arial, Helvetica, sans-serif;
+    visibility: visible;
+}
+
+#setupboxotwo {
+    border: 2px solid #000;
+    border-radius: 4px;
+    top: 70px;
+    left: 450px;
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    background: #d8d8d8;
+    z-index: 1;
+    font-family: Arial, Helvetica, sans-serif;
+    visibility: hidden;
+}
+
+p.head1 {
+    font-size: 30pt;
+    text-align: center;
 }

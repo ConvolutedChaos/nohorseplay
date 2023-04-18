@@ -7,10 +7,40 @@
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/css/w3.css">
     <script src="/js/drag.js"></script>
     <script src="/js/jquery.min.js"></script>
+    <script src="/js/setup.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Dog OS</title>
+    <div id="setupbox">
+        <p class="head1">Setup</p>
+        <p>This portion of setup prepares E-Dog OS to be installed on your computer.</p>
+        <p>But first, do you want to do setup?</p>
+        <button onclick="loadSetup()">Yes</button><button onclick="setupbox('hide')">No</button>
+    </div>
+    <div id="setupboxotwo">
+        <p class="head1">Setup</p>
+        <p>This portion of setup prepares E-Dog OS to be installed on your computer.</p>
+        <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
+            <label for="launguage">Language:</label>
+            <select name="launguage" id="launguage">
+                <option value="english">English</option>
+                <option value="espanol">Español</option>
+            </select>
+            <br><br><br>
+            <label for="username">Username:</label><input name="username" id="username" type="text">
+            <br><br>
+            <label for="password">Password:</label><input name="password" id="password" type="password">
+            <br><br>
+            <label for="repeatpassword">Repeat Password:</label><input name="repeatpassword" type="password">
+            <br><br>
+            <label for="multimediacodecs">Install Multimedia Codecs&nbsp;&nbsp;</label><input type="checkbox" name="multimediacodecs" id="multimediacodecs">
+            <br><br><br><br>
+            <button onclick="setupboxothree('show')"></button>
+          </form>
+    </div>
+    <script>
+    </script>
 </head>
 
 <body>
@@ -18,136 +48,137 @@
 
 
 
-    <body>
 
 
 
-        <div id="mydiv">
-            <div id="mydivheader">
-                <a href="javascript:mydiv('hide')" title="Close">
-                    <img height="28" width="28"
-                        src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
-                </a>
-            </div>
-            <div id="imac">
-                <button onclick="imac('hide')">Close iMac Article</button>
-                <p class="imac-article" style="text-align: center;">
-                    &nbsp;&nbsp;&nbsp;The iMac G3, originally released as the iMac, is a series of Macintosh personal
-                    computers sold by Apple Computer from 1998 to 2003. The iMac was the first major new product release
-                    for Apple under Steve Jobs, Apple's CEO and cofounder, who returned to the financially troubled
-                    company in 1996 after eleven years away. Jobs reorganized the company and simplified the product
-                    line; the iMac was designed as Apple's new consumer desktop product, a cheaper computer for average
-                    consumers that would easily connect to the internet.
 
-                    The iMac's all-in-one design is based around a cathode ray tube display, with the computer's PowerPC
-                    G3 processor, components, and connectivity included in the same enclosure. Head of design Jony Ive
-                    and his team developed a teardrop-shaped, translucent plastic case for the iMac, a radical departure
-                    from the look of previous personal computers. They developed new work methodologies to finish the
-                    computer in an accelerated timeframe, and created new workflows they would use for designing
-                    products going forward. The iMac eschewed legacy technologies like serial ports and floppy disk
-                    drives for CD-ROMs and USB ports.
+    <div id="mydiv">
+        <div id="mydivheader">
+            <a href="javascript:mydiv('hide')" title="Close">
+                <img height="28" width="28"
+                    src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
+            </a>
+        </div>
+        <div id="imac">
+            <button onclick="imac('hide')">Close iMac Article</button>
+            <p class="imac-article" style="text-align: center;">
+                &nbsp;&nbsp;&nbsp;The iMac G3, originally released as the iMac, is a series of Macintosh personal
+                computers sold by Apple Computer from 1998 to 2003. The iMac was the first major new product release
+                for Apple under Steve Jobs, Apple's CEO and cofounder, who returned to the financially troubled
+                company in 1996 after eleven years away. Jobs reorganized the company and simplified the product
+                line; the iMac was designed as Apple's new consumer desktop product, a cheaper computer for average
+                consumers that would easily connect to the internet.
 
-                    Critical response to the iMac was mixed; journalists thought the machine would be good for new
-                    users, but bemoaned the lack of legacy technology, or felt the mouse and keyboard were
-                    uncomfortable. The iMac was an immediate commercial success, becoming Apple's fastest-selling
-                    computer and selling more than 5 million units in its lifetime. The original model was revised
-                    several times, increasing the processor speed, memory, hard drive space, and other capabilities. The
-                    iMac is credited with saving Apple from financial ruin, and for turning computers from niche,
-                    technical products to mass consumer fashion. The translucent plastic look was appropriated by other
-                    computers and consumer products, leading to legal action from Apple. The G3-based model was
-                    eventually replaced by a G4-powered successor, while the iMac G3's role in education markets would
-                    be replaced by the eMac.
-                </p>
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/IMac_G3_Bondi_Blue%2C_three-quarters_view.png/220px-IMac_G3_Bondi_Blue%2C_three-quarters_view.png">
-                <p style="font-weight: lighter;">Original "Bondi Blue" iMac</p>
-            </div>
-            <div id="funwithjs">
-                <button onclick="funwithjs('hide')">Close</button>
-                <br>
-                <a href="javascript:alert('Hello')">Click here</a> for this page to say hello to you.
-            </div>
+                The iMac's all-in-one design is based around a cathode ray tube display, with the computer's PowerPC
+                G3 processor, components, and connectivity included in the same enclosure. Head of design Jony Ive
+                and his team developed a teardrop-shaped, translucent plastic case for the iMac, a radical departure
+                from the look of previous personal computers. They developed new work methodologies to finish the
+                computer in an accelerated timeframe, and created new workflows they would use for designing
+                products going forward. The iMac eschewed legacy technologies like serial ports and floppy disk
+                drives for CD-ROMs and USB ports.
 
-            <p style="text-align:center; font-weight: bolder;">Bacon Explorer
-                <hr>
-            <p>
-            <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
-                <input type="text" id="name" name="name" placeholder="Address Bar" style="width: 500px;"><input
-                    type="submit" value="Go">
-            </form>
+                Critical response to the iMac was mixed; journalists thought the machine would be good for new
+                users, but bemoaned the lack of legacy technology, or felt the mouse and keyboard were
+                uncomfortable. The iMac was an immediate commercial success, becoming Apple's fastest-selling
+                computer and selling more than 5 million units in its lifetime. The original model was revised
+                several times, increasing the processor speed, memory, hard drive space, and other capabilities. The
+                iMac is credited with saving Apple from financial ruin, and for turning computers from niche,
+                technical products to mass consumer fashion. The translucent plastic look was appropriated by other
+                computers and consumer products, leading to legal action from Apple. The G3-based model was
+                eventually replaced by a G4-powered successor, while the iMac G3's role in education markets would
+                be replaced by the eMac.
             </p>
-            <hr>
-            <p>
-                <button onclick="imac('show')">
-                    <div id=""></div>iMac G3 Article<div id=""></div>
-                </button><button onclick="funwithjs('show')">Fun With J.S.</button>
-            </p>
-            </p>
+            <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/IMac_G3_Bondi_Blue%2C_three-quarters_view.png/220px-IMac_G3_Bondi_Blue%2C_three-quarters_view.png">
+            <p style="font-weight: lighter;">Original "Bondi Blue" iMac</p>
+        </div>
+        <div id="funwithjs">
+            <button onclick="funwithjs('hide')">Close</button>
+            <br>
+            <a href="javascript:alert('Hello')">Click here</a> for this page to say hello to you.
         </div>
 
+        <p style="text-align:center; font-weight: bolder;">Bacon Explorer
+            <hr>
+        <p>
+        <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
+            <input type="text" id="name" name="name" placeholder="Address Bar" style="width: 500px;"><input
+                type="submit" value="Go">
+        </form>
+        </p>
+        <hr>
+        <p>
+            <button onclick="imac('show')">
+                <div id=""></div>iMac G3 Article<div id=""></div>
+            </button><button onclick="funwithjs('show')">Fun With J.S.</button>
+        </p>
+        </p>
+    </div>
 
-        <script>
-            function mydiv(showhide) {
-                if (showhide == "show") {
-                    document.getElementById('mydiv').style.visibility = "visible";
-                } else if (showhide == "hide") {
-                    document.getElementById('mydiv').style.visibility = "hidden";
-                }
+
+    <script>
+        function mydiv(showhide) {
+            if (showhide == "show") {
+                document.getElementById('mydiv').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('mydiv').style.visibility = "hidden";
+            }
+        }
+
+        function panel(showhide) {
+            if (showhide == "show") {
+                document.getElementById('panel').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('panel').style.visibility = "hidden";
+            }
+        }
+
+        //Make the DIV element draggagle:
+        dragElement(document.getElementById("nohorseplaysite"));
+
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id + "header")) {
+                /* if present, the header is where you move the DIV from:*/
+                document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+            } else {
+                /* otherwise, move the DIV from anywhere inside the DIV:*/
+                elmnt.onmousedown = dragMouseDown;
             }
 
-            //Make the DIV element draggagle:
-            dragElement(document.getElementById("nohorseplaysite"));
-
-            function dragElement(elmnt) {
-                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                if (document.getElementById(elmnt.id + "header")) {
-                    /* if present, the header is where you move the DIV from:*/
-                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-                } else {
-                    /* otherwise, move the DIV from anywhere inside the DIV:*/
-                    elmnt.onmousedown = dragMouseDown;
-                }
-
-                function dragMouseDown(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // get the mouse cursor position at startup:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // call a function whenever the cursor moves:
-                    document.onmousemove = elementDrag;
-                }
-
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // calculate the new cursor position:
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // set the element's new position:
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                }
-
-                function closeDragElement() {
-                    /* stop moving when mouse button is released:*/
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
             }
 
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
 
-        </script>
+            function closeDragElement() {
+                /* stop moving when mouse button is released:*/
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
 
-    </body>
 
-
-
-
-
+    </script>
     <script>
         function changeWallpaperToTheBowlOfFruit() {
             document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/f494bfba58260f60bf53f91a7d7c1bdd.jpg')";
@@ -276,6 +307,38 @@
             }
         }
 
+        function edogpaint(showhide) {
+            if (showhide == "show") {
+                document.getElementById('edogpaint').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('edogpaint').style.visibility = "hidden";
+            }
+        }
+
+        function setupbox(showhide) {
+            if (showhide == "show") {
+                document.getElementById('setupbox').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('setupbox').style.visibility = "hidden";
+            }
+        }
+
+        function setupboxotwo(showhide) {
+            if (showhide == "show") {
+                document.getElementById('setupboxotwo').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('setupboxotwo').style.visibility = "hidden";
+            }
+        }
+
+        function setupboxotwo(showhide) {
+            if (showhide == "show") {
+                document.getElementById('setupboxotwo').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('setupboxotwo').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -387,14 +450,73 @@
                     });
                 </script>
 
+                <script>
+                    function bluescreenOfDeath() {
+                        baconexplorer('hide')
+                        mydiv('hide')
+                        funwithjs('hide')
+                        vscode('hide')
+                        fileexplorer('hide')
+                        systemsettings('hide')
+                        startmenu('hide')
+                        funwithjs('hide')
+                        imac('hide')
+                        changeWallpaper('hide')
+                        aboutedogos('hide')
+                        edogpaint('hide')
+                        setupbox1('hide')
+                        bluescreen('show')
+                    }
+                </script>
+
 
             </div>
+    </div>
+    <div id="edogpaint">
+        <a title="Close" href="javascript:edogpaint('hide')">
+            <img width="28px" height="28px"
+                src="/ A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a>
+        <style type="text/css">
+            #container {
+                position: relative;
+            }
+
+            #imageView {
+                border: 1px solid #992e2e;
+            }
+
+            #imageTemp {
+                position: absolute;
+                top: 1px;
+                left: 1px;
+            }
+        </style>
+        <p><label>Drawing tool: <select id="dtool">
+                    <option value="line">Line</option>
+                    <option value="rect">Rectangle</option>
+                    <option value="pencil">Pencil</option>
+                </select></label></p>
+        <div id="container"><canvas id="imageView" width="400" height="300">
+                <p>Unfortunately, your browser is currently unsupported by our web application. We are sorry for the
+                    inconvenience. Please use one of the supported browsers listed below, or draw the image you want
+                    using an offline tool.</p>
+                <p>Supported browsers: <a href="http://www.opera.com/">Opera</a>, <a
+                        href="http://www.mozilla.com/">Firefox</a>, <a href="http://www.apple.com/safari">Safari</a>,
+                    and <a href="http://www.konqueror.org/">Konqueror</a>.</p>
+            </canvas><canvas id="imageTemp" width="400" height="300"></canvas></div>
+        <script type="text/javascript"
+            src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/paint.js"></script>
+
+
+
     </div>
     <div id="nohorseplaysite">
         <div id="nohorseplaysiteheader"><button onclick="nohorseplaysite('hide')">Close</button></div>
         <iframe src="https://nohorseplay.com" width="1280" height="720"></iframe>
     </div>
-    <div class="panel">
+    <div id="panel">
         <div class="allthatstuffontheside">
             <div style="font-size: 15pt; float: right; padding: 15px 15px;" id="date-div"></div><i
                 title="Bluetooth is off" style="font-size: 20pt; padding: 15px 15px;" class="fa fa-bluetooth"></i><i
@@ -408,7 +530,7 @@
                     <br>
                 </button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="javascript:bluescreen('show')" title="Bacon Explorer">
+                <a href="javascript:mydiv('show')" title="Bacon Explorer">
                     <img height="60px" width="60px" src="/A-Random-Website-once-again/wow/img/Earth_icon_2.png">
                 </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -446,6 +568,11 @@
                 <img style="width: 40px; height: 40px;" src="/img/file-type-vscode-icon-512x508-376y62ux.png"
                     alt="VS Code">
             </a>
+            <br><br>
+            <a href="javascript:edogpaint('show')">
+                <img style="width: 40px; height: 40px;" src="/A-Random-Website-once-again/wow/img/paint.png"
+                    alt="Paint">
+            </a>
         </div>
 
     </div>
@@ -463,7 +590,7 @@
         } else if (c === "https://nohorseplay.com") {
             nohorseplaysite('show')
             console.log("The URL '" + c + "' has been loaded! :)")
-        } else if (c === "http://nohorsew3-container w3-tealplay.com") {
+        } else if (c === "http://nohorseplay.com") {
             nohorseplaysite('show')
             console.log("The URL '" + c + "' has been loaded! :)")
         } else {
@@ -472,11 +599,12 @@
     </script>
     <div id="bluescreen">
         <p>A problem has been detected and e-dog os has been shut down to prevent damage to your computer.</p><br>
-        <p>A process or thread crucial to system operation has unexpectedly exited or been terminated.</p><br>
+        <p>ERR_FILE_NOT_FOUND</p>
+        <p>A process or thread crucial to system operation has unexpectedly exited or been terminated.</p>
         <p>If this is the first time you've seen this stop error screen, reload the page. If this screen appears again,
-            follow these steps:</p><br>
+            follow these steps:</p>
         <p>Check to make sure any new hardware or software is properly loaded.<br>If this is a new installation, ask
-            stack overflow or w3schools for any page updates you might need.</p><br>
+            stack overflow or w3schools for any page updates you might need.</p>
         <p>If problems continue, disable or remove any newly installed hardware or software. Disable BIOS memory options
             such as caching or shadowing. If you need to eat some bacon, press F8 to select Advanced Startup Options,
             and then select Eat Bacon.</p>

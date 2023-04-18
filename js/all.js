@@ -6,7 +6,7 @@ function myFunction() {
 }
 
 function insult() {
-    var randomBodyParts = ["Face", "Nose", "Hair", "Butt", "Eye", "Chin"];
+    var randomBodyParts = ["Face", "Nose", "Hair", "Eye", "Chin"];
     var randomAdjectives = ["Smelly", "Boring", "Stupid", "Rancid", "Jelly", "Unfortunate"];
     var randomWords = ["Fly", "Marmot", "Stick", "Monkey", "Rat", "Crap", "Booger", "Thesarus"];
     var randomBodyPart = randomBodyParts[Math.floor(Math.random() * 5)];
@@ -17,3 +17,22 @@ function insult() {
     alert(randomInsult)
 }
 
+function kkwslink() {
+    document.location="/KKWS/index.html"
+}
+
+function sidenav(showhide) {
+    if (showhide == "show") {
+        document.getElementById('sidenav').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('sidenav').style.visibility = "hidden";
+    }
+}
+
+function overlay(showhide) {
+    if (showhide == "show") {
+        document.getElementById('overlay').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('overlay').style.visibility = "hidden";
+    }
+}
