@@ -9,7 +9,7 @@ window.addEventListener('load', function () {
 
   // The active tool instance.
   var tool;
-  var tool_default = 'line';
+  var tool_default = 'pencil';
 
   function init () {
     // Find the canvas element.
@@ -122,6 +122,7 @@ window.addEventListener('load', function () {
       if (tool.started) {
         context.lineTo(ev._x, ev._y);
         context.stroke();
+        context.fillStyle = "#FF0000"
       }
     };
 

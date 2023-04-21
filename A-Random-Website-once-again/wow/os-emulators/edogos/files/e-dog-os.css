@@ -157,7 +157,7 @@ body {
     padding-top: 10px;
     width: 400px;
     height: 500px;
-    position: static;
+    position: absolute;
     background: #a009ad;
     border: solid #000000 2px;
     z-index: 1;
@@ -241,7 +241,8 @@ td {
 }
 
 #startmenu {
-    padding-left: 60px;
+    padding-top: 10px;
+    padding-left: 100px;
     width: 400px;
     height: 400px;
     top: 62px;
@@ -342,7 +343,7 @@ textarea {
     padding-top: 15px;
     top: 70px;
     left: 450px;
-    width: 600px;
+    width: 680px;
     height: 600px;
     position: absolute;
     background: #d8d8d8;
@@ -382,4 +383,32 @@ textarea {
 p.head1 {
     font-size: 30pt;
     text-align: center;
+}
+
+#startsearch {
+    border: 3px solid #000;
+    background-color: #bdbdbd;
+}
+
+#line1 {
+    width: 200px;
+    height: 2px;
+    background-color: rgb(56, 56, 56);
+    margin-right: auto;
+    padding-left: 100px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+#texteditor {
+    padding-top: 10px;
+    padding-left: 10px;
+    position: absolute;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 625px;
+    height: 650px;
+    background: #ffe6e6;
 }

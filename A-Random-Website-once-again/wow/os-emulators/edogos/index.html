@@ -12,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Dog OS</title>
-    <div id="setupbox">
+    <!-- <div id="setupbox">
         <p class="head1">Setup</p>
         <p>This portion of setup prepares E-Dog OS to be installed on your computer.</p>
         <p>But first, do you want to do setup?</p>
@@ -38,7 +38,7 @@
             <br><br><br><br>
             <button onclick="setupboxothree('show')"></button>
           </form>
-    </div>
+    </div> -->
     <script>
     </script>
 </head>
@@ -339,6 +339,14 @@
             }
         }
 
+        function texteditor(showhide) {
+            if (showhide == "show") {
+                document.getElementById('texteditor').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('texteditor').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -475,7 +483,7 @@
     <div id="edogpaint">
         <a title="Close" href="javascript:edogpaint('hide')">
             <img width="28px" height="28px"
-                src="/ A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
         <style type="text/css">
@@ -492,13 +500,13 @@
                 top: 1px;
                 left: 1px;
             }
-        </style>
-        <p><label>Drawing tool: <select id="dtool">
-                    <option value="line">Line</option>
-                    <option value="rect">Rectangle</option>
-                    <option value="pencil">Pencil</option>
-                </select></label></p>
-        <div id="container"><canvas id="imageView" width="400" height="300">
+        </style><br>
+        <label>Drawing tool: <select id="dtool">
+                <option value="line">Line</option>
+                <option value="rect">Rectangle</option>
+                <option value="pencil">Pencil</option>
+            </select></label>
+        <div id="container"><canvas id="imageView" width="640" height="360">
                 <p>Unfortunately, your browser is currently unsupported by our web application. We are sorry for the
                     inconvenience. Please use one of the supported browsers listed below, or draw the image you want
                     using an offline tool.</p>
@@ -573,7 +581,15 @@
                 <img style="width: 40px; height: 40px;" src="/A-Random-Website-once-again/wow/img/paint.png"
                     alt="Paint">
             </a>
+            <br><br>
+            <a href="javascript:texteditor('show')">
+                <img style="width: 40px; height: 40px;" src="/img/microsoft-windows-notepad-icon.png"
+                    alt="Paint">
+            </a>
         </div>
+        <input type="text" name="startsearch" id="startsearch" placeholder="Search..">
+        <br>
+        <div id="line1"></div>
 
     </div>
 
@@ -611,6 +627,86 @@
         <p>Technical information:</p>
         <p>*** STOP: 0x000000 (0x0000000000000003,0xFFFFFA8009F66060,0xFFFFFA8009F66340,0xFFFFF800019CA240)</p>
     </div>
+    <div id="texteditor">
+        <a title="Close" href="javascript:texteditor('hide')">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a>
+        <br>
+        <div id="line1"></div>
+        <br>
+        <script src="/js/texteditor.js"></script>
+        <link rel="stylesheet" href="/css/texteditor.css">
+        <div id="container">
+            <fieldset>
+                <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);"
+                    title="Bold Highlighted Text"></button>
+                <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);"
+                    title="Italicize Highlighted Text"></button>
+                <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);"></button>
+                <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);">
+                    <strikethrough></strikethrough>
+                </button>
+                <select id="input-font" class="input" onchange="changeFont (this);">
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Sans serif">Sans serif</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Palatino">Palatino</option>
+                    <option value="Garamond">Garamond</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <option value="Arial Black">Arial Black</option>
+                    <option value="Tahoma">Tahoma</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
+                <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);">
+                    <justifyLeft></justifyLeft>
+                </button>
+                <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);">
+                    <justifyCenter></justifyCenter>
+                </button>
+                <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);">
+                    <justifyRight></justifyRight>
+                </button>
+                <button class="fontStyle redo-apply" onclick="document.execCommand( 'redo',false,null);">
+                    <redo></redo>
+                </button>
+                <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);">
+                    <undo></undo>
+                </button>
+                <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);">
+                    <insertOrderedList></insertOrderedList>
+                </button>
+                <button class="fontStyle unorderedlist"
+                    onclick="document.execCommand('insertUnorderedList',false, null)">
+                    <insertUnorderedList></insertUnorderedList>
+                </button>
+                <input class="color-apply" type="color" onchange="chooseColor()" id="myColor">
+
+                <!-- font size start -->
+                <select id="fontSize" onclick="changeSize()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+                <!-- font size end -->
+
+            </fieldset>
+
+            <div id="editor1" contenteditable="true"></div>
+
+        </div>
+
+    </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
             <img width="28px" height="28px"
@@ -620,22 +716,10 @@
         <p style="text-align: center; font-weight: bold;"><i>page.html</i> - Visual Studio Code</p>
         <!-- &lt;   &gt;        &nbsp;-->
         <textarea>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
     <h1>A Heading</h1>
     <hr>
     <p>My first <strong>web page</strong>.</p>
     <p>Let's add another <strong><em>paragraph</em></strong>.</p>
-
-</body>
-</html>
         </textarea>
     </div>
 </body>

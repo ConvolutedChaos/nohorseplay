@@ -7,4 +7,10 @@ p.bigheading {
 .goback {
     background-color: #4CAF50;
     font-size: 30px;
+    transition: 1s;
+}
+
+.goback:hover {
+    font-size: 40px;
+    cursor: pointer;
 }
