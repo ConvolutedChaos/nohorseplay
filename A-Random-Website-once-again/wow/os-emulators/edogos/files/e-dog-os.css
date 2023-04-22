@@ -230,6 +230,8 @@ td {
 .startmenubutton {
     width: 60px;
     height: 60px;
+    transition: 750ms;
+    border: 1px solid #000;
     background-image: url(/android-chrome-192x192.png);
     background-size: 100% 100%;
 }
@@ -237,14 +239,13 @@ td {
 .startmenubutton:hover {
     border-radius: 5px;
     border: 5px solid #000;
-    transition: 750ms;
 }
 
 #startmenu {
     padding-top: 10px;
     padding-left: 100px;
     width: 400px;
-    height: 400px;
+    height: 450px;
     top: 62px;
     left: 0px;
     position: absolute;
@@ -306,7 +307,7 @@ td {
 
 /* The sidebar menu */
 .sidenav {
-    height: 396px;
+    height: 446px;
     /* Full-height: remove this if you want "auto" height */
     width: 80px;
     /* Set the width of the sidebar */
@@ -322,6 +323,8 @@ td {
     overflow-x: hidden;
     /* Disable horizontal scroll */
     padding-top: 20px;
+    border-radius: 7px;
+    border: solid #000000 2px;
 }
 
 .sidenav a {
@@ -479,4 +482,52 @@ p.head1 {
     cursor: pointer;
     width: 40px;
     height: 40px;
+}
+
+#shutdownprompt {
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 300px;
+    height: 200px;
+    z-index: 1;
+    background-color: rgb(131, 55, 55);
+    visibility: visible;
+}
+
+#header {
+    width: 100%;
+    color: #FFF;
+    text-align: center;
+    background-color: #3053c7;
+    border: 1px solid #000;
+    border-radius: 3px;
+}
+
+.shutdown1 {
+    background-color: #ff3636;
+    border: 3px solid #FF0;
+    border-radius: 3px;
+    float: left;
+}
+
+.shutdown1:hover {
+    background-color: #ff7272;
+}
+
+.cancel1 {
+    background-color: #ff3636;
+    float: right;
+    border: 2px solid #000;
+    border-radius: 3px;
+}
+
+.cancel1:hover {
+    background-color: #ff7272;
+    border: 3px solid #FF0;
+    border-radius: 3px;
 }

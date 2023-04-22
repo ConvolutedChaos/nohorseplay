@@ -597,6 +597,13 @@
             <a href="javascript:texteditor('show')">
                 <img style="width: 40px; height: 40px;" src="/img/microsoft-windows-notepad-icon.png" alt="Text Editor">
             </a>
+            <br><br><br><br><br>
+            <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/shutdown.js"></script>
+            <a href="javascript:shutdownprompt('show')">
+                <img style="width: 40px; height: 40px;" src="/img/window-buttons/shutdown.png" alt="Shut Down">
+            </a>
+
+
         </div>
         <input type="text" name="startsearch" id="startsearch" placeholder="Search..">
         <br>
@@ -663,53 +670,32 @@
                     <option value="Arial">Arial</option>
                     <option value="Helvetica">Helvetica</option>
                     <option value="Times New Roman">Times New Roman</option>
-                    <option value="Sans serif">Sans serif</option>
-                    <option value="Courier New">Courier New</option>
-                    <option value="Verdana">Verdana</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Palatino">Palatino</option>
-                    <option value="Garamond">Garamond</option>
-                    <option value="Comic Sans MS">Comic Sans MS</option>
-                    <option value="Arial Black">Arial Black</option>
-                    <option value="Tahoma">Tahoma</option>
-                    <option value="Comic Sans MS">Comic Sans MS</option>
-                </select>
-                <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);">
-                    <justifyLeft></justifyLeft>
-                </button>
-                <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);">
-                    <justifyCenter></justifyCenter>
-                </button>
-                <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);">
-                    <justifyRight></justifyRight>
-                </button>
-                <button class="fontStyle redo-apply" onclick="document.execCommand( 'redo',false,null);">
-                    <redo></redo>
-                </button>
-                <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);">
-                    <undo></undo>
-                </button>
-                <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);">
-                    <insertOrderedList></insertOrderedList>
-                </button>
-                <button class="fontStyle unorderedlist"
-                    onclick="document.execCommand('insertUnorderedList',false, null)">
-                    <insertUnorderedList></insertUnorderedList>
-                </button>
-                <input class="color-apply" type="color" onchange="chooseColor()" id="myColor">
+                    <option value="Sans serif">Sans serif</option>ackground-image: linear-gradient(#b2cbe5, #a5d2ea);
+                    <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);">
+                        <undo></undo>
+                    </button>
+                    <button class="fontStyle orderedlist"
+                        onclick="document.execCommand('insertOrderedList', false, null);">
+                        <insertOrderedList></insertOrderedList>
+                    </button>
+                    <button class="fontStyle unorderedlist"
+                        onclick="document.execCommand('insertUnorderedList',false, null)">
+                        <insertUnorderedList></insertUnorderedList>
+                    </button>
+                    <input class="color-apply" type="color" onchange="chooseColor()" id="myColor">
 
-                <!-- font size start -->
-                <select id="fontSize" onclick="changeSize()">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                </select>
-                <!-- font size end -->
+                    <!-- font size start -->
+                    <select id="fontSize" onclick="changeSize()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+                    <!-- font size end -->
 
             </fieldset>
 
@@ -784,6 +770,19 @@
                 }
             }
         </script>
+    </div>
+    <div id="shutdownprompt">
+        <div id="header">
+            <i style="float: left;">&nbsp;</i>
+            <a style="float: left;" title="Close" href="javascript:shutdownprompt('hide')">
+                <img width="20px" height="20px"
+                    src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                    alt="Close">
+            </a>Session
+        </div>
+        <p>Shut down this system now?</p>
+        <br><br><button class="cancel1" onclick="shutdownprompt('hide')">Cancel</button> &nbsp;<button class="shutdown1"
+            onclick="shutdown()">Shut Down</button>
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
