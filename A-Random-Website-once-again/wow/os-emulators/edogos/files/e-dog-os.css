@@ -2,7 +2,7 @@
     position: absolute;
     top: 80px;
     left: 500px;
-    z-index: 1;
+    z-index: 1000;
     background-color: #f1f1f1;
     border: 1px solid #d3d3d3;
     width: 640px;
@@ -29,7 +29,7 @@
     position: absolute;
     background: #e0e3f1;
     border: solid #000000 2px;
-    z-index: 100;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
 }
@@ -49,7 +49,7 @@ p.imac-article {
     position: absolute;
     background: #e0e3f1;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
 }
@@ -75,7 +75,7 @@ hr {
     position: absolute;
     background: #a11e1e;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
 }
@@ -102,7 +102,7 @@ body {
     position: absolute;
     background: #ffffff;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
 }
@@ -126,7 +126,7 @@ body {
     position: absolute;
     background: #ffffff;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
     background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
@@ -143,7 +143,7 @@ body {
     position: absolute;
     background: #12a136;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
     text-align: center;
@@ -160,7 +160,7 @@ body {
     position: absolute;
     background: #a009ad;
     border: solid #000000 2px;
-    z-index: 1;
+    z-index: 1000;
     font-family: arial;
     visibility: hidden;
     text-align: center;
@@ -259,6 +259,7 @@ td {
 #error {
     width: 350px;
     height: 200px;
+    z-index: 1000;
     visibility: hidden;
 }
 
@@ -287,7 +288,7 @@ td {
     height: 600px;
     position: fixed;
     background: #353535;
-    z-index: 1;
+    z-index: 1000;
     font-family: 'Courier New', Courier, monospace;
     visibility: hidden;
 }
@@ -347,7 +348,7 @@ textarea {
     height: 600px;
     position: absolute;
     background: #d8d8d8;
-    z-index: 1; 
+    z-index: 1000; 
     font-family: Arial, Helvetica, sans-serif;
     visibility: hidden;
 }
@@ -361,7 +362,7 @@ textarea {
     height: 600px;
     position: absolute;
     background: #d8d8d8;
-    z-index: 1;
+    z-index: 1000;
     font-family: Arial, Helvetica, sans-serif;
     visibility: visible;
 }
@@ -375,7 +376,7 @@ textarea {
     height: 600px;
     position: absolute;
     background: #d8d8d8;
-    z-index: 1;
+    z-index: 1000;
     font-family: Arial, Helvetica, sans-serif;
     visibility: hidden;
 }
@@ -411,4 +412,71 @@ p.head1 {
     width: 625px;
     height: 650px;
     background: #ffe6e6;
+    visibility: hidden;
+    z-index: 1000;
+}
+
+#ie {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding-top: 10px;
+    padding-left: 10px;
+    position: absolute;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 800px;
+    height: 600px;
+    z-index: 1;
+    background-image: linear-gradient(#b2cbe5, #a5d2ea);
+    visibility: hidden;
+}
+
+#mediaplayer {
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    padding-top: 5px;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 330px;
+    height: 360px;
+    z-index: 1;
+    background-image: linear-gradient(#67f714, #0da0a0);
+    visibility: hidden;
+}
+
+.playpause {
+    float: left;
+    width: 67px;
+    height: 30px;
+    background-image: url(/img/window-buttons/pauseplay.png);
+    background-size: cover;
+    border: 1px solid #000;
+    border-radius: 3px;
+}
+
+.playpause:hover {
+    cursor: pointer;
+    width: 87px;
+    height: 40px;
+}
+
+.fullscreenbutton {
+    padding: 4px;
+    width: 30px;
+    height: 30px;
+    float: right;
+    background-image: url(/img/window-buttons/fullscreen.png);
+    background-size: cover;
+    border: 1px solid #000;
+    border-radius: 3px;
+}
+
+.fullscreenbutton:hover {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
 }

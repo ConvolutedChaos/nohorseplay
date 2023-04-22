@@ -347,6 +347,14 @@
             }
         }
 
+        function mediaplayer(showhide) {
+            if (showhide == "show") {
+                document.getElementById('mediaplayer').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('mediaplayer').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -582,9 +590,12 @@
                     alt="Paint">
             </a>
             <br><br>
+            <a href="javascript:mediaplayer('show')">
+                <img style="width: 40px; height: 40px;" src="/img/window-buttons/media.png" alt="Media Player">
+            </a>
+            <br><br>
             <a href="javascript:texteditor('show')">
-                <img style="width: 40px; height: 40px;" src="/img/microsoft-windows-notepad-icon.png"
-                    alt="Paint">
+                <img style="width: 40px; height: 40px;" src="/img/microsoft-windows-notepad-icon.png" alt="Text Editor">
             </a>
         </div>
         <input type="text" name="startsearch" id="startsearch" placeholder="Search..">
@@ -706,6 +717,73 @@
 
         </div>
 
+    </div>
+    <div id="ie">
+        <img style="width: 20px; height: 20px;" src="/img/WWWWW.png" alt="IE icon">&nbsp; <span>Internet Explorer cannot
+            display the webpage - Internet Explorer</span>
+        <div style="padding-right: 10px; float: right;"><a href="javascript:ie('hide')"><img
+                    src="/img/window-buttons/001.png" style="width: 20px; height: 20px;" alt="Minimize"></a><a
+                href="#"><img src="/img/window-buttons/002.png" style="width: 20px; height: 20px;" alt="Maximise"></a><a
+                href="javascript:ie('hide')"><img src="/img/window-buttons/003.png" style="width: 49px; height: 19px;"
+                    alt="Close"></a></div>
+        <br>
+        <a href="#"><img src="/img/window-buttons/004.png" style="width: 40px; height: 40px;" alt="Back"></a><a
+            href="#"><img src="/img/window-buttons/005.png" style="width: 40px; height: 40px;" alt="Forward"></a>
+    </div>
+    <div id="mediaplayer">
+        <a style="float: left;" title="Close" href="javascript:mediaplayer('hide')">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a>
+        <img style="width: 20px; height: 20px;" src="/img/window-buttons/mp4.png" alt="media icon"> <b>raisins.mp4</b>
+        <br>
+        <br>
+        <video id="video1" width="320">
+            <source src="/img/vids/funy/raisins.mp4" type="video/mp4">
+            <source src="mov_bbb.ogg" type="video/ogg">
+            Your browser does not support HTML video.
+        </video>
+        <br>
+        <button class="playpause" onclick="playPause()"></button><button onclick="openFullscreen()"
+            class="fullscreenbutton"></button>
+        <script>
+            var myVideo = document.getElementById("video1");
+            function playPause() {
+                if (myVideo.paused) {
+                    myVideo.play();
+                } else {
+                    myVideo.pause();
+                }
+            }
+
+            function makeBig() {
+                myVideo.width = 560;
+            }
+
+            function makeSmall() {
+                myVideo.width = 320;
+            }
+
+            function makeNormal() {
+                myVideo.width = 420;
+            }
+
+            /* Get the element you want displayed in fullscreen mode (a video in this example): */
+            var elem = document.getElementById("video1");
+
+            /* When the openFullscreen() function is executed, open the video in fullscreen.
+            Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+            function openFullscreen() {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+            }
+        </script>
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
