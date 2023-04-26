@@ -101,10 +101,8 @@
         <p style="text-align:center; font-weight: bolder;">Bacon Explorer
             <hr>
         <p>
-        <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
             <input type="text" id="name" name="name" placeholder="Address Bar" style="width: 500px;"><input
                 type="submit" value="Go">
-        </form>
         </p>
         <hr>
         <p>
@@ -355,6 +353,14 @@
             }
         }
 
+        function edogcalculator(showhide) {
+            if (showhide == "show") {
+                document.getElementById('edogcalculator').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('edogcalculator').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -382,16 +388,16 @@
                 <br>
                 <table style="text-align: center;">
                     <tr>
-                        <th>OS Version</th>
+                        <th>System Software</th>
                         <th>Installed RAM</th>
                         <th>Processor</th>
                         <th>GPU</th>
                     </tr>
                     <tr>
-                        <td>7.5.3</td>
-                        <td>256 MB</td>
-                        <td>Intel Pentium&reg; 2</td>
-                        <td>ATI Rage with 10 KB VRAM</td>
+                        <td>10.13.6</td>
+                        <td>1024 MB</td>
+                        <td>Intel Pentium&reg; 4</td>
+                        <td>ATI Rage with 10 MB VRAM</td>
                     </tr>
                 </table>
             </div>
@@ -528,10 +534,6 @@
 
 
     </div>
-    <div id="nohorseplaysite">
-        <div id="nohorseplaysiteheader"><button onclick="nohorseplaysite('hide')">Close</button></div>
-        <iframe src="https://nohorseplay.com" width="1280" height="720"></iframe>
-    </div>
     <div id="panel">
         <div class="allthatstuffontheside">
             <div style="font-size: 15pt; float: right; padding: 15px 15px;" id="date-div"></div><i
@@ -597,7 +599,12 @@
             <a href="javascript:texteditor('show')">
                 <img style="width: 40px; height: 40px;" src="/img/microsoft-windows-notepad-icon.png" alt="Text Editor">
             </a>
-            <br><br><br><br><br>
+            <br><br>
+            <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/errorr.js"></script>
+            <a href="javascript:errorfunction()">
+                <img style="width: 40px; height: 40px;" src="/img/music-palyer.png" alt="Music Player">
+            </a>
+            <br><br>
             <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/shutdown.js"></script>
             <a href="javascript:shutdownprompt('show')">
                 <img style="width: 40px; height: 40px;" src="/img/window-buttons/shutdown.png" alt="Shut Down">
@@ -608,6 +615,15 @@
         <input type="text" name="startsearch" id="startsearch" placeholder="Search..">
         <br>
         <div id="line1"></div>
+        <br>
+        <div class="dropdown">
+            <button class="dropbtn">Accessories</button>
+            <div class="dropdown-content">
+                <a href="javascript:edogcalculator('show')">Calculator</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+            </div>
+        </div>
 
     </div>
 
@@ -652,57 +668,56 @@
                 alt="Close">
         </a>
         <br>
-        <div id="line1"></div>
-        <br>
         <script src="/js/texteditor.js"></script>
         <link rel="stylesheet" href="/css/texteditor.css">
-        <div id="container">
+        <div id="container" >
             <fieldset>
-                <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);"
-                    title="Bold Highlighted Text"></button>
-                <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);"
-                    title="Italicize Highlighted Text"></button>
-                <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);"></button>
-                <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);">
-                    <strikethrough></strikethrough>
-                </button>
-                <select id="input-font" class="input" onchange="changeFont (this);">
-                    <option value="Arial">Arial</option>
-                    <option value="Helvetica">Helvetica</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Sans serif">Sans serif</option>ackground-image: linear-gradient(#b2cbe5, #a5d2ea);
-                    <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);">
-                        <undo></undo>
-                    </button>
-                    <button class="fontStyle orderedlist"
-                        onclick="document.execCommand('insertOrderedList', false, null);">
-                        <insertOrderedList></insertOrderedList>
-                    </button>
-                    <button class="fontStyle unorderedlist"
-                        onclick="document.execCommand('insertUnorderedList',false, null)">
-                        <insertUnorderedList></insertUnorderedList>
-                    </button>
-                    <input class="color-apply" type="color" onchange="chooseColor()" id="myColor">
-
-                    <!-- font size start -->
-                    <select id="fontSize" onclick="changeSize()">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                    </select>
-                    <!-- font size end -->
-
-            </fieldset>
-
-            <div id="editor1" contenteditable="true"></div>
-
+              <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"></button>
+              <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"></button>
+              <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);"></button>
+              <select id="input-font" class="input"  onchange="changeFont (this);">
+                <option value="Arial">Arial</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Sans serif">Sans serif</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Palatino">Palatino</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Arial Black">Arial Black</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+              <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);"><strikethrough></strikethrough></button>
+              <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);"><justifyLeft></justifyLeft></button>
+              <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);"><justifyCenter></justifyCenter></button>
+              <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);"><justifyRight></justifyRight></button>
+              <button class="fontStyle redo-apply" onclick="document.execCommand( 'redo',false,null);"><redo></redo></button>
+              <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);"><undo></undo></button>
+              <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);"><insertOrderedList></insertOrderedList></button>
+              <button class="fontStyle unorderedlist" onclick="document.execCommand('insertUnorderedList',false, null)"><insertUnorderedList></insertUnorderedList></button>    
+              <input class="color-apply" type="color" onchange="chooseColor()" id="myColor"> 
+        
+              <!-- font size start -->
+              <select id="fontSize" onclick="changeSize()">
+                <option value="1">1</option>      
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+              <!-- font size end -->
+              
+          </fieldset>
+        
+          <div id="editor1" contenteditable="true"></div>
+          
         </div>
-
     </div>
     <div id="ie">
         <img style="width: 20px; height: 20px;" src="/img/WWWWW.png" alt="IE icon">&nbsp; <span>Internet Explorer cannot
@@ -727,7 +742,6 @@
         <br>
         <video id="video1" width="320">
             <source src="/img/vids/funy/raisins.mp4" type="video/mp4">
-            <source src="mov_bbb.ogg" type="video/ogg">
             Your browser does not support HTML video.
         </video>
         <br>
@@ -783,6 +797,152 @@
         <p>Shut down this system now?</p>
         <br><br><button class="cancel1" onclick="shutdownprompt('hide')">Cancel</button> &nbsp;<button class="shutdown1"
             onclick="shutdown()">Shut Down</button>
+    </div>
+    <div id="edogcalculator">
+        <i style="float: left;">&nbsp;</i><a style="float: left;" title="Close" href="javascript:edogcalculator('hide')">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a><b>Calculator</b><br><br>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.js"
+            integrity="sha512-BbVEDjbqdN3Eow8+empLMrJlxXRj5nEitiCAK5A1pUr66+jLVejo3PmjIaucRnjlB0P9R3rBUs3g5jXc8ti+fQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.min.js"
+            integrity="sha512-iphNRh6dPbeuPGIrQbCdbBF/qcqadKWLa35YPVfMZMHBSI6PLJh1om2xCTWhpVpmUyb4IvVS9iYnnYMkleVXLA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- for styling -->
+        <style>
+            #calcu {
+                border: 1px solid black;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #abcd {
+                width: 100%;
+                padding: 20px 40px;
+                background-color: green;
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+                border: none;
+                border-radius: 5px;
+            }
+
+            #equals {
+                width: 100%;
+                padding: 20px 40px;
+                background-color: rgb(0, 160, 0);
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+                border: 2px solid #000;
+                border-radius: 5px;
+            }
+
+            #result {
+                padding: 20px 30px;
+                font-size: 24px;
+                font-weight: bold;
+                border: none;
+                border-radius: 5px;
+                border: 2px solid black;
+            }
+        </style>
+        </head>
+        <!-- create table -->
+
+        <body>
+            <table id="calcu">
+                <tr>
+                    <td colspan="3"><input type="text" id="result"></td>
+                    <!-- clr() function will call clr to clear all value -->
+                    <td><input id="abcd" type="button" value="c" onclick="clr()" /> </td>
+                </tr>
+                <tr>
+                    <!-- create button and assign value to each button -->
+                    <!-- dis("1") will call function dis to display value -->
+                    <td><input id="abcd" type="button" value="1" onclick="dis('1')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="2" onclick="dis('2')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="3" onclick="dis('3')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="/" onclick="dis('/')" onkeydown="myFunction(event)"> </td>
+                </tr>
+                <tr>
+                    <td><input id="abcd" type="button" value="4" onclick="dis('4')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="5" onclick="dis('5')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="6" onclick="dis('6')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="*" onclick="dis('*')" onkeydown="myFunction(event)"> </td>
+                </tr>
+                <tr>
+                    <td><input id="abcd" type="button" value="7" onclick="dis('7')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="8" onclick="dis('8')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="9" onclick="dis('9')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="-" onclick="dis('-')" onkeydown="myFunction(event)"> </td>
+                </tr>
+                <tr>
+                    <td><input id="abcd" type="button" value="0" onclick="dis('0')" onkeydown="myFunction(event)"> </td>
+                    <td><input id="abcd" type="button" value="." onclick="dis('.')" onkeydown="myFunction(event)"> </td>
+                    <!-- solve function call function solve to evaluate value -->
+                    <td><input id="equals" type="button" value="=" onclick="solve()"> </td>
+
+                    <td><input id="abcd" type="button" value="+" onclick="dis('+')" onkeydown="myFunction(event)"> </td>
+                </tr>
+            </table>
+
+            <script>
+                // Function that display value
+                function dis(val) {
+                    document.getElementById("result").value += val
+                }
+
+                function myFunction(event) {
+                    if (event.key == '0' || event.key == '1'
+                        || event.key == '2' || event.key == '3'
+                        || event.key == '4' || event.key == '5'
+                        || event.key == '6' || event.key == '7'
+                        || event.key == '8' || event.key == '9'
+                        || event.key == '+' || event.key == '-'
+                        || event.key == '*' || event.key == '/')
+                        document.getElementById("result").value += event.key;
+                }
+
+                var cal = document.getElementById("calcu");
+                cal.onkeyup = function (event) {
+                    if (event.keyCode === 13) {
+                        console.log("Enter");
+                        let x = document.getElementById("result").value
+                        console.log(x);
+                        solve();
+                    }
+                }
+
+                // Function that evaluates the digit and return result
+                function solve() {
+                    let x = document.getElementById("result").value
+                    let y = math.evaluate(x)
+                    document.getElementById("result").value = y
+                }
+
+                // Function that clear the display
+                function clr() {
+                    document.getElementById("result").value = ""
+                }
+            </script>
+    </div>
+    <script>
+        var errorSound = new Audio('/img/assets/audio/error.mp3');
+    </script>
+    <div id="error">
+        <a title="Close" href="javascript:error('hide')">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a>
+        <br><br>
+        <div style="padding-left: 10px;">
+        <img src="/img/matt-icons_dialog-error.png" style="width: 57px; height: 57px;" alt="Error icon">
+            Bacon error 0x00000000000007<br>The specified module could not be found.<br><br><button onclick="error('hide')">OK</button>
+        </div>
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">

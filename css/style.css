@@ -19,21 +19,21 @@ a {
     color: #000;
 }
 
-    a:link {
-        text-decoration: underline;
-    }
+a:link {
+    text-decoration: underline;
+}
 
-    a:visited {
-        text-decoration: none;
-    }
+a:visited {
+    text-decoration: none;
+}
 
-    a:hover {
-        text-decoration: underline;
-    }
+a:hover {
+    text-decoration: underline;
+}
 
-    a:active {
-        text-decoration: none;
-    }
+a:active {
+    text-decoration: none;
+}
 
 .linkone {
     padding-top: 15px;
@@ -78,26 +78,26 @@ hr {
     display: list-item;
 }
 
-    .topnav img {
-        float: left;
-        display: block;
-        padding: 14px 25px;
-    }
+.topnav img {
+    float: left;
+    display: block;
+    padding: 14px 25px;
+}
 
-    .topnav a {
-        float: right;
-        display: block;
-        color: #000;
-        text-align: center;
-        padding: 30px 16px;
-        text-decoration: none;
-        font-size: 17px;
-    }
+.topnav a {
+    float: right;
+    display: block;
+    color: #000;
+    text-align: center;
+    padding: 30px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
 
-        .topnav a:hover {
-            transition: 50ms;
-            color: rgb(66, 96, 116);
-        }
+.topnav a:hover {
+    transition: 50ms;
+    color: rgb(66, 96, 116);
+}
 
 footer {
     width: 100%;
@@ -124,10 +124,10 @@ video {
     transition: 1s;
 }
 
-    .kkwslink:hover {
-        cursor: pointer;
-        font-size: 25pt;
-    }
+.kkwslink:hover {
+    cursor: pointer;
+    font-size: 25pt;
+}
 
 .images-list {
     text-align: center;
@@ -142,8 +142,8 @@ video {
     text-align: center;
     background-image: url(/img/1678340.png);
     background-size: 576px 247px;
-    width: 576px;
     height: 247px;
+    width: 576px;
 }
 
 #sidenav {
@@ -185,6 +185,7 @@ video {
 
 
 @media screen and (max-width: 930px) {
+
     /* For the links */
     #no_u {
         display: none;
@@ -192,5 +193,18 @@ video {
 
     #sidenav_button {
         display: block;
+    }
+
+    img.img01,
+    img.img02,
+    img.img03 {
+        height: 200px;
+        text-align: center;
+        border-radius: 16px;
+        border: 3px solid gray;
+    }
+
+    .puppy {
+        display: none;
     }
 }
