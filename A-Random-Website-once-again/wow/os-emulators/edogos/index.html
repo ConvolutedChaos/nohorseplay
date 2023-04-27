@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/e-dog-os.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/css/w3.css">
-    <script src="/js/drag.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/setup.js"></script>
     <meta charset="UTF-8">
@@ -178,6 +177,11 @@
 
     </script>
     <script>
+
+        function theBlissWallpaper() {
+            document.body.style.backgroundImage = "url('/img/bliss.jpg')";
+        }
+
         function changeWallpaperToTheBowlOfFruit() {
             document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/f494bfba58260f60bf53f91a7d7c1bdd.jpg')";
         }
@@ -192,6 +196,10 @@
 
         function changeWallpaperToThePuppy() {
             document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/435688-free-cute-dogs-and-puppies-wallpaper-2560x1600-for-pc.jpg')";
+        }
+
+        function changeWallpaperToTheGorgeousMountains() {
+            document.body.style.backgroundImage = "url('/img/roccky.jpg')"
         }
 
     </script>
@@ -394,7 +402,7 @@
                         <th>GPU</th>
                     </tr>
                     <tr>
-                        <td>10.13.6</td>
+                        <td>10.13.7</td>
                         <td>1024 MB</td>
                         <td>Intel Pentium&reg; 4</td>
                         <td>ATI Rage with 10 MB VRAM</td>
@@ -413,11 +421,12 @@
                 <h1>Change Your Wallpaper</h1>
                 Default Photos
                 <p>-------------------------------</p>
-
-                <button onclick="changeWallpaperToTheFlowers()">Flowers (default)</button>
+                <button onclick="theBlissWallpaper()">Bliss (default)</button>
+                <button onclick="changeWallpaperToTheFlowers()">Flowers</button>
                 <button onclick="changeWallpaperToTheBowlOfFruit()">Bowl Of Fruit</button>
                 <button onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
                 <button onclick="changeWallpaperToThePuppy()">Puppy</button>
+                <button onclick="changeWallpaperToTheGorgeousMountains()">Mountains</button>
 
                 <p>-------------------------------</p>
                 Upload file<br>
