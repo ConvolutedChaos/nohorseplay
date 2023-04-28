@@ -98,20 +98,48 @@
         </div>
 
         <p style="text-align:center; font-weight: bolder;">Bacon Explorer
-            <hr>
+        <div class="baconline"></div>
         <p>
-            <input type="text" id="name" name="name" placeholder="Address Bar" style="width: 500px;"><input
+        <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
+            <input type="text" id="addressbar" name="name" placeholder="Address Bar" style="width: 500px;"><input
                 type="submit" value="Go">
+        </form>
         </p>
-        <hr>
+        <div class="baconline"></div>
+        <script>
+            function noConnectFunction() {
+                // const element = document.getElementById("aaaa");
+                // element.remove();
+                // //WAWA
+                // // Create element:
+
+                // const webBrowse = document.createElement('iframe');
+                // webBrowse.setAttribute('src', '/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
+                // webBrowse.setAttribute('style', 'width: 640px; height: 400px; border: 1px solid #000;');
+                // webBrowse.setAttribute('frameborder', '0');
+
+                // document.getElementById("bbbb").appendChild(webBrowse);
+
+
+                var addressbarinput = document.getElementById('addressbar')
+                document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
+            }
+        </script>
+
         <p>
             <button onclick="imac('show')">
-                <div id=""></div>iMac G3 Article<div id=""></div>
-            </button><button onclick="funwithjs('show')">Fun With J.S.</button>
+                <div id=""></div>iMac G3 Article
+            </button><span style="padding-left: 15px;"><button onclick="funwithjs('show')">Fun With J.S.</button><span
+                    style="padding-left: 15px;"><button onclick="noConnectFunction()">Apple.com</button><span
+                        style="padding-left: 15px;"><button>ESU
+                            10: Welcome!</button><span style="padding-left: 15px;"><button>ODIE:
+                                Welcome!</button></span></span></span></span>
         </p>
         </p>
+        <iframe src="/" style="width: 640px; height: 400px; border: 1px solid #000;" id="iframeone"
+            frameborder="0"></iframe>
+        Ready
     </div>
-
 
     <script>
         function mydiv(showhide) {
@@ -369,6 +397,14 @@
             }
         }
 
+        function musicpalyer(showhide) {
+            if (showhide == "show") {
+                document.getElementById('musicpalyer').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('musicpalyer').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -402,31 +438,31 @@
                         <th>GPU</th>
                     </tr>
                     <tr>
-                        <td>10.13.7</td>
-                        <td>1024 MB</td>
+                        <td>10.14.0</td>
+                        <td>2048 MB</td>
                         <td>Intel Pentium&reg; 4</td>
-                        <td>ATI Rage with 10 MB VRAM</td>
+                        <td>GeForce GT 650M</td>
                     </tr>
                 </table>
             </div>
             <a href="javascript:changeWallpaper('show')" title="Change Wallpaper">
-                <img height="83.5" width="129"
+                <img style="margin: 5px;" height="83.5" width="129"
                     src="/A-Random-Website-once-again/wow/img/istockphoto-1270369623-170667a.jpg">
             </a>
             <div id="changeWallpaper">
                 <a href="javascript:changeWallpaper('hide')" title="Close">
-                    <img height="28" width="28"
+                    <img style="margin: 5px;" height="28" width="28"
                         src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
                 </a>
                 <h1>Change Your Wallpaper</h1>
                 Default Photos
                 <p>-------------------------------</p>
-                <button onclick="theBlissWallpaper()">Bliss (default)</button>
-                <button onclick="changeWallpaperToTheFlowers()">Flowers</button>
-                <button onclick="changeWallpaperToTheBowlOfFruit()">Bowl Of Fruit</button>
-                <button onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
-                <button onclick="changeWallpaperToThePuppy()">Puppy</button>
-                <button onclick="changeWallpaperToTheGorgeousMountains()">Mountains</button>
+                <button class="wallpaperbtn1" onclick="theBlissWallpaper()">Bliss (default)</button>
+                <button class="wallpaperbtn2" onclick="changeWallpaperToTheFlowers()">Flowers</button>
+                <button class="wallpaperbtn3" onclick="changeWallpaperToTheBowlOfFruit()">Bowl Of Fruit</button>
+                <button class="wallpaperbtn4" onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
+                <button class="wallpaperbtn5" onclick="changeWallpaperToThePuppy()">Puppy</button>
+                <button class="wallpaperbtn6" onclick="changeWallpaperToTheGorgeousMountains()">Mountains</button>
 
                 <p>-------------------------------</p>
                 Upload file<br>
@@ -610,7 +646,7 @@
             </a>
             <br><br>
             <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/errorr.js"></script>
-            <a href="javascript:errorfunction()">
+            <a href="javascript:musicpalyer('show')">
                 <img style="width: 40px; height: 40px;" src="/img/music-palyer.png" alt="Music Player">
             </a>
             <br><br>
@@ -643,17 +679,11 @@
 
         var c = url.searchParams.get("name");
 
-        if (c === "nohorseplay.com") {
-            nohorseplaysite('show')
-            console.log("The URL '" + c + "' has been loaded! :)")
-        } else if (c === "https://nohorseplay.com") {
-            nohorseplaysite('show')
-            console.log("The URL '" + c + "' has been loaded! :)")
-        } else if (c === "http://nohorseplay.com") {
-            nohorseplaysite('show')
-            console.log("The URL '" + c + "' has been loaded! :)")
+        if (c === "") {
+            mydiv('show')
+            document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
         } else {
-            console.error("The URL '" + c + "' is not valid.")
+            document.getElementById("iframeone").src = ("" + c + "");
         }
     </script>
     <div id="bluescreen">
@@ -679,53 +709,72 @@
         <br>
         <script src="/js/texteditor.js"></script>
         <link rel="stylesheet" href="/css/texteditor.css">
-        <div id="container" >
+        <div id="container">
             <fieldset>
-              <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"></button>
-              <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"></button>
-              <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);"></button>
-              <select id="input-font" class="input"  onchange="changeFont (this);">
-                <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Sans serif">Sans serif</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Palatino">Palatino</option>
-                <option value="Garamond">Garamond</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-                <option value="Arial Black">Arial Black</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-              <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);"><strikethrough></strikethrough></button>
-              <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);"><justifyLeft></justifyLeft></button>
-              <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);"><justifyCenter></justifyCenter></button>
-              <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);"><justifyRight></justifyRight></button>
-              <button class="fontStyle redo-apply" onclick="document.execCommand( 'redo',false,null);"><redo></redo></button>
-              <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);"><undo></undo></button>
-              <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);"><insertOrderedList></insertOrderedList></button>
-              <button class="fontStyle unorderedlist" onclick="document.execCommand('insertUnorderedList',false, null)"><insertUnorderedList></insertUnorderedList></button>    
-              <input class="color-apply" type="color" onchange="chooseColor()" id="myColor"> 
-        
-              <!-- font size start -->
-              <select id="fontSize" onclick="changeSize()">
-                <option value="1">1</option>      
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-              </select>
-              <!-- font size end -->
-              
-          </fieldset>
-        
-          <div id="editor1" contenteditable="true"></div>
-          
+                <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);"
+                    title="Italicize Highlighted Text"></button>
+                <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);"
+                    title="Bold Highlighted Text"></button>
+                <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);"></button>
+                <select id="input-font" class="input" onchange="changeFont (this);">
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Sans serif">Sans serif</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Palatino">Palatino</option>
+                    <option value="Garamond">Garamond</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                    <option value="Arial Black">Arial Black</option>
+                    <option value="Tahoma">Tahoma</option>
+                    <option value="Comic Sans MS">Comic Sans MS</option>
+                </select>
+                <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);">
+                    <strikethrough></strikethrough>
+                </button>
+                <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);">
+                    <justifyLeft></justifyLeft>
+                </button>
+                <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);">
+                    <justifyCenter></justifyCenter>
+                </button>
+                <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);">
+                    <justifyRight></justifyRight>
+                </button>
+                <button class="fontStyle redo-apply" onclick="document.execCommand( 'redo',false,null);">
+                    <redo></redo>
+                </button>
+                <button class="fontStyle undo-apply" onclick="document.execCommand( 'undo',false,null);">
+                    <undo></undo>
+                </button>
+                <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);">
+                    <insertOrderedList></insertOrderedList>
+                </button>
+                <button class="fontStyle unorderedlist"
+                    onclick="document.execCommand('insertUnorderedList',false, null)">
+                    <insertUnorderedList></insertUnorderedList>
+                </button>
+                <input class="color-apply" type="color" onchange="chooseColor()" id="myColor">
+
+                <!-- font size start -->
+                <select id="fontSize" onclick="changeSize()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+                <!-- font size end -->
+
+            </fieldset>
+
+            <div id="editor1" contenteditable="true"></div>
+
         </div>
     </div>
     <div id="ie">
@@ -808,7 +857,8 @@
             onclick="shutdown()">Shut Down</button>
     </div>
     <div id="edogcalculator">
-        <i style="float: left;">&nbsp;</i><a style="float: left;" title="Close" href="javascript:edogcalculator('hide')">
+        <i style="float: left;">&nbsp;</i><a style="float: left;" title="Close"
+            href="javascript:edogcalculator('hide')">
             <img width="28px" height="28px"
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
@@ -949,8 +999,17 @@
         </a>
         <br><br>
         <div style="padding-left: 10px;">
-        <img src="/img/matt-icons_dialog-error.png" style="width: 57px; height: 57px;" alt="Error icon">
-            Bacon error 0x00000000000007<br>The specified module could not be found.<br><br><button onclick="error('hide')">OK</button>
+            <img src="/img/matt-icons_dialog-error.png" style="width: 57px; height: 57px;" alt="Error icon">
+            Bacon error 0x00000000000007<br>The specified module could not be found.<br><br><button
+                onclick="error('hide')">OK</button>
+        </div>
+    </div>
+    <div id="musicpalyer">
+        <div>
+            <button onclick="musicpalyer('hide')">Close</button>
+            <audio id="audio1" controls>
+                <source src="/img/assets/audio/TheHampsterDanceSong.mp3" type="audio/mpeg">
+            </audio>
         </div>
     </div>
     <div id="vscode">

@@ -4,17 +4,27 @@
     left: 500px;
     z-index: 1000;
     background-color: #f1f1f1;
-    border: 1px solid #d3d3d3;
-    width: 640px;
-    height: 640px;
+    border: 2px solid #000;
+    width: 644px;
+    height: 650px;
     visibility: hidden;
+}
+
+.baconline {
+    width: 640px;
+    height: 2px;
+    background-color: rgb(0, 0, 0);
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 #mydivheader {
     padding: 10px;
     cursor: move;
     z-index: 10;
-    background-color: #c2c2c2;
+    background-color: #f1f1f1;
     color: #fff;
 }
 
@@ -57,7 +67,7 @@ p.imac-article {
 hr {
     width: 640px;
     height: 2px;
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(0, 0, 0);
     margin-right: auto;
     margin-left: auto;
     margin-top: 1px;
@@ -120,6 +130,7 @@ body {
     margin-left: 40%;
     margin-right: 40%;
     margin-top: 50px;
+    padding-left: 5px;
     padding-top: 10px;
     width: 640px;
     height: 640px;
@@ -175,7 +186,7 @@ td {
 #haha {
     width: 640px;
     height: 2px;
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(0, 0, 0);
     margin-right: auto;
     margin-left: auto;
     margin-top: 1px;
@@ -609,4 +620,57 @@ p.head1 {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+.wallpaperbtn1 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+.wallpaperbtn2 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+.wallpaperbtn3 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+.wallpaperbtn4 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+.wallpaperbtn5 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+.wallpaperbtn6 {
+    width: 100px;
+    height: 50px;
+    margin: 5px;
+}
+
+/* I finally got around to replacing the error with a music player, huh? Awesome. */
+
+#musicpalyer {
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 304px;
+    height: 87px;
+    z-index: 1;
+    background-color: rgb(76, 0, 255);
+    visibility: hidden;
 }
