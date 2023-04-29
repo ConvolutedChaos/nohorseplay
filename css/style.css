@@ -75,6 +75,7 @@ hr {
     top: 0;
     background-color: #d4d4d4;
     position: sticky;
+    position: -webkit-sticky;
     display: list-item;
 }
 
@@ -182,6 +183,25 @@ video {
     padding-top: 10px;
     display: none;
 }
+
+/* .topbtn {
+    text-decoration: none;
+    top: 85%;
+    float: right;
+    margin-right: 20px;
+    margin-top: 20px;
+    position: sticky;
+    position: -webkit-sticky;
+    background-color: red;
+    color: #FFF;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.topbtn:link {
+    text-decoration: none;
+} */
 
 
 @media screen and (max-width: 930px) {

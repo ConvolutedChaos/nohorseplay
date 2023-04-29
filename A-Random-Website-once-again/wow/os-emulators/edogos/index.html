@@ -53,7 +53,7 @@
 
     <div id="mydiv">
         <div id="mydivheader">
-            <a href="javascript:mydiv('hide')" title="Close">
+            <a style="float: left;" href="javascript:mydiv('hide')" title="Close">
                 <img height="28" width="28"
                     src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
             </a>
@@ -101,7 +101,7 @@
         <div class="baconline"></div>
         <p>
         <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html">
-            <input type="text" id="addressbar" name="name" placeholder="Address Bar" style="width: 500px;"><input
+            <input type="url" id="addressbar" name="name" placeholder="Address Bar" style="width: 500px;"><input
                 type="submit" value="Go">
         </form>
         </p>
@@ -126,17 +126,16 @@
             }
         </script>
 
-        <p>
+        <p class="bookmarkbar">
             <button onclick="imac('show')">
-                <div id=""></div>iMac G3 Article
-            </button><span style="padding-left: 15px;"><button onclick="funwithjs('show')">Fun With J.S.</button><span
-                    style="padding-left: 15px;"><button onclick="noConnectFunction()">Apple.com</button><span
-                        style="padding-left: 15px;"><button>ESU
-                            10: Welcome!</button><span style="padding-left: 15px;"><button>ODIE:
-                                Welcome!</button></span></span></span></span>
+                iMac G3 Article
+            </button><button onclick="funwithjs('show')">Fun With J.S.</button><button
+                onclick="noConnectFunction()">Apple.com</button><button onclick="noConnectFunction()">ESU
+                10: Welcome!</button><button onclick="noConnectFunction()">ODIE:
+                Welcome!</button>
         </p>
         </p>
-        <iframe src="/" style="width: 640px; height: 400px; border: 1px solid #000;" id="iframeone"
+        <iframe src="/" style="width: 940px; height: 520px; border: 1px solid #000;" id="iframeone"
             frameborder="0"></iframe>
         Ready
     </div>
@@ -405,6 +404,14 @@
             }
         }
 
+        function softwareupdate(showhide) {
+            if (showhide == "show") {
+                document.getElementById('softwareupdate').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('softwareupdate').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -490,10 +497,7 @@
                                     var span = document.createElement('span');
                                     span.innerHTML =
                                         [
-                                            '<p>Current picture:</p><img style="height: 75px; border: 1px solid #000; margin: 5px" src="',
-                                            e.target.result,
-                                            '" title="', escape(theFile.name),
-                                            '"/>'
+                                            '<i></i>'
                                         ].join('');
                                     $('body').attr('style', 'background-image:url(' + e.target.result + ')');
                                     document.getElementById('list').insertBefore(span, null);
@@ -665,8 +669,8 @@
             <button class="dropbtn">Accessories</button>
             <div class="dropdown-content">
                 <a href="javascript:edogcalculator('show')">Calculator</a>
-                <a href="#">Link 2</a>
-                <a href="#">Link 3</a>
+                <a href="#">Disks</a>
+                <a href="#">Image Viewer</a>
             </div>
         </div>
 
@@ -684,6 +688,15 @@
             document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
         } else {
             document.getElementById("iframeone").src = ("" + c + "");
+        }
+
+        function bookmark() {
+
+        }
+
+        function bookmarkPage() {
+            const bookmarkElement = document.createElement('button');
+            bookmarkElement.setAttribute('onclick', 'bookmark()');
         }
     </script>
     <div id="bluescreen">
@@ -1012,6 +1025,13 @@
             </audio>
         </div>
     </div>
+    <div id="softwareupdate">
+        <img src="/android-chrome-192x192.png" alt="Nohorseplay logo"><br>
+        <br><br><br><br><br>
+        <div class="meter">
+            <span style="width:100%;"><span class="progress"></span></span>
+        </div>
+    </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
             <img width="28px" height="28px"
@@ -1026,7 +1046,14 @@
     <p>My first <strong>web page</strong>.</p>
     <p>Let's add another <strong><em>paragraph</em></strong>.</p>
         </textarea>
+        <button onclick="softwareupdate('show')">Software Update</button>
     </div>
+    <script>
+        function closeSoftwareUpdate() {
+            document.location="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html"
+        }
+        var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
+    </script>
 </body>
 
 </html>

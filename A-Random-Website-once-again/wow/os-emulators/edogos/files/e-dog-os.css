@@ -1,13 +1,18 @@
 #mydiv {
     position: absolute;
+    text-align: center;
     top: 80px;
     left: 500px;
     z-index: 1000;
     background-color: #f1f1f1;
     border: 2px solid #000;
-    width: 644px;
-    height: 650px;
+    width: 944px;
+    height: 750px;
     visibility: hidden;
+}
+
+.bookmarkbar button {
+    margin: 7.5px;
 }
 
 .baconline {
@@ -673,4 +678,47 @@ p.head1 {
     z-index: 1;
     background-color: rgb(76, 0, 255);
     visibility: hidden;
+}
+
+#softwareupdate {
+    padding: 50px 40%;
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 1000000;
+    background-color: #000000;
+    visibility: visible;
+}
+
+.meter { 
+    height: 5px;
+    position: relative;
+    background: #505050;
+    overflow: hidden;
+}
+
+.meter span {
+    display: block;
+    height: 100%;
+}
+
+.progress {
+    background-color: #ffffff;
+    animation: progressBar 480000ms ease-in-out;
+    animation-fill-mode:both; 
+    -moz-animation: progressBar 480000ms ease-in-out;
+    -moz-animation-fill-mode:both; 
+}
+
+@keyframes progressBar {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@keyframes progressBar {
+  0% { width: 0; }
+  100% { width: 100%; }
 }
