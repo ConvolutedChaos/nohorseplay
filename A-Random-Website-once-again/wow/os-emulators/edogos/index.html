@@ -231,17 +231,35 @@
 
     </script>
     <div id="fileexplorer">
-        <button onclick="fileexplorer('hide')">Close</button>
+        <a style="float: left;" title="Close" href="javascript:fileexplorer('hide')">
+            <img width="28px" height="28px" src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png" alt="Close">
+        </a><br><br>
+        <div class="fileline"></div><br>
+        <div style="float: left;">
+        <input style="width: 450px;" placeholder="Search 'This PC'" type="text" name="searchfiles" id="searchfiles"><span style="padding-left: 5px;">&nbsp;</span><input type="button" value="Search"><br><br>
+        </div>
+        <div class="fileline"></div>
+        <br><br><br>
+        <details open>
+            <summary>Hard Disk Drives (1)</summary>
+        <div class="disk_C">
+        <img style="width: 65px; height: 65px;" src="/img/hard-disk-drive-icon-windows-8_321189.png" alt="C: drive">&nbsp;Local Disk (C:)<br><progress value="0.99"></progress><br><span style="color: gray;">782 KB free of 24 GB</span>
+        </div>
+        </details>
         <br>
-        <img src="https://img.freepik.com/icone-gratis/documento-pixel_318-84866.jpg?size=338&ext=jpg">
-        <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/New Text Document 1.txt"
-                target="_blank">New Text Document 1.txt</a></p>
-        <img
-            src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp">
-        <p><a href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/rubber-duck-yellow-rubber-duck-stock-images_csp3327575.webp"
-                target="_blank">Rubber Duck.png</a></p>
-        <img src="https://img.freepik.com/icone-gratis/documento-pixel_318-84866.jpg?size=338&ext=jpg">
-        <p><a href="javascript:vscode('show')">page.html</a></p>
+        <details>
+            <summary>Devices With Removable Storage (0)</summary>
+            <span style="color: gray;">Nothing here.</span>
+        </details>
+        <br>
+        <details open>
+            <summary>Network Drives (1)</summary>
+            <a href="https://github.com/ConvolutedChaos/nohorseplay">
+            <div class="gh1">
+                <img style="width: 65px; height: 65px;" src="/img/github-logo.png" alt="C: drive">&nbsp;nohorseplay repo<br><progress value="0"></progress><br><span style="color: gray;">403.7 MB used of <span style="font-size: 15pt;">&infin;</span> GB</span>
+            </div>
+            </a>
+        </details>
     </div>
     <script>
         function baconexplorer(showhide) {
@@ -913,6 +931,7 @@
             }
 
             #result {
+                font-family: monospace;
                 padding: 20px 30px;
                 font-size: 24px;
                 font-weight: bold;
