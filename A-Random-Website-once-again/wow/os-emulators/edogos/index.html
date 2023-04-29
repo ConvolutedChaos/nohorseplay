@@ -232,32 +232,44 @@
     </script>
     <div id="fileexplorer">
         <a style="float: left;" title="Close" href="javascript:fileexplorer('hide')">
-            <img width="28px" height="28px" src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png" alt="Close">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
         </a><br><br>
         <div class="fileline"></div><br>
         <div style="float: left;">
-        <input style="width: 450px;" placeholder="Search 'This PC'" type="text" name="searchfiles" id="searchfiles"><span style="padding-left: 5px;">&nbsp;</span><input type="button" value="Search"><br><br>
+            <input style="width: 450px;" placeholder="Search 'This PC'" type="text" name="searchfiles"
+                id="searchfiles"><span style="padding-left: 5px;">&nbsp;</span><input type="button"
+                value="Search"><br><br>
         </div>
         <div class="fileline"></div>
         <br><br><br>
         <details open>
             <summary>Hard Disk Drives (1)</summary>
-        <div class="disk_C">
-        <img style="width: 65px; height: 65px;" src="/img/hard-disk-drive-icon-windows-8_321189.png" alt="C: drive">&nbsp;Local Disk (C:)<br><progress value="0.99"></progress><br><span style="color: gray;">782 KB free of 24 GB</span>
-        </div>
-        </details>
-        <br>
-        <details>
-            <summary>Devices With Removable Storage (0)</summary>
-            <span style="color: gray;">Nothing here.</span>
+            <div class="disk_C">
+                <img style="width: 65px; height: 65px;" src="/img/hard-disk-drive-icon-windows-8_321189.png"
+                    alt="C: drive">&nbsp;Local Disk (C:)<br><progress value="0.99"></progress><br><span
+                    style="color: gray;">782 KB free of 7.99 TB</span>
+            </div>
         </details>
         <br>
         <details open>
-            <summary>Network Drives (1)</summary>
-            <a href="https://github.com/ConvolutedChaos/nohorseplay">
-            <div class="gh1">
-                <img style="width: 65px; height: 65px;" src="/img/github-logo.png" alt="C: drive">&nbsp;nohorseplay repo<br><progress value="0"></progress><br><span style="color: gray;">403.7 MB used of <span style="font-size: 15pt;">&infin;</span> GB</span>
+            <summary>Devices With Removable Storage (1)</summary>
+            <div class="cdrom0">
+                <img style="width: 65px; height: 65px;" src="/img/Hardware-CD-ROM-icon.png"
+                    alt="C: drive">&nbsp;CD Drive (D:) CDROM<br><span
+                    style="color: gray;">0 bytes free of 4.7 GB</span><br><span style="color: gray;">CDFS</span>
             </div>
+        </details>
+        <br>
+        <details open>
+            <summary>Network Location (1)</summary>
+            <a style="width: 200px;" href="https://github.com/ConvolutedChaos/nohorseplay">
+                <div class="gh1">
+                    <img style="width: 65px; height: 65px;" src="/img/github-logo.png" alt="C: drive">&nbsp;nohorseplay
+                    repo (Z:)<br><progress value="0"></progress><br><span style="color: gray;">408.7 MB used of <span
+                            style="font-size: 15pt;">&infin;</span> GB</span>
+                </div>
             </a>
         </details>
     </div>
@@ -448,7 +460,7 @@
                 <img height="64" width="64" src="/A-Random-Website-once-again/wow/img/img_134315.png">
             </a>
             <div id="aboutedogos">
-                <a href="javascript:aboutedogos('hide')" title="Close">
+                <a style="float: left;" href="javascript:aboutedogos('hide')" title="Close">
                     <img height="28" width="28"
                         src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
                 </a>
@@ -457,16 +469,18 @@
                 <br>
                 <table style="text-align: center;">
                     <tr>
-                        <th>System Software</th>
-                        <th>Installed RAM</th>
+                        <th>Operating System</th>
+                        <th>Memory</th>
                         <th>Processor</th>
-                        <th>GPU</th>
+                        <th>Graphics Card</th>
+                        <th>Hard Drives</th>
                     </tr>
                     <tr>
-                        <td>10.14.0</td>
-                        <td>2048 MB</td>
-                        <td>Intel Pentium&reg; 4</td>
-                        <td>GeForce GT 650M</td>
+                        <td>E-Dog OS 10.14.1</td>
+                        <td>33.6 GB</td>
+                        <td>Intel© Core™ i7-67000K CPU @ 8.00GHz x 4</td>
+                        <td>Nvidia GeForce RTX 4080 Ti</td>
+                        <td>8004.2 GB</td>
                     </tr>
                 </table>
             </div>
@@ -475,7 +489,7 @@
                     src="/A-Random-Website-once-again/wow/img/istockphoto-1270369623-170667a.jpg">
             </a>
             <div id="changeWallpaper">
-                <a href="javascript:changeWallpaper('hide')" title="Close">
+                <a style="float: left;" href="javascript:changeWallpaper('hide')" title="Close">
                     <img style="margin: 5px;" height="28" width="28"
                         src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
                 </a>
@@ -704,7 +718,10 @@
         if (c === "") {
             mydiv('show')
             document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
+        } else if (c === null) {
+            document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
         } else {
+            mydiv('show')
             document.getElementById("iframeone").src = ("" + c + "");
         }
 
@@ -1069,7 +1086,7 @@
     </div>
     <script>
         function closeSoftwareUpdate() {
-            document.location="/A-Random-Website-once-again/wow/os-emulators/edogos/index.html"
+            document.location = "/A-Random-Website-once-again/wow/os-emulators/edogos/index.html"
         }
         var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
     </script>

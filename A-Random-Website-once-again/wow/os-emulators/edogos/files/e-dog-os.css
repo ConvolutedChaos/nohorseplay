@@ -139,6 +139,18 @@ progress {
     border-radius: 3px;
 }
 
+.cdrom0 {
+    width: 200px;
+    padding: 2px;
+    text-align: center;
+    border: 1px solid #884bd8;
+}
+
+.cdrom0:hover {
+    border: 4px solid #884bd8;
+    border-radius: 3px;
+}
+
 a:link {
     text-decoration: none;
 }
