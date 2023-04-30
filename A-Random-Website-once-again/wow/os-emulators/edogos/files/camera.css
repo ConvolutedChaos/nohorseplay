@@ -17,7 +17,7 @@
     cursor: pointer;
 }
 
-#takePictureButton {
+#startbutton {
     width: 90px;
     height: 75px;
     cursor: pointer;
@@ -31,4 +31,8 @@
     width: 100px;
     height: 50px;
     cursor: pointer;
+}
+
+#video {
+    border: 1px soild #000;
 }

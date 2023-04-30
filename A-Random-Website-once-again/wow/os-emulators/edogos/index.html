@@ -256,11 +256,11 @@
         <details open>
             <summary>Devices With Removable Storage (1)</summary>
             <a style="width: 200px;" href="javascript:alert('Please insert a CD into drive D:')">
-            <div class="cdrom0">
-                <img style="width: 65px; height: 65px;" src="/img/Hardware-CD-ROM-icon.png"
-                    alt="C: drive">&nbsp;CD Drive (D:) CDROM<br><span
-                    style="color: gray;">0 bytes free of 4.7 GB</span><br><span style="color: gray;">CDFS</span>
-            </div>
+                <div class="cdrom0">
+                    <img style="width: 65px; height: 65px;" src="/img/Hardware-CD-ROM-icon.png" alt="C: drive">&nbsp;CD
+                    Drive (D:) CDROM<br><span style="color: gray;">0 bytes free of 4.7 GB</span><br><span
+                        style="color: gray;">CDFS</span>
+                </div>
             </a>
         </details>
         <br>
@@ -516,7 +516,7 @@
                 <p>-------------------------------</p>
                 Upload file<br>
                 -------<br>
-                <input type="file" id="files" accept="image/*"/>
+                <input type="file" id="files" accept="image/*" />
                 <output id="list"></output>
                 <script>
                     function handleFileSelect(evt) {
@@ -1086,20 +1086,15 @@
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
-        <select id="videoSelect"></select>
-        <button id="startCameraButton">Go</button>
-        <br/>
-        <br/>
+        <br>
+        <br>
         <div class="camera">
             <video id="video">Video stream not available.</video><br>
-            <button id="takePictureButton"></button>
+            <button id="startbutton"></button>
         </div>
-        <br/>
-        <br/>
-        <canvas id="canvas">
-            Video stream not available.
-        </canvas>
         <br>
+        <br>
+        <canvas id="canvas"></canvas>
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
