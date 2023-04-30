@@ -1,0 +1,34 @@
+#startCameraButton {
+    border-radius: 15px;
+    border: none;
+    width: 100px;
+    height: 50px;
+    background-color: green;
+    cursor: pointer;
+    margin: 3px;
+}
+
+#videoSelect {
+    border-radius: 15px;
+    width: 100px;
+    height: 50px;
+    margin: 3px;
+    background-color: red;
+    cursor: pointer;
+}
+
+#takePictureButton {
+    width: 90px;
+    height: 75px;
+    cursor: pointer;
+    border-radius: 15px;
+    border: none;
+    background-image: url(/img/yioKLqeiE.png);
+    background-size: 100% 100%;
+}
+
+#videoSelect option {
+    width: 100px;
+    height: 50px;
+    cursor: pointer;
+}

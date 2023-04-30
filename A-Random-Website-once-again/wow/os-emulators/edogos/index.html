@@ -255,11 +255,13 @@
         <br>
         <details open>
             <summary>Devices With Removable Storage (1)</summary>
+            <a style="width: 200px;" href="javascript:alert('Please insert a CD into drive D:')">
             <div class="cdrom0">
                 <img style="width: 65px; height: 65px;" src="/img/Hardware-CD-ROM-icon.png"
                     alt="C: drive">&nbsp;CD Drive (D:) CDROM<br><span
                     style="color: gray;">0 bytes free of 4.7 GB</span><br><span style="color: gray;">CDFS</span>
             </div>
+            </a>
         </details>
         <br>
         <details open>
@@ -442,6 +444,14 @@
             }
         }
 
+        function camera(showhide) {
+            if (showhide == "show") {
+                document.getElementById('camera').style.visibility = "visible";
+            } else if (showhide == "hide") {
+                document.getElementById('camera').style.visibility = "hidden";
+            }
+        }
+
         //document.location=""
 
         function hhg() {
@@ -476,7 +486,7 @@
                         <th>Hard Drives</th>
                     </tr>
                     <tr>
-                        <td>E-Dog OS 10.14.1</td>
+                        <td>E-Dog OS 10.14.2</td>
                         <td>33.6 GB</td>
                         <td>Intel© Core™ i7-67000K CPU @ 8.00GHz x 4</td>
                         <td>Nvidia GeForce RTX 4080 Ti</td>
@@ -506,7 +516,7 @@
                 <p>-------------------------------</p>
                 Upload file<br>
                 -------<br>
-                <input type="file" id="files" accept="image" multiple />
+                <input type="file" id="files" accept="image/*"/>
                 <output id="list"></output>
                 <script>
                     function handleFileSelect(evt) {
@@ -701,7 +711,7 @@
             <button class="dropbtn">Accessories</button>
             <div class="dropdown-content">
                 <a href="javascript:edogcalculator('show')">Calculator</a>
-                <a href="#">Disks</a>
+                <a href="javascript:camera('show')">Camera</a>
                 <a href="#">Image Viewer</a>
             </div>
         </div>
@@ -1067,6 +1077,29 @@
         <div class="meter">
             <span style="width:100%;"><span class="progress"></span></span>
         </div>
+    </div>
+    <div id="camera">
+        <script src="js/video.js"></script>
+        <link rel="stylesheet" href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/camera.css">
+        <a style="float: left;" title="Close" href="javascript:camera('hide')">
+            <img width="28px" height="28px"
+                src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
+                alt="Close">
+        </a>
+        <select id="videoSelect"></select>
+        <button id="startCameraButton">Go</button>
+        <br/>
+        <br/>
+        <div class="camera">
+            <video id="video">Video stream not available.</video><br>
+            <button id="takePictureButton"></button>
+        </div>
+        <br/>
+        <br/>
+        <canvas id="canvas">
+            Video stream not available.
+        </canvas>
+        <br>
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
