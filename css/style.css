@@ -125,7 +125,20 @@ video {
     transition: 1s;
 }
 
+.AManHasFallenIntoTheRiverinLegoCity {
+    border: 4px solid #00158d;
+    border-radius: 10px;
+    font-size: 20pt;
+    background-color: #0000ff;
+    transition: 1s;
+}
+
 .kkwslink:hover {
+    cursor: pointer;
+    font-size: 25pt;
+}
+
+.AManHasFallenIntoTheRiverinLegoCity:hover {
     cursor: pointer;
     font-size: 25pt;
 }

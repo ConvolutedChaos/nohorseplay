@@ -17,8 +17,20 @@ function insult() {
     alert(randomInsult)
 }
 
+function amhfitrilc() {
+    var randomBodyParts = ["Man", "Fallen", "River", "Lego","City"];
+    var randomAdjectives = ["Man", "Fallen", "River", "Lego","City"];
+    var randomWords = ["Man", "Fallen", "River", "Lego","City"];
+    var eabe = ["Man", "Fallen", "River", "Lego","City"];
+    var randomBodyPart = randomBodyParts[Math.floor(Math.random() * 5)];
+    var randomAdjective = randomAdjectives[Math.floor(Math.random() * 5)];
+    var randomWord = randomWords[Math.floor(Math.random() * 5)];
+    var rnadomeabe = randomWords[Math.floor(Math.random() * 5)];
+    alert("A " + randomBodyPart + " has " + randomAdjective + "ed into a " + rnadomeabe + " in " + randomWord + " City!")
+}
+
 function kkwslink() {
-    document.location="/KKWS/index.html"
+    document.location="/KKWS/"
 }
 
 function sidenav(showhide) {
