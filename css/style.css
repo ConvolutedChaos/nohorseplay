@@ -9,6 +9,7 @@ h1 {
 img.img01,
 img.img02,
 img.img03 {
+    margin: 5px;
     height: 450px;
     text-align: center;
     border-radius: 16px;
@@ -163,13 +164,13 @@ video {
 #sidenav {
     height: 396px;
     /* Full-height: remove this if you want "auto" height */
-    width: 80px;
+    width: 100px;
     /* Set the width of the sidebar */
     position: fixed;
     /* Fixed Sidebar (stay in place on scroll) */
     z-index: 1;
     /* Stay on top */
-    top: 64px;
+    top: 0;
     /* Stay at the top */
     left: 0;
     background-color: #160bb1;
@@ -179,6 +180,24 @@ video {
     padding-top: 20px;
     /* Set the visibility to hidden */
     visibility: hidden;
+}
+
+#sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 15px;
+    color: #818181;
+    display: block;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#sidenav a:hover {
+    color: #f1f1f1;
+}
+
+#sidenav a:link {
+    text-decoration: none;
 }
 
 #overlay {
