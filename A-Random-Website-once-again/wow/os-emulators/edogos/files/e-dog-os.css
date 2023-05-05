@@ -160,6 +160,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0px 55px;
+    background-color: #000;
 }
 
 #nohorseplaysite {
@@ -812,4 +813,23 @@ p.head1 {
     z-index: 1;
     background-color: rgb(76, 0, 255);
     visibility: hidden;
+}
+
+@media screen and (max-width: 930px) {
+    body {
+        background-image: none;
+    }
+
+    #panel {
+        height: max-content;
+        display: block;
+    }
+
+    .allthatstuffontheside {
+        display: block;
+    }
+
+    #rrr {
+        display: block;
+    }
 }

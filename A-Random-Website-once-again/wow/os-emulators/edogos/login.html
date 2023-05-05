@@ -22,6 +22,16 @@
         a:link {
             text-decoration: none;
         }
+
+        @media screen and (max-width: 930px) {
+            body {
+                background-image: none;
+            }
+
+            div {
+                color: #fff;
+            }
+        }
     </style>
 </head>
 <body contenteditable="false">
@@ -47,15 +57,11 @@
         function checkPassword() {
             var password = document.getElementById('passwordBox');
             var passwordText = password.value;
-            if (passwordText == "hope99") {
+            if (passwordText == "aidenisstupid") {
                 return true;
             }
-            var eeee = confirm('Incorrect password.\n\n\n\nClick ok if you don\'t want to exist')
-            if (eeee === true) {
-                document.location="about:blank#blocked"
-            } else {
-                document.location="about:blank#blocked"
-            }
+            alert('No')
+            document.location="about:blank#blocked"
             return false;
         }
     </script>
