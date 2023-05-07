@@ -202,6 +202,38 @@ body {
     background-image: url('/A-Random-Website-once-again/wow/img/industry-clipart-cogs-13-4183961552.png');
 }
 
+.a002 {
+    width: 75px;
+    height: 75px;
+    margin: 5px;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-image: url(/img/cs-details.png);
+    background-size: cover;
+    cursor: pointer;
+    transition: 250ms;
+}
+
+.a002:hover {
+    border-radius: 6px;
+}
+
+.a003 {
+    width: 75px;
+    height: 75px;
+    margin: 5px;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-image: url(/img/gnome-settings-background.png);
+    background-size: cover;
+    cursor: pointer;
+    transition: 250ms;
+}
+
+.a003:hover {
+    border-radius: 6px;
+}
+
 #aboutedogos {
     margin: 0;
     margin-left: 40%;
@@ -240,6 +272,7 @@ table,
 th,
 td {
     border: 1px solid black;
+    border-radius: 5px;
 }
 
 #haha {
@@ -381,7 +414,6 @@ td {
 #panel {
     background-color: #3053c7;
     height: 62px;
-
 }
 
 .allthatstuffontheside {
