@@ -17,11 +17,11 @@ img.img03 {
 }
 
 a {
-    color: #000;
+    color: rgb(82, 82, 255);
 }
 
 a:link {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 a:visited {
