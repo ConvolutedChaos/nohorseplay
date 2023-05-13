@@ -94,6 +94,11 @@ hr {
     display: list-item;
 }
 
+.videos a:link {
+    text-decoration: underline;
+    color: #4827ff;
+}
+
 .topnav img {
     float: left;
     display: block;
