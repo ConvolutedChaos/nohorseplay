@@ -54,7 +54,7 @@
     <div id="mydiv">
         <div id="mydivheader">
             <a style="float: left;" href="javascript:mydiv('hide')" title="Close">
-                <img height="28" width="28"
+                <img style="width: 28px; height: 28px;" 
                     src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
             </a>
         </div>
@@ -91,7 +91,7 @@
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/IMac_G3_Bondi_Blue%2C_three-quarters_view.png/220px-IMac_G3_Bondi_Blue%2C_three-quarters_view.png">
             <p style="font-weight: lighter;">Original "Bondi Blue" iMac</p>
         </div>
-        <div id="funwithjs">
+        <div id="funwithjs"> 
             <button onclick="funwithjs('hide')">Close</button>
             <br>
             <a href="javascript:alert('Hello')">Click here</a> for this page to say hello to you.
@@ -127,17 +127,17 @@
         </script>
 
         <p class="bookmarkbar">
-            <button onclick="imac('show')">
+            <button onclick="document.getElementById('iframeone').src='/A-Random-Website-once-again/wow/os-emulators/edogos/files/imacg3.htm'">
                 iMac G3 Article
             </button><button onclick="funwithjs('show')">Fun With J.S.</button><button
-                onclick="noConnectFunction()">Apple.com</button><button onclick="noConnectFunction()">ESU
+                onclick="document.getElementById('iframeone').src='//ten-years-ago.neal.fun/apple.com/'">Apple.com</button><button onclick="noConnectFunction()">ESU
                 10: Welcome!</button><button onclick="noConnectFunction()">ODIE:
                 Welcome!</button>
         </p>
         </p>
         <iframe src="/" style="width: 940px; height: 520px; border: 1px solid #000;" id="iframeone"
             frameborder="0"></iframe>
-        Ready
+        <span class="ready"><img style="width: 18px; height: 18px; border: 1px solid #000;" src="/android-chrome-192x192.png"> Ready</span>
     </div>
 
     <script>
@@ -232,7 +232,7 @@
     </script>
     <div id="fileexplorer">
         <a style="float: left;" title="Close" href="javascript:fileexplorer('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a><br><br>
@@ -264,7 +264,7 @@
             </a>
         </details>
         <br>
-        <details open>
+        <details id="a004" open>
             <summary>Network Location (1)</summary>
             <a style="width: 200px;" href="https://github.com/ConvolutedChaos/nohorseplay">
                 <div class="gh1">
@@ -273,6 +273,8 @@
                             style="font-size: 15pt;">&infin;</span> GB</span>
                 </div>
             </a>
+            <a target="_blank" href="/A-Random-Website-once-again/wow/os-emulators/edogos/fileexplorer/_/">Make this
+                look less pretty</a>
         </details>
     </div>
     <script>
@@ -460,7 +462,7 @@
     </script>
     <div id="systemsettings">
         <a href="javascript:systemsettings('hide')" title="Close">
-            <img height="28" width="28"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
         </a>
         <div id="haha"></div>
@@ -475,13 +477,14 @@
             <p><a href="javascript:newPopup('noo.html');">Open a popup window</a></p> -->
             <div id="aboutedogos">
                 <a style="float: left;" href="javascript:aboutedogos('hide')" title="Close">
-                    <img height="28" width="28"
+                    <img style="width: 28px; height: 28px;" 
                         src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
                 </a>
                 <br>
                 <h2>About E-Dog OS</h2>
                 <br>
-                <table style="text-align: center; border-radius: 5px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                <table
+                    style="text-align: center; border-radius: 5px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
                     <tr>
                         <th>Operating System</th>
                         <th>Memory</th>
@@ -501,7 +504,7 @@
             <button onclick="changeWallpaper('show')" class="a003"></button>
             <div id="changeWallpaper">
                 <a style="float: left;" href="javascript:changeWallpaper('hide')" title="Close">
-                    <img style="margin: 5px;" height="28" width="28"
+                    <img style="margin: 5px;" style="width: 28px; height: 28px;" 
                         src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png">
                 </a>
                 <h1>Change Your Wallpaper</h1>
@@ -513,9 +516,16 @@
                 <button class="wallpaperbtn4" onclick="changeWallpaperToTychusFindlayFromSC2()">Tychus Findlay</button>
                 <button class="wallpaperbtn5" onclick="changeWallpaperToThePuppy()">Puppy</button>
                 <button class="wallpaperbtn6" onclick="changeWallpaperToTheGorgeousMountains()">Mountains</button>
+                <button class="wallpaperbtn7" onclick="document.body.style.backgroundImage='none'"></button>
 
                 <p>-------------------------------</p>
-                Upload file<br>
+                <h2>BG Color</h2>
+                --<br>
+                <form action="/A-Random-Website-once-again/wow/os-emulators/edogos/">
+                    <input type="color" name="bgcolor" id="bgcolor"><input type="submit" value="Set Color!">
+                </form>
+
+                <h2>Upload File</h2>
                 -------<br>
                 <input type="file" id="files" accept="image/*" />
                 <output id="list"></output>
@@ -588,7 +598,7 @@
     </div>
     <div id="edogpaint">
         <a title="Close" href="javascript:edogpaint('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
@@ -736,6 +746,13 @@
             document.getElementById("iframeone").src = ("" + c + "");
         }
 
+        var colro = url.searchParams.get("bgcolor");
+        document.body.style.backgroundColor = colro;
+
+        if (colro = !null) {
+            document.body.style.backgroundImage = "none";
+        }
+
         function bookmark() {
 
         }
@@ -761,7 +778,7 @@
     </div>
     <div id="texteditor">
         <a title="Close" href="javascript:texteditor('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
@@ -850,7 +867,7 @@
     </div>
     <div id="mediaplayer">
         <a style="float: left;" title="Close" href="javascript:mediaplayer('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
@@ -918,7 +935,7 @@
     <div id="edogcalculator">
         <i style="float: left;">&nbsp;</i><a style="float: left;" title="Close"
             href="javascript:edogcalculator('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a><b>Calculator</b><br><br>
@@ -1053,7 +1070,7 @@
     </script>
     <div id="error">
         <a title="Close" href="javascript:error('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
@@ -1068,7 +1085,9 @@
         <div>
             <button onclick="musicpalyer('hide')">Close</button>
             <audio id="audio1" controls>
-                <source src="/img/assets/audio/TheHampsterDanceSong.mp3" type="audio/mpeg">
+                <source
+                    src="/A-Random-Website-once-again/wow/os-emulators/edogos/fileexplorer/_/audio/TheHampsterDanceSong.mp3"
+                    type="audio/mpeg">
             </audio>
         </div>
     </div>
@@ -1083,7 +1102,7 @@
         <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/camera.js"></script>
         <link rel="stylesheet" href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/camera.css">
         <a style="float: left;" title="Close" href="javascript:camera('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>
@@ -1100,7 +1119,7 @@
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
-            <img width="28px" height="28px"
+            <img style="width: 28px; height: 28px;" 
                 src="/A-Random-Website-once-again/wow/img/47-470179_red-close-icon-png-error-icon-square.png"
                 alt="Close">
         </a>

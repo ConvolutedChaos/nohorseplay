@@ -7,8 +7,12 @@
     background-color: #f1f1f1;
     border: 2px solid #000;
     width: 944px;
-    height: 750px;
+    height: 760px;
     visibility: hidden;
+}
+
+.ready {
+    float: left;
 }
 
 .bookmarkbar button {
@@ -54,10 +58,8 @@ p.imac-article {
 }
 
 #funwithjs {
-    margin: 0;
-    margin-left: 40%;
-    margin-right: 40%;
-    margin-top: 50px;
+    top: 90px;
+    left: 90px;
     padding-top: 10px;
     width: 200px;
     height: 100px;
@@ -67,6 +69,10 @@ p.imac-article {
     z-index: 1000;
     font-family: arial;
     visibility: hidden;
+}
+
+#funwithjs a:link {
+    text-decoration: underline;
 }
 
 hr {
@@ -212,7 +218,6 @@ body {
     background-image: url(/img/cs-details.png);
     background-size: cover;
     cursor: pointer;
-    transition: 250ms;
 }
 
 .a002:hover {
@@ -228,11 +233,14 @@ body {
     background-image: url(/img/gnome-settings-background.png);
     background-size: cover;
     cursor: pointer;
-    transition: 250ms;
 }
 
 .a003:hover {
     border-radius: 6px;
+}
+
+#a004 a:link {
+    text-decoration: underline;
 }
 
 #aboutedogos {
@@ -253,13 +261,11 @@ body {
 }
 
 #changeWallpaper {
-    margin: 0;
-    margin-left: 40%;
-    margin-right: 40%;
-    margin-top: 50px;
     padding-top: 10px;
-    width: 400px;
-    height: 500px;
+    width: 700px;
+    height: 700px;
+    top: 80px;
+    left: 6px;
     position: absolute;
     background: #a009ad;
     border: solid #000000 2px;
@@ -767,7 +773,18 @@ p.head1 {
     width: 100px;
     height: 50px;
     margin: 5px;
+    margin-top: 20px;
     background-image: url(/img/roccky.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.wallpaperbtn7 {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    margin-top: 20px;
+    background-image: url(/img/Icon-Prohibited-Ban-Shield-Prohibitory-1681759.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -802,7 +819,7 @@ p.head1 {
     visibility: hidden;
 }
 
-.meter { 
+.meter {
     height: 5px;
     position: relative;
     background: #505050;
@@ -817,19 +834,29 @@ p.head1 {
 .progress {
     background-color: #ffffff;
     animation: progressBar 480000ms ease-in-out;
-    animation-fill-mode:both; 
+    animation-fill-mode: both;
     -moz-animation: progressBar 480000ms ease-in-out;
-    -moz-animation-fill-mode:both; 
+    -moz-animation-fill-mode: both;
 }
 
 @keyframes progressBar {
-  0% { width: 0; }
-  100% { width: 100%; }
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
 }
 
 @keyframes progressBar {
-  0% { width: 0; }
-  100% { width: 100%; }
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
 }
 
 #camera {
