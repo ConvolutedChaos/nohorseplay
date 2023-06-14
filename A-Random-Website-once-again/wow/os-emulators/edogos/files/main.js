@@ -14,6 +14,12 @@ function noConnectFunction() {
 
     var addressbarinput = document.getElementById('addressbar')
     document.getElementById("iframeone").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/noConnect.htm');
+    document.getElementById("currWindowBacon").innerHTML = "Can't Connect to Page"
+}
+
+function conntoApple() {
+    document.getElementById("currWindowBacon").innerHTML = "Apple"
+    document.getElementById("iframeone").src = ('//ten-years-ago.neal.fun/apple.com/');
 }
 
 function theBlissWallpaper() {
@@ -246,42 +252,6 @@ function hhg() {
 
 }
 
-function handleFileSelect(evt) {
-    var files = evt.target.files;
-
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-
-        // Only process image files.
-        if (!f.type.match('image.*')) {
-            continue;
-        } else {
-            alert('Only image files!\n')
-        }
-
-        var reader = new FileReader();
-
-        // Closure to capture the file information.
-        reader.onload = (function (theFile) {
-            return function (e) {
-                // Render thumbnail.
-                var span = document.createElement('span');
-                span.innerHTML =
-                    [
-                        '<i></i>'
-                    ].join('');
-                $('body').attr('style', 'background-image:url(' + e.target.result + ')');
-                document.getElementById('list').insertBefore(span, null);
-            };
-        })(f);
-
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(f);
-    }
-}
-
-document.getElementById('files').addEventListener('change', handleFileSelect, false);
-
 document.addEventListener('mouseup', function (e) {
     var container = document.getElementById('startmenu');
     if (!container.contains(e.target)) {
@@ -386,4 +356,27 @@ function closeSoftwareUpdate() {
     document.location = "/A-Random-Website-once-again/wow/os-emulators/edogos/index.html"
 }
 var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

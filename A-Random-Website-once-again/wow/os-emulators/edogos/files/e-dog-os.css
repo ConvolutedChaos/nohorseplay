@@ -8,6 +8,7 @@
     border: 2px solid #000;
     width: 944px;
     height: 760px;
+    font-family: Arial, Helvetica, sans-serif;
     visibility: hidden;
 }
 
@@ -31,10 +32,14 @@
 
 #mydivheader {
     padding: 10px;
-    cursor: move;
     z-index: 10;
-    background-color: #f1f1f1;
+    background-color: #dfdfdf;
     color: #fff;
+    height: 48px;
+}
+
+#mydivheader:active {
+    cursor: move;
 }
 
 #imac {
@@ -168,6 +173,7 @@ body {
     background-size: 100% 100%;
     background-position: 0px 55px;
     background-color: #000;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #nohorseplaysite {
@@ -386,6 +392,7 @@ td {
     background: #ffffff;
     z-index: 1000;
     visibility: hidden;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #bluescreen {
