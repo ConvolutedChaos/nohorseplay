@@ -24,26 +24,60 @@ function conntoApple() {
 
 function theBlissWallpaper() {
     document.body.style.backgroundImage = "url('/img/bliss.jpg')";
+    document.cookie = "currentwallpaper=Bliss; expires=Thu, 18 Dec 2123 12:00:00 UTC";
 }
 
 function changeWallpaperToTheBowlOfFruit() {
     document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/f494bfba58260f60bf53f91a7d7c1bdd.jpg')";
+    document.cookie = "currentwallpaper=BowlOfFruit; expires=Thu, 18 Dec 2123 12:00:00 UTC";
 }
 
 function changeWallpaperToTheFlowers() {
     document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/84132-nature-flowers-closeup-white_flowers-Windows_8.jpg')";
+    document.cookie = "currentwallpaper=Flowers; expires=Thu, 18 Dec 2123 12:00:00 UTC";
 }
 
 function changeWallpaperToTychusFindlayFromSC2() {
     document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/d5b76f7c228e8b1030e2df64a09f60d5.jpg')";
+    document.cookie = "currentwallpaper=TychusFindlay; expires=Thu, 18 Dec 2123 12:00:00 UTC";
 }
 
 function changeWallpaperToThePuppy() {
     document.body.style.backgroundImage = "url('/A-Random-Website-once-again/wow/img/435688-free-cute-dogs-and-puppies-wallpaper-2560x1600-for-pc.jpg')";
+    document.cookie = "currentwallpaper=Puppy; expires=Thu, 18 Dec 2123 12:00:00 UTC";
 }
 
 function changeWallpaperToTheGorgeousMountains() {
     document.body.style.backgroundImage = "url('/img/roccky.jpg')"
+    document.cookie = "currentwallpaper=Mountain; expires=Thu, 18 Dec 2123 12:00:00 UTC";
+}
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function checkCookie() {
+    let username = getCookie("username");
+    if (username != "") {
+        alert("Welcome again " + username);
+    } else {
+        username = prompt("Please enter your name:", "");
+        if (username != "" && username != null) {
+            setCookie("username", username, 365);
+        }
+    }
 }
 
 function mydiv(showhide) {
