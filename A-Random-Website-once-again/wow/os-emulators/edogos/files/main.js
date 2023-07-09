@@ -434,7 +434,7 @@ var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
 var easAudio = new Audio('/img/assets/audio/aaaaa.mp3')
 
 function checkAlert() {
-    errorSound.play();
+    document.getElementById("audio001").play();
     scroll_left('show');
 }
 

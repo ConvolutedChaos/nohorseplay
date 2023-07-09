@@ -987,7 +987,7 @@ p.head1 {
     height: 600px;
     z-index: 1;
     background-color: rgb(0, 0, 0);
-    visibility: visible;
+    visibility: hidden;
     overflow: hidden;
 }
 

@@ -206,7 +206,7 @@
                         <th>Hard Drives</th>
                     </tr>
                     <tr>
-                        <td>E-Dog OS 10.15.4</td>
+                        <td>E-Dog OS 10.15.8</td>
                         <td id="hostOS"></td>
                         <td id="appVer"></td>
                         <td id="javaEbnaled"></td>
@@ -893,7 +893,9 @@
         <style>
             .scroll-left {
                 height: 50px;
+                width: 100%;
                 overflow: hidden;
+                z-index: 100000;
                 position: relative;
                 background: rgb(255, 0, 0);
                 color: rgb(255, 255, 255);
@@ -901,8 +903,9 @@
             }
 
             .scroll-left p {
+                font-size: 50pt;
                 position: absolute;
-                width: 100%;
+                width: 300%;
                 height: 100%;
                 margin: 0;
                 line-height: 50px;
@@ -910,7 +913,7 @@
                 /* Starting position */
                 transform: translateX(100%);
                 /* Apply animation to this element */
-                animation: scroll-left 15s linear infinite;
+                animation: scroll-left 30s linear infinite;
             }
 
             /* Move it (define the animation) */
@@ -924,10 +927,10 @@
                 }
             }
         </style>
-
-        <div id="scroll_left" class="scroll-left">
-            <p>Event type is null. For the following counties: null. Expires at null.</p>
-        </div>
+        <audio id="audio001" src="/img/assets/audio/aaaaa.mp3"></audio>
+    </div>
+    <div id="scroll_left" class="scroll-left">
+        <p class="pptag">The National Weather Service in null has issued a Tornado Warning for null until null. At null, a null was located near null, moving null null at null mph.</p>
     </div>
 </body>
 
