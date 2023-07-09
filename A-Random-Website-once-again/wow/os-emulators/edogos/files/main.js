@@ -280,6 +280,46 @@ function terminall(showhide) {
     }
 }
 
+function appstore(showhide) {
+    if (showhide == "show") {
+        document.getElementById('appstore').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('appstore').style.visibility = "hidden";
+    }
+}
+
+function EASREADYdesc(showhide) {
+    if (showhide == "show") {
+        document.getElementById('EASREADYdesc').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('EASREADYdesc').style.visibility = "hidden";
+    }
+}
+
+function EASREADY(showhide) {
+    if (showhide == "show") {
+        document.getElementById('EASREADY').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('EASREADY').style.visibility = "hidden";
+    }
+}
+
+function eas_ready(showhide) {
+    if (showhide == "show") {
+        document.getElementById('eas_ready').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('eas_ready').style.visibility = "hidden";
+    }
+}
+
+function scroll_left(showhide) {
+    if (showhide == "show") {
+        document.getElementById('scroll_left').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('scroll_left').style.visibility = "hidden";
+    }
+}
+
 //document.location=""
 
 function hhg() {
@@ -390,6 +430,13 @@ function closeSoftwareUpdate() {
     document.location = "/A-Random-Website-once-again/wow/os-emulators/edogos/index.html"
 }
 var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
+
+var easAudio = new Audio('/img/assets/audio/aaaaa.mp3')
+
+function checkAlert() {
+    errorSound.play();
+    scroll_left('show');
+}
 
 
 

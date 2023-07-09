@@ -903,13 +903,93 @@ p.head1 {
     cursor: pointer;
 }
 
-#changeWallpaper input[type="submit"], #changeWallpaper input[type="file"], #changeWallpaper input[type="color"] {
+#changeWallpaper input[type="submit"],
+#changeWallpaper input[type="file"],
+#changeWallpaper input[type="color"] {
     cursor: pointer;
 }
 
 /* .wallpaperbtn5 {
     margin-bottom: 10678456785478875480%;
 } */
+
+#appstore {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    padding: 10px;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 800px;
+    height: 600px;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.bg01eee858585 {
+    text-align: center;
+    background-image: url(/img/bg01.jpg);
+    background-size: cover;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    color: #fff;
+}
+
+#EASREADYdesc {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    padding: 10px;
+    top: 100px;
+    left: -2px;
+    width: 800px;
+    height: 500px;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    visibility: hidden;
+}
+
+.installApp {
+    border: 1px solid #000;
+    background-color: lawngreen;
+    cursor: pointer;
+}
+
+.installApp:active {
+    background-color: rgb(87, 173, 0);
+}
+
+.uninstallApp {
+    border: 1px solid #000;
+    background-color: red;
+    cursor: pointer;
+}
+
+.uninstallApp:active {
+    background-color: darkred;
+}
+
+#EASREADY {
+    visibility: hidden;
+}
+
+#eas_ready {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    padding: 10px;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    width: 800px;
+    height: 600px;
+    z-index: 1;
+    background-color: rgb(0, 0, 0);
+    visibility: visible;
+    overflow: hidden;
+}
 
 @media screen and (max-width: 930px) {
     body {
