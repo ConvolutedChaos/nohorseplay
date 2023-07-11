@@ -1,3 +1,5 @@
+console.log("Successfully loaded EDOGOS")
+
 function noConnectFunction() {
     // const element = document.getElementById("aaaa");
     // element.remove();
@@ -320,6 +322,30 @@ function scroll_left(showhide) {
     }
 }
 
+function snake_appp(showhide) {
+    if (showhide == "show") {
+        document.getElementById('snake_appp').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('snake_appp').style.visibility = "hidden";
+    }
+}
+
+function snake_apppdesc(showhide) {
+    if (showhide == "show") {
+        document.getElementById('snake_apppdesc').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('snake_apppdesc').style.visibility = "hidden";
+    }
+}
+
+function SNAEKEEDPUJNwedrfjhilwse(showhide) {
+    if (showhide == "show") {
+        document.getElementById('SNAEKEEDPUJNwedrfjhilwse').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('SNAEKEEDPUJNwedrfjhilwse').style.visibility = "hidden";
+    }
+}
+
 //document.location=""
 
 function hhg() {
@@ -350,15 +376,6 @@ function bluescreenOfDeath() {
     bluescreen('show')
 }
 
-var myVideo = document.getElementById("video1");
-function playPause() {
-    if (myVideo.paused) {
-        myVideo.play();
-    } else {
-        myVideo.pause();
-    }
-}
-
 function makeBig() {
     myVideo.width = 560;
 }
@@ -369,21 +386,6 @@ function makeSmall() {
 
 function makeNormal() {
     myVideo.width = 420;
-}
-
-/* Get the element you want displayed in fullscreen mode (a video in this example): */
-var elem = document.getElementById("video1");
-
-/* When the openFullscreen() function is executed, open the video in fullscreen.
-Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
-function openFullscreen() {
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-        elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
-        elem.msRequestFullscreen();
-    }
 }
 
 // Function that display value
@@ -434,30 +436,45 @@ var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
 var easAudio = new Audio('/img/assets/audio/aaaaa.mp3')
 
 function checkAlert() {
+    document.getElementById("currAlert").innerHTML = "Emergency Alert Detected Please follow Instructions onscreen <br> Current Alert: AMBER <br> Provided to you by: EDOG <br><br>"
     document.getElementById("audio001").play();
     scroll_left('show');
 }
 
+function installEasApp() {
+    EASREADY('show');
+}
 
+function uninstallEasApp() {
+    EASREADY('hide');
+}
 
+function installSnakApp() {
+    SNAEKEEDPUJNwedrfjhilwse('show');
+}
 
+function uninstallSnakApp() {
+    SNAEKEEDPUJNwedrfjhilwse('hide');
+}
 
+function showeasDesc() {
+    EASREADYdesc('show');
+}
 
+function closeeasDesc() {
+    EASREADYdesc('hide');
+}
 
+function opensnake_apppdesc() {
+    snake_apppdesc('show');
+}
 
+function closesnake_apppdesc() {
+    snake_apppdesc('hide');
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function closeAppStore() {
+    EASREADYdesc('hide');
+    appstore('hide')
+    snake_apppdesc('hide')
+}
