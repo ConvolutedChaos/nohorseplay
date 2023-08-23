@@ -354,6 +354,14 @@ function surprise(showhide) {
     }
 }
 
+function CitySim(showhide) {
+    if (showhide == "show") {
+        document.getElementById('CitySim').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('CitySim').style.visibility = "hidden";
+    }
+}
+
 //document.location=""
 
 function hhg() {

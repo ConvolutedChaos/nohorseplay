@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,17 +8,64 @@
     <title>E-Dog OS</title>
     <script>
         function continueBooting() {
-            document.location="/A-Random-Website-once-again/wow/os-emulators/edogos/login.html"
+            document.location = "/A-Random-Website-once-again/wow/os-emulators/edogos/login.html"
         }
-        var timeoutId = setTimeout(continueBooting, 5000);
+        var timeoutId = setTimeout(continueBooting, 15000);
     </script>
+    <style>
+        body {
+            padding: 50px 40%;
+            background-color: black;
+        }
+
+        .meter {
+            height: 5px;
+            position: relative;
+            background: #505050;
+            overflow: hidden;
+        }
+
+        .meter span {
+            display: block;
+            height: 100%;
+        }
+
+        .progress {
+            background-color: #ffffff;
+            animation: progressBar 15000ms ease-in-out;
+            animation-fill-mode: both;
+            -moz-animation: progressBar 15000ms ease-in-out;
+            -moz-animation-fill-mode: both;
+        }
+
+        @keyframes progressBar {
+            0% {
+                width: 0;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes progressBar {
+            0% {
+                width: 0;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body style="text-align: center;">
-    <img style="margin: 3px; border: 1px solid #000; border-radius: 2px;" src="/android-chrome-192x192.png">
-    <br>
-    <br>
-    <br>
-    <br>
-    <img style="width: 50px; height: 50px;" src="/A-Random-Website-once-again/wow/img/loading-gif.gif">
+    <img src="/android-chrome-192x192.png" alt="Nohorseplay logo"><br>
+    <br><br><br><br><br>
+    <div class="meter">
+        <span style="width:100%;"><span class="progress"></span></span>
+    </div>
 </body>
+
 </html>
