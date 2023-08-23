@@ -1,5 +1,5 @@
 function shutdown() {
-    document.location="/A-Random-Website-once-again/wow/virtual-desktop-selection.html"
+    window.close();
 }
 
 function shutdownprompt(showhide) {

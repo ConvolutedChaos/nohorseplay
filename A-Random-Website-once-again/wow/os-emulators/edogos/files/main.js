@@ -346,6 +346,14 @@ function SNAEKEEDPUJNwedrfjhilwse(showhide) {
     }
 }
 
+function surprise(showhide) {
+    if (showhide == "show") {
+        document.getElementById('surprise').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('surprise').style.visibility = "hidden";
+    }
+}
+
 //document.location=""
 
 function hhg() {
@@ -436,7 +444,7 @@ var closeSoftwareUpdateId = setTimeout(closeSoftwareUpdate, 480000);
 var easAudio = new Audio('/img/assets/audio/aaaaa.mp3')
 
 function checkAlert() {
-    document.getElementById("currAlert").innerHTML = "Emergency Alert Detected Please follow Instructions onscreen <br> Current Alert: AMBER <br> Provided to you by: EDOG <br><br>"
+    document.getElementById("currAlert").innerHTML = "Emergency Alert Detected Please follow Instructions onscreen <br> Current Alert: crazyfrog <br> Provided to you by: EDOG <br><br>"
     document.getElementById("audio001").play();
     scroll_left('show');
 }
