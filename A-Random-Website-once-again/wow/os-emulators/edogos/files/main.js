@@ -457,6 +457,8 @@ function checkAlert() {
     scroll_left('show');
 }
 
+  
+
 function installEasApp() {
     EASREADY('show');
 }

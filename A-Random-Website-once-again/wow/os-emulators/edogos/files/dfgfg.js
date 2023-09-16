@@ -1,3 +1,4 @@
+StopConfetti()
 (function () {
     // globals
     var canvas;

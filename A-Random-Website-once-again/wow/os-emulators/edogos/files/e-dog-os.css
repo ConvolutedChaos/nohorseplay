@@ -170,7 +170,7 @@ a:link {
 }
 
 body {
-    background-image: url(/img/wallpaper.jpg);
+    background-image: url(/A-Random-Website-once-again/wow/os-emulators/edogos/files/sfdf.jpeg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
@@ -301,8 +301,8 @@ td {
 }
 
 .startmenubutton {
-    width: 60px;
-    height: 60px;
+    width: 25px;
+    height: 25px;
     transition: 750ms;
     border: 1px solid #000;
     background-image: url(/android-chrome-192x192.png);
@@ -310,8 +310,7 @@ td {
 }
 
 .startmenubutton:hover {
-    border-radius: 5px;
-    border: 5px solid #000;
+    cursor: pointer;
 }
 
 #calcu {
@@ -370,7 +369,7 @@ td {
     padding-left: 100px;
     width: 400px;
     height: 450px;
-    top: 62px;
+    top: 25px;
     left: 0px;
     position: absolute;
     background: #1f3681;
@@ -389,7 +388,7 @@ td {
     top: 70px;
     left: 425px;
     width: 400px;
-    height: 215px;
+    height: 250px;
     position: fixed;
     background: #ffffff;
     z-index: 1000;
@@ -443,8 +442,9 @@ td {
     position: absolute;
     width: 100%;
     top: 0px;
-    background-color: #3053c7;
-    height: 62px;
+    background-color: #128ddf;
+    height: 25px;
+    padding-top: 0px;
 }
 
 .appsdaasd {
@@ -452,8 +452,6 @@ td {
 }
 
 .allthatstuffontheside {
-    border-radius: 5px;
-    border: 1px solid #111111;
     float: right;
 }
 
@@ -467,10 +465,10 @@ td {
     /* Fixed Sidebar (stay in place on scroll) */
     z-index: 1;
     /* Stay on top */
-    top: 64px;
+    top: 27px;
     /* Stay at the top */
     left: 0;
-    background-color: #160bb1;
+    background-color: #3053c7;
     /* Black */
     overflow-x: hidden;
     /* Disable horizontal scroll */
@@ -1082,7 +1080,7 @@ p.head1 {
     height: 700px;
     z-index: 1;
     background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet);
-    visibility: visible;
+    visibility: hidden;
     overflow: hidden;
 }
 
