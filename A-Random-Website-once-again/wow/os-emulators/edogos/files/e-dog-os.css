@@ -1079,7 +1079,7 @@ p.head1 {
     width: 800px;
     height: 700px;
     z-index: 1;
-    background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet);
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
     visibility: hidden;
     overflow: hidden;
 }
@@ -1096,9 +1096,52 @@ p.head1 {
     width: 910px;
     height: 500px;
     z-index: 1;
-    background-image: linear-gradient(to right, white,gray);
+    background-image: linear-gradient(to right, white, gray);
     visibility: hidden;
     overflow: hidden;
+}
+
+#phone {
+    text-align: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    position: absolute;
+    padding: 10px;
+    top: 70px;
+    left: 450px;
+    border: 2px solid #000000;
+    border-radius: 4px;
+    width: 400px;
+    height: 500px;
+    z-index: 1;
+    background-image: linear-gradient(to right, #00bb9c, rgb(26, 32, 92), #0f8a29);
+    visibility: hidden;
+    overflow: hidden;
+}
+
+#phonebutton {
+    width: 30px;
+    padding: 20px 40px;
+    background-color: rgb(145, 145, 145);
+    color: rgb(34, 34, 34);
+    font-size: 24px;
+    font-weight: bold;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+#boxNum {
+    font-family: monospace;
+    padding: 20px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    border: 2px solid black;
+    background-image: linear-gradient(to right, #929292, rgb(255, 255, 255));
+}
+
+#phone button {
+    font-size: 30pt;
 }
 
 @media screen and (max-width: 930px) {

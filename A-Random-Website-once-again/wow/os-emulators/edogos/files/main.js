@@ -362,6 +362,14 @@ function CitySim(showhide) {
     }
 }
 
+function phone(showhide) {
+    if (showhide == "show") {
+        document.getElementById('phone').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('phone').style.visibility = "hidden";
+    }
+}
+
 //document.location=""
 
 function hhg() {
