@@ -1,5 +1,3 @@
-console.log("Successfully loaded EDOGOS")
-
 function noConnectFunction() {
     // const element = document.getElementById("aaaa");
     // element.remove();
@@ -354,19 +352,19 @@ function surprise(showhide) {
     }
 }
 
-function CitySim(showhide) {
-    if (showhide == "show") {
-        document.getElementById('CitySim').style.visibility = "visible";
-    } else if (showhide == "hide") {
-        document.getElementById('CitySim').style.visibility = "hidden";
-    }
-}
-
 function phone(showhide) {
     if (showhide == "show") {
         document.getElementById('phone').style.visibility = "visible";
     } else if (showhide == "hide") {
         document.getElementById('phone').style.visibility = "hidden";
+    }
+}
+
+function eTunes(showhide) {
+    if (showhide == "show") {
+        document.getElementById('eTunes').style.visibility = "visible";
+    } else if (showhide == "hide") {
+        document.getElementById('eTunes').style.visibility = "hidden";
     }
 }
 
@@ -428,15 +426,15 @@ function myFunction(event) {
         document.getElementById("result").value += event.key;
 }
 
-var cal = document.getElementById("calcu");
-cal.onkeyup = function (event) {
-    if (event.keyCode === 13) {
-        console.log("Enter");
-        let x = document.getElementById("result").value
-        console.log(x);
-        solve();
-    }
-}
+// var cal = document.getElementById("calcu");
+// cal.onkeyup = function (event) {
+//     if (event.keyCode === 13) {
+//         console.log("Enter");
+//         let x = document.getElementById("result").value
+//         console.log(x);
+//         solve();
+//     }
+// }
 
 // Function that evaluates the digit and return result
 function solve() {
@@ -465,7 +463,7 @@ function checkAlert() {
     scroll_left('show');
 }
 
-  
+
 
 function installEasApp() {
     EASREADY('show');
@@ -504,3 +502,5 @@ function closeAppStore() {
     appstore('hide')
     snake_apppdesc('hide')
 }
+
+console.log("Successfully loaded EDOGOS")

@@ -1,4 +1,3 @@
-StopConfetti()
 (function () {
     // globals
     var canvas;
@@ -212,4 +211,5 @@ StopConfetti()
             return window.setTimeout(callback, 1000 / 60);
         };
     })();
+    StopConfetti();
 })();
