@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/jquery.min.js"></script>
+    <title>E-Dog OS</title>
+    <style>
+        .header {
+            background-color: #808080;
+            color: #000000;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .footer {
+            position: absolute;
+            background-color: #808080;
+            color: #000000;
+            padding: 5px;
+            bottom: 2.5px;
+            left: 15px;
+            right: 15px;
+        }
+
+        body {
+            color: #ffffff;
+            background-color: #000000;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .E {
+            font-size: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        Advanced Boot Options
+    </div>
+    <p class="E">
+        E
+    </p>
+    <div class="footer">
+        <span style="float: left;">ENTER=Choose</span><span style="float: right;">Q=Cancel</span>
+    </div>
+    <script>
+        $(document).on('keypress', function (event) {
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '81') {
+                document.location = "boot.html"
+            }
+        });
+    </script>
+</body>
+
+</html>

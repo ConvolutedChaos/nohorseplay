@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/jquery.min.js"></script>
     <title>E-Dog OS</title>
     <script>
         function continueBooting() {
@@ -61,6 +62,14 @@
 </head>
 
 <body style="text-align: center;">
+    <script>
+        $(document).on('keypress', function (event) {
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '56') {
+                document.location = "startoptions.html"
+            }
+        });
+    </script>
     <img src="/android-chrome-192x192.png" alt="Nohorseplay logo"><br>
     <br><br><br><br><br>
     <div class="meter">

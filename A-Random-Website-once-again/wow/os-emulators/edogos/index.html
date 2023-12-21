@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="/A-Random-Website-once-again/wow/os-emulators/edogos/files/camera.css">
     <script src="/js/jquery.min.js"></script>
     <script src="/js/setup.js"></script>
-    <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/main.js"></script>
-    <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/camera.js"></script>
     <script src="files/eTunes.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -203,18 +201,12 @@
                     <tr>
                         <th>Operating System</th>
                         <th>Host Operating System</th>
-                        <th>App Version</th>
-                        <th>Java</th>
-                        <th>Online</th>
                         <th>Graphics Card</th>
                         <th>Hard Drives</th>
                     </tr>
                     <tr>
-                        <td>E-Dog OS 11.2.0</td>
+                        <td>E-Dog OS 11.3.0</td>
                         <td id="hostOS"></td>
-                        <td id="appVer"></td>
-                        <td id="javaEbnaled"></td>
-                        <td id="isOnline"></td>
                         <td>Advanced Micro Devices, Inc. [AMD/ATI] Cypress PRO [Radeon HD 5850] (prog-if 00 [VGA
                             controller])</td>
                         <td>49.2 GB</td>
@@ -252,9 +244,6 @@
                 </style>
             </div>
             <script>
-                document.getElementById("appVer").innerHTML = navigator.appVersion;
-                document.getElementById("javaEbnaled").innerHTML = navigator.javaEnabled();
-                document.getElementById("isOnline").innerHTML = navigator.onLine;
                 document.getElementById("hostOS").innerHTML = navigator.platform;
             </script>
             <button onclick="changeWallpaper('show')" class="a003"></button>
@@ -337,17 +326,17 @@
                 class="fa fa-bluetooth"></i><i title="Wifi is On                         Connected to: Network 1"
                 style="font-size: 12pt; padding: 7px 7px;" class="fa fa-wifi"></i><i title="No battery!"
                 style="font-size: 12pt; padding: 7px 7px;" class="fa fa-battery-0"></i>
-                <script>
-                    var dateDiv = document.getElementById('date-div');
-                    var now = new Date();
-                    var nowStr = now.toLocaleString('en-US');
-                    function myDateFunction() {
-                        dateDiv.innerHTML = nowStr;
-                    }
-                    setInterval(myDateFunction, 1000);
-        
-                    document.getElementById('dateandtime').innerHTML = now;
-                </script>
+            <script>
+                var dateDiv = document.getElementById('date-div');
+                var now = new Date();
+                var nowStr = now.toLocaleString('en-US');
+                function myDateFunction() {
+                    dateDiv.innerHTML = nowStr;
+                }
+                setInterval(myDateFunction, 1000);
+
+                document.getElementById('dateandtime').innerHTML = now;
+            </script>
         </div>
         <!--Wifi is On                         Connected to: Network 1-->
         <div>
@@ -450,7 +439,32 @@
 
     </div>
     <div id="bluescreen">
-        <iframe src="files/bluescreen.htm" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+        <div id="bluescreennnn">
+            <span id="allTheBSODText">
+                <br>
+                A problem has been detected and e-dog os has been shut down to prevent damage <br>to your
+                computer.<br><span id="forcedCrash"></span><br>
+                If this is the first time you've seen this stop error screen, <br>restart your computer. If this screen
+                appears
+                again, follow <br>these steps:<br><br>
+                Check to be sure you have adaquate disk space. If a driver is<br> identified in the stop message,
+                disable
+                the
+                driver or check<br> with the manufacturer for driver updates. Try changing video<br> adapters.<br><br>
+                Check with your hardware vendor for any BIOS updates. Disable<br> BIOS memory options such as caching or
+                shadowing. If you need<br> to use safe mode to remove or disable components, restart your<br> computer,
+                press 8 to
+                select Advanced Startup options, and then<br> select Safe Mode.<br><br>
+                Technical information:<br><br>
+                *** STOP:&nbsp;&nbsp;<span id="errorText01">Pepe</span><br><br><br><br><br><br>
+                Beginning dump of physical memory<br>
+                Physical memory dump complete.<br>
+                Contact your system administrator or technical support group for further<br> assistance.
+            </span>
+        </div>
+        <script>
+
+        </script>
     </div>
     <div id="texteditor">
         <a title="Close" href="javascript:texteditor('hide')">
@@ -556,7 +570,7 @@
         </video>
         <br>
         <button class="playpause" onclick="playPause()"></button><button
-            onclick="document.location='files/bluescreen.htm'" class="fullscreenbutton"></button>
+            onclick="bluescreen('show')" class="fullscreenbutton"></button>
     </div>
     <div id="shutdownprompt">
         <div id="header">
@@ -714,13 +728,14 @@
         <br>
         <h1 style="text-align: center;">Camera</h1>
         <div class="wewecamera">
-            <video style="width: 640px; height: 480px;" id="videoStream">Video stream not available.</video>
+            <video style="width: 640px; height: 480px;" id="videoStream">Video stream not available. Check your console.</video>
         </div>
         <canvas id="photoCanvas"> </canvas>
         <div class="output">
             <img id="imgPhoto" alt="The screen capture will appear in this box." />
             <button id="startbutton"><!--Take photo--></button>
-        </div>
+        </div><br><br>
+        <b>Tip</b>: If this app isn't working right, or the video feed box is blank, click <a href="javascript:void(0)" onclick="alert('If the video stream isn\'t visible, read this list.\n\n\n1\) If the video stream is just a purple background, try checking your console.\n\n2\) If you do have a webcam plugged in, and the video stream is still just a purple background, try installing nessecary drivers.\n\n3\) If #2 didn\'t work, try granting this page access to your webcam.\n\n4\) Try upgrading your OS. Using E-Dog OS with Windows XP has a really good chance of not working.\n\n5\) Try upgrading your browser instead. E-Dog OS is not fully compatible with Opera 1.0 and will probably not support your camera/camera drivers.\n\n\nIf all else fails, look up your issue.\n\n\nStats:\n\n' + navigator.appVersion)">here</a>.
     </div>
     <div id="vscode">
         <a title="Close" href="javascript:vscode('hide')">
@@ -1118,15 +1133,21 @@
             <img style="float: left; height: 98px; width: auto; margin-top: 1px; margin-left: 1px;"
                 src="files/eTunes/covers/placeholder.jpeg" alt="Album cover">
             <audio id="MusicBox" src="files/eTunes/music/PLAYAMANE_MIDNIGHT.mp3" controlslist="nodownload"
-                controls></audio>
+                controls></audio><br>
+            <button onclick="pauseMusic()"><b>| |</b></button>
             <script>
-                function playMusic() {
-                    document.getElementById("MusicBox").play();
+                function pauseMusic() {
+                    document.getElementById("MusicBox").pause();
+                }
+
+                function midnightMusic() {
+                    document.getElementById("MusicBox").src = ('/A-Random-Website-once-again/wow/os-emulators/edogos/files/eTunes/music/PLAYAMANE_MIDNIGHT.mp3');
                 }
             </script>
         </div>
     </div>
     <canvas id="canvas"></canvas>
+    <script src="/A-Random-Website-once-again/wow/os-emulators/edogos/files/main.js"></script>
 </body>
 
 </html>
