@@ -43,7 +43,7 @@ a:hover {
 }
 
 .avatar-info #avatar {
-    background-image: url(/media/images/755803.jpg);
+    background-image: url(/ChatRoom/media/images/755803.jpg);
     background-size: cover;
     height: 75px;
     width: 75px;
@@ -69,7 +69,7 @@ a:hover {
 }
 
 #selectAvatarPic #profilePicture001 {
-    background-image: url(../media/images/755803.jpg);
+    background-image: url(/ChatRoom/media/images/755803.jpg);
     background-size: cover;
     width: 75px;
     height: 75px;
@@ -79,7 +79,7 @@ a:hover {
 }
 
 #selectAvatarPic #profilePicture002 {
-    background-image: url(../media/images/c7a7f75a32a55f4.png);
+    background-image: url(/ChatRoom//media/images/c7a7f75a32a55f4.png);
     background-size: cover;
     width: 75px;
     height: 75px;
@@ -89,7 +89,7 @@ a:hover {
 }
 
 #selectAvatarPic #profilePicture003 {
-    background-image: url(../media/images/index-03-566x536.jpg);
+    background-image: url(/ChatRoom/media/images/index-03-566x536.jpg);
     background-size: cover;
     width: 75px;
     height: 75px;
@@ -99,7 +99,7 @@ a:hover {
 }
 
 #selectAvatarPic #profilePicture004 {
-    background-image: url(../media/images/ssbu__black_yoshi_by_megatoon1234_dcr7f93-pre.jpg);
+    background-image: url(/ChatRoom/media/images/ssbu__black_yoshi_by_megatoon1234_dcr7f93-pre.jpg);
     background-size: cover;
     width: 75px;
     height: 75px;
@@ -109,7 +109,7 @@ a:hover {
 }
 
 #selectAvatarPic #profilePicture005 {
-    background-image: url(../media/images/yassir.png);
+    background-image: url(/ChatRoom/media/images/yassir.png);
     background-size: cover;
     width: 75px;
     height: 75px;

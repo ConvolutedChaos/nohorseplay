@@ -44,26 +44,28 @@ function sendMessage() {
     if (messageText == "Negro") {
         document.getElementById("alertModal").style.display = "block";
     }
+
+    document.getElementById("messageBox").value = "";
 }
 
 function setAvatarPhoto001() {
-    document.getElementById("avatar").style.backgroundImage = "url(../media/images/755803.jpg)";
+    document.getElementById("avatar").style.backgroundImage = "url(/ChatRoom/media/images/755803.jpg)";
 }
 
 function setAvatarPhoto002() {
-    document.getElementById("avatar").style.backgroundImage = "url(../media/images/c7a7f75a32a55f4.png)";
+    document.getElementById("avatar").style.backgroundImage = "url(/ChatRoom/media/images/c7a7f75a32a55f4.png)";
 }
 
 function setAvatarPhoto003() {
-    document.getElementById("avatar").style.backgroundImage = "url(../media/images/index-03-566x536.jpg)";
+    document.getElementById("avatar").style.backgroundImage = "url(/ChatRoom/media/images/index-03-566x536.jpg)";
 }
 
 function setAvatarPhoto004() {
-    document.getElementById("avatar").style.backgroundImage = "url(../media/images/ssbu__black_yoshi_by_megatoon1234_dcr7f93-pre.jpg)";
+    document.getElementById("avatar").style.backgroundImage = "url(/ChatRoom/media/images/ssbu__black_yoshi_by_megatoon1234_dcr7f93-pre.jpg)";
 }
 
 function setAvatarPhoto005() {
-    document.getElementById("avatar").style.backgroundImage = "url(../media/images/yassir.png)";
+    document.getElementById("avatar").style.backgroundImage = "url(/ChatRoom/media/images/yassir.png)";
 }
 
 function closeModal() {
