@@ -1,0 +1,177 @@
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
+#chatbox {
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 175px;
+    background-color: #6d6d6d;
+    padding: 15px;
+    position: sticky;
+    position: -webkit-sticky;
+}
+
+#chatbox #buttons {
+    float: left;
+    font-size: 25px;
+    margin-left: 25px;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.avatar-info {
+    width: 150px;
+    height: 131px;
+    padding: 15px;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    float: right;
+    margin-right: 50px;
+    text-align: center;
+}
+
+.avatar-info a:link,
+a:visited,
+a:active,
+a:hover {
+    text-decoration: none;
+    color: #000000;
+}
+
+.avatar-info #avatar {
+    background-image: url(/media/images/755803.jpg);
+    background-size: cover;
+    height: 75px;
+    width: 75px;
+    border: 2px solid #000000;
+    border-radius: 100%;
+}
+
+#chatbox .avatar-info #accountName {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#selectAvatarPic {
+    border: 2px solid #000000;
+    border-radius: 6px;
+    width: 250px;
+    height: 500px;
+    position: sticky;
+    top: 205px;
+    float: right;
+    display: none;
+    background-color: #FFF000;
+    padding: 15px;
+}
+
+#selectAvatarPic #profilePicture001 {
+    background-image: url(../media/images/755803.jpg);
+    background-size: cover;
+    width: 75px;
+    height: 75px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    margin: 7.5px;
+}
+
+#selectAvatarPic #profilePicture002 {
+    background-image: url(../media/images/c7a7f75a32a55f4.png);
+    background-size: cover;
+    width: 75px;
+    height: 75px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    margin: 7.5px;
+}
+
+#selectAvatarPic #profilePicture003 {
+    background-image: url(../media/images/index-03-566x536.jpg);
+    background-size: cover;
+    width: 75px;
+    height: 75px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    margin: 7.5px;
+}
+
+#selectAvatarPic #profilePicture004 {
+    background-image: url(../media/images/ssbu__black_yoshi_by_megatoon1234_dcr7f93-pre.jpg);
+    background-size: cover;
+    width: 75px;
+    height: 75px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    margin: 7.5px;
+}
+
+#selectAvatarPic #profilePicture005 {
+    background-image: url(../media/images/yassir.png);
+    background-size: cover;
+    width: 75px;
+    height: 75px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    margin: 7.5px;
+}
+
+#submit {
+    font-size: 25px;
+    border: 2px solid #000000;
+    background-color: #00ff00;
+    border-radius: 100%;
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    cursor: pointer;
+}
+
+#messageBox {
+    height: 125px;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    width: 500px;
+    margin-left: 50px;
+    margin-right: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#message {
+    border: 6px solid #00ffff;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #00ffff;
+    margin-top: 10px;
+    display: block;
+    width: 250px;
+    margin-left: 10px;
+}
+
+#messages {
+    /* hehe */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#alertModal {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    padding: 25px;
+    font-size: 25px;
+    border: 2px solid #000000;
+    border-radius: 7px;
+    background-color: #FF0000;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    width: 500px;
+    height: 200px;
+}
+
+#alertModal button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
