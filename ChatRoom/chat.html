@@ -20,7 +20,7 @@
         <button id="buttons" onclick="window.close();">Quit</button> <button id="buttons"
             onclick="changeUsername();">Change Username</button>
         <textarea id="messageBox"></textarea>
-        <button id="submit" onclick="sendMessage();">Send</button>
+        <input type="submit" id="submit" value="Send" onclick="sendMessage();">
         <div class="avatar-info">
             <a title="Change picture" href="javascript:void(0)"
                 onclick="document.getElementById('selectAvatarPic').style.display = 'block';">
@@ -43,6 +43,9 @@
         <button onclick="setAvatarPhoto004();" id="profilePicture004">&nbsp;</button>
         <button onclick="setAvatarPhoto005();" id="profilePicture005">&nbsp;</button>
         <br>
+        <label for="files" class="custom-file-upload">
+            Upload Custom File
+        </label>
         <input type="file" id="files" accept="image/*" />
         <output id="list"></output>
     </div>
@@ -52,8 +55,34 @@
         You cannot type that.
         <button onclick="closeModal();">Close</button>
     </div>
+    <div class="about">
+        <a href="javascript:void(0)" onclick="">i</a>
+    </div>
+    <div id="aboutBox">
+        <a href="javascript:void(0)" onclick="">i</a>
+    </div>
 
+
+
+
+
+
+
+
+
+
+
+    <div id="loadingg">
+        
+    </div>
+    <script>
+        function continueLoading() {
+            document.getElementById("loadingg").style.display = "none";
+        }
+        var timeoutId = setTimeout(continueLoading, 2500);
+    </script>
     <script src="js/main.js"></script>
+    
 </body>
 
 </html>

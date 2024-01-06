@@ -1,6 +1,7 @@
 body {
     padding: 0px;
     margin: 0px;
+    overflow-x: hidden;
 }
 
 #chatbox {
@@ -9,6 +10,7 @@ body {
     width: 100%;
     height: 175px;
     background-color: #6d6d6d;
+    z-index: 1;
     padding: 15px;
     position: sticky;
     position: -webkit-sticky;
@@ -49,6 +51,7 @@ a:hover {
     width: 75px;
     border: 2px solid #000000;
     border-radius: 100%;
+    cursor: pointer;
 }
 
 #chatbox .avatar-info #accountName {
@@ -76,6 +79,7 @@ a:hover {
     border: 2px solid #000000;
     border-radius: 50%;
     margin: 7.5px;
+    cursor: pointer;
 }
 
 #selectAvatarPic #profilePicture002 {
@@ -86,6 +90,7 @@ a:hover {
     border: 2px solid #000000;
     border-radius: 50%;
     margin: 7.5px;
+    cursor: pointer;
 }
 
 #selectAvatarPic #profilePicture003 {
@@ -96,6 +101,7 @@ a:hover {
     border: 2px solid #000000;
     border-radius: 50%;
     margin: 7.5px;
+    cursor: pointer;
 }
 
 #selectAvatarPic #profilePicture004 {
@@ -106,6 +112,7 @@ a:hover {
     border: 2px solid #000000;
     border-radius: 50%;
     margin: 7.5px;
+    cursor: pointer;
 }
 
 #selectAvatarPic #profilePicture005 {
@@ -116,6 +123,20 @@ a:hover {
     border: 2px solid #000000;
     border-radius: 50%;
     margin: 7.5px;
+    cursor: pointer;
+}
+
+.custom-file-upload {
+    border: 2px solid #000000;
+    background-color: #bebebe;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+#files {
+    display: none;
 }
 
 #submit {
@@ -146,8 +167,9 @@ a:hover {
     background-color: #00ffff;
     margin-top: 10px;
     display: block;
-    width: 250px;
+    width: 350px;
     margin-left: 10px;
+    overflow-wrap: break-word;
 }
 
 #messages {
@@ -174,4 +196,48 @@ a:hover {
     position: absolute;
     bottom: 5px;
     right: 5px;
+}
+
+#loadingg {
+    background: url(/ChatRoom/media/images/al.gif) no-repeat center center;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+}
+
+.about {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.about a {
+    font-size: 45px;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#aboutBox {
+    position: absolute;
+    border: 2px solid #000000;
+    background-color: #bebebe;
+    left: 0px;
+    top: 0px;
+    border-radius: 6px;
+    width: 500px;
+    height: 500px;
+    padding: 50px;
+    display: none;
+    position: sticky;
+    position: -webkit-sticky;
 }

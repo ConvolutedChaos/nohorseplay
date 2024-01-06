@@ -1,3 +1,4 @@
+var currentVersion = "1.0.2";
 var username = window.prompt("Please enter a username.");
 var messageContainer = document.getElementById("messages");
 var avatarDisplayName = document.getElementById("accountName");
@@ -7,7 +8,7 @@ if (username === null || username === "") {
     var theRandomName = randomName;
     username = theRandomName;
     avatarDisplayName.innerHTML = username;
-    console.warn("You didn't put a username, so we picked a random name for you. We picked \"" + username + "\"")
+    console.warn("You didn't put a username, so we picked a random name for you. We picked \"" + username + "\"");
 }
 avatarDisplayName.innerHTML = username;
 
@@ -38,7 +39,7 @@ function sendMessage() {
     }
 
     const newMessage = document.createElement("div");
-    newMessage.innerHTML = "<div id='message'><button style='background-image: url(/media/images/avatar_m.png); background-size: cover; height: 75px; width: 75px; border: 2px solid #000000; border-radius: 100%;' id='avatar' title='" + username + "'>&nbsp;</button><br><p>&lt;" + username + "&gt;<br><br>" + messageText + "</p></div><br>";
+    newMessage.innerHTML = "<div id='message'><button style='background-image: url(/ChatRoom/media/images/avatar_m.png); background-size: cover; height: 75px; width: 75px; border: 2px solid #000000; border-radius: 100%;' id='avatar' title='" + username + "'>&nbsp;</button><br><p>&lt;" + username + "&gt;<br><br>" + messageText + "</p></div><br>";
     messageContainer.appendChild(newMessage);
 
     if (messageText == "Negro") {
@@ -70,7 +71,7 @@ function setAvatarPhoto005() {
 
 function closeModal() {
     const newMessage = document.createElement("div");
-    newMessage.innerHTML = "<div id='message'><button style='background-image: url(/media/images/avatar_m.png); background-size: cover; height: 75px; width: 75px; border: 2px solid #000000; border-radius: 100%;' id='avatar' title='" + username + "'>&nbsp;</button><br><p>&lt;" + username + "&gt;<br><br><video src='media/videos/killyourself.mp4' controls></video></p></div><br>";
+    newMessage.innerHTML = "<div id='message'><button style='background-image: url(/ChatRoom/media/images/avatar_m.png); background-size: cover; height: 75px; width: 75px; border: 2px solid #000000; border-radius: 100%;' id='avatar' title='" + username + "'>&nbsp;</button><br><p>&lt;" + username + "&gt;<br><br><video src='media/videos/killyourself.mp4' controls></video></p></div><br>";
     messageContainer.appendChild(newMessage);
     document.getElementById("alertModal").style.display = "none";
 }
@@ -116,4 +117,6 @@ function handleFileSelect(evt) {
 
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
-console.log("Successfully loaded E-Dog's Chat Room version 1.0!")
+console.error("This app has no actual purpose whatsoever. E-Dog's Chat Room Version " + currentVersion + " has no ability to chat with anyone, except yourself. Happy depression!")
+
+console.log("Successfully loaded E-Dog's Chat Room version " + currentVersion + "!")
