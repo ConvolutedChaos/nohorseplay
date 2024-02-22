@@ -1,9 +1,9 @@
 const cacheName = "Nohorseplay-Simple Truck Sim-0.1";
 const contentToCache = [
-    "Build/WebGl.loader.js",
-    "Build/WebGl.framework.js",
-    "Build/WebGl.data",
-    "Build/WebGl.wasm",
+    "Build/WebGL.loader.js",
+    "Build/WebGL.framework.js",
+    "Build/WebGL.data",
+    "Build/WebGL.wasm",
     "TemplateData/style.css"
 
 ];
