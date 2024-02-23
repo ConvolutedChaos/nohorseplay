@@ -57,11 +57,11 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/WebGL.loader.js";
+      var loaderUrl = buildUrl + "/SimpleTruckSim.loader.js";
       var config = {
-        dataUrl: buildUrl + "/WebGL.data",
-        frameworkUrl: buildUrl + "/WebGL.framework.js",
-        codeUrl: buildUrl + "/WebGL.wasm",
+        dataUrl: buildUrl + "/SimpleTruckSim.data",
+        frameworkUrl: buildUrl + "/SimpleTruckSim.framework.js",
+        codeUrl: buildUrl + "/SimpleTruckSim.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Nohorseplay",
         productName: "Simple Truck Sim",
@@ -84,7 +84,7 @@
         document.getElementsByTagName('head')[0].appendChild(meta);
       }
 
-      canvas.style.background = "url('" + buildUrl + "/WebGL.jpg') center / cover";
+      canvas.style.background = "url('" + buildUrl + "/SimpleTruckSim.jpg') center / cover";
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
