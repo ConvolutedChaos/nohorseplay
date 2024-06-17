@@ -49,3 +49,6 @@ function overlay(showhide) {
     }
 }
 
+function AngryBirds() {
+    document.location="/fun/games/AngryBirds"
+}

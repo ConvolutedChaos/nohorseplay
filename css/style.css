@@ -138,10 +138,10 @@ video {
 }
 
 .kkwslink {
-    border: 4px solid #c40000;
+    border: 4px solid #397e00;
     border-radius: 10px;
     font-size: 20pt;
-    background-color: #ff0000;
+    background-color: #49a100;;
     transition: 1s;
 }
 
@@ -234,6 +234,17 @@ video {
     padding-right: 30px;
     padding-top: 10px;
     display: none;
+}
+
+.AngryBirdsBtn {
+    /* background-image: url(/img/Red.png);
+    background-size: 100% 250px; */
+    background-position: 5px;
+    border: 4px solid #b10000;
+    border-radius: 10px;
+    font-size: 20pt;
+    background-color: #e60000;
+    transition: 1s;
 }
 
 /* .topbtn {
