@@ -1,0 +1,92 @@
+body {
+    text-align: center;
+    background-image: url(../media/img/wallpaper1blurred.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.profileBubble {
+    width: 150px;
+    height: 150px;
+    border: 4px solid #888888;
+    border-radius: 50%;
+}
+
+#dropdownToggle {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 64px;
+    height: 64px;
+    background-image: url(../media/img/power-button.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 4px solid #888888;
+    border-radius: 50%;
+}
+
+#closeModal {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 128px;
+    height: 128px;
+    background-image: url(../media/img/close-button.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 4px solid #888888;
+    border-radius: 50%;
+}
+
+#shutdownModal {
+    display: none;
+    position: fixed;
+    padding-top: 50px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#shutDown {
+    width: 384px;
+    height: 384px;
+    background-image: url(../media/img/power-button.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 8px solid #888888;
+    border-radius: 50%;
+}
+
+#restart {
+    width: 384px;
+    height: 384px;
+    background-image: url(../media/img/reload-button.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 8px solid #888888;
+    border-radius: 50%;
+}
+
+#password {
+    border: 2px solid #000000;
+    height: 16px;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+}
+
+#submitPassword {
+    width: 16px;
+    height: 16px;
+    /* background-image: url(../media/img/reload-button.png);
+    background-repeat: no-repeat;
+    background-size: cover; */
+    border: 2px solid #000000;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    font-size: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+}

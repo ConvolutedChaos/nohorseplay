@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Dog OS</title>
+    <link rel="stylesheet" href="css/edogos.css">
+
+</head>
+
+<body>
+
+    <span style="display: none;" id="dateandtime"></span>
+    <div id="taskbar">
+        <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" ></button>
+
+        <div id="baconExplorerIcon" class="taskbar-icon"></div>
+
+        <div id="systemSettingsIcon" class="taskbar-icon"></div>
+
+        <div id="date-div"></div>
+    </div>
+
+    <div id="startMenu">
+
+    </div>
+
+    <div id="baconExplorer" class="draggable">
+        <div class="title-bar">
+            <!--Window bar-->
+            <button class="window-close-button" title="Close" onclick="toggleApp('baconExplorer', 'baconExplorerIcon')">&times;</button>
+            <br>
+            <span class="title-bar-text"><span id="baconExplorerTabOpen">Start Page</span> - Bacon Explorer</span>
+            <br>
+            <br>
+            <br>
+            <hr>
+        </div>
+        <button id="historyButton" onclick="history.back()">&lt;</button>&nbsp;<button id="historyButton" onclick="history.forward()">&gt;</button>
+        <br>
+        <input type="text" name="" id="addressBar"><button id="addressBarSubmit" onclick="GoToWebPage()" type="submit">Go</button>
+        <br>
+        <br>
+        <iframe id="webIframe" src="assets/baconExplorerWelcomePage.html" frameborder="0"></iframe>
+        
+    </div>
+
+    <div id="systemSettings" class="draggable">
+        <div class="title-bar">
+            <!--Window bar-->
+            <button class="window-close-button" title="Close" onclick="toggleApp('systemSettings', 'systemSettingsIcon')">&times;</button>
+            <br>
+            <span class="title-bar-text">System Settings</span>
+            <br>
+            <br>
+            <br>
+            <hr>
+        </div>
+        <br>
+
+        <!--Window content-->
+        
+        <div class="systemSettingsButton" onclick="">
+            <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
+            <span class="settingDescription">
+                Desktop BG
+            </span>
+        </div>
+        <div class="systemSettingsButton" onclick="">
+            <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
+            <span class="settingDescription">
+                About E-Dog OS
+            </span>
+        </div>
+    </div>
+</body>
+<script src="js/edogos.js"></script>
+
+</html>

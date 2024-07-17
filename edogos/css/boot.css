@@ -1,0 +1,55 @@
+body {
+    padding-top: 25px;
+    background-color: #000000;
+    text-align: center;
+    padding-left: 25%;
+    padding-right: 25%;
+}
+
+.logo {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.progress {
+    width: 100%;
+    background-color: #444444;
+    border-radius: 7px;
+    cursor: wait;
+}
+
+.bar {
+    width: 0%;
+    height: 30px;
+    background-color: #ffffff;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 7px;
+    animation: progress-animation 10s;
+}
+
+@keyframes progress-animation {
+    0% {
+        width: 0%;
+    }
+
+    15% {
+        width: 15%;
+    }
+
+    25% {
+        width: 15%;
+    }
+
+    50% {
+        width: 50%;
+    }
+
+    75% {
+        width: 55%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
