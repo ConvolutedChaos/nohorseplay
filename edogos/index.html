@@ -13,11 +13,15 @@
 
     <span style="display: none;" id="dateandtime"></span>
     <div id="taskbar">
-        <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" ></button>
+        <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" title="Menu"></button>
 
-        <div id="baconExplorerIcon" class="taskbar-icon"></div>
+        <div id="baconExplorerIcon" class="taskbar-icon" onclick="unminimizeApp('baconExplorer')"></div>
 
-        <div id="systemSettingsIcon" class="taskbar-icon"></div>
+        <div id="systemSettingsIcon" class="taskbar-icon" onclick="unminimizeApp('systemSettings')"></div>
+
+        <div id="backgroundSettingsIcon" class="taskbar-icon" onclick="unminimizeApp('backgroundSettings')"></div>
+
+        <div id="blockbenchIcon" class="taskbar-icon" onclick="unminimizeApp('blockbench')"></div>
 
         <div id="date-div"></div>
     </div>
@@ -26,10 +30,16 @@
 
     </div>
 
-    <div id="baconExplorer" class="draggable">
+    <div id="baconExplorer" class="draggable dropShadow">
         <div class="title-bar">
             <!--Window bar-->
-            <button class="window-close-button" title="Close" onclick="toggleApp('baconExplorer', 'baconExplorerIcon')">&times;</button>
+            
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('baconExplorer', 'baconExplorerIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize"
+                onclick="minimizeApp('baconExplorer')"><span style="font-size: 35px;">-</span>
+            </button>
             <br>
             <span class="title-bar-text"><span id="baconExplorerTabOpen">Start Page</span> - Bacon Explorer</span>
             <br>
@@ -37,19 +47,26 @@
             <br>
             <hr>
         </div>
-        <button id="historyButton" onclick="history.back()">&lt;</button>&nbsp;<button id="historyButton" onclick="history.forward()">&gt;</button>
+        <button id="historyButton" onclick="history.back()">&lt;</button>&nbsp;<button id="historyButton"
+            onclick="history.forward()">&gt;</button>
         <br>
-        <input type="text" name="" id="addressBar"><button id="addressBarSubmit" onclick="GoToWebPage()" type="submit">Go</button>
+        <input type="text" name="" id="addressBar"><button id="addressBarSubmit" onclick="GoToWebPage()"
+            type="submit">Go</button>
         <br>
         <br>
         <iframe id="webIframe" src="assets/baconExplorerWelcomePage.html" frameborder="0"></iframe>
-        
+
     </div>
 
-    <div id="systemSettings" class="draggable">
+    <div id="systemSettings" class="draggable dropShadow">
         <div class="title-bar">
             <!--Window bar-->
-            <button class="window-close-button" title="Close" onclick="toggleApp('systemSettings', 'systemSettingsIcon')">&times;</button>
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('systemSettings', 'systemSettingsIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize"
+                onclick="minimizeApp('systemSettings')"><span style="font-size: 35px;">-</span>
+            </button>
             <br>
             <span class="title-bar-text">System Settings</span>
             <br>
@@ -60,20 +77,112 @@
         <br>
 
         <!--Window content-->
-        
-        <div class="systemSettingsButton" onclick="">
+
+        <span class="systemSettingsButton" onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')">
             <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
+            <br>
             <span class="settingDescription">
                 Desktop BG
             </span>
-        </div>
-        <div class="systemSettingsButton" onclick="">
+        </span>
+        <span class="systemSettingsButton" onclick="">
             <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
+            <br>
             <span class="settingDescription">
                 About E-Dog OS
             </span>
+        </span>
+    </div>
+
+    <div id="backgroundSettings" class="draggable dropShadow">
+        <div class="title-bar">
+            <!--Window bar-->
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize"
+                onclick="minimizeApp('backgroundSettings')"><span style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Desktop Background</span>
+            <br>
+            <br>
+            <br>
+            <hr>
+        </div>
+        <br>
+
+        <!--Window content-->
+
+        <p>Choose an image</p>
+        <!-- <span class="setWallpaperButton" onclick="setWallpaper1();">
+            <img class="desktopBgPreview" src="media/img/wallpaper1-low.jpg">
+            <br>
+            <span class="desktopBgDescription">
+                Cat
+            </span>
+        </span>
+        <span class="setWallpaperButton" onclick="setWallpaper2();">
+            <img class="desktopBgPreview" src="media/img/wallpaper2-low.png">
+            <br>
+            <span class="desktopBgDescription">
+                Tree
+            </span>
+        </span>
+        <span class="setWallpaperButton" onclick="setWallpaper3();">
+            <img class="desktopBgPreview" src="media/img/wallpaper3-low.jpg">
+            <br>
+            <span class="desktopBgDescription">
+                Desktop BG
+            </span>
+        </span>
+        <span class="setWallpaperButton" onclick="setWallpaper4();">
+            <img class="desktopBgPreview" src="media/img/wallpaper4-low.jpg">
+            <br>
+            <span class="desktopBgDescription">
+                Desktop BG
+            </span>
+        </span> -->
+        <div class="wallpaperButtonContainer">
+            <button class="setWallpaperButton" id="setWallpaper1" onclick="setWallpaper1();" title="Cat"></button>
+            <button class="setWallpaperButton" id="setWallpaper2" onclick="setWallpaper2();" title="Tree in lavender field"></button>
+            <button class="setWallpaperButton" id="setWallpaper3" onclick="setWallpaper3();" title="There doesn't appear to be anything here.. :&lpar;"></button>
+            <button class="setWallpaperButton" id="setWallpaper4" onclick="setWallpaper4();" title="There doesn't appear to be anything here.. :&lpar;"></button>
+            <button class="setWallpaperButton" id="setWallpaper5" onclick="setWallpaper5();" title="There doesn't appear to be anything here.. :&lpar;"></button>
+            <button class="setWallpaperButton" id="setWallpaper6" onclick="setWallpaper6();" title="There doesn't appear to be anything here.. :&lpar;"></button>
+        </div>
+        <br>
+        <div class="uploadImageContainer">
+            <p>Upload an image</p>
+            <input type="file" id="imageInput" accept="image/*">
+            <br>
+            <br>
+            <img id="imagePreview" src="#" alt="Image Preview" title="Image Preview">
         </div>
     </div>
+
+    <!-- <div id="blockbench" class="draggable dropShadow">
+        <div class="title-bar">
+            
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize"
+                onclick="minimizeApp('backgroundSettings')"><span style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Blockbench</span>
+            <br>
+            <br>
+            <br>
+            <hr>
+        </div>
+        <br>
+
+      
+
+        <iframe src="https://web" frameborder="0"></iframe>
+    </div> -->
 </body>
 <script src="js/edogos.js"></script>
 

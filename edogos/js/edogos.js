@@ -1,5 +1,7 @@
 var startMenu = document.getElementById("startMenu");
 
+var wallpaperSuccessMessage = "Wallpaper successfully changed.";
+
 function openStartMenu() {
     if (startMenu.style.display === "block") {
         startMenu.style.display = "none";
@@ -50,6 +52,38 @@ function toggleApp(appElementId, appElementPanelIconId) {
     }
 }
 
+function minimizeApp(appElementId) {
+    var appElement = document.getElementById(appElementId);
+
+    console.log(appElement);
+
+    appElement.style.display = "none";
+    console.log("Minimized the app. Elements made hidden: " + appElementId + ".");
+
+}
+
+function unminimizeApp(appElementId) {
+    var appElement = document.getElementById(appElementId);
+
+    console.log(appElement);
+
+    appElement.style.display = "block";
+    console.log("Unminimized the app. Elements made visible: " + appElementId + ".");
+
+}
+
+function openApp(appElementId, appElementPanelIconId) {
+    var appElement = document.getElementById(appElementId);
+    var appElementPanelIcon = document.getElementById(appElementPanelIconId);
+
+    console.log(appElement);
+    console.log(appElementPanelIcon);
+
+    appElement.style.display = "block";
+    appElementPanelIcon.style.display = "block";
+    console.log("Opened the app. Elements made visible: " + appElementId + ", " + appElementPanelIconId + ".");
+}
+
 
 var dateDiv = document.getElementById('date-div');
 
@@ -79,14 +113,14 @@ let offsetX, offsetY, currentDraggable;
 
 draggables.forEach(draggable => {
     const titleBar = draggable.querySelector('.title-bar');
-    titleBar.addEventListener('mousedown', function(e) {
+    titleBar.addEventListener('mousedown', function (e) {
         e.preventDefault();
         currentDraggable = draggable;
         offsetX = e.clientX - currentDraggable.getBoundingClientRect().left;
         offsetY = e.clientY - currentDraggable.getBoundingClientRect().top;
 
         bringWindowToFront(currentDraggable); // Bring the clicked window to the front
-        
+
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', stopDragging);
     });
@@ -129,7 +163,48 @@ function bringWindowToFront(windowElement) {
     windowElement.style.zIndex = highestZIndex + 1;
 }
 
+const imageInput = document.getElementById('imageInput');
+const imagePreview = document.getElementById('imagePreview');
 
+imageInput.addEventListener('change', function () {
+    const file = this.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        imagePreview.src = e.target.result;
+        document.body.style.backgroundImage = `url(${e.target.result})`;
+    }
+
+    reader.readAsDataURL(file);
+});
+
+function setWallpaper1() {
+    document.body.style.background = "url('/edogos/media/img/wallpaper1.jpg') no-repeat";
+    document.body.style.backgroundSize = "cover";
+    console.log(wallpaperSuccessMessage);
+}
+
+function setWallpaper2() {
+    document.body.style.background = "url('/edogos/media/img/wallpaper2.png') no-repeat";
+    document.body.style.backgroundSize = "cover";
+    console.log(wallpaperSuccessMessage);
+}
+
+function setWallpaper3() {
+
+}
+
+function setWallpaper4() {
+
+}
+
+function setWallpaper5() {
+
+}
+
+function setWallpaper6() {
+
+}
 
 
 console.log("E-Dog OS Successfully loaded");

@@ -37,6 +37,7 @@ body {
     border-radius: 4px;
     background-color: #1e90ff;
     display: none;
+    z-index: 1000000000000000;
 }
 
 #date-div {
@@ -88,10 +89,25 @@ body {
     float: right;
 }
 
+.window-minimize-button {
+    width: 32px;
+    height: 32px;
+    font-size: 25px;
+    margin: 10px;
+    padding: 0px;
+    padding-bottom: 25px;
+    background-color: #ff0000;
+    border: 1px solid #ff0000;
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    float: right;
+}
+
 #systemSettings {
     width: 640px;
     height: 480px;
-    background-color: #404040;
+    background-color: #666666;
     border: 1px solid #000000;
     border-radius: 5px;
     display: block;
@@ -174,7 +190,6 @@ body {
 .systemSettingsButton {
     width: 128px;
     height: 100px;
-    display: inline-block;
     float: left;
 }
 
@@ -189,5 +204,104 @@ body {
 
 .settingDescription {
     color: #ffffff;
+
+}
+
+#backgroundSettingsIcon {
+    background-image: url(../media/img/system-settings-backgrounds.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#backgroundSettings {
+    width: 480px;
+    height: 720px;
+    background-color: rgb(52, 160, 52);
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: block;
+    margin: 0px;
+    text-align: center;
+}
+
+#imagePreview {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 20px;
+    border: 1px solid #000000;
+}
+
+.desktopBgDescription {
+    color: #ffffff;
+}
+
+.desktopBgPreview {
+    width: 113px;
+    height: 64px;
+}
+
+.setWallpaperButton {
+    width: 128px;
+    height: 100px;
+    float: left;
+    margin: 15px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 8px;
+}
+
+.setWallpaperButton:active {
+    background-color: #1e90ff;
+}
+
+#setWallpaper1 {
+    background-image: url(../media/img/wallpaper1-low.jpg);
+}
+
+#setWallpaper2 {
+    background-image: url(../media/img/wallpaper2-low.png);
+}
+
+#setWallpaper3 {
     
+}
+
+#setWallpaper4 {
+    
+}
+
+.uploadImageContainer {
+    display: block;
+}
+
+.wallpaperButtonContainer {
+    display: block;
+}
+
+.dropShadow {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+#backgroundSettingsIcon {
+    background-image: url(../media/img/blockbench.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#blockbench {
+    width: 480px;
+    height: 720px;
+    background-color: rgb(52, 160, 52);
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: block;
+    margin: 0px;
+    text-align: center;
 }
