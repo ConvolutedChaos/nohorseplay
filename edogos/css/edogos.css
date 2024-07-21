@@ -33,11 +33,23 @@ body {
     left: 0px;
     height: 400px;
     width: 350px;
-    border: 4px solid #000000;
+    border: 1px solid #000000;
     border-radius: 4px;
     background-color: #1e90ff;
     display: none;
     z-index: 1000000000000000;
+}
+
+#startMenu .sidebar {
+    float: left;
+    height: 375px;
+    width: 85px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    background-color: #1e90ff;
+    margin-left: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
 }
 
 #date-div {
@@ -54,13 +66,17 @@ body {
     margin-right: 10px;
 }
 
+.startMenu-icon {
+    margin: 6px;
+}
+
 #baconExplorer {
     width: 640px;
     height: 640px;
     background-color: #ffffff;
     border: 1px solid #000000;
     border-radius: 5px;
-    display: block;
+    display: none;
     margin: 0px;
     text-align: center;
 }
@@ -70,7 +86,7 @@ body {
     background-size: cover;
     width: 64px;
     height: 64px;
-    display: block;
+    display: none;
     border: none;
 }
 
@@ -110,7 +126,7 @@ body {
     background-color: #666666;
     border: 1px solid #000000;
     border-radius: 5px;
-    display: block;
+    display: none;
     margin: 0px;
     text-align: center;
 }
@@ -122,9 +138,9 @@ body {
 #systemSettingsIcon {
     background-image: url(../media/img/settings.png);
     background-size: 100% 100%;
-    width: 70px;
+    width: 64px;
     height: 64px;
-    display: block;
+    display: none;
     border: none;
 }
 
@@ -161,7 +177,7 @@ body {
 }
 
 #baconExplorer #webIframe {
-    width: 600px;
+    width: 100%;
     height: 400px;
     border: 1px solid #000000;
 }
@@ -212,7 +228,7 @@ body {
     background-size: 100% 100%;
     width: 64px;
     height: 64px;
-    display: block;
+    display: none;
     border: none;
 }
 
@@ -222,7 +238,7 @@ body {
     background-color: rgb(52, 160, 52);
     border: 1px solid #000000;
     border-radius: 5px;
-    display: block;
+    display: none;
     margin: 0px;
     text-align: center;
 }
@@ -266,13 +282,9 @@ body {
     background-image: url(../media/img/wallpaper2-low.png);
 }
 
-#setWallpaper3 {
-    
-}
+#setWallpaper3 {}
 
-#setWallpaper4 {
-    
-}
+#setWallpaper4 {}
 
 .uploadImageContainer {
     display: block;
@@ -286,22 +298,91 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-#backgroundSettingsIcon {
-    background-image: url(../media/img/blockbench.png);
+#aboutEdogosIcon {
+    background-image: url(../media/img/system-settings-about.png);
     background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#aboutEdogos {
+    width: 480px;
+    height: 425px;
+    background-color: rgb(94, 45, 99);
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+}
+
+#baconExplorerStartMenuIcon {
+    background-image: url(../media/img/bacon-explorer.png);
+    background-size: cover;
     width: 64px;
     height: 64px;
     display: block;
     border: none;
 }
 
-#blockbench {
-    width: 480px;
-    height: 720px;
-    background-color: rgb(52, 160, 52);
-    border: 1px solid #000000;
-    border-radius: 5px;
+#systemSettingsStartMenuIcon {
+    background-image: url(../media/img/settings.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
     display: block;
-    margin: 0px;
-    text-align: center;
+    border: none;
+}
+
+#backgroundSettingsStartMenuIcon {
+    background-image: url(../media/img/system-settings-backgrounds.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#aboutEdogosStartMenuIcon {
+    background-image: url(../media/img/system-settings-about.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#aboutEdogos .aboutTable {
+    width: 100%;
+    height: 80%;
+    /* border: 1px solid rgb(63, 30, 66); */
+}
+
+.leftText {
+    color: rgb(112, 112, 112);
+    float: left;
+    margin-left: 10px;
+}
+
+.rightText {
+    color: rgb(255, 255, 255);
+    float: right;
+    margin-right: 10px;
+}
+
+#aboutEdogos .aboutTable hr {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(63, 30, 66);
+    color: #000000;
+    border: none;
+}
+
+#aboutEdogos .edogosLogo {
+    width: 128px;
+    height: 128px;
+    border: 1px solid #000000;
 }

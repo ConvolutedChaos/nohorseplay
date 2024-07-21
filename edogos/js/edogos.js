@@ -106,6 +106,13 @@ function GoToWebPage() {
     // alert(addressBarText) For Debug
     webIframe.src = addressBarText;
     baconExplorerTabOpen.innerText = addressBarText;
+    if (addressBarText === "") {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    } else if (addressBarText === null) {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    } else if (addressBarText === " ") {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    }
 }
 
 const draggables = document.querySelectorAll('.draggable');
@@ -206,5 +213,6 @@ function setWallpaper6() {
 
 }
 
+document.getElementById("userAgent").innerHTML = navigator.userAgent;
 
 console.log("E-Dog OS Successfully loaded");
