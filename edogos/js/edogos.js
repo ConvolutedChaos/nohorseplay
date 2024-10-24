@@ -115,6 +115,24 @@ function GoToWebPage() {
     }
 }
 
+function SearchWeb() {
+    var addressBar = document.getElementById("addressBar");
+    var webIframe = document.getElementById("webIframe");
+    var addressBarText = addressBar.value;
+    var baconExplorerTabOpen = document.getElementById("baconExplorerTabOpen");
+    // alert(addressBarText) For Debug
+    var termToSearch = "https://duckduckgo.com/?q=" + addressBarText;
+    window.open(termToSearch);
+    baconExplorerTabOpen.innerText = addressBarText;
+    if (addressBarText === "") {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    } else if (addressBarText === null) {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    } else if (addressBarText === " ") {
+        baconExplorerTabOpen.innerText = "Blank Page";
+    }
+}
+
 const draggables = document.querySelectorAll('.draggable');
 let offsetX, offsetY, currentDraggable;
 
