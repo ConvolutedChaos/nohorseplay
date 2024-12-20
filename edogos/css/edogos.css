@@ -1,5 +1,5 @@
 body {
-    background-image: url(../media/img/wallpaper1.jpg);
+    background-image: url(../media/img/beta-fish-hd.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -68,6 +68,7 @@ body {
 
 .startMenu-icon {
     margin: 6px;
+    cursor: pointer;
 }
 
 #baconExplorer {
@@ -288,7 +289,9 @@ body {
     background-image: url(../media/img/wallpaper2-low.png);
 }
 
-#setWallpaper3 {}
+#setWallpaper3 {
+    background-image: url(../media/img/beta-fish-hd.jpg);
+}
 
 #setWallpaper4 {}
 

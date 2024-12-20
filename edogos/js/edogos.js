@@ -216,7 +216,9 @@ function setWallpaper2() {
 }
 
 function setWallpaper3() {
-
+    document.body.style.background = "url('/edogos/media/img/beta-fish-hd.jpg') no-repeat";
+    document.body.style.backgroundSize = "cover";
+    console.log(wallpaperSuccessMessage);
 }
 
 function setWallpaper4() {
