@@ -1,4 +1,4 @@
-const cacheName = "Nohorseplay-Web Cars-0.2";
+const cacheName = "Nohorseplay-Web Cars-0.4";
 const contentToCache = [
     "Build/WebCars.loader.js",
     "Build/WebCars.framework.js",
