@@ -1,11 +1,11 @@
 {
-    "name": "Physics Fun",
-    "short_name": "Physics Fun",
+    "name": "Web Cars",
+    "short_name": "Web Cars",
     "start_url": "index.html",
     "display": "fullscreen",
-    "background_color": "#FFFFFF",
+    "background_color": "#231F20",
     "theme_color": "#000",
-    "description": "",
+    "description": "Vroom vroom",
     "icons": [{
       "src": "TemplateData/icons/unity-logo-dark.png",
       "sizes": "144x144",
