@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>Physics Fun</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="allowfullscreen">
+
+    <meta charset="utf-8">
+    <link id="favicon" rel="icon" type="image/png" href="../favicon-32x32.png">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="../index.html"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="../gallery.html">Gallery</a></li>
+                                <li class="active"><a href="../games.html">Games</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="#">history</a></li>
+                                        <li><a href="#">offers</a></li>
+                                        <li><a href="#">news</a>
+                                            <ul class="rd-navbar-dropdown">
+                                                <li><a href="#">fresh</a></li>
+                                                <li><a href="#">archive</a></li>
+                                                <li><a href="../404.html">404</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a href="../links.html">Links</a></li>
+                                <li><a href="../contacts.html">Contacts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <section class="section section-80 section-md-122 section-title section-title-left bg-default novi-background"
+            data-preset='{"title":"About us 4","category":"about","reload":false,"id":"about-us-4"}'>
+            <div class="section-title-text">Games</div>
+
+        </section>
+        <section class="section section-92 section-lg-122 bg-default novi-background"
+            data-preset='{"title":"Team","category":"team","reload":true,"id":"team"}'>
+            <div class="shell shell-wide">
+                <style>
+                    #gameContainer {
+                        width: 1024px;
+                        height: 576px;
+                        border: 2px solid #000000;
+                        border-radius: 8px;
+                    }
+
+                    /* Hide the default checkbox */
+                    einput[type="checkbox"] {
+                        appearance: none;
+                        /* Remove default styling */
+                        width: 24px;
+                        height: 24px;
+                        border: 2px solid #007bff;
+                        /* Blue border */
+                        border-radius: 5px;
+                        /* Rounded corners */
+                        cursor: pointer;
+                        display: inline-block;
+                        position: relative;
+                        background-color: white;
+                    }
+
+                    /* Checkbox checked state */
+                    einput[type="checkbox"]:checked {
+                        background-color: #007bff;
+                        /* Blue background when checked */
+                        border-color: #0056b3;
+                    }
+
+                    /* Add a checkmark */
+                    einput[type="checkbox"]:checked::after {
+                        content: '✔';
+                        /* Unicode checkmark */
+                        font-size: 18px;
+                        color: white;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    /* Hover effect */
+                    einput[type="checkbox"]:hover {
+                        border-color: #0056b3;
+                    }
+
+                    /* Label styling */
+                    elabel {
+                        font-size: 18px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        font-family: Arial, sans-serif;
+                    }
+                </style>
+                <iframe id="gameContainer" src="PhysicsFun/" frameborder="0" allowfullscreen></iframe>
+                <br>
+                <button onclick="toggleFullscreen()">Fullscreen</button>
+                <script>
+                    function toggleFullscreen() {
+                        var iframe = document.getElementById("gameContainer");
+
+                        if (iframe.requestFullscreen) {
+                            iframe.requestFullscreen();
+                        } else if (iframe.mozRequestFullScreen) { // Firefox
+                            iframe.mozRequestFullScreen();
+                        } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                            iframe.webkitRequestFullscreen();
+                        } else if (iframe.msRequestFullscreen) { // IE/Edge
+                            iframe.msRequestFullscreen();
+                        }
+                    }
+
+                    // Function to check if the checkbox is checked
+                    function shouldWarnUser() {
+                        return document.getElementById("warnCheckbox").checked;
+                    }
+
+                    // Add the beforeunload event listener
+                    window.addEventListener('beforeunload', function (event) {
+                        if (shouldWarnUser()) {
+                            event.preventDefault(); // Required for some browsers
+                            event.returnValue = ''; // Ensures the dialog appears
+                            return ''; // Ensures the dialog appears
+                        }
+                    });
+
+                    function setFavicon(src) {
+                        let link = document.getElementById("favicon");
+                        if (!link) {
+                            link = document.createElement("link");
+                            link.id = "favicon";
+                            link.rel = "icon";
+                            link.type = "image/png";
+                            document.head.appendChild(link);
+                        }
+                        link.href = src;
+                    }
+
+                    function setTitle(title) {
+                        document.title = title;
+                    }
+                </script>
+                <p>__________________________________________________________________________________________________________________________________
+                </p>
+
+                <h3>Anti Close</h3>
+                <label>
+                    <input type="checkbox" id="warnCheckbox"> Anti Close
+                </label>
+                <h3>Tab Disguise</h3>
+
+                <button onclick="setFavicon('ixl-favicon.png'), setTitle('IXL | Dashboard')">&nbsp;&nbsp;&nbsp;&nbsp;IXL&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 24px; height: 24px; margin: 0px;" src="ixl-favicon.png"></button>
+                <br><br>
+                <button onclick="setFavicon('../android-chrome-192x192.png'), setTitle('Physics Fun')">Default Icon and Title <img style="width: 24px; height: 24px; margin: 0px;" src="../favicon-32x32.png"></button>
+            </div>
+        </section>
+
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="../privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script src="../js/core.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

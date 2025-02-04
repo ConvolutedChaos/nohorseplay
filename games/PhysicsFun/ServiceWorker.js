@@ -1,4 +1,4 @@
-const cacheName = "Nohorseplay-Physics Fun-0.1";
+const cacheName = "Nohorseplay-Physics Fun-0.5";
 const contentToCache = [
     "Build/PhysicsFun.loader.js",
     "Build/PhysicsFun.framework.js",
