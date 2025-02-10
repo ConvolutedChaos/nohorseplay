@@ -104,7 +104,7 @@ function GoToWebPage() {
     var addressBarText = addressBar.value;
     var baconExplorerTabOpen = document.getElementById("baconExplorerTabOpen");
     // alert(addressBarText) For Debug
-    webIframe.src = addressBarText;
+    webIframe.src = "https://" + addressBarText;
     baconExplorerTabOpen.innerText = addressBarText;
     if (addressBarText === "") {
         baconExplorerTabOpen.innerText = "Blank Page";
