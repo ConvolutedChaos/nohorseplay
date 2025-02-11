@@ -27,6 +27,9 @@
         <div id="aboutEdogosIcon" class="taskbar-icon" title="About E-Dog OS" onclick="unminimizeApp('aboutEdogos')">
         </div>
 
+        <div id="drawingProgramIcon" class="taskbar-icon" title="Background Settings"
+            onclick="unminimizeApp('drawingProgram')"></div>
+
         <div id="date-div"></div>
     </div>
 
@@ -43,6 +46,13 @@
 
             <div id="aboutEdogosStartMenuIcon" class="startMenu-icon"
                 onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="About E-Dog OS"></div>
+
+            <div id="drawingProgramStartMenuIcon" class="startMenu-icon"
+                onclick="openApp('drawingProgram', 'drawingProgramIcon')" title="Drawing"></div>
+        </div>
+        <input type="text" class="searchbar" placeholder="Search...">
+        <div class="rightbar">
+
         </div>
     </div>
 
@@ -129,34 +139,7 @@
         <!--Window content-->
 
         <p>Choose an image&nbsp;<img src="../icons/image.png"></p>
-        <!-- <span class="setWallpaperButton" onclick="setWallpaper1();">
-            <img class="desktopBgPreview" src="media/img/wallpaper1-low.jpg">
-            <br>
-            <span class="desktopBgDescription">
-                Cat
-            </span>
-        </span>
-        <span class="setWallpaperButton" onclick="setWallpaper2();">
-            <img class="desktopBgPreview" src="media/img/wallpaper2-low.png">
-            <br>
-            <span class="desktopBgDescription">
-                Tree
-            </span>
-        </span>
-        <span class="setWallpaperButton" onclick="setWallpaper3();">
-            <img class="desktopBgPreview" src="media/img/wallpaper3-low.jpg">
-            <br>
-            <span class="desktopBgDescription">
-                Desktop BG
-            </span>
-        </span>
-        <span class="setWallpaperButton" onclick="setWallpaper4();">
-            <img class="desktopBgPreview" src="media/img/wallpaper4-low.jpg">
-            <br>
-            <span class="desktopBgDescription">
-                Desktop BG
-            </span>
-        </span> -->
+        
         <div class="wallpaperButtonContainer">
             <button class="setWallpaperButton" id="setWallpaper1" onclick="setWallpaper1();" title="Cat"></button>
             <button class="setWallpaperButton" id="setWallpaper2" onclick="setWallpaper2();"
@@ -201,22 +184,48 @@
         <div class="aboutTable">
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span class="rightText">E-Dog OS v0.3.2</span>
+            <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
+                class="rightText">E-Dog OS v0.3.3</span>
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span class="rightText">Intel&copy; Core&trade; i7-6700K CPU @
+            <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
+                class="rightText">Intel&copy; Core&trade; i7-6700K CPU @
                 4.00GHz &times; 4</span>
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/memory.png">&nbsp;Memory</span><span class="rightText">31.3 GiB</span>
+            <span class="leftText"><img src="../icons/even_more_icons/memory.png">&nbsp;Memory</span><span
+                class="rightText">31.3 GiB</span>
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span class="rightText">2000.9 GB</span>
+            <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span class="rightText">2000.9
+                GB</span>
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/graphic-card.png">&nbsp;Graphics Card</span><span class="rightText">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</span>
+            <span class="leftText"><img src="../icons/even_more_icons/graphic-card.png">&nbsp;Graphics Card</span><span
+                class="rightText">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</span>
             <br>
             <hr>
+        </div>
+
+    </div>
+
+    <div id="drawingProgram" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('drawingProgram', 'drawingProgramIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('drawingProgram')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Drawing</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <br>
+            <iframe src="assets/drawingProgram.html" frameborder="0"></iframe>
         </div>
 
     </div>
@@ -226,8 +235,11 @@
         If this is the first time you've seen this error screen,
         restart your computer. If this screen appears again, follow
         these steps:<br>
-        Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your hardware or<br> software manufacturer for any updates you might need.
-        If problems continue, disable or remove any newly installed<br> hardware or software. Disable BIOS memory options such as caching or shadowing. If you need to eat bacon, restart<br> your computer, press F8 to select Advanced Startup Options, and then select Eat Bacon.<br><br>
+        Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your
+        hardware or<br> software manufacturer for any updates you might need.
+        If problems continue, disable or remove any newly installed<br> hardware or software. Disable BIOS memory
+        options such as caching or shadowing. If you need to eat bacon, restart<br> your computer, press F8 to select
+        Advanced Startup Options, and then select Eat Bacon.<br><br>
         Technical Information:<br><br>
         *** STOP: 0x000000C1 (0x61AF2FF8, 0xEDCCAEBE, 0xB663BAE9, 0x8E2DF694)<br><br>
     </div>

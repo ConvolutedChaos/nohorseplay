@@ -46,10 +46,32 @@ body {
     width: 85px;
     border: 1px solid #000000;
     border-radius: 4px;
-    background-color: #1e90ff;
+    background-color: #1973ce;
     margin-left: 10px;
     margin-top: 10px;
     padding-top: 10px;
+}
+
+#startMenu .rightbar {
+    float: right;
+    height: 325px;
+    width: 225px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    background-color: #1973ce;
+    margin-right: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+#startMenu .searchbar {
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-left: 18px;
+    width: 200px;
+    height: 25px;
+    border: 1px solid #000000;
+    border-radius: 4px;
 }
 
 #date-div {
@@ -91,6 +113,9 @@ body {
     border: none;
 }
 
+#baconExplorerIcon:hover {
+    background-color: #666666;
+}
 
 .window-close-button {
     width: 56px;
@@ -138,6 +163,10 @@ body {
     height: 64px;
     display: none;
     border: none;
+}
+
+#systemSettingsIcon:hover {
+    background-color: #666666;
 }
 
 #baconExplorer #historyButton {
@@ -235,26 +264,35 @@ body {
     border: none;
 }
 
+#backgroundSettingsIcon:hover {
+    background-color: #666666;
+}
+
 #backgroundSettings {
     width: 480px;
     height: 720px;
-    background-color: rgb(52, 160, 52);
-    border: 1px solid #000000;
-    border-radius: 5px;
+    background-color: #a5a5a5;
+    border: 1px solid #000;
+    border-radius: 10px;
     display: none;
-    margin: 0px;
+    margin: 0 auto;
     text-align: center;
+
 }
 
 #imagePreview {
     max-width: 100%;
     max-height: 200px;
     margin-top: 20px;
-    border: 1px solid #000000;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .desktopBgDescription {
     color: #ffffff;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .desktopBgPreview {
@@ -265,16 +303,23 @@ body {
 .setWallpaperButton {
     width: 128px;
     height: 100px;
-    float: left;
-    margin: 15px;
-    background-size: cover;
-    background-repeat: no-repeat;
     border: none;
     border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.setWallpaperButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.3);
 }
 
 .setWallpaperButton:active {
-    background-color: #1e90ff;
+    transform: scale(0.95);
+    background-color: rgba(30, 144, 255, 0.5);
 }
 
 #setWallpaper1 {
@@ -292,11 +337,27 @@ body {
 #setWallpaper4 {}
 
 .uploadImageContainer {
-    display: block;
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .wallpaperButtonContainer {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+}
+
+#imageInput {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 .dropShadow {
@@ -304,12 +365,16 @@ body {
 }
 
 #aboutEdogosIcon {
-    background-image: url(../media/img/system-settings-about.png);
+    background-image: url(../media/img/software-properties.png);
     background-size: 100% 100%;
     width: 64px;
     height: 64px;
     display: none;
     border: none;
+}
+
+#aboutEdogosIcon:hover {
+    background-color: #666666;
 }
 
 #aboutEdogos {
@@ -354,7 +419,7 @@ body {
 }
 
 #aboutEdogosStartMenuIcon {
-    background-image: url(../media/img/system-settings-about.png);
+    background-image: url(../media/img/software-properties.png);
     background-size: cover;
     width: 64px;
     height: 64px;
@@ -406,4 +471,46 @@ body {
     font-family: serif;
     padding: 100px;
     display: none;
+}
+
+#drawingProgramIcon {
+    background-image: url(../media/img/drawing.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#drawingProgram {
+    width: 740px;
+    height: 580px;
+    background-color: #797979;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#drawingProgramStartMenuIcon {
+    background-image: url(../media/img/drawing.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#drawingProgramIcon:hover {
+    background-color: #666666;
+}
+
+#drawingProgram iframe {
+    width: 738px;
+    height: 506px;
+    overflow: hidden;
 }
