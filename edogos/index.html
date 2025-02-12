@@ -30,6 +30,9 @@
         <div id="drawingProgramIcon" class="taskbar-icon" title="Background Settings"
             onclick="unminimizeApp('drawingProgram')"></div>
 
+        <div id="mediaPlayerIcon" class="taskbar-icon" title="Media Player" onclick="unminimizeApp('mediaPlayer')">
+        </div>
+
         <div id="date-div"></div>
     </div>
 
@@ -52,7 +55,20 @@
         </div>
         <input type="text" class="searchbar" placeholder="Search...">
         <div class="rightbar">
-
+            <ul>
+                <li onclick="openApp('aboutEdogos', 'aboutEdogosIcon')"><img src="media/img/software-properties.png"
+                        alt=""> About E-Dog OS</li>
+                <li onclick="openApp('baconExplorer', 'baconExplorerIcon')"><img src="media/img/bacon-explorer.png"
+                        alt=""> Bacon Explorer</li>
+                <li onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')"><img
+                        src="media/img/system-settings-backgrounds.png" alt=""> Background Settings</li>
+                <li onclick="openApp('drawingProgram', 'drawingProgramIcon')"><img src="media/img/drawing.png" alt="">
+                    Drawing</li>
+                <li onclick="openApp('mediaPlayer', 'mediaPlayerIcon')"><img src="media/img/media-player.png" alt="">
+                    Media Player</li>
+                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
+                    System Settings</li>
+            </ul>
         </div>
     </div>
 
@@ -71,15 +87,30 @@
             <br>
             <br>
             <br>
-            <hr>
         </div>
         <button id="historyButton" title="Back" onclick="history.back()">&lt;</button>&nbsp;<button id="historyButton"
             title="Back" onclick="history.forward()">&gt;</button><input type="text" name="" id="addressBar"><button
             id="addressBarSubmit" onclick="GoToWebPage()" type="submit">Go</button>
         <br>
+        <hr>
+        <div id="bookmarksBar">
+            <span id="bookmarkButton"
+                onclick="DynamicVisitPage('nohorseplay.com'), SetWindowText('nohorseplay.com')"><img id="bookmarkIcon"
+                    src="../favicon-16x16.png">nohorseplay.com</span>
+            <span id="bookmarkButton" onclick="DynamicVisitPage('gamingbarn.net'), SetWindowText('gamingbarn.net')"><img
+                    id="bookmarkIcon" src="https://gamingbarn.net/images/favicon.ico">gamingbarn.net</span>
+            <span id="bookmarkButton"
+                onclick="DynamicVisitPage('www.wikipedia.org'), SetWindowText('www.wikipedia.org')"><img
+                    id="bookmarkIcon"
+                    src="https://www.wikipedia.org/static/favicon/wikipedia.ico">www.wikipedia.org</span>
+        </div>
         <br>
         <iframe id="webIframe" src="assets/baconExplorerWelcomePage.html" frameborder="0"></iframe>
-
+        <a class="helpfulInfo" onclick="window.alert(tipMessage)"><img
+                src="../icons/even_more_icons/question-frame.png"> Helpful Info</a>
+        <!-- <div id="helpfulInfoBox" class="dropShadow">
+            Tip:
+        </div> -->
     </div>
 
     <div id="systemSettings" class="draggable dropShadow">
@@ -109,8 +140,8 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3">
-            <img class="systemSettingsButtonImage" src="media/img/system-settings-about.png">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.4">
+            <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
                 About E-Dog OS
@@ -139,7 +170,7 @@
         <!--Window content-->
 
         <p>Choose an image&nbsp;<img src="../icons/image.png"></p>
-        
+
         <div class="wallpaperButtonContainer">
             <button class="setWallpaperButton" id="setWallpaper1" onclick="setWallpaper1();" title="Cat"></button>
             <button class="setWallpaperButton" id="setWallpaper2" onclick="setWallpaper2();"
@@ -147,7 +178,7 @@
             <button class="setWallpaperButton" id="setWallpaper3" onclick="setWallpaper3();"
                 title="Not much to see here.. it's just a fish.."></button>
             <button class="setWallpaperButton" id="setWallpaper4" onclick="setWallpaper4();"
-                title="There doesn't appear to be anything here.. :&lpar;"></button>
+                title="US Post office break room"></button>
             <button class="setWallpaperButton" id="setWallpaper5" onclick="setWallpaper5();"
                 title="There doesn't appear to be anything here.. :&lpar;"></button>
             <button class="setWallpaperButton" id="setWallpaper6" onclick="setWallpaper6();"
@@ -185,7 +216,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.3</span>
+                class="rightText">E-Dog OS v0.3.4</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -225,8 +256,49 @@
             <br>
         </div>
         <br>
-            <iframe src="assets/drawingProgram.html" frameborder="0"></iframe>
+        <iframe src="assets/drawingProgram.html" frameborder="0"></iframe>
+    </div>
+
+    <div id="mediaPlayer" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('mediaPlayer')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">raisins.mp4 - Media Player</span>
+            <br>
+            <br>
+            <br>
         </div>
+        <div class="video-container">
+            <video id="video" src="../img/vids/funy/raisins.mp4">Your browser does not support the video element. How do you get by in life? Upgrade your browser.</video>
+            <div class="controls">
+                <button id="rewind">&#171;</button>
+                <button id="play">&#9658;</button>
+                <button id="stop">&#9632;</button>
+                <button id="forward">&#187;</button>
+                <span id="time">00:00</span>
+                <!-- <button id="repeat">&#10226;</button>
+                <button id="shuffle">&#128256;</button> -->
+                <div class="volume-container">
+                    <button id="volume">&#128266;</button>
+                    <div class="volume-slider">
+                        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="upnextbar">
+            <ul>
+                <li onclick="replayVideo()">raisins.mp4</li>
+            </ul>
+        </div>
+    </div>
 
     </div>
     <div id="crashScreen">

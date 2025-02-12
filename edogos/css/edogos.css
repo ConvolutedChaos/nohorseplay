@@ -210,7 +210,7 @@ body {
 
 #baconExplorer #webIframe {
     width: 100%;
-    height: 475px;
+    height: 470px;
     border: 1px solid #000000;
 }
 
@@ -334,7 +334,9 @@ body {
     background-image: url(../media/img/beta-fish-hd.jpg);
 }
 
-#setWallpaper4 {}
+#setWallpaper4 {
+    background-image: url(../media/img/post-room.png);
+}
 
 .uploadImageContainer {
     text-align: center;
@@ -513,4 +515,206 @@ body {
     width: 738px;
     height: 506px;
     overflow: hidden;
+}
+
+.rightbar img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.rightbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rightbar li {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.rightbar li:hover {
+    background-color: #3a3a3a;
+}
+
+#baconExplorer #bookmarksBar {
+    padding-left: 15px;
+}
+
+#bookmarksBar #bookmarkButton {
+    height: 22px;
+    margin: 5px;
+    float: left;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: #ccc;
+}
+
+#bookmarksBar #bookmarkIcon {
+    margin: 0px;
+    padding: 0px;
+    margin-right: 6px;
+    width: 16px;
+    height: 16px;
+}
+
+.helpfulInfo {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    text-decoration: none;
+    color: rgb(0, 0, 128);
+}
+
+#helpfulInfoBox {
+    width: 150px;
+    height: 250px;
+    border: 1px solid #000;
+    background-color: #ffffff;
+    position: absolute;
+}
+
+#mediaPlayerIcon {
+    background-image: url(../media/img/media-player.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#mediaPlayerIcon:hover {
+    background-color: #666666;
+}
+
+#mediaPlayer {
+    width: 790px;
+    height: 590px;
+    background-color: #797979;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#mediaPlayerStartMenuIcon {
+    background-image: url(../media/img/media-player.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#mediaPlayer .video-container {
+    position: relative;
+    max-width: 640px;
+}
+
+#mediaPlayer video {
+    width: 100%;
+    border-radius: 8px;
+}
+
+#mediaPlayer .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #333;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+#rewind,
+#play,
+#stop,
+#forward,
+#repeat,
+#shuffle,
+#volume {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+#time {
+    color: #ffffff;
+}
+
+#mediaPlayer button:hover {
+    color: #ddd;
+}
+
+.volume-container {
+    position: relative;
+}
+
+#mediaPlayer .volume-slider {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    background: #444;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#mediaPlayer .volume-slider input {
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    height: 100px;
+}
+
+.upnextbar {
+    position: absolute;
+    right: 100px;
+    top: 56px;
+    width: 50px;
+}
+
+.upnextbar img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.upnextbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.upnextbar li {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 14px;
+    background-color: #555555;
+    width: 130px;
+    transition: 0.2s;
+}
+
+.upnextbar li:hover {
+    background-color: #666666;
 }

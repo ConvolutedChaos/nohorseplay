@@ -2,6 +2,8 @@ var startMenu = document.getElementById("startMenu");
 
 var wallpaperSuccessMessage = "Wallpaper successfully changed.";
 
+var tipMessage = "Tips:\n\nIf you enter in a web page address and it doesn't work, look at these tips:\n\n1) _'s server IP adress could not be found.\nThis means that the page doesn't exist. Try checking your spelling.\n\n2) __ refused to connect.\nThis means that the page exists, however it cannot be viewed in an Iframe, in other words the page cannot be viewed in Bacon Explorer.\nExamples: YouTube, Google, DuckDuckGo, Amazon, Facebook."
+
 function openStartMenu() {
     if (startMenu.style.display === "block") {
         startMenu.style.display = "none";
@@ -222,7 +224,9 @@ function setWallpaper3() {
 }
 
 function setWallpaper4() {
-
+    document.body.style.background = "url('/edogos/media/img/post-room.png') no-repeat";
+    document.body.style.backgroundSize = "cover";
+    console.log(wallpaperSuccessMessage);
 }
 
 function setWallpaper5() {
@@ -231,6 +235,74 @@ function setWallpaper5() {
 
 function setWallpaper6() {
 
+}
+
+function DynamicVisitPage(webPage) {
+    var addressBar = document.getElementById("addressBar");
+    var webIframe = document.getElementById("webIframe");
+    var addressBarText = addressBar.value;
+    var baconExplorerTabOpen = document.getElementById("baconExplorerTabOpen");
+    // alert(addressBarText) For Debug
+    webIframe.src = "https://" + webPage;
+}
+
+function SetWindowText(newWindowText) {
+    var addressBar = document.getElementById("addressBar");
+    addressBar.value = newWindowText;
+    baconExplorerTabOpen.innerText = newWindowText;
+}
+
+const video = document.getElementById('video');
+const playButton = document.getElementById('play');
+const stopButton = document.getElementById('stop');
+const rewindButton = document.getElementById('rewind');
+const forwardButton = document.getElementById('forward');
+const timeDisplay = document.getElementById('time');
+const volumeButton = document.getElementById('volume');
+const volumeSlider = document.querySelector('.volume-slider');
+const volumeControl = document.getElementById('volume-control');
+
+playButton.addEventListener('click', () => {
+    if (video.paused) {
+        video.play();
+        playButton.innerHTML = '&#10074;&#10074;';
+    } else {
+        video.pause();
+        playButton.innerHTML = '&#9658;';
+    }
+});
+
+stopButton.addEventListener('click', () => {
+    video.pause();
+    video.currentTime = 0;
+    playButton.innerHTML = '&#9658;';
+});
+
+rewindButton.addEventListener('click', () => {
+    video.currentTime -= 5;
+});
+
+forwardButton.addEventListener('click', () => {
+    video.currentTime += 5;
+});
+
+video.addEventListener('timeupdate', () => {
+    let minutes = Math.floor(video.currentTime / 60);
+    let seconds = Math.floor(video.currentTime % 60);
+    timeDisplay.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+});
+
+volumeButton.addEventListener('click', () => {
+    volumeSlider.style.display = volumeSlider.style.display === 'flex' ? 'none' : 'flex';
+});
+
+volumeControl.addEventListener('input', () => {
+    video.volume = volumeControl.value;
+});
+
+function replayVideo() {
+    video.currentTime = 0;
+    video.play();
 }
 
 document.getElementById("userAgent").innerHTML = navigator.userAgent;
