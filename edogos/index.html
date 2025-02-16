@@ -12,6 +12,13 @@
 <body>
 
     <span style="display: none;" id="dateandtime"></span>
+    <div id="desktop">
+        <!-- <div id="desktopFile" onclick="openApp('fileExplorer', 'fileExplorerIcon')">
+            <img id="fileIcon" src="media/img/user-home.png">
+            <br>
+            <span id="fileLabel">Home</span>
+        </div> -->
+    </div>
     <div id="taskbar">
         <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" title="Menu"></button>
 
@@ -33,6 +40,18 @@
         <div id="mediaPlayerIcon" class="taskbar-icon" title="Media Player" onclick="unminimizeApp('mediaPlayer')">
         </div>
 
+        <div id="fileExplorerIcon" class="taskbar-icon" title="File Explorer" onclick="unminimizeApp('fileExplorer')">
+        </div>
+
+        <div id="debugToolsIcon" class="taskbar-icon" title="Debug Tools" onclick="unminimizeApp('debugTools')">
+        </div>
+
+        <div id="calculatorIcon" class="taskbar-icon" title="Calculator" onclick="unminimizeApp('calculator')">
+        </div>
+
+        <div id="shutdownIcon" class="taskbar-icon" title="Session" onclick="unminimizeApp('shutdown')">
+        </div>
+
         <div id="date-div"></div>
     </div>
 
@@ -44,28 +63,37 @@
             <div id="systemSettingsStartMenuIcon" class="startMenu-icon"
                 onclick="openApp('systemSettings', 'systemSettingsIcon')" title="System Settings"></div>
 
-            <div id="backgroundSettingsStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')" title="Background Settings"></div>
-
-            <div id="aboutEdogosStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="About E-Dog OS"></div>
-
-            <div id="drawingProgramStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('drawingProgram', 'drawingProgramIcon')" title="Drawing"></div>
+            <div id="fileExplorerStartMenuIcon" class="startMenu-icon"
+                onclick="openApp('fileExplorer', 'fileExplorerIcon')" title="File Explorer"></div>
         </div>
-        <input type="text" class="searchbar" placeholder="Search...">
+        <div id="shutdownStartMenuIcon" class="startMenu-icon" onclick="openApp('shutdown', 'shutdownIcon')"
+            title="Shutdown E-Dog OS"></div>
+        <input type="text" id="searchbar" placeholder="Search...">
         <div class="rightbar">
             <ul>
                 <li onclick="openApp('aboutEdogos', 'aboutEdogosIcon')"><img src="media/img/software-properties.png"
                         alt=""> About E-Dog OS</li>
-                <li onclick="openApp('baconExplorer', 'baconExplorerIcon')"><img src="media/img/bacon-explorer.png"
-                        alt=""> Bacon Explorer</li>
+                <li onclick="openApp('baconExplorer', 'baconExplorerIcon')"><img
+                        src="media/img/internet-web-browser.png" alt=""> Bacon Explorer</li>
                 <li onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')"><img
                         src="media/img/system-settings-backgrounds.png" alt=""> Background Settings</li>
                 <li onclick="openApp('drawingProgram', 'drawingProgramIcon')"><img src="media/img/drawing.png" alt="">
                     Drawing</li>
                 <li onclick="openApp('mediaPlayer', 'mediaPlayerIcon')"><img src="media/img/media-player.png" alt="">
                     Media Player</li>
+                <li onclick="openApp('fileExplorer', 'fileExplorerIcon')"><img src="media/img/folder.png" alt="">
+                    File Explorer</li>
+                <li onclick="openApp('debugTools', 'debugToolsIcon')"><img src="media/img/passwords.png" alt="">
+                    Debug Tools</li>
+                <li onclick="openApp('calculator', 'calculatorIcon')"><img src="media/img/accessories-calculator.png"
+                        alt="">
+                    Calculator</li>
+                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
+                    System Settings</li>
+                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
+                    System Settings</li>
+                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
+                    System Settings</li>
                 <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
                     System Settings</li>
             </ul>
@@ -140,7 +168,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.4">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.5">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -216,7 +244,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.4</span>
+                class="rightText">E-Dog OS v0.3.5</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -228,7 +256,7 @@
                 class="rightText">31.3 GiB</span>
             <br>
             <hr>
-            <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span class="rightText">2000.9
+            <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span class="rightText">250.8
                 GB</span>
             <br>
             <hr>
@@ -263,7 +291,7 @@
         <div class="title-bar">
 
             <button class="window-close-button" title="Close"
-                onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon')">&times;
+                onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon'), resetVideo();">&times;
             </button>
             <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('mediaPlayer')"><span
                     style="font-size: 35px;">-</span>
@@ -275,7 +303,8 @@
             <br>
         </div>
         <div class="video-container">
-            <video id="video" src="../img/vids/funy/raisins.mp4">Your browser does not support the video element. How do you get by in life? Upgrade your browser.</video>
+            <video id="video" src="../img/vids/funy/raisins.mp4">Your browser does not support the video element. How do
+                you get by in life? Upgrade your browser.</video>
             <div class="controls">
                 <button id="rewind">&#171;</button>
                 <button id="play">&#9658;</button>
@@ -291,7 +320,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <div class="upnextbar">
             <ul>
@@ -300,23 +329,137 @@
         </div>
     </div>
 
+    <div id="fileExplorer" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('fileExplorer', 'fileExplorerIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('fileExplorer')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span id="fileExplorerTitleBarText" class="title-bar-text">File Explorer</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="toolbar">
+            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%;" onclick="goBack()" title="Back">&#11013;</button>
+            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%; transform: rotate(180deg)" onclick="goForward()" title="Forward">&#11013;</button>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <ul>
+                    <li onclick="openFolder('Home')">Home</li>
+                    <li onclick="openFolder('Documents')">Documents</li>
+                    <li onclick="openFolder('Downloads')">Downloads</li>
+                    <li onclick="openFolder('Pictures')">Pictures</li>
+                    <li onclick="openFolder('Music')">Music</li>
+                    <li onclick="openFolder('Videos')">Videos</li>
+                </ul>
+            </div>
+            <div class="main-panel" id="mainPanel">
+                <!-- Icons will be populated here -->
+            </div>
+        </div>
+        <div class="bottom-toolbar">
+            <input type="range" min="50" max="100" value="75" id="zoomSlider" oninput="updateZoom(this.value)">
+            <span id="fileCount">0 items</span>, <span id="freeSpace">Free space: 0 bytes</span>
+        </div>
+    </div>
+
+    <div id="debugTools" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('debugTools', 'debugToolsIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('debugTools')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Debug Tools</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <h2>Use these at your own risk.</h2>
+        <hr>
+        <br>
+        <button onclick="crashSystem('FORCED_CRASH');">Crash System</button>
+    </div>
+
+    <div id="calculator" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('calculator', 'calculatorIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('calculator')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Calculator</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <input type="text" class="display" id="display" disabled>
+        <div class="buttons">
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button onclick="appendToDisplay('/')">/</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button onclick="appendToDisplay('*')">*</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button onclick="calculateResult()">=</button>
+            <button onclick="appendToDisplay('+')">+</button>
+        </div>
+    </div>
+
+    <div id="shutdown" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('shutdown', 'shutdownIcon')">&times;
+            </button>
+            <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
+                    style="font-size: 35px;">-</span>
+            </button> -->
+            <br>
+            <span class="title-bar-text">Shutdown</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="shutdownContent">
+            <h3>Shut down this system now?</h3>
+            <div class="buttons">
+                <!-- <button class="suspend">Suspend</button> -->
+                <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
+                <button onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');" class="restart">Restart</button>
+                <button onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');" class="shutdown">Shut Down</button>
+            </div>
+        </div>
+    </div>
+
     </div>
     <div id="crashScreen">
-        A problem has been detected and E-Dog OS has been shut down to prevent damage to your computer.<br><br>
-        GO_SCREW_YOURSELF<br><br>
-        If this is the first time you've seen this error screen,
-        restart your computer. If this screen appears again, follow
-        these steps:<br>
-        Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your
-        hardware or<br> software manufacturer for any updates you might need.
-        If problems continue, disable or remove any newly installed<br> hardware or software. Disable BIOS memory
-        options such as caching or shadowing. If you need to eat bacon, restart<br> your computer, press F8 to select
-        Advanced Startup Options, and then select Eat Bacon.<br><br>
-        Technical Information:<br><br>
-        *** STOP: 0x000000C1 (0x61AF2FF8, 0xEDCCAEBE, 0xB663BAE9, 0x8E2DF694)<br><br>
+
     </div>
 
 </body>
+
+<!-- Leave the script at ze botom plese. IDK why it dos not wok at de top. -->
 <script src="js/edogos.js"></script>
 
 </html>

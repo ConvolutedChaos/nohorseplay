@@ -42,7 +42,7 @@ body {
 
 #startMenu .sidebar {
     float: left;
-    height: 375px;
+    height: 250px;
     width: 85px;
     border: 1px solid #000000;
     border-radius: 4px;
@@ -62,9 +62,11 @@ body {
     margin-right: 10px;
     margin-top: 10px;
     padding-top: 10px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
-#startMenu .searchbar {
+#startMenu #searchbar {
     margin-right: 10px;
     margin-top: 10px;
     margin-left: 18px;
@@ -105,7 +107,7 @@ body {
 }
 
 #baconExplorerIcon {
-    background-image: url(../media/img/bacon-explorer.png);
+    background-image: url(../media/img/internet-web-browser.png);
     background-size: cover;
     width: 64px;
     height: 64px;
@@ -121,11 +123,16 @@ body {
     width: 56px;
     height: 54px;
     font-size: 25px;
-    background-color: #ff0000;
+    background-color: #833939;
     border: 1px solid #000000;
     color: #ffffff;
     cursor: pointer;
     float: right;
+    transition: 0.2s;
+}
+
+.window-close-button:hover {
+    background-color: #ff0000;
 }
 
 .window-minimize-button {
@@ -139,6 +146,11 @@ body {
     color: #ffffff;
     cursor: pointer;
     float: right;
+    transition: 0.2s;
+}
+
+.window-minimize-button:hover {
+    background-color: #777777;
 }
 
 #systemSettings {
@@ -394,7 +406,7 @@ body {
 }
 
 #baconExplorerStartMenuIcon {
-    background-image: url(../media/img/bacon-explorer.png);
+    background-image: url(../media/img/internet-web-browser.png);
     background-size: cover;
     width: 64px;
     height: 64px;
@@ -473,6 +485,8 @@ body {
     font-family: serif;
     padding: 100px;
     display: none;
+    cursor: not-allowed;
+    z-index: 99999999;
 }
 
 #drawingProgramIcon {
@@ -571,6 +585,7 @@ body {
     right: 2px;
     text-decoration: none;
     color: rgb(0, 0, 128);
+    cursor: pointer;
 }
 
 #helpfulInfoBox {
@@ -606,6 +621,7 @@ body {
     padding: 0px;
     overflow: hidden;
     overflow-y: hidden;
+    z-index: 1000;
 }
 
 #mediaPlayerStartMenuIcon {
@@ -678,9 +694,8 @@ body {
 }
 
 #mediaPlayer .volume-slider input {
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
-    appearance: slider-vertical;
+    writing-mode: vertical-lr;
+    direction: rtl;
     height: 100px;
 }
 
@@ -717,4 +732,314 @@ body {
 
 .upnextbar li:hover {
     background-color: #666666;
+}
+
+#fileExplorerIcon {
+    background-image: url(../media/img/folder.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#fileExplorerIcon:hover {
+    background-color: #666666;
+}
+
+#fileExplorer {
+    width: 810px;
+    height: 590px;
+    background-color: #cccccc;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#fileExplorerStartMenuIcon {
+    background-image: url(../media/img/folder.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#debugToolsIcon {
+    background-image: url(../media/img/passwords.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#debugToolsIcon:hover {
+    background-color: #666666;
+}
+
+#debugTools {
+    width: 790px;
+    height: 590px;
+    background-color: #5351c0;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#debugToolsStartMenuIcon {
+    background-image: url(../media/img/passwords.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#calculatorIcon {
+    background-image: url(../media/img/accessories-calculator.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#calculatorIcon:hover {
+    background-color: #666666;
+}
+
+#calculator {
+    width: 300px;
+    height: 460px;
+    background-color: #3b3b3b;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+#calculatorStartMenuIcon {
+    background-image: url(../media/img/accessories-calculator.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: block;
+    border: none;
+}
+
+#calculator .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.buttons button {
+    font-size: 1.5em;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    background: #eee;
+    border-radius: 5px;
+}
+
+#calculator button:active {
+    background: #ccc;
+}
+
+#calculator .display {
+    width: 275px;
+    height: 50px;
+    text-align: right;
+    font-size: 2em;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#desktop {
+    width: 100%;
+    height: 100%;
+}
+
+#fileExplorer .content {
+    background-color: #2D2D2D;
+    color: white;
+    display: flex;
+    flex-grow: 1;
+    height: 100vh;
+    margin: 0;
+}
+
+#fileExplorer .sidebar {
+    width: 200px;
+    background-color: #1E1E1E;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+#fileExplorer .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#fileExplorer .sidebar li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+
+/*.sidebar li:hover, */
+.sidebar li.active {
+    background-color: #0c74df;
+}
+
+#fileExplorer .main-panel {
+    flex-grow: 1;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow-y: auto;
+    align-content: flex-start;
+}
+
+#fileExplorer .item {
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#fileExplorer .item img {
+    width: 64px;
+    height: 64px;
+    display: block;
+    margin: auto;
+}
+
+.toolbar {
+    background-color: #1E1E1E;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #000000;
+}
+
+.toolbar button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.bottom-toolbar {
+    background-color: #1E1E1E;
+    padding: 10px;
+    border-top: 1px solid #000000;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: #ffffff;
+}
+
+/* .bottom-toolbar #fileCount {
+    
+} */
+
+.bottom-toolbar #zoomSlider {
+    position: absolute;
+    right: 25px;
+}
+
+#shutdownIcon {
+    background-image: url(../media/img/accessories-calculator.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#shutdownIcon:hover {
+    background-color: #666666;
+}
+
+#shutdown {
+    width: 400px;
+    height: 200px;
+    background-color: #5a5a5a;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+    background: #2d2d2d;
+    color: #fff;
+}
+
+#shutdownStartMenuIcon {
+    background-image: url(../media/img/system-shutdown.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#shutdown .shutdownContent {
+    justify-content: center;
+    align-items: center;
+    height: 240px;
+}
+
+#shutdown .buttons {
+    justify-content: space-between;
+}
+
+#shutdown .shutdownContent button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#shutdown .suspend {
+    background: #555;
+    color: white;
+}
+
+#shutdown .cancel {
+    background: #555;
+    color: white;
+}
+
+#shutdown .restart {
+    background: #555;
+    color: white;
+}
+
+#shutdown .shutdown {
+    background: #d32f2f;
+    color: white;
 }
