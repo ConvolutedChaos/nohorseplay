@@ -6,28 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Dog OS</title>
     <link rel="stylesheet" href="css/login.css">
-    <script src="js/login.js"></script>
 </head>
 
 <body>
-    <button id="dropdownToggle" onclick="toggleElement();"></button>
-    <div id="shutdownModal">
-        <!-- This is the element to hide/show -->
-        <!--console.error('You can\'t turn off a webpage, you █████!')-->
-        <button id="closeModal" onclick="toggleElement();"></button>
-        <button title="Shut Down" onclick="window.close();" id="shutDown"></button>
-        <br>
-        <br>
-        <button title="restart" onclick="window.location.href='boot.html'" id="restart"></button>
+    <div class="top-bar">
+        <span id="host-os" title="YOUR operating system"></span>
+        <div class="top-right" id="time"></div>
+        <div class="power-button" onclick="togglePowerMenu();"></div>
+        <div class="power-menu" id="power-menu">
+            <button onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');">Shut Down...</button>
+            <button onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');">Restart...</button>
+        </div>
     </div>
-
-    <img class="profileBubble" src="media/img/android-chrome-192x192.png">
-
-    <form id="passwordForm">
-        <input type="text" id="username" style="display: none;" autocomplete="username" aria-hidden="true">
-        <input type="password" id="password" autocomplete="new-password">
-        <a id="submitPassword" onclick="checkPassword();"><b>&gt;</b></a>
-    </form>
+    <div class="login-container">
+        <p class="user-text">e-dog</p>
+        <form onsubmit="checkPassword(event)">
+            <input type="text" name="Username" id="Username" autocomplete="username" hidden>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Password">
+            <input type="submit" value="Login" hidden>
+            <!-- <input type="submit" value="Submit" hidden> -->
+        </form>
+    </div>
+    <script src="js/login.js"></script>
 </body>
 
 </html>

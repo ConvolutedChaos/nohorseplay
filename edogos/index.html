@@ -56,47 +56,62 @@
     </div>
 
     <div id="startMenu">
-        <div class="sidebar">
-            <div id="baconExplorerStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('baconExplorer', 'baconExplorerIcon')" title="Bacon Explorer"></div>
-
-            <div id="systemSettingsStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('systemSettings', 'systemSettingsIcon')" title="System Settings"></div>
-
-            <div id="fileExplorerStartMenuIcon" class="startMenu-icon"
-                onclick="openApp('fileExplorer', 'fileExplorerIcon')" title="File Explorer"></div>
-        </div>
-        <div id="shutdownStartMenuIcon" class="startMenu-icon" onclick="openApp('shutdown', 'shutdownIcon')"
-            title="Shutdown E-Dog OS"></div>
-        <input type="text" id="searchbar" placeholder="Search...">
-        <div class="rightbar">
-            <ul>
-                <li onclick="openApp('aboutEdogos', 'aboutEdogosIcon')"><img src="media/img/software-properties.png"
-                        alt=""> About E-Dog OS</li>
-                <li onclick="openApp('baconExplorer', 'baconExplorerIcon')"><img
-                        src="media/img/internet-web-browser.png" alt=""> Bacon Explorer</li>
-                <li onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')"><img
-                        src="media/img/system-settings-backgrounds.png" alt=""> Background Settings</li>
-                <li onclick="openApp('drawingProgram', 'drawingProgramIcon')"><img src="media/img/drawing.png" alt="">
-                    Drawing</li>
-                <li onclick="openApp('mediaPlayer', 'mediaPlayerIcon')"><img src="media/img/media-player.png" alt="">
-                    Media Player</li>
-                <li onclick="openApp('fileExplorer', 'fileExplorerIcon')"><img src="media/img/folder.png" alt="">
-                    File Explorer</li>
-                <li onclick="openApp('debugTools', 'debugToolsIcon')"><img src="media/img/passwords.png" alt="">
-                    Debug Tools</li>
-                <li onclick="openApp('calculator', 'calculatorIcon')"><img src="media/img/accessories-calculator.png"
-                        alt="">
-                    Calculator</li>
-                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
-                    System Settings</li>
-                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
-                    System Settings</li>
-                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
-                    System Settings</li>
-                <li onclick="openApp('systemSettings', 'systemSettingsIcon')"><img src="media/img/settings.png" alt="">
-                    System Settings</li>
-            </ul>
+        <div class="startMenuContent">
+            <div class="menu">
+                <input type="text" class="search" placeholder="Search...">
+                <div class="sidebar">
+                    <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');" src="media/img/internet-web-browser.png" alt="Bacon Explorer">
+                    <img onclick="toggleApp('fileExplorer', 'fileExplorerIcon');" src="media/img/folder.png" alt="Files">
+                    <img onclick="toggleApp('systemSettings', 'systemSettingsIcon');" src="media/img/settings.png" alt="System Settings">
+                    <img class="powerimg" onclick="toggleApp('shutdown', 'shutdownIcon');" src="media/img/system-shutdown.png" alt="Power">
+                </div>
+                <div class="categories">
+                    <div onclick="showCategory('all-apps')">All Applications</div>
+                    <div onclick="showCategory('accessories')">Accessories</div>
+                    <div onclick="showCategory('games')">Games</div>
+                    <div onclick="showCategory('graphics')">Graphics</div>
+                    <div onclick="showCategory('internet')">Internet</div>
+                    <div onclick="showCategory('office')">Office</div>
+                    <div onclick="showCategory('programming')">Programming</div>
+                </div>
+                <div id="all-apps" class="apps">
+                    <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img  src="media/img/software-properties.png" alt="">About E-Dog OS</div>
+                    <div onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"><img  src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
+                    <div onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon');"><img src="media/img/system-settings-backgrounds.png" alt="">Background Settings</div>
+                    <div onclick="toggleApp('calculator', 'calculatorIcon');"><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
+                    <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png" alt="">Debug Tools</div>
+                    <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img src="media/img/drawing.png" alt="">Drawing</div>
+                    <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png" alt="">File Explorer</div>
+                    <div onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon');"><img src="media/img/media-player.png" alt="">Media Player</div>
+                    <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img src="media/img/settings.png" alt="">System Settings</div>
+                </div>
+                <div id="accessories" class="apps hidden">
+                    <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
+                </div>
+                <div id="games" class="apps hidden">
+                    
+                </div>
+                <div id="graphics" class="apps hidden">
+                    <div><img src="media/img/drawing.png" alt="">Drawing</div>
+                </div>
+                <div id="internet" class="apps hidden">
+                    <div><img src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
+                </div>
+                <div id="office" class="apps hidden">
+                    <div><img src="writer.png" alt="">LibreOffice Writer</div>
+                    <div><img src="calc.png" alt="">LibreOffice Calc</div>
+                </div>
+                <div id="programming" class="apps hidden">
+                    <div><img src="vscode.png" alt="">VS Code</div>
+                    <div><img src="arduino.png" alt="">Arduino IDE</div>
+                </div>
+                <div id="soundandvideo" class="apps hidden">
+                    
+                </div>
+                <div id="preferences" class="apps hidden">
+                    <div><img src="media/img/settings.png" alt="">System Settings</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -168,7 +183,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.5">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.6">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -244,7 +259,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.5</span>
+                class="rightText">E-Dog OS v0.3.6</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -345,8 +360,11 @@
             <br>
         </div>
         <div class="toolbar">
-            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%;" onclick="goBack()" title="Back">&#11013;</button>
-            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%; transform: rotate(180deg)" onclick="goForward()" title="Forward">&#11013;</button>
+            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%;" onclick="goBack()"
+                title="Back">&#11013;</button>
+            <button
+                style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%; transform: rotate(180deg)"
+                onclick="goForward()" title="Forward">&#11013;</button>
         </div>
         <div class="content">
             <div class="sidebar">
@@ -446,8 +464,12 @@
             <div class="buttons">
                 <!-- <button class="suspend">Suspend</button> -->
                 <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
-                <button onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');" class="restart">Restart</button>
-                <button onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');" class="shutdown">Shut Down</button>
+                <button
+                    onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');"
+                    class="restart">Restart</button>
+                <button
+                    onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');"
+                    class="shutdown">Shut Down</button>
             </div>
         </div>
     </div>

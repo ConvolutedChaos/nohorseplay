@@ -400,6 +400,10 @@ function updateZoom(value) {
 
 openFolder("Home"); // Load Home by default
 
+function showCategory(category) {
+    document.querySelectorAll('.apps').forEach(appList => appList.classList.add('hidden'));
+    document.getElementById(category).classList.remove('hidden');
+}
 
 function crashSystem(errorMessage) {
     var crashScreenElement = document.getElementById("crashScreen");
