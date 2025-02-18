@@ -52,6 +52,9 @@
         <div id="shutdownIcon" class="taskbar-icon" title="Session" onclick="unminimizeApp('shutdown')">
         </div>
 
+        <div id="errorIcon" class="taskbar-icon" title="Error" onclick="unminimizeApp('error')">
+        </div>
+        <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
         <div id="date-div"></div>
     </div>
 
@@ -60,10 +63,14 @@
             <div class="menu">
                 <input type="text" class="search" placeholder="Search...">
                 <div class="sidebar">
-                    <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');" src="media/img/internet-web-browser.png" alt="Bacon Explorer">
-                    <img onclick="toggleApp('fileExplorer', 'fileExplorerIcon');" src="media/img/folder.png" alt="Files">
-                    <img onclick="toggleApp('systemSettings', 'systemSettingsIcon');" src="media/img/settings.png" alt="System Settings">
-                    <img class="powerimg" onclick="toggleApp('shutdown', 'shutdownIcon');" src="media/img/system-shutdown.png" alt="Power">
+                    <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"
+                        src="media/img/internet-web-browser.png" alt="Bacon Explorer">
+                    <img onclick="toggleApp('fileExplorer', 'fileExplorerIcon');" src="media/img/folder.png"
+                        alt="Files">
+                    <img onclick="toggleApp('systemSettings', 'systemSettingsIcon');" src="media/img/settings.png"
+                        alt="System Settings">
+                    <img class="powerimg" onclick="toggleApp('shutdown', 'shutdownIcon');"
+                        src="media/img/system-shutdown.png" alt="Power">
                 </div>
                 <div class="categories">
                     <div onclick="showCategory('all-apps')">All Applications</div>
@@ -75,21 +82,30 @@
                     <div onclick="showCategory('programming')">Programming</div>
                 </div>
                 <div id="all-apps" class="apps">
-                    <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img  src="media/img/software-properties.png" alt="">About E-Dog OS</div>
-                    <div onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"><img  src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
-                    <div onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon');"><img src="media/img/system-settings-backgrounds.png" alt="">Background Settings</div>
-                    <div onclick="toggleApp('calculator', 'calculatorIcon');"><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
-                    <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png" alt="">Debug Tools</div>
-                    <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img src="media/img/drawing.png" alt="">Drawing</div>
-                    <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png" alt="">File Explorer</div>
-                    <div onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon');"><img src="media/img/media-player.png" alt="">Media Player</div>
-                    <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img src="media/img/settings.png" alt="">System Settings</div>
+                    <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img
+                            src="media/img/software-properties.png" alt="">About E-Dog OS</div>
+                    <div onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"><img
+                            src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
+                    <div onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon');"><img
+                            src="media/img/system-settings-backgrounds.png" alt="">Background Settings</div>
+                    <div onclick="toggleApp('calculator', 'calculatorIcon');"><img
+                            src="media/img/accessories-calculator.png" alt="">Calculator</div>
+                    <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png"
+                            alt="">Debug Tools</div>
+                    <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img src="media/img/drawing.png"
+                            alt="">Drawing</div>
+                    <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png"
+                            alt="">File Explorer</div>
+                    <div onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon');"><img src="media/img/media-player.png"
+                            alt="">Media Player</div>
+                    <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img src="media/img/settings.png"
+                            alt="">System Settings</div>
                 </div>
                 <div id="accessories" class="apps hidden">
                     <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
                 </div>
                 <div id="games" class="apps hidden">
-                    
+
                 </div>
                 <div id="graphics" class="apps hidden">
                     <div><img src="media/img/drawing.png" alt="">Drawing</div>
@@ -106,7 +122,7 @@
                     <div><img src="arduino.png" alt="">Arduino IDE</div>
                 </div>
                 <div id="soundandvideo" class="apps hidden">
-                    
+
                 </div>
                 <div id="preferences" class="apps hidden">
                     <div><img src="media/img/settings.png" alt="">System Settings</div>
@@ -131,29 +147,19 @@
             <br>
             <br>
         </div>
-        <button id="historyButton" title="Back" onclick="history.back()">&lt;</button>&nbsp;<button id="historyButton"
-            title="Back" onclick="history.forward()">&gt;</button><input type="text" name="" id="addressBar"><button
-            id="addressBarSubmit" onclick="GoToWebPage()" type="submit">Go</button>
-        <br>
-        <hr>
-        <div id="bookmarksBar">
-            <span id="bookmarkButton"
-                onclick="DynamicVisitPage('nohorseplay.com'), SetWindowText('nohorseplay.com')"><img id="bookmarkIcon"
-                    src="../favicon-16x16.png">nohorseplay.com</span>
-            <span id="bookmarkButton" onclick="DynamicVisitPage('gamingbarn.net'), SetWindowText('gamingbarn.net')"><img
-                    id="bookmarkIcon" src="https://gamingbarn.net/images/favicon.ico">gamingbarn.net</span>
-            <span id="bookmarkButton"
-                onclick="DynamicVisitPage('www.wikipedia.org'), SetWindowText('www.wikipedia.org')"><img
-                    id="bookmarkIcon"
-                    src="https://www.wikipedia.org/static/favicon/wikipedia.ico">www.wikipedia.org</span>
+        <div id="baconExplorerContent">
+            <div class="navbar">
+                <button onclick="goBack()">⬅</button>
+                <button onclick="goForward()">➡</button>
+                <button onclick="reloadPage()"><span>&#8635;</span></button>
+                <button onclick="goHome()">🏠</button>
+                <input type="text" id="url" placeholder="Enter A URL" value="">
+                <button onclick="loadPage()">Go</button>
+                <button onclick="toggleBookmark()">&#9733;</button>
+            </div>
+            <div class="bookmarks" id="bookmarks"></div>
+            <iframe id="browserFrame" src="assets/baconExplorerWelcomePage.html"></iframe>
         </div>
-        <br>
-        <iframe id="webIframe" src="assets/baconExplorerWelcomePage.html" frameborder="0"></iframe>
-        <a class="helpfulInfo" onclick="window.alert(tipMessage)"><img
-                src="../icons/even_more_icons/question-frame.png"> Helpful Info</a>
-        <!-- <div id="helpfulInfoBox" class="dropShadow">
-            Tip:
-        </div> -->
     </div>
 
     <div id="systemSettings" class="draggable dropShadow">
@@ -183,7 +189,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.6">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.7">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -259,7 +265,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.6</span>
+                class="rightText">E-Dog OS v0.3.7</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -403,9 +409,10 @@
             <br>
         </div>
         <h2>Use these at your own risk.</h2>
-        <hr>
         <br>
         <button onclick="crashSystem('FORCED_CRASH');">Crash System</button>
+        <hr>
+        <button onclick="throwError('Fatal error while processing<br> request&lpar;debug&rpar;. <br>Error code: debug_01');">Throw Error</button>
     </div>
 
     <div id="calculator" class="draggable dropShadow">
@@ -472,6 +479,25 @@
                     class="shutdown">Shut Down</button>
             </div>
         </div>
+    </div>
+
+    <div id="error" class="draggable dropShadow">
+        <div class="title-bar">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('error', 'errorIcon')">&times;
+            </button>
+            <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
+                    style="font-size: 35px;">-</span>
+            </button> -->
+            <br>
+            <span class="title-bar-text">Error</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <img class="errorIcon" src="media/img/dialog-error.png">
+        <br><br><br><span style="font-size: 15pt; width: 15px;"><b id="errorContainer">Error</b></span>
+        <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
     </div>
 
     </div>

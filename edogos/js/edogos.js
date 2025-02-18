@@ -100,40 +100,93 @@ setInterval(myDateFunction, 1);
 // Update the hidden span element with the current date and time
 document.getElementById('dateandtime').innerHTML = new Date().toLocaleString('en-US');
 
-function GoToWebPage() {
-    var addressBar = document.getElementById("addressBar");
-    var webIframe = document.getElementById("webIframe");
-    var addressBarText = addressBar.value;
-    var baconExplorerTabOpen = document.getElementById("baconExplorerTabOpen");
-    // alert(addressBarText) For Debug
-    webIframe.src = "https://" + addressBarText;
-    baconExplorerTabOpen.innerText = addressBarText;
-    if (addressBarText === "") {
-        baconExplorerTabOpen.innerText = "Blank Page";
-    } else if (addressBarText === null) {
-        baconExplorerTabOpen.innerText = "Blank Page";
-    } else if (addressBarText === " ") {
-        baconExplorerTabOpen.innerText = "Blank Page";
+const homePage = "https://www.example.com";
+let bookmarks = [];
+let webHistoryStack = [];
+let webHistoryIndex = -1;
+
+function loadPage() {
+    let url = document.getElementById('url').value.trim();
+    if (!url.startsWith('http')) {
+        url = 'https://' + url;
+    }
+    document.getElementById('browserFrame').src = url;
+    addToHistory(url);
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        loadPage();
     }
 }
 
-function SearchWeb() {
-    var addressBar = document.getElementById("addressBar");
-    var webIframe = document.getElementById("webIframe");
-    var addressBarText = addressBar.value;
-    var baconExplorerTabOpen = document.getElementById("baconExplorerTabOpen");
-    // alert(addressBarText) For Debug
-    var termToSearch = "https://duckduckgo.com/?q=" + addressBarText;
-    window.open(termToSearch);
-    baconExplorerTabOpen.innerText = addressBarText;
-    if (addressBarText === "") {
-        baconExplorerTabOpen.innerText = "Blank Page";
-    } else if (addressBarText === null) {
-        baconExplorerTabOpen.innerText = "Blank Page";
-    } else if (addressBarText === " ") {
-        baconExplorerTabOpen.innerText = "Blank Page";
+function addToHistory(url) {
+    if (webHistoryIndex < webHistoryStack.length - 1) {
+        webHistoryStack = webHistoryStack.slice(0, webHistoryIndex + 1);
+    }
+    webHistoryStack.push(url);
+    webHistoryIndex++;
+}
+
+function goBack() {
+    if (webHistoryIndex > 0) {
+        webHistoryIndex--;
+        let url = webHistoryStack[webHistoryIndex];
+        document.getElementById('browserFrame').src = url;
+        document.getElementById('url').value = url;
     }
 }
+
+function goForward() {
+    if (webHistoryIndex < webHistoryStack.length - 1) {
+        webHistoryIndex++;
+        let url = webHistoryStack[webHistoryIndex];
+        document.getElementById('browserFrame').src = url;
+        document.getElementById('url').value = url;
+    }
+}
+
+function reloadPage() {
+    document.getElementById('browserFrame').src = document.getElementById('browserFrame').src;
+}
+
+function goHome() {
+    document.getElementById('browserFrame').src = homePage;
+    document.getElementById('url').value = homePage;
+    addToHistory(homePage);
+}
+
+function loadBookmarks() {
+    const bookmarksContainer = document.getElementById('bookmarks');
+    bookmarksContainer.innerHTML = '';
+    if (bookmarks.length === 0) {
+        bookmarksContainer.textContent = "For quick access, place your bookmarks here on the bookmarks bar.";
+        return;
+    }
+    bookmarks.forEach(site => {
+        const btn = document.createElement('button');
+        btn.textContent = site;
+        btn.onclick = () => {
+            document.getElementById('browserFrame').src = site;
+            document.getElementById('url').value = site;
+            addToHistory(site);
+        };
+        bookmarksContainer.appendChild(btn);
+    });
+}
+
+function toggleBookmark() {
+    const url = document.getElementById('url').value.trim();
+    const index = bookmarks.indexOf(url);
+    if (index === -1 && url) {
+        bookmarks.push(url);
+    } else if (index !== -1) {
+        bookmarks.splice(index, 1);
+    }
+    loadBookmarks();
+}
+
+loadBookmarks();
 
 const draggables = document.querySelectorAll('.draggable');
 let offsetX, offsetY, currentDraggable;
@@ -403,6 +456,12 @@ openFolder("Home"); // Load Home by default
 function showCategory(category) {
     document.querySelectorAll('.apps').forEach(appList => appList.classList.add('hidden'));
     document.getElementById(category).classList.remove('hidden');
+}
+
+function throwError(errorContent) {
+    var errorContainerElement = document.getElementById("errorContainer");
+    errorContainerElement.innerHTML = errorContent;
+    toggleApp('error', 'errorIcon');
 }
 
 function crashSystem(errorMessage) {

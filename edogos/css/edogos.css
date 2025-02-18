@@ -18,6 +18,24 @@ body {
     align-items: center;
 }
 
+#wifiIcon {
+    background-image: url(../media/img/network-wireless-signal-good-symbolic.svg);
+    background-size: cover;
+    font-size: 25px;
+    width: 48px;
+    height: 48px;
+    float: right;
+    margin: 15px;
+    position: fixed;
+    right: 280px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#wifiIcon:hover {
+    background-color: #666666;
+}
+
 #startMenuIcon {
     background-image: url(../media/img/android-chrome-192x192.png);
     background-size: cover;
@@ -167,7 +185,7 @@ body {
 }
 
 #baconExplorer {
-    width: 640px;
+    width: 800px;
     height: 640px;
     background-color: #ffffff;
     border: 1px solid #000000;
@@ -175,6 +193,7 @@ body {
     display: none;
     margin: 0px;
     text-align: center;
+    overflow: hidden;
 }
 
 #baconExplorerIcon {
@@ -252,49 +271,68 @@ body {
     background-color: #666666;
 }
 
-#baconExplorer #historyButton {
-    width: 32px;
-    height: 32px;
-    font-size: 25px;
-    margin: 2px;
-    padding: 0px;
-    background-color: #1e90ff;
-    border: 1px solid #1e90ff;
-    border-radius: 50%;
-    color: #000000;
+#baconExplorer #baconExplorerContent {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+.navbar input {
+    flex-grow: 1;
+    padding: 5px;
+    margin: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.navbar button {
+    padding: 5px 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    position: relative;
+    margin-right: 5px;
+    font-size: 15px;
 }
 
-#baconExplorer #addressBar {
-    width: 400px;
-    height: 32px;
-    font-size: 20px;
-    margin: 2px;
-    color: #000000;
+.navbar button:hover {
+    background-color: #777;
 }
 
-#baconExplorer hr {
-    margin: 0px;
+iframe {
+    height: 492px;
+    border: none;
 }
 
-#baconExplorer #addressBarSubmit {
-    width: 40px;
-    height: 32px;
-    margin: 2px;
-    color: #000000;
+.bookmarks {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    background-color: #444;
+    color: #ffffff;
 }
 
-#baconExplorer #addressBarSearch {
-    width: 80px;
-    height: 32px;
-    color: #000000;
+.bookmarks button {
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#baconExplorer #webIframe {
-    width: 100%;
-    height: 470px;
-    border: 1px solid #000000;
+.bookmarks button:hover {
+    background-color: #888;
 }
 
 .draggable {
@@ -1114,3 +1152,68 @@ body {
     background: #d32f2f;
     color: white;
 }
+
+#errorIcon {
+    background-image: url(../media/img/dialog-error.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#errorIcon:hover {
+    background-color: #666666;
+}
+
+#error {
+    width: 512px;
+    height: 256px;
+    background-color: #5a5a5a;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+    background: #2d2d2d;
+    color: #fff;
+}
+
+#error .errorIcon {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    left: 25px;
+    top: 90px;
+}
+
+#error .errorConfirm {
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #cccccc;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+#error #errorContainer {
+    max-width: 256px;
+}
+
+/* No start menu icon-it's an error */
+/* #shutdownStartMenuIcon {
+    background-image: url(../media/img/system-shutdown.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+} */
