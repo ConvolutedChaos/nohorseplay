@@ -10,6 +10,7 @@ function openStartMenu() {
     } else {
         startMenu.style.display = "block";
     }
+    bringWindowToFront(startMenu);
 }
 
 // Function to handle clicks outside the start menu
@@ -42,6 +43,8 @@ function toggleApp(appElementId, appElementPanelIconId) {
 
     console.log(appElement);
     console.log(appElementPanelIcon);
+
+    bringWindowToFront(appElement);
 
     if (appElement.style.display === "block") {
         appElement.style.display = "none";
@@ -100,7 +103,7 @@ setInterval(myDateFunction, 1);
 // Update the hidden span element with the current date and time
 document.getElementById('dateandtime').innerHTML = new Date().toLocaleString('en-US');
 
-const homePage = "https://www.example.com";
+const homePage = "https://nohorseplay.com";
 let bookmarks = [];
 let webHistoryStack = [];
 let webHistoryIndex = -1;
@@ -111,6 +114,7 @@ function loadPage() {
         url = 'https://' + url;
     }
     document.getElementById('browserFrame').src = url;
+    document.getElementById('baconExplorerTabOpen').innerText = url;
     addToHistory(url);
 }
 
@@ -153,6 +157,7 @@ function reloadPage() {
 function goHome() {
     document.getElementById('browserFrame').src = homePage;
     document.getElementById('url').value = homePage;
+    document.getElementById('baconExplorerTabOpen').innerText = homePage;
     addToHistory(homePage);
 }
 
@@ -168,6 +173,7 @@ function loadBookmarks() {
         btn.textContent = site;
         btn.onclick = () => {
             document.getElementById('browserFrame').src = site;
+            document.getElementById('baconExplorerTabOpen').innerText = site;
             document.getElementById('url').value = site;
             addToHistory(site);
         };
@@ -176,9 +182,12 @@ function loadBookmarks() {
 }
 
 function toggleBookmark() {
-    const url = document.getElementById('url').value.trim();
+    let url = document.getElementById('url').value.trim();
     const index = bookmarks.indexOf(url);
     if (index === -1 && url) {
+        if (!url.startsWith('http')) {
+            url = 'https://' + url;
+        }
         bookmarks.push(url);
     } else if (index !== -1) {
         bookmarks.splice(index, 1);
@@ -283,7 +292,8 @@ function setWallpaper4() {
 }
 
 function setWallpaper5() {
-
+    document.body.style.background = "url('/edogos/media/img/checker.png')";
+    console.log(wallpaperSuccessMessage);
 }
 
 function setWallpaper6() {
@@ -314,6 +324,12 @@ const timeDisplay = document.getElementById('time');
 const volumeButton = document.getElementById('volume');
 const volumeSlider = document.querySelector('.volume-slider');
 const volumeControl = document.getElementById('volume-control');
+
+function openMediaFile(file) {
+    video.src = file;
+    video.play();
+    playButton.innerHTML = '&#10074;&#10074;';
+}
 
 playButton.addEventListener('click', () => {
     if (video.paused) {
@@ -427,6 +443,7 @@ function openFile(fileName) {
     console.log("Attempting to open " + fileName + "...");
     if (fileName === "raisins.mp4") {
         openApp('mediaPlayer', 'mediaPlayerIcon');
+        openMediaFile('../img/vids/funy/raisins.mp4');
     }
 }
 
@@ -458,6 +475,99 @@ function showCategory(category) {
     document.getElementById(category).classList.remove('hidden');
 }
 
+function showContent(sectionId) {
+    document.querySelectorAll('.main-content > div').forEach(div => div.style.display = 'none');
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+function toggleContent(sectionId) {
+    var content = document.getElementById(sectionId);
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+}
+
+function sendCommand(command) {
+    console.log(command);
+    parseCommand(command);
+    // No need to reset the input field with the prefix here
+}
+
+function scrollToBottom() {
+    const output = document.getElementById('output');
+    output.scrollTop = output.scrollHeight;
+}
+
+function parseCommand(commandToParse) {
+    var command = commandToParse;
+    var output = document.getElementById('output');
+    var appToOpen = command.replace("open ", ""); // Extract the app name from the command
+    var phraseToEcho = command.replace("echo ", ""); // Extract the the phrase to echo from the command
+    output.innerHTML += prefixHTML + commandToParse + "<br>";
+    switch (command) {
+        case "help":
+            output.innerHTML += "Available commands: help, clear, date, time, echo, open, close, crash, error, wallpaper, tips, install, console.log(\'message\')<br>";
+            break;
+        case "clear":
+            console.clear();
+            output.innerHTML = ''; // Clear the output element
+            break;
+        case "date":
+            output.innerHTML += new Date().toLocaleDateString() + "<br>";
+            break;
+        case "time":
+            output.innerHTML += new Date().toLocaleTimeString() + "<br>";
+            break;
+        case "echo":
+            output.innerHTML += commandToParse.replace("echo ", "") + "<br>";
+            break;
+        case "exit":
+            output.innerHTML += "Exiting terminal shell...<br>";
+            toggleApp('terminal', 'terminalIcon');
+            break;
+        case "close":
+            output.innerHTML += "Close what?<br>";
+            break;
+        case "crash":
+            crashSystem("FORCED_CRASH");
+            break;
+        case "error":
+            throwError("User initiated error.");
+            break;
+        case "wallpaper":
+            setWallpaper1();
+            break;
+        case "tips":
+            output.innerHTML += tipMessage.replace(/\n/g, "<br>") + "<br>";
+            break;
+        default:
+            if (command.startsWith("open ")) {
+                if (availableApps[appToOpen] && availableApps[appToOpen].installed) {
+                    toggleApp(appToOpen, `${appToOpen}Icon`);
+                    output.innerHTML += `Opened ${availableApps[appToOpen].name}<br>`;
+                } else {
+                    output.innerHTML += `App not found or not installed: ${appToOpen}<br>`;
+                }
+            } else if (command.startsWith("install ")) {
+                var appToInstall = command.replace("install ", "");
+                if (availableApps[appToInstall]) {
+                    installApp(appToInstall);
+                    output.innerHTML += `Installed ${availableApps[appToInstall].name}<br>`;
+                } else {
+                    output.innerHTML += `App not found: ${appToInstall}<br>`;
+                }
+            } else if (command.startsWith("echo ")) {
+                output.innerHTML += phraseToEcho + "<br>";
+            } else if (command.startsWith("console.log(\'") && command.endsWith("\')")) {
+                command.startsWith("console.log(\'") && command.endsWith("\')");
+                var message = command.replace("console.log(\'", "").replace("\')", "");
+                console.log(message);
+                output.innerHTML += `Logged message: ${message}<br>`;
+            } else {
+                output.innerHTML += "Invalid command.<br>";
+            }
+    }
+    scrollToBottom();
+}
+
 function throwError(errorContent) {
     var errorContainerElement = document.getElementById("errorContainer");
     errorContainerElement.innerHTML = errorContent;
@@ -469,6 +579,247 @@ function crashSystem(errorMessage) {
     crashScreenElement.innerHTML = "A problem has been detected and E-Dog OS has been shut down to prevent damage to your computer.<br><br> " + errorMessage + "<br><br> If this is the first time you've seen this error screen, restart your computer. If this screen appears again, follow these steps:<br> Check to make sure any new hardware or software is properly installed. If this is a new installation, ask your hardware or<br> software manufacturer for any updates you might need. If problems continue, disable or remove any newly installed<br> hardware or software. Disable BIOS memory options such as caching or shadowing. If you need to eat bacon, restart<br> your computer, press F8 to select Advanced Startup Options, and then select Eat Bacon.<br><br> Technical Information:<br><br> *** STOP: 0x000000C1 (0x61AF2FF8, 0xEDCCAEBE, 0xB663BAE9, 0x8E2DF694)<br><br>";
     video.pause();
     toggleApp('crashScreen', 'crashScreen');
+}
+
+const prefixHTML = '<span id="prefix"><span class="user">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;</span>';
+// e-dog@edog-OS:~$ '
+const prefixText = '';
+
+function handleInput(event) {
+    const inputField = document.getElementById('terminalShell');
+    const prefix = prefixText;
+
+    // Prevent the user from deleting the prefix
+    if (inputField.selectionStart < prefix.length && (event.key === 'Backspace' || event.key === 'Delete')) {
+        event.preventDefault();
+    }
+
+    // Handle the Enter key to process the command
+    if (event.key === 'Enter') {
+        const command = inputField.value.slice(prefix.length); // Extract the command after the prefix
+        sendCommand(command);
+        inputField.value = prefix; // Reset the input field with the prefix
+    }
+}
+
+function populateAppStore() {
+    const availableAppsContainer = document.getElementById('availableAppsContainer');
+    availableAppsContainer.innerHTML = ''; // Clear existing apps
+
+    for (const appId in availableApps) {
+        const app = availableApps[appId];
+        const appElement = document.createElement('div');
+        appElement.classList.add('app');
+        appElement.innerHTML = `
+            <img src="${app.icon}" alt="${app.name}">
+            <span>${app.name}</span>
+            <button onclick="installApp('${appId}')">Install</button>
+        `;
+        availableAppsContainer.appendChild(appElement);
+    }
+}
+
+function populateAppStore() {
+    const availableAppsContainer = document.getElementById('availableAppsContainer');
+    availableAppsContainer.innerHTML = ''; // Clear existing apps
+
+    for (const appId in availableApps) {
+        const app = availableApps[appId];
+        const appElement = document.createElement('div');
+        appElement.classList.add('app');
+        appElement.classList.add('dropShadow');
+        const buttonLabel = app.installed ? 'Uninstall' : 'Install';
+        const buttonAction = app.installed ? `uninstallApp('${appId}')` : `installApp('${appId}')`;
+        appElement.innerHTML = `
+            <img src="${app.icon}" alt="${app.name}">
+            <span>${app.name}</span>
+            <p>${app.description}</p>
+            <button onclick="${buttonAction}">${buttonLabel}</button>
+        `;
+        availableAppsContainer.appendChild(appElement);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateStartMenu();
+    populateAppStore();
+    const inputField = document.getElementById('terminalShell');
+    inputField.value = prefixText;
+    inputField.focus(); // Set focus to the input field when the page loads
+});
+
+const availableApps = {
+    "aboutEdogos": {
+        name: "About E-Dog OS",
+        icon: "media/img/software-properties.png",
+        description: "Look at system information.",
+        installed: true
+    },
+    "appStore": {
+        name: "App Store",
+        icon: "media/img/system-software-install.png",
+        description: "Install and manage applications. Like the Google Play Store, but worse.",
+        installed: true // App Store is installed by default
+    },
+    "backgroundSettings": {
+        name: "Background Settings",
+        icon: "media/img/system-settings-backgrounds.png",
+        description: "Personalize your desktop background.",
+        installed: true
+    },
+    "baconExplorer": {
+        name: "Bacon Explorer",
+        icon: "media/img/internet-web-browser.png",
+        description: "Explore the internet. Bacon not included.",
+        installed: true
+    },
+    "calculator": {
+        name: "Calculator",
+        icon: "media/img/accessories-calculator.png",
+        description: "Do maths. Useful for cheating on tests.",
+        installed: true
+    },
+    "debugTools": {
+        name: "Debug Tools",
+        icon: "media/img/passwords.png",
+        description: "Please don't drag the computer icon into the recycle bin.",
+        installed: true
+    },
+    "detailedSystemInfo": {
+        name: "Detailed System Info",
+        icon: "media/img/software-properties.png",
+        description: "Like About E-Dog OS, but more detailed.",
+        installed: true
+    },
+    "dialUp": {
+        name: "Dial Up",
+        icon: "media/img/telephone.png",
+        description: "Connect to the internet using a dial-up modem. Good luck.",
+        installed: true
+    },
+    "drawingProgram": {
+        name: "Drawing",
+        icon: "media/img/drawing.png",
+        description: "Draw stuff, like a 5-year-old. Or a 25-year-old. Do 25-year-olds draw with crayons?",
+        installed: true
+    },
+    "fileExplorer": {
+        name: "File Explorer",
+        icon: "media/img/folder.png",
+        description: "Manage files and folders. Like Windows Explorer, but worse. Bacon still not included.",
+        installed: true
+    },
+    "mediaPlayer": {
+        name: "Media Player",
+        icon: "media/img/media-player.png",
+        description: "Watch videos and listen to music. Or just play raisins.mp4 on repeat.",
+        installed: true
+    },
+    "systemSettings": {
+        name: "System Settings",
+        icon: "media/img/settings.png",
+        description: "Configure system settings and preferences. How exciting. But you can change your wallpaper.",
+        installed: true
+    },
+    "terminal": {
+        name: "Terminal",
+        icon: "media/img/utilities-terminal.png",
+        description: "Use the command line interface. For advanced users only. Or if you want to feel like a hacker.",
+        installed: true // Terminal is installed by default
+    },
+    "textEditor": {
+        name: "Text Editor",
+        icon: "media/img/accessories-text-editor.png",
+        description: "Edit text files. Like Notepad, but worse. And with less features. Enjoy your three buttons.",
+        installed: true // Terminal is installed by default
+    }
+};
+
+function updateStartMenu() {
+    const startMenu = document.getElementById('startMenu');
+    const appsContainer = startMenu.querySelector('.apps');
+    appsContainer.innerHTML = ''; // Clear existing apps
+
+    for (const appId in availableApps) {
+        if (availableApps[appId].installed) {
+            const app = availableApps[appId];
+            const appElement = document.createElement('div');
+            appElement.innerHTML = `<img src="${app.icon}" alt="">${app.name}`;
+            appElement.onclick = () => toggleApp(appId, `${appId}Icon`);
+            appsContainer.appendChild(appElement);
+        }
+    }
+}
+
+function installApp(appId) {
+    if (availableApps[appId]) {
+        availableApps[appId].installed = true;
+        updateStartMenu();
+        populateAppStore(); // Update the app store to reflect the new installation status
+        console.log(`${availableApps[appId].name} installed.`);
+    } else {
+        console.log(`App ${appId} not found.`);
+    }
+}
+
+function uninstallApp(appId) {
+    if (availableApps[appId]) {
+        availableApps[appId].installed = false;
+        updateStartMenu();
+        populateAppStore(); // Update the app store to reflect the new installation status
+        console.log(`${availableApps[appId].name} uninstalled.`);
+    } else {
+        console.log(`App ${appId} not found.`);
+    }
+}
+
+function saveText() {
+    const text = document.getElementById('textEditorArea').value;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const anchor = document.createElement('a');
+    var fileName = prompt("Enter a name: (Extension will be added)", "document");
+    if (fileName == null || fileName == "") {
+        fileName = "document.txt";
+    }
+    anchor.download = fileName + '.txt';
+    anchor.href = window.URL.createObjectURL(blob);
+    anchor.target = '_blank';
+    anchor.style.display = 'none'; // Ensure the anchor is not visible
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+}
+
+function loadText() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'text/plain';
+    input.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('textEditorArea').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+
+function clearText() {
+    document.getElementById('textEditorArea').value = '';
+}
+
+function dialUp() {
+    var dialUpStatus = document.getElementById("dialUpStatus");
+    dialUpStatus.play();
+}
+
+function stopDialUp() {
+    var dialUpStatus = document.getElementById("dialUpStatus");
+    dialUpStatus.pause();
+    dialUpStatus.currentTime = 0;
 }
 
 // document.getElementById("userAgent").innerHTML = navigator.userAgent;

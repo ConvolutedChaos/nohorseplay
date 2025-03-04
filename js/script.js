@@ -904,3 +904,8 @@ $document.ready(function () {
 		for (var i = 0; i < plugins.lightDynamicGalleryItem.length; i++) initDynamicLightGallery(plugins.lightDynamicGalleryItem[i]);
 	}
 });
+
+console.log("What are you doing here?");
+console.log("I'm just looking around.");
+console.log("What?");
+console.log("You know what, nevermind.");

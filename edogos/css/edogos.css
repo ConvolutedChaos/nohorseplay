@@ -22,12 +22,12 @@ body {
     background-image: url(../media/img/network-wireless-signal-good-symbolic.svg);
     background-size: cover;
     font-size: 25px;
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
     float: right;
     margin: 15px;
     position: fixed;
-    right: 280px;
+    right: 290px;
     color: #ffffff;
     cursor: pointer;
 }
@@ -140,6 +140,7 @@ body {
     width: 240px;
     height: 330px;
     overflow-y: auto;
+    border: 1px solid #222222;
 }
 
 #startMenu .apps div {
@@ -398,7 +399,7 @@ iframe {
     display: none;
     margin: 0 auto;
     text-align: center;
-
+    overflow: hidden;
 }
 
 #imagePreview {
@@ -459,6 +460,11 @@ iframe {
     background-image: url(../media/img/post-room.png);
 }
 
+#setWallpaper5 {
+    background-image: url(../media/img/checker.png);
+}
+
+
 .uploadImageContainer {
     text-align: center;
     padding: 15px;
@@ -502,7 +508,7 @@ iframe {
 
 #aboutEdogos {
     width: 550px;
-    height: 425px;
+    height: 445px;
     background-color: #797979;
     border: 1px solid #000000;
     border-radius: 5px;
@@ -1153,6 +1159,11 @@ iframe {
     color: white;
 }
 
+#shutdown .logout {
+    background: #555;
+    color: white;
+}
+
 #errorIcon {
     background-image: url(../media/img/dialog-error.png);
     background-size: 100% 100%;
@@ -1217,3 +1228,413 @@ iframe {
     bottom: 10px;
     left: 15px;
 } */
+
+#detailedSystemInfoIcon {
+    background-image: url(../media/img/software-properties.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#detailedSystemInfoIcon:hover {
+    background-color: #666666;
+}
+
+#detailedSystemInfo {
+    width: 850px;
+    height: 512px;
+    background-color: #dddddd;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    overflow-y: hidden;
+    background: #2d2d2d;
+    color: #fff;
+}
+
+/* No start menu icon-uhh I just don't feel like it today-- ITS BEEN A LONG WEEK OKAY AAAAAAAAAH */
+/* #detailedSystemInfoStartMenuIcon {
+    background-image: url(../media/img/system-shutdown.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+} */
+
+.sidebar {
+    width: 250px;
+    background: #3b3b3b;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    height: 100%;
+}
+
+details {
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    padding: 5px;
+    background: white;
+}
+
+.button-collapse {
+    width: 100%;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button-collapse:hover {
+    background-color: #ccc;
+}
+
+.content {
+    display: none;
+    padding-left: 20px;
+}
+
+#hardware-overview td,
+#hardware-browser td,
+#hardware-screen td,
+#network-wifi td,
+#network-ethernet td {
+    padding: 5px;
+}
+
+#terminalIcon {
+    background-image: url(../media/img/utilities-terminal.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#terminalIcon:hover {
+    background-color: #666666;
+}
+
+#terminal {
+    width: 850px;
+    height: 512px;
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: auto;
+    overflow-y: hidden;
+    color: #fff;
+}
+
+#terminalStartMenuIcon {
+    background-image: url(../media/img/utilities-terminal.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#terminal .terminalContent {
+    height: 435px;
+    padding: 10px;
+    font-family: monospace;
+    overflow: auto;
+    overflow-x: hidden;
+    background-color: black;
+    /* Ensure the background color matches */
+    color: white;
+    /* Ensure the text color matches */
+}
+
+#terminal #output {
+    width: 100%;
+    background-color: black;
+    /* Ensure the background color matches */
+    color: white;
+    /* Ensure the text color matches */
+    margin: 0;
+    /* Remove any default margin */
+    padding: 0;
+    /* Remove any default padding */
+    font-family: monospace;
+    /* Ensure the font matches */
+}
+
+#terminal #inputContainer {
+    display: flex;
+    align-items: center;
+}
+
+#terminal #prefix {
+    color: white;
+    /* Default text color */
+    font-family: monospace;
+    /* Match the font */
+}
+
+#terminal #prefix .user {
+    color: lightgreen;
+    /* Color for the user part */
+}
+
+#terminal #prefix .host {
+    color: lightblue;
+    /* Color for the host part */
+}
+
+#terminal #terminalShell {
+    all: unset;
+    background-color: black;
+    /* Ensure the background color matches */
+    color: white;
+    /* Ensure the text color matches */
+    font-family: monospace;
+    /* Ensure the font matches */
+    border: none;
+    /* Remove any border */
+    padding: 0;
+    /* Remove any padding */
+    margin: 0;
+    /* Remove any margin */
+    outline: none;
+    /* Remove the outline */
+    flex-grow: 1;
+    /* Allow the input to grow */
+}
+
+#appStoreIcon {
+    background-image: url(../media/img/system-software-install.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#appStoreIcon:hover {
+    background-color: #666666;
+}
+
+#appStore {
+    width: 820px;
+    height: 550px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#appStoreStartMenuIcon {
+    background-image: url(../media/img/system-software-install.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#appStore .appStoreContent {
+    padding: 20px;
+    overflow: auto;
+    /* Enable scrolling when content overflows */
+    height: calc(100% - 100px);
+    /* Adjust the height to fit within the app store window */
+}
+
+#appStore .appStoreContent h2 {
+    margin-bottom: 20px;
+}
+
+#appStore .appStoreContent #availableAppsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#appStore .appStoreContent .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #272727;
+    cursor: pointer;
+}
+
+#appStore .appStoreContent .app img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 10px;
+}
+
+#appStore .appStoreContent .app span {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#appStore .appStoreContent .app p {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+#appStore .appStoreContent .app button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#appStore .appStoreContent .app button:hover {
+    background-color: #0056b3;
+}
+
+#textEditorIcon {
+    background-image: url(../media/img/accessories-text-editor.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#textEditorIcon:hover {
+    background-color: #666666;
+}
+
+#textEditor {
+    width: 780px;
+    height: 550px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#textEditorStartMenuIcon {
+    background-image: url(../media/img/accessories-text-editor.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+.textEditorContent {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 100px);
+}
+
+#textEditorArea {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e1e;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    resize: none;
+    border-radius: 5px;
+}
+
+.textEditorButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.textEditorButtons button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.textEditorButtons button:hover {
+    background-color: #0056b3;
+}
+
+#dialUpIcon {
+    background-image: url(../media/img/telephone.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#dialUpIcon:hover {
+    background-color: #666666;
+}
+
+#dialUp {
+    width: auto;
+    height: auto;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#dialUpStartMenuIcon {
+    background-image: url(../media/img/telephone.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}

@@ -54,6 +54,22 @@
 
         <div id="errorIcon" class="taskbar-icon" title="Error" onclick="unminimizeApp('error')">
         </div>
+
+        <div id="detailedSystemInfoIcon" class="taskbar-icon" title="Detailed System Info"
+            onclick="unminimizeApp('detailedSystemInfo')">
+        </div>
+
+        <div id="terminalIcon" class="taskbar-icon" title="Terminal" onclick="unminimizeApp('terminal')">
+        </div>
+
+        <div id="appStoreIcon" class="taskbar-icon" title="App Store" onclick="unminimizeApp('appStore')">
+        </div>
+
+        <div id="textEditorIcon" class="taskbar-icon" title="Text Editor" onclick="unminimizeApp('textEditor')">
+        </div>
+
+        <div id="dialUpIcon" class="taskbar-icon" title="Dial Up" onclick="unminimizeApp('dialUp')">
+        </div>
         <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
         <div id="date-div"></div>
     </div>
@@ -74,12 +90,12 @@
                 </div>
                 <div class="categories">
                     <div onclick="showCategory('all-apps')">All Applications</div>
-                    <div onclick="showCategory('accessories')">Accessories</div>
+                    <!-- <div onclick="showCategory('accessories')">Accessories</div>
                     <div onclick="showCategory('games')">Games</div>
                     <div onclick="showCategory('graphics')">Graphics</div>
                     <div onclick="showCategory('internet')">Internet</div>
                     <div onclick="showCategory('office')">Office</div>
-                    <div onclick="showCategory('programming')">Programming</div>
+                    <div onclick="showCategory('programming')">Programming</div> -->
                 </div>
                 <div id="all-apps" class="apps">
                     <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img
@@ -92,6 +108,8 @@
                             src="media/img/accessories-calculator.png" alt="">Calculator</div>
                     <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png"
                             alt="">Debug Tools</div>
+                    <div onclick="toggleApp('dialUp', 'dialUpIcon');"><img src="media/img/telephone.png" alt="">Dial Up
+                    </div>
                     <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img src="media/img/drawing.png"
                             alt="">Drawing</div>
                     <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png"
@@ -100,6 +118,12 @@
                             alt="">Media Player</div>
                     <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img src="media/img/settings.png"
                             alt="">System Settings</div>
+                    <div onclick="toggleApp('terminal', 'terminalIcon');"><img src="media/img/utilities-terminal.png"
+                            alt="">Terminal</div>
+                    <div onclick="toggleApp('appStore', 'appStoreIcon');"><img
+                            src="media/img/system-software-install.png" alt="">App Store</div>
+                    <div onclick="toggleApp('textEditor', 'textEditorIcon');"><img
+                            src="media/img/accessories-text-editor.png" alt="">Text Editor</div>
                 </div>
                 <div id="accessories" class="apps hidden">
                     <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
@@ -189,7 +213,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.7">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.8">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -265,7 +289,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.7</span>
+                class="rightText">E-Dog OS v0.3.8</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -285,6 +309,8 @@
                 class="rightText">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</span>
             <br>
             <hr>
+            <img src="../icons/apInfo.png">&nbsp;<a style="cursor: pointer; color: #000128;"
+                onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">More Info</a>
         </div>
 
     </div>
@@ -324,7 +350,7 @@
             <br>
         </div>
         <div class="video-container">
-            <video id="video" src="../img/vids/funy/raisins.mp4">Your browser does not support the video element. How do
+            <video id="video" src="media/video/test-pattern.mp4">Your browser does not support the video element. How do
                 you get by in life? Upgrade your browser.</video>
             <div class="controls">
                 <button id="rewind">&#171;</button>
@@ -389,7 +415,8 @@
         </div>
         <div class="bottom-toolbar">
             <input type="range" min="50" max="100" value="75" id="zoomSlider" oninput="updateZoom(this.value)">
-            <span id="fileCount">0 items</span>, <span id="freeSpace">Free space: 0 bytes</span>
+            <span id="fileCount">0 items</span>, <span id="freeSpace"
+                title="I think you need a bigger hard drive...">Free space: 0 bytes</span>
         </div>
     </div>
 
@@ -412,7 +439,9 @@
         <br>
         <button onclick="crashSystem('FORCED_CRASH');">Crash System</button>
         <hr>
-        <button onclick="throwError('Fatal error while processing<br> request&lpar;debug&rpar;. <br>Error code: debug_01');">Throw Error</button>
+        <button
+            onclick="throwError('Fatal error while processing<br> request&lpar;debug&rpar;. <br>Error code: debug_01');">Throw
+            Error</button>
     </div>
 
     <div id="calculator" class="draggable dropShadow">
@@ -472,11 +501,15 @@
                 <!-- <button class="suspend">Suspend</button> -->
                 <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
                 <button
+                    onclick="console.log('Attempting to log out...'), window.location.href='login.html', console.error('Log out failed!');"
+                    class="logout">Log Out</button>
+                <button
                     onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');"
                     class="restart">Restart</button>
                 <button
                     onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');"
                     class="shutdown">Shut Down</button>
+
             </div>
         </div>
     </div>
@@ -500,8 +533,262 @@
         <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
     </div>
 
+    <div id="detailedSystemInfo" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('detailedSystemInfo')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Detailed System Info</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div style="display: flex; height: 100%;">
+            <div class="sidebar">
+                <h3>Contents</h3>
+                <div>
+                    <button class="button-collapse"
+                        onclick="toggleContent('hardware'), showContent('hardware-overview')">Hardware</button>
+                    <div id="hardware" class="content">
+                        <button onclick="showContent('hardware-browser')">Browser</button>
+                        <button onclick="showContent('hardware-screen')">Screen</button>
+                    </div>
+                </div>
+                <div>
+                    <button class="button-collapse" onclick="toggleContent('network')">Network</button>
+                    <div id="network" class="content">
+                        <button onclick="showContent('network-wifi')">Wi-Fi</button>
+                        <button onclick="showContent('network-ethernet')">Ethernet</button>
+                    </div>
+                </div>
+                <!-- <div>
+                    <button class="button-collapse" onclick="toggleContent('software')">Software</button>
+                    <div id="software" class="content">
+                        <button onclick="showContent('software-os')">Operating System</button>
+                        <button onclick="showContent('software-apps')">Applications</button>
+                    </div>
+                </div> -->
+            </div>
+            <div class="main-content">
+                <div id="hardware-overview">
+                    <h2>Hardware Overview</h2>
+                    <table>
+                        <tr>
+                            <td>Operating System:</td>
+                            <td>E-Dog OS v0.3.8</td>
+                        </tr>
+                        <tr>
+                            <td>Host Operating System:</td>
+                            <td id="systemSettings1"></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 140px;">Processor:</td>
+                            <td>Intel&copy; Core&trade; i7-6700K CPU @ 4.00GHz &times; 4</td>
+                        </tr>
+                        <tr>
+                            <td>Memory:</td>
+                            <td>31.3 GiB</td>
+                        </tr>
+                        <tr>
+                            <td>Hard Drives:</td>
+                            <td>250.8 GB</td>
+                        </tr>
+                        <tr>
+                            <td>Graphics Card:</td>
+                            <td style="width: 420px;">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="hardware-browser" style="display:none;">
+                    <h2>Browser</h2>
+                    <table>
+                        <tr>
+                            <td style="width: 140px;">User Agent:</td>
+                            <td id="systemSettings2"></td>
+                        </tr>
+                        <tr>
+                            <td>Platform:</td>
+                            <td id="systemSettings6" style="width: 420px;"></td>
+                        </tr>
+                        <tr>
+                            <td><abbr title="no not THAT kind of location &gt;&colon;&rpar;">Location:</abbr></td>
+                            <td id="systemSettings7"></td>
+                        </tr>
+                        <tr>
+                            <td>Cookies Enabled:</td>
+                            <td id="systemSettings8"></td>
+                        </tr>
+                        <tr>
+                            <td>Language:</td>
+                            <td id="systemSettings9"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="hardware-screen" style="display:none;">
+                    <h2>Screen</h2>
+                    <table>
+                        <tr>
+                            <td style="width: 100px;">Width:</td>
+                            <td id="systemSettings3"></td>
+                        </tr>
+                        <tr>
+                            <td>Height:</td>
+                            <td style="width: 420px;" id="systemSettings4"></td>
+                        </tr>
+                        <tr>
+                            <td>Color Depth:</td>
+                            <td id="systemSettings5"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="network-wifi" style="display:none;">
+                    <h2>Wi-Fi</h2>
+                    <table>
+                        <tr>
+                            <td>Network Status:</td>
+                            <td>Connected</td>
+                        </tr>
+                        <tr>
+                            <td>Online:</td>
+                            <td id="systemSettings10"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="network-ethernet" style="display:none;">
+                    <h2>Ethernet</h2>
+                    <table>
+                        <tr>
+                            <td>Enabled:</td>
+                            <td>false</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="software-os" style="display:none;">
+                    <h2>Operating System</h2>
+                    <p>macOS version details...</p>
+                </div>
+                <div id="software-apps" style="display:none;">
+                    <h2>Applications</h2>
+                    <p>Installed apps...</p>
+                </div>
+            </div>
+            <script>
+                document.getElementById("systemSettings1").innerHTML = navigator.platform;
+                document.getElementById("systemSettings2").innerHTML = navigator.appVersion;
+                document.getElementById("systemSettings3").innerHTML = screen.width + "px";
+                document.getElementById("systemSettings4").innerHTML = screen.height + "px";
+                document.getElementById("systemSettings5").innerHTML = screen.colorDepth;
+                document.getElementById("systemSettings6").innerHTML = navigator.platform;
+                document.getElementById("systemSettings7").innerHTML = window.location.href;
+                document.getElementById("systemSettings8").innerHTML = navigator.cookieEnabled;
+                document.getElementById("systemSettings9").innerHTML = navigator.language;
+                document.getElementById("systemSettings10").innerHTML = navigator.onLine;
+            </script>
+        </div>
     </div>
+
+    <div id="terminal" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('terminal', 'terminalIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('terminal')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Terminal</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="terminalContent">
+            <div id="output">Type 'help' for a list of commands.<br></div>
+            <div id="inputContainer">
+                <span id="prefix">
+                    <span class="user">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;
+                </span>
+                <input type="text" id="terminalShell" onkeydown="handleInput(event)" autocomplete="off"
+                    spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <div id="appStore" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('appStore', 'appStoreIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('appStore')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">App Store</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="appStoreContent">
+            <h2>Available Apps</h2>
+            <div id="availableAppsContainer"></div>
+        </div>
+    </div>
+
+    <div id="textEditor" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('textEditor', 'textEditorIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('textEditor')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Text Editor</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <!-- Text Editor... -->
+        <div class="textEditorContent">
+            <textarea id="textEditorArea" placeholder="Start typing..." autocomplete="off"></textarea>
+            <div class="textEditorButtons">
+                <button onclick="saveText()">Save</button>
+                <button onclick="clearText()">Clear</button>
+                <button onclick="loadText()">Load</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dialUp" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('dialUp', 'dialUpIcon'), stopDialUp()">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('dialUp')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Text Editor</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="dialUpContent">
+            <button style="margin: 5px;" onclick="dialUp()">Connect</button>
+        </div>
+        <video id="dialUpStatus" src="media/video/aol.mp4"></video>
+    </div>
+
     <div id="crashScreen">
+        <h1>System Crash</hjson>
+            <p>Oh no! The system has crashed. Please restart your computer.</p>
+            <button onclick="window.location.href='boot.html'">Restart</button>
 
     </div>
 
@@ -509,5 +796,5 @@
 
 <!-- Leave the script at ze botom plese. IDK why it dos not wok at de top. -->
 <script src="js/edogos.js"></script>
-
+<!-- hi mom -->
 </html>
