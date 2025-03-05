@@ -2,16 +2,18 @@
 <html class="wow-animation" lang="en">
 
 <head>
-    <title>Links</title>
+    <title>Code Editor</title>
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport"
         content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css"
         href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
     <style>
         .ie-panel {
             display: none;
@@ -50,7 +52,7 @@
                         <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
                                 data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
                             <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
-                                        src="img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
                         </div>
                         <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
                             <ul class="rd-navbar-nav">
@@ -68,7 +70,7 @@
                                 </li>
                             </ul>
                             </li>
-                            <li class="active"><a href="links.html">Links</a></li>
+                            <li><a href="links.html">Links</a></li>
                             <li><a href="contacts.html">Contacts</a></li>
                             </ul>
                         </div>
@@ -76,69 +78,96 @@
                 </nav>
             </div>
         </header>
-        <section class="section section-lg-122 section-65 bg-default novi-background"
-            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+        <section class="section section-65 bg-default novi-background"
+            data-preset='{"title":"About us 3","category":"about","reload":false,"id":"about-us-3"}'>
             <div class="shell shell-wide">
-                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
-                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
-                <div class="range range-xs-center offset-top-0 offset-md-top-26">
-                    <div class="cell-xl-10">
-                        <h1>Links</h1>
-                        <script>
-                            function amhfitrilc() {
-                                var randomBodyParts = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomAdjectives = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomWords = ["Man", "Fallen", "River", "Lego", "City"];
-                                var eabe = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomBodyPart = randomBodyParts[Math.floor(Math.random() * 5)];
-                                var randomAdjective = randomAdjectives[Math.floor(Math.random() * 5)];
-                                var randomWord = randomWords[Math.floor(Math.random() * 5)];
-                                var rnadomeabe = randomWords[Math.floor(Math.random() * 5)];
-                                alert("A " + randomBodyPart + " has " + randomAdjective + "ed into a " + rnadomeabe + " in " + randomWord + " City!")
-                            }
-                        </script>
-                        <div class="range range-26 range-drag offset-top-34">
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="KKWS/">Krusty Krab Website</a></li>
-                                    <li><a href="#" onclick="window.open('/ChatRoom/chat.html');">Chat Room</a></li>
-                                    <li><a href="bee-movie-script.html">The entire bee movie script</a></li>
-                                </ul>
-                            </div>
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="fun/baconos/baconos.html">WTF is this???</a></li>
-                                    <li><a href="#" onclick="amhfitrilc();">A Man has fallen into the river in Lego
-                                            City</a></li>
-                                    <!-- <li style="background-color: #ff6a6a;"><a href="#" onclick="window.open('skullemoji.html')"><b>*DO NOT CLICK*</b>It will break your computer.</a></li> -->
-                                </ul>
-                            </div>
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="games/PhysicsFun/">Physics Fun</a></li>
-                                    <li><a href="games/WebCars/">Web Cars</a></li>
-                                    <li><a href="edogos/">E-Dog OS</a></li>
-                                </ul>
-                            </div>
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="404.html">404 Not Found Page</a></li>
-                                    <li><a href="old/OldWebsite/">The old homepage</a></li>
-                                    <li><a href="clock-error.html">Is your clock ahead..?</a></li>
-                                </ul>
-                            </div>
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="code-editor.html">Code Editor</a></li>
-                                    <li><a href="potion-index.html">Potion Index</a></li>
-                                    <!-- <li><a href="clock-error.html">Is your clock ahead..?</a></li> -->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="page-counter page-counter-bottom-5">
+                    <!-- <img class="img-responsive center-block"
+                        src="images/about-01-317x344.png" alt="" width="317" height="344"> -->
+                    <h1>Code Editor (<i>beta</i>)</h1>
+                    <h5>Type in some HTML code, then preview it!</h5>
                 </div>
+
             </div>
         </section>
+        <section class="section section-80 section-md-122 section-title section-title-left bg-default novi-background"
+            data-preset='{"title":"About us 4","category":"about","reload":false,"id":"about-us-4"}'>
+            <div class="section-title-text">Code Editor</div>
+
+        </section>
+        <section class="section section-92 section-lg-122 bg-default novi-background"
+            data-preset='{"title":"Team","category":"team","reload":true,"id":"team"}'>
+            <div class="shell shell-wide">
+                <style>
+                    .container {
+                        text-align: center;
+                        align-items: center;
+                    }
+
+                    .editor {
+                        text-align: left;
+                    }
+
+                    .editor-pane {
+                        flex: 1;
+                        border: 1px solid #ccc;
+                        margin: 5px;
+                    }
+
+                    #preview {
+                        height: 500px;
+                        border: 1px solid #ccc;
+                        margin: 5px;
+                        background-color: #fff;
+                        padding: 10px;
+                        overflow: auto;
+                    }
+                </style>
+                <div class="container">
+                    <div class="editor">
+                        <div class="editor-pane">
+                            <h3>HTML</h3>
+                            <textarea id="html" name="html">&lt;!DOCTYPE html>
+                &lt;html&gt;
+                &lt;head&gt;
+                &lt;title>Page Title&lt;/title&gt;
+                &lt;/head&gt;
+                &lt;body&gt;
+                
+                &lt;h1&gt;This is a Heading&lt;/h1&gt;
+                &lt;p&gt;This is a paragraph.&lt;/p&gt;
+                
+                &lt;/body&gt;
+                &lt;/html&gt;
+                </textarea>
+                        </div>
+                    </div>
+                    <div id="preview"></div>
+
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+                    <script>
+                        var htmlEditor = CodeMirror.fromTextArea(document.getElementById("html"), {
+                            lineNumbers: true,
+                            mode: "text/html",
+                            theme: "dracula"
+                        });
+
+                        function updatePreview() {
+                            var html = htmlEditor.getValue();
+                            var previewDiv = document.getElementById('preview');
+                            previewDiv.innerHTML = html; // Update the innerHTML of the preview div
+                        }
+
+                        // Update the preview whenever the content changes
+                        htmlEditor.on("change", updatePreview);
+
+                        // Initial preview update
+                        updatePreview();
+                    </script>
+                </div>
+        </section>
+
         <section class="section section-divider">
             <div class="shell shell-wide inset-left-0 inset-right-0">
                 <hr class="divider-full">
@@ -147,7 +176,7 @@
         <footer class="section page-footer novi-background"
             data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
             <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
-                <hr class="divider divider-default divider-vertical"><a href="privacy.html">Privacy policy</a>
+                <hr class="divider divider-default divider-vertical"><a href="../privacy.html">Privacy policy</a>
             </div>
         </footer>
     </div><!-- Global Mailform Output-->
