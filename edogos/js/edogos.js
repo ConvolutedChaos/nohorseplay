@@ -4,6 +4,8 @@ var wallpaperSuccessMessage = "Wallpaper successfully changed.";
 
 var tipMessage = "Tips:\n\nIf you enter in a web page address and it doesn't work, look at these tips:\n\n1) _'s server IP address could not be found.\nThis means that the page doesn't exist. Try checking your spelling.\n\n2) __ refused to connect.\nThis means that the page exists, however it cannot be viewed in an Iframe, in other words the page cannot be viewed in Bacon Explorer.\nExamples: YouTube, Google, DuckDuckGo, Amazon, Facebook."
 
+var systemSpecs = "Operating System: E-Dog OS v0.3.9<br>Processor: Intel© Core™ i7-6700K CPU @ 4.00GHz x 4<br>Memory: 31.3 GiB<br>Hard Drives: 250.8 GB<br>Graphics Card: NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]";
+
 function openStartMenu() {
     if (startMenu.style.display === "block") {
         startMenu.style.display = "none";
@@ -35,6 +37,27 @@ function showWindow(windowElement) {
         windowElement.style.display = "block";
         console.log(windowElement + " has been made visible.");
     }
+}
+
+function updateTitleBarText(windowId, newText) {
+    // Ensure windowId is an element
+    var windowElement = document.getElementById(windowId);
+    if (!windowElement) {
+        console.error(`Element with ID "${windowId}" not found.`);
+        throwError("Element with ID " + windowId + " not found.");
+        return;
+    }
+
+    // Find the title bar text element
+    var windowTitleText = windowElement.querySelector('.title-bar-text');
+    if (!windowTitleText) {
+        console.error(`Title bar text element not found in window with ID "${windowId}".`);
+        throwError("Title bar text element not found in window with ID " + windowId + ".");
+        return;
+    }
+
+    // Update the text content
+    windowTitleText.textContent = newText;
 }
 
 function toggleApp(appElementId, appElementPanelIconId) {
@@ -109,13 +132,36 @@ let webHistoryStack = [];
 let webHistoryIndex = -1;
 
 function loadPage() {
+    let noInternetPage = "assets/baconExplorerNoConnection.html";
     let url = document.getElementById('url').value.trim();
+    if (url == "") {
+        return;
+    }
     if (!url.startsWith('http')) {
         url = 'https://' + url;
     }
+    if (navigator.onLine === false) {
+        document.getElementById('browserFrame').src = noInternetPage;
+        return;
+    }
+    
+    closeStartPage();
+    document.getElementById('url').value = url;
     document.getElementById('browserFrame').src = url;
     document.getElementById('baconExplorerTabOpen').innerText = url;
     addToHistory(url);
+}
+
+function goToPage(page) {
+    if (navigator.onLine === false) {
+        document.getElementById('browserFrame').src = noInternetPage;
+        return;
+    }
+    closeStartPage();
+    document.getElementById('browserFrame').src = page;
+    document.getElementById('url').value = page;
+    document.getElementById('baconExplorerTabOpen').innerText = page;
+    addToHistory(page);
 }
 
 function handleKeyPress(event) {
@@ -155,10 +201,19 @@ function reloadPage() {
 }
 
 function goHome() {
-    document.getElementById('browserFrame').src = homePage;
-    document.getElementById('url').value = homePage;
-    document.getElementById('baconExplorerTabOpen').innerText = homePage;
-    addToHistory(homePage);
+    goToStartPage();
+    document.getElementById('url').value = "";
+    document.getElementById('baconExplorerTabOpen').innerText = "Start Page";
+    // Go to nohorseplay.com
+    // if (navigator.onLine === false) {
+    //     document.getElementById('browserFrame').src = noInternetPage;
+    //     return;
+    // }
+    // closeStartPage();
+    // document.getElementById('browserFrame').src = homePage;
+    // document.getElementById('url').value = homePage;
+    // document.getElementById('baconExplorerTabOpen').innerText = homePage;
+    // addToHistory(homePage);
 }
 
 function loadBookmarks() {
@@ -172,6 +227,10 @@ function loadBookmarks() {
         const btn = document.createElement('button');
         btn.textContent = site;
         btn.onclick = () => {
+            if (navigator.onLine === false) {
+                document.getElementById('browserFrame').src = noInternetPage;
+                return;
+            }
             document.getElementById('browserFrame').src = site;
             document.getElementById('baconExplorerTabOpen').innerText = site;
             document.getElementById('url').value = site;
@@ -193,6 +252,23 @@ function toggleBookmark() {
         bookmarks.splice(index, 1);
     }
     loadBookmarks();
+}
+
+function goToStartPage() {
+    var startPage = document.getElementById("startPage");
+    startPage.style.display = "block";
+    
+}
+
+function closeStartPage() {
+    var startPage = document.getElementById("startPage");
+    startPage.style.display = "none";
+}
+
+function changeBackground() {
+    const color = document.getElementById('bgColorPicker').value;
+    var startPage = document.getElementById("startPage");
+    startPage.style.backgroundColor = color;
 }
 
 loadBookmarks();
@@ -440,7 +516,7 @@ function openFolder(folderName) {
 }
 
 function openFile(fileName) {
-    console.log("Attempting to open " + fileName + "...");
+    console.log("Attempting to open file:" + fileName + "...");
     if (fileName === "raisins.mp4") {
         openApp('mediaPlayer', 'mediaPlayerIcon');
         openMediaFile('../img/vids/funy/raisins.mp4');
@@ -486,7 +562,9 @@ function toggleContent(sectionId) {
 }
 
 function sendCommand(command) {
-    console.log(command);
+    if (command !== "") {
+        console.log(command);
+    }
     parseCommand(command);
     // No need to reset the input field with the prefix here
 }
@@ -504,7 +582,8 @@ function parseCommand(commandToParse) {
     output.innerHTML += prefixHTML + commandToParse + "<br>";
     switch (command) {
         case "help":
-            output.innerHTML += "Available commands: help, clear, date, time, echo, open, close, crash, error, wallpaper, tips, install, console.log(\'message\')<br>";
+            // hi mom
+            output.innerHTML += "Available commands: help, clear, date, time, echo, exit, close, crash, throwError('error'), wallpaper, tips, about, open, install, console.log('message')";
             break;
         case "clear":
             console.clear();
@@ -529,14 +608,16 @@ function parseCommand(commandToParse) {
         case "crash":
             crashSystem("FORCED_CRASH");
             break;
-        case "error":
-            throwError("User initiated error.");
-            break;
         case "wallpaper":
             setWallpaper1();
             break;
         case "tips":
             output.innerHTML += tipMessage.replace(/\n/g, "<br>") + "<br>";
+            break;
+        case "":
+            break;
+        case "about":
+            output.innerHTML += systemSpecs + "<br>";
             break;
         default:
             if (command.startsWith("open ")) {
@@ -559,8 +640,18 @@ function parseCommand(commandToParse) {
             } else if (command.startsWith("console.log(\'") && command.endsWith("\')")) {
                 command.startsWith("console.log(\'") && command.endsWith("\')");
                 var message = command.replace("console.log(\'", "").replace("\')", "");
-                console.log(message);
+                if (message !== "") {
+                    console.log(message);
+                }
                 output.innerHTML += `Logged message: ${message}<br>`;
+            } else if (command.startsWith("throwError(\'") && command.endsWith("\')")) {
+                command.startsWith("throwError(\'") && command.endsWith("\')");
+                var threwError = command.replace("throwError(\'", "").replace("\')", "");
+                if (threwError !== "") {
+                    throwError(threwError);
+                    updateTitleBarText('error', threwError);
+                }
+                output.innerHTML += `Threw error: ${threwError}<br>`;
             } else {
                 output.innerHTML += "Invalid command.<br>";
             }
@@ -732,6 +823,12 @@ const availableApps = {
         icon: "media/img/accessories-text-editor.png",
         description: "Edit text files. Like Notepad, but worse. And with less features. Enjoy your three buttons.",
         installed: true // Terminal is installed by default
+    },
+    "camera": {
+        name: "Camera",
+        icon: "media/img/accessories-camera.png",
+        description: "Take pictures, i think",
+        installed: true
     }
 };
 
@@ -822,7 +919,60 @@ function stopDialUp() {
     dialUpStatus.currentTime = 0;
 }
 
+// Camera
+
+let webcamStream;
+
+function startWebcam() {
+    const video = document.getElementById('webcam');
+
+    // Request access to the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            webcamStream = stream;
+            video.srcObject = stream;
+        })
+        .catch((error) => {
+            console.error('Error accessing webcam:', error);
+            throwError('Error accessing webcam: ' + error);
+            updateTitleBarText('error', error);
+        });
+}
+
+function stopWebcam() {
+    if (webcamStream) {
+        // Stop all video tracks
+        webcamStream.getTracks().forEach((track) => track.stop());
+        webcamStream = null;
+    }
+}
+
+function takePicture() {
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('snapshotCanvas');
+    const capturedImage = document.getElementById('capturedImage');
+
+    // Set canvas dimensions to match the video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Draw the current video frame onto the canvas
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert the canvas to a data URL and display it in the img element
+    const imageData = canvas.toDataURL('image/png');
+    capturedImage.src = imageData;
+    capturedImage.style.display = 'block';
+}
+// try {
+//     screwUp();
+// } catch(err) {
+//     throwError(err);
+//     updateTitleBarText('error', err);
+// }
 // document.getElementById("userAgent").innerHTML = navigator.userAgent;
-console.log("TIP - any errors or messages that are not coming from E-Dog OS are coming from an embedded page in Bacon Explorer.")
-console.log("wait--why are you in here?")
+console.log("TIP - any errors or messages that are not coming from E-Dog OS are coming from an embedded page in Bacon Explorer.");
+console.log("wait--why are you in here?");
+console.log("hi mom");
 console.log("E-Dog OS Successfully loaded");

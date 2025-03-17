@@ -29,6 +29,7 @@
             document.body.innerHTML = `<h1>Hello, ${params.name}!</h1>`;
         }
         if (params.r) {
+            document.body.innerHTML = "Redirecting you to " + params.r;
             window.location.href = params.r;
         }
     </script>

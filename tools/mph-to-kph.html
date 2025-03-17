@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>MPH to KPH Converter</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+
+        .context {
+            margin-top: 20px;
+        }
+
+        .context ul {
+            position: relative;
+            text-align: justify;
+            left: 35%;
+        }
+
+        .context li {
+            list-style-type: disc;
+        }
+
+        input[type="checkbox"] {
+            /* Style it nicely */
+            display: inline-block;
+            position: relative;
+            background-color: #f1f1f1;
+            color: #666;
+            margin-left: 8px;
+            margin-top: 2px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .context ul {
+                position: relative;
+                text-align: justify;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="../img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="../games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="../angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="../scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="../stuff.html">Stuff</a></li>
+                            <li class="active"><a href="../tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-lg-122 section-65 bg-default novi-background"
+            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+            <div class="shell shell-wide">
+                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
+                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
+                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                    <div class="cell-xl-10">
+                        <div class="context">
+                            <h1>MPH to KPH Converter</h1>
+                            <br>
+                            <p>
+                                MPH (Miles per hour) is a unit of speed commonly used in the United States.
+                                <br>
+                                KPH (Kilometers per hour) is a unit of speed commonly used in most other countries, like
+                                Europe.
+                            </p>
+                            <p>To get KPH, multiply your MPH value by 1.60934.</p>
+
+                        </div>
+
+
+                        <section class="section section-lg-122 section-65 bg-default novi-background">
+                            <div class="shell shell-wide">
+                                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                                    <div class="cell-xl-10">
+                                        <label for="restrictions">Has Restrictions</label><input type="checkbox"
+                                            id="restrictions" name="restrictions" checked>
+                                        <p>Enter a speed in miles per hour, and then click the button to convert it to
+                                            kilometers per hour.</p>
+                                        <input type="number" id="mphInput"
+                                            style="width: 250px; padding: 5px; font-size: 20px; max-width: 500px; max-height: 350px;">
+                                        <button onclick="convertSpeed()">Convert It!</button>
+                                        <p id="mphOutput" style="margin-top: 20px; font-size: 20px; font-weight: bold;">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script>
+        var restrictionsCheck = document.getElementById("restrictions");
+        var restrictionsEnabled = true;
+        restrictionsCheck.addEventListener("change", function () {
+            restrictionsEnabled = restrictionsCheck.checked;
+        });
+        function convertSpeed() {
+            // Convert given speed from MPH to KPH
+            var mph = document.getElementById("mphInput").value;
+            var kph = mph * 1.60934;
+            if (restrictionsEnabled) {
+                if (isNaN(mph)) {
+                    document.getElementById("mphOutput").innerHTML = "That number is either too large, or too small. Please enter a valid number.";
+                    return;
+                }
+                if (mph < 0) {
+                    document.getElementById("mphOutput").innerHTML = "Please enter a positive number.";
+                    return;
+                }
+                if (mph == 0) {
+                    document.getElementById("mphOutput").innerHTML = "Please enter a valid number.";
+                    return;
+                }
+                if (mph > 10000000000000) {
+                    // Round to 1 decimal place
+                    document.getElementById("mphOutput").innerHTML = mph + " Miles per hour is equal to " + kph.toFixed(1) + " Kilometers per hour. (That's really fast)";
+                    return;
+                }
+            }
+            document.getElementById("mphOutput").innerHTML = mph + " Miles per hour is equal to " + kph + " Kilometers per hour.";
+            // Round to 1 decimal place
+            document.getElementById("mphOutput").innerHTML = mph + " Miles per hour is equal to " + kph.toFixed(1) + " Kilometers per hour.";
+        }
+    </script>
+    <script src="../js/core.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

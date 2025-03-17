@@ -70,6 +70,10 @@
 
         <div id="dialUpIcon" class="taskbar-icon" title="Dial Up" onclick="unminimizeApp('dialUp')">
         </div>
+
+        <div id="cameraIcon" class="taskbar-icon" title="Camera" onclick="unminimizeApp('camera')">
+        </div>
+
         <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
         <div id="date-div"></div>
     </div>
@@ -77,7 +81,7 @@
     <div id="startMenu">
         <div class="startMenuContent">
             <div class="menu">
-                <input type="text" class="search" placeholder="Search...">
+                <input id="Search" type="text" class="search" placeholder="Search...">
                 <div class="sidebar">
                     <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"
                         src="media/img/internet-web-browser.png" alt="Bacon Explorer">
@@ -124,6 +128,8 @@
                             src="media/img/system-software-install.png" alt="">App Store</div>
                     <div onclick="toggleApp('textEditor', 'textEditorIcon');"><img
                             src="media/img/accessories-text-editor.png" alt="">Text Editor</div>
+                    <div onclick="toggleApp('camera', 'cameraIcon');"><img src="media/img/accessories-camera.png"
+                            alt="">Camera</div>
                 </div>
                 <div id="accessories" class="apps hidden">
                     <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
@@ -137,14 +143,14 @@
                 <div id="internet" class="apps hidden">
                     <div><img src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
                 </div>
-                <div id="office" class="apps hidden">
+                <!-- <div id="office" class="apps hidden">
                     <div><img src="writer.png" alt="">LibreOffice Writer</div>
                     <div><img src="calc.png" alt="">LibreOffice Calc</div>
                 </div>
                 <div id="programming" class="apps hidden">
                     <div><img src="vscode.png" alt="">VS Code</div>
                     <div><img src="arduino.png" alt="">Arduino IDE</div>
-                </div>
+                </div> -->
                 <div id="soundandvideo" class="apps hidden">
 
                 </div>
@@ -172,17 +178,40 @@
             <br>
         </div>
         <div id="baconExplorerContent">
+            <div class="tabs">
+
+            </div>
             <div class="navbar">
-                <button onclick="goBack()">⬅</button>
-                <button onclick="goForward()">➡</button>
+                <button onclick="goBack()"><b>&lt;</b></button>
+                <button onclick="goForward()"><b>&gt;</b></button>
                 <button onclick="reloadPage()"><span>&#8635;</span></button>
                 <button onclick="goHome()">🏠</button>
                 <input type="text" id="url" placeholder="Enter A URL" value="">
                 <button onclick="loadPage()">Go</button>
                 <button onclick="toggleBookmark()">&#9733;</button>
+                <button onclick="window.alert(tipMessage);">?</button>
             </div>
             <div class="bookmarks" id="bookmarks"></div>
             <iframe id="browserFrame" src="assets/baconExplorerWelcomePage.html"></iframe>
+            <div id="startPage">
+                <h1>Welcome to Bacon Explorer</h1>
+                <hr>
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://nohorseplay.com')">Nohorseplay</a></li>
+                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://www.wikipedia.org')">Wikipedia</a></li>
+                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://www.boredbutton.com')">Bored Button</a></li>
+                </ul>
+                <hr>
+                <h2>Your Bookmarks</h2>
+                <ul id="bookmarksList">
+
+                </ul>
+                <hr>
+                <h2>Customize Background</h2>
+                <input type="color" id="bgColorPicker" value="#00aaaa">
+                <button onclick="changeBackground()">Change Background</button>
+            </div>
         </div>
     </div>
 
@@ -213,7 +242,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.8">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.9">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -241,7 +270,7 @@
         <br>
 
         <!--Window content-->
-
+        <!-- hi mom -->
         <p>Choose an image&nbsp;<img src="../icons/image.png"></p>
 
         <div class="wallpaperButtonContainer">
@@ -253,7 +282,7 @@
             <button class="setWallpaperButton" id="setWallpaper4" onclick="setWallpaper4();"
                 title="US Post office break room"></button>
             <button class="setWallpaperButton" id="setWallpaper5" onclick="setWallpaper5();"
-                title="There doesn't appear to be anything here.. :&lpar;"></button>
+                title="my eyes hurt already"></button>
             <button class="setWallpaperButton" id="setWallpaper6" onclick="setWallpaper6();"
                 title="There doesn't appear to be anything here.. :&lpar;"></button>
         </div>
@@ -289,7 +318,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.8</span>
+                class="rightText">E-Dog OS v0.3.9</span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -528,9 +557,11 @@
             <br>
             <br>
         </div>
-        <img class="errorIcon" src="media/img/dialog-error.png">
-        <br><br><br><span style="font-size: 15pt; width: 15px;"><b id="errorContainer">Error</b></span>
-        <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
+        <div class="errorContent">
+            <img class="errorIcon" src="media/img/dialog-error.png">
+            <br><br><br><span style="font-size: 15pt; width: 15px;"><b id="errorContainer">Error</b></span>
+            <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
+        </div>
     </div>
 
     <div id="detailedSystemInfo" class="draggable dropShadow">
@@ -774,7 +805,7 @@
                     style="font-size: 35px;">-</span>
             </button>
             <br>
-            <span class="title-bar-text">Text Editor</span>
+            <span class="title-bar-text">Dial Up</span>
             <br>
             <br>
             <br>
@@ -783,6 +814,31 @@
             <button style="margin: 5px;" onclick="dialUp()">Connect</button>
         </div>
         <video id="dialUpStatus" src="media/video/aol.mp4"></video>
+    </div>
+
+    <div id="camera" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('camera', 'cameraIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('camera')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Camera</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="cameraContent">
+            <video id="webcam" autoplay playsinline></video>
+            <button onclick="startWebcam()">Start Camera</button>
+            <button onclick="stopWebcam()">Stop Camera</button>
+            <button onclick="takePicture()">Take Picture</button>
+            <canvas id="snapshotCanvas" style="display: none;"></canvas>
+            <img id="capturedImage" alt="Captured Image"
+                style="display: none; margin-top: 10px; border: 1px solid #ccc;">
+        </div>
     </div>
 
     <div id="crashScreen">
@@ -797,4 +853,5 @@
 <!-- Leave the script at ze botom plese. IDK why it dos not wok at de top. -->
 <script src="js/edogos.js"></script>
 <!-- hi mom -->
+
 </html>

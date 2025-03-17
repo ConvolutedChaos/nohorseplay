@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>Epoch Time Converter</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+
+        .context {
+            margin-top: 20px;
+        }
+
+        .context ul {
+            position: relative;
+            text-align: justify;
+            left: 35%;
+        }
+
+        .context li {
+            list-style-type: disc;
+        }
+        @media screen and (max-width: 600px) {
+            .context ul {
+                position: relative;
+                text-align: justify;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="../img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="../games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="../angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="../scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="../stuff.html">Stuff</a></li>
+                            <li class="active"><a href="../tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-lg-122 section-65 bg-default novi-background"
+            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+            <div class="shell shell-wide">
+                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
+                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
+                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                    <div class="cell-xl-10">
+                        <div class="context">
+                            <h1>Epoch Time Converter</h1>
+                            <h4><i>But first, a little context...</i></h4>
+                            <p>Epoch time (also called Unix time or POSIX time) is a way computers count time.</p>
+                            <ul>
+                                <li>It started on January 1, 1970, at midnight (UTC).</li>
+                                <li>Time is measured in seconds since that moment.</li>
+                                <li>For example:</li>
+                                <li>0 = January 1, 1970, 00:00:00 UTC</li>
+                                <li>1,000,000,000 = September 9, 2001, 01:46:40 UTC</li>
+                                <li>1,700,000,000 = December 14, 2023, 17:46:40 UTC</li>
+                                <li>But, on January 19, 2038, at 03:14:08 UTC, the epoch time will reach its maximum value and reset to 0. <br> What will we do?</li>
+                            </ul>
+                            <br>
+                            <p>Current epoch time: <span id="currTimeOutput"></span></p>
+                        </div>
+
+                        <script>
+                            function currEpochTime() {
+                                // Get the current time in seconds since the epoch
+                                var currTime = Math.floor(Date.now() / 1000);
+                                var outputElement = document.getElementById("currTimeOutput");
+                                outputElement.innerHTML = currTime;
+                            }
+                            function convertEpochTime() {
+
+                                // Catch any errors, but it doesn't work so yeah......
+                                // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+                                // what??
+                                try {
+                                    // Get the epoch time from the input
+                                    var epochTime = document.getElementById("epochTimeInput").value;
+                                    var date = new Date(epochTime * 1000);
+                                    var outputElement = document.getElementById("epochTimeOutput");
+                                    outputElement.innerHTML = date;
+                                } catch (error) {
+                                    var outputElement = document.getElementById("epochTimeOutput");
+                                    outputElement.innerHTML = "Invalid input!";
+                                }
+                            }
+                            currEpochTime();
+                            setInterval(currEpochTime, 1000);
+                        </script>
+                        <section class="section section-lg-122 section-65 bg-default novi-background">
+                            <div class="shell shell-wide">
+                                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                                    <div class="cell-xl-10">
+                                        <p>Enter an epoch time below to convert it to a human-readable date and time.</p>
+                                        <p><i>For example, try entering 0, 1000000000, or 1700000000.</i></p>
+                                        <input type="number" id="epochTimeInput"
+                                            style="width: 250px; padding: 5px; font-size: 20px; max-width: 500px; max-height: 350px;">
+                                        <button onclick="convertEpochTime()">Convert It!</button>
+                                        <p id="epochTimeOutput"
+                                            style="margin-top: 20px; font-size: 20px; font-weight: bold;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script src="../js/core.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

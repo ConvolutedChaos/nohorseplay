@@ -280,6 +280,18 @@ body {
     height: 100%;
 }
 
+#baconExplorer #startPage {
+    text-align: left;
+    padding: 15px;
+    height: 500px;
+    width: 100%;
+    top: 148px;
+    left: 0px;
+    position: absolute;
+    background-color: #00aaaa;
+    z-index: 1;
+}
+
 .navbar {
     display: flex;
     align-items: center;
@@ -321,6 +333,7 @@ iframe {
     padding: 10px;
     background-color: #444;
     color: #ffffff;
+    height: 25px;
 }
 
 .bookmarks button {
@@ -1193,6 +1206,10 @@ iframe {
     color: #fff;
 }
 
+#error .errorContent {
+    padding-left: 85px;
+}
+
 #error .errorIcon {
     width: 80px;
     height: 80px;
@@ -1637,4 +1654,54 @@ details {
     position: absolute;
     bottom: 10px;
     left: 15px;
+}
+
+#cameraIcon {
+    background-image: url(../media/img/accessories-camera.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#cameraIcon:hover {
+    background-color: #666666;
+}
+
+#camera {
+    width: 640px;
+    height: 512px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#cameraStartMenuIcon {
+    background-image: url(../media/img/accessories-camera.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#camera #webcam {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+#camera #capturedImage {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px auto;
 }
