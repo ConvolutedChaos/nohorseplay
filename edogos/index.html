@@ -74,6 +74,16 @@
         <div id="cameraIcon" class="taskbar-icon" title="Camera" onclick="unminimizeApp('camera')">
         </div>
 
+        <div id="weatherIcon" class="taskbar-icon" title="Weather" onclick="unminimizeApp('weather')">
+        </div>
+
+        <div id="blockbenchIcon" class="taskbar-icon" title="Blockbench" onclick="unminimizeApp('blockbench')">
+        </div>
+
+        <div id="virtualMachinesIcon" class="taskbar-icon" title="Virtual Machines"
+            onclick="unminimizeApp('virtualMachines')">
+        </div>
+
         <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
         <div id="date-div"></div>
     </div>
@@ -198,9 +208,12 @@
                 <hr>
                 <h2>Quick Links</h2>
                 <ul>
-                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://nohorseplay.com')">Nohorseplay</a></li>
-                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://www.wikipedia.org')">Wikipedia</a></li>
-                    <li><a style="cursor: pointer; color: #001696;" onclick="closeStartPage(), goToPage('https://www.boredbutton.com')">Bored Button</a></li>
+                    <li><a style="cursor: pointer; color: #001696;"
+                            onclick="closeStartPage(), goToPage('https://nohorseplay.com')">Nohorseplay</a></li>
+                    <li><a style="cursor: pointer; color: #001696;"
+                            onclick="closeStartPage(), goToPage('https://www.wikipedia.org')">Wikipedia</a></li>
+                    <li><a style="cursor: pointer; color: #001696;"
+                            onclick="closeStartPage(), goToPage('https://www.boredbutton.com')">Bored Button</a></li>
                 </ul>
                 <hr>
                 <h2>Your Bookmarks</h2>
@@ -242,7 +255,7 @@
                 Desktop BG
             </span>
         </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS v0.3.9">
+        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS ver">
             <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
             <br>
             <span class="settingDescription">
@@ -318,7 +331,7 @@
             <br>
             <hr>
             <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS v0.3.9</span>
+                class="rightText">E-Dog OS <span id="ver"></span></span>
             <br>
             <hr>
             <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
@@ -530,13 +543,13 @@
                 <!-- <button class="suspend">Suspend</button> -->
                 <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
                 <button
-                    onclick="console.log('Attempting to log out...'), window.location.href='login.html', console.error('Log out failed!');"
+                    onclick="console.log('Attempting to log out...'), window.location.href='login.html', console.error('Log out failed!'), throwError('Log out failed!');"
                     class="logout">Log Out</button>
                 <button
-                    onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!');"
+                    onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!'), throwError('Restart failed!');"
                     class="restart">Restart</button>
                 <button
-                    onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!');"
+                    onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!'), throwError('Shutdown failed!');"
                     class="shutdown">Shut Down</button>
 
             </div>
@@ -841,6 +854,141 @@
         </div>
     </div>
 
+    <div id="weather" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close" onclick="toggleApp('weather', 'weatherIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Weather</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="weatherContent">
+            <div class="weather-header">Kearney, NE As of <span id="weatherTime"></span> CDT</div>
+            <div class="weather-info">
+                <div class="temperature">-298&deg;</div>
+                <div>Sunny</div>
+                <div>High 63&deg; - Low -459&deg;</div>
+            </div>
+            <div class="alert">BLIZZARD WARNING</div>
+            <div class="map-container">
+                <img src="../img/map2.png" alt="Weather Map">
+                <img id="mapMarker" src="../icons/new/map-blue-dot.png" alt="Map Marker">
+            </div>
+        </div>
+    </div>
+
+    <div id="blockbench" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('blockbench', 'blockbenchIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Blockbench</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <iframe src="" frameborder="0" id="blockbenchFrame" style="width: 740px; height: 550px;"></iframe>
+    </div>
+
+    <div id="virtualMachines" class="draggable dropShadow">
+        <div class="title-bar" style="text-align: center;">
+
+            <button class="window-close-button" title="Close"
+                onclick="toggleApp('virtualMachines', 'virtualMachinesIcon')">&times;
+            </button>
+            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('virtualMachines')"><span
+                    style="font-size: 35px;">-</span>
+            </button>
+            <br>
+            <span class="title-bar-text">Virtual Machines</span>
+            <br>
+            <br>
+            <br>
+        </div>
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'edogosVm')" id="defaultOpen"><img
+                    src="../android-chrome-192x192.png" alt="">E-Dog OS</button>
+            <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+            <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+        </div>
+
+        <div id="edogosVm" class="tabcontent">
+            <ul>
+                <li>
+
+                    <a
+                        onclick="spawnWindow(`E-Dog OS - Virtual Machines`, `<iframe src='boot.html' frameborder='0' style='width: 800px; height: 580px; position: absolute; top: 56px; left: 0px;'></iframe>`, '800', '600',)"><span
+                            class="play-button">&#11208;</span> Start</a>
+                </li>
+            </ul>
+            <br>
+            <div id="hardware-overview">
+                <table>
+                    <tr>
+                        <td>VM Operating System:</td>
+                        <td>E-Dog OS <span id="ver2"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 140px;">Processor:</td>
+                        <td>Intel&copy; Core&trade; i7-6700K CPU @ 4.00GHz &times; 4</td>
+                    </tr>
+                    <tr>
+                        <td>Memory:</td>
+                        <td>31.3 GiB</td>
+                    </tr>
+                    <tr>
+                        <td>Hard Drives:</td>
+                        <td>250.8 GB</td>
+                    </tr>
+                    <tr>
+                        <td>Graphics Card:</td>
+                        <td style="width: 420px;">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="Paris" class="tabcontent">
+            <h3>Paris</h3>
+            <p>Paris is the capital of France.</p>
+        </div>
+
+        <div id="Tokyo" class="tabcontent">
+            <h3>Tokyo</h3>
+            <p>Tokyo is the capital of Japan.</p>
+        </div>
+
+        <script>
+            function openCity(evt, cityName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(cityName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // Get the element with id="defaultOpen" and click on it
+            document.getElementById("defaultOpen").click();
+        </script>
+    </div>
+
     <div id="crashScreen">
         <h1>System Crash</hjson>
             <p>Oh no! The system has crashed. Please restart your computer.</p>
@@ -852,6 +1000,8 @@
 
 <!-- Leave the script at ze botom plese. IDK why it dos not wok at de top. -->
 <script src="js/edogos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+
 <!-- hi mom -->
 
 </html>

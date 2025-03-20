@@ -1,10 +1,16 @@
+var edogosVersion = "v0.4.0";
+
+
+
 var startMenu = document.getElementById("startMenu");
 
 var wallpaperSuccessMessage = "Wallpaper successfully changed.";
 
 var tipMessage = "Tips:\n\nIf you enter in a web page address and it doesn't work, look at these tips:\n\n1) _'s server IP address could not be found.\nThis means that the page doesn't exist. Try checking your spelling.\n\n2) __ refused to connect.\nThis means that the page exists, however it cannot be viewed in an Iframe, in other words the page cannot be viewed in Bacon Explorer.\nExamples: YouTube, Google, DuckDuckGo, Amazon, Facebook."
 
-var systemSpecs = "Operating System: E-Dog OS v0.3.9<br>Processor: Intel© Core™ i7-6700K CPU @ 4.00GHz x 4<br>Memory: 31.3 GiB<br>Hard Drives: 250.8 GB<br>Graphics Card: NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]";
+var systemSpecs = "Operating System: E-Dog OS " + edogosVersion + "<br>Processor: Intel© Core™ i7-6700K CPU @ 4.00GHz x 4<br>Memory: 31.3 GiB<br>Hard Drives: 250.8 GB<br>Graphics Card: NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]";
+
+var blankPage = "about:blank"
 
 function openStartMenu() {
     if (startMenu.style.display === "block") {
@@ -67,8 +73,6 @@ function toggleApp(appElementId, appElementPanelIconId) {
     console.log(appElement);
     console.log(appElementPanelIcon);
 
-    bringWindowToFront(appElement);
-
     if (appElement.style.display === "block") {
         appElement.style.display = "none";
         appElementPanelIcon.style.display = "none";
@@ -77,6 +81,12 @@ function toggleApp(appElementId, appElementPanelIconId) {
         appElement.style.display = "block";
         appElementPanelIcon.style.display = "block";
         console.log("Opened the app. Elements made visible: " + appElementId + ", " + appElementPanelIconId + ".");
+    }
+
+    bringWindowToFront(appElement);
+    
+    if (appElementId === "blockbench") {
+        setIframeSrc("blockbenchFrame", "https://web.blockbench.net/")
     }
 }
 
@@ -142,9 +152,11 @@ function loadPage() {
     }
     if (navigator.onLine === false) {
         document.getElementById('browserFrame').src = noInternetPage;
+        closeStartPage();
+        document.getElementById('baconExplorerTabOpen').innerText = "No Internet";
         return;
     }
-    
+
     closeStartPage();
     document.getElementById('url').value = url;
     document.getElementById('browserFrame').src = url;
@@ -155,6 +167,8 @@ function loadPage() {
 function goToPage(page) {
     if (navigator.onLine === false) {
         document.getElementById('browserFrame').src = noInternetPage;
+        closeStartPage();
+        document.getElementById('baconExplorerTabOpen').innerText = "No Internet";
         return;
     }
     closeStartPage();
@@ -198,6 +212,12 @@ function goForward() {
 
 function reloadPage() {
     document.getElementById('browserFrame').src = document.getElementById('browserFrame').src;
+    if (navigator.onLine === false) {
+        document.getElementById('browserFrame').src = noInternetPage;
+        closeStartPage();
+        document.getElementById('baconExplorerTabOpen').innerText = "No Internet";
+        return;
+    }
 }
 
 function goHome() {
@@ -229,6 +249,8 @@ function loadBookmarks() {
         btn.onclick = () => {
             if (navigator.onLine === false) {
                 document.getElementById('browserFrame').src = noInternetPage;
+                closeStartPage();
+                document.getElementById('baconExplorerTabOpen').innerText = "No Internet";
                 return;
             }
             document.getElementById('browserFrame').src = site;
@@ -257,7 +279,7 @@ function toggleBookmark() {
 function goToStartPage() {
     var startPage = document.getElementById("startPage");
     startPage.style.display = "block";
-    
+
 }
 
 function closeStartPage() {
@@ -458,16 +480,20 @@ function resetVideo() {
 function appendToDisplay(value) {
     document.getElementById('display').value += value;
 }
+
 function clearDisplay() {
     document.getElementById('display').value = '';
 }
+
 function calculateResult() {
     try {
-        document.getElementById('display').value = eval(document.getElementById('display').value);
+        let expression = document.getElementById('display').value;
+        document.getElementById('display').value = math.evaluate(expression); // Safe evaluation
     } catch {
         crashSystem('INVALID_CALC_EXPRESSION');
     }
 }
+
 
 const folders = {
     "Home": [{ name: "Desktop", icon: "media/img/user-desktop.png", type: "folder" }, { name: "Documents", icon: "media/img/folder-documents.png", type: "folder" }, { name: "Downloads", icon: "media/img/folder-download.png", type: "folder" }, { name: "Music", icon: "media/img/folder-music.png", type: "folder" }, { name: "Pictures", icon: "media/img/folder-pictures.png", type: "folder" }, { name: "Videos", icon: "media/img/folder-videos.png", type: "folder" }],
@@ -661,9 +687,23 @@ function parseCommand(commandToParse) {
 
 function throwError(errorContent) {
     var errorContainerElement = document.getElementById("errorContainer");
-    errorContainerElement.innerHTML = errorContent;
+    var maxLength = 55;
+
+    if (errorContainerElement) {
+        errorContainerElement.innerHTML = errorContent;
+    } else {
+        console.warn("Error container not found.");
+        return;
+    }
+
+    let slicedErrorTitle = errorContent.length > maxLength
+        ? errorContent.slice(0, maxLength - 3) + '...'
+        : errorContent;
+
+    updateTitleBarText('error', slicedErrorTitle);
     toggleApp('error', 'errorIcon');
 }
+
 
 function crashSystem(errorMessage) {
     var crashScreenElement = document.getElementById("crashScreen");
@@ -764,10 +804,22 @@ const availableApps = {
         description: "Explore the internet. Bacon not included.",
         installed: true
     },
+    "blockbench": {
+        name: "Blockbench",
+        icon: "media/img/blockbench.png",
+        description: "Create 3D models.",
+        installed: false
+    },
     "calculator": {
         name: "Calculator",
         icon: "media/img/accessories-calculator.png",
         description: "Do maths. Useful for cheating on tests.",
+        installed: true
+    },
+    "camera": {
+        name: "Camera",
+        icon: "media/img/accessories-camera.png",
+        description: "Take pictures, i think",
         installed: true
     },
     "debugTools": {
@@ -824,10 +876,16 @@ const availableApps = {
         description: "Edit text files. Like Notepad, but worse. And with less features. Enjoy your three buttons.",
         installed: true // Terminal is installed by default
     },
-    "camera": {
-        name: "Camera",
-        icon: "media/img/accessories-camera.png",
-        description: "Take pictures, i think",
+    "virtualMachines": {
+        name: "Virtual Machines",
+        icon: "media/img/computer.png",
+        description: "Run other OSes inside E-Dog OS! Or just run E-Dog OS inside E-Dog OS inside ...",
+        installed: true // Terminal is installed by default
+    },
+    "weather": {
+        name: "Weather",
+        icon: "media/img/gnome-weather.png",
+        description: "Is it going to rain? Is it going to be sunny? Find out here.",
         installed: true
     }
 };
@@ -965,6 +1023,169 @@ function takePicture() {
     capturedImage.src = imageData;
     capturedImage.style.display = 'block';
 }
+
+function updateTime() {
+    const timeElement = document.getElementById("weatherTime");
+    if (timeElement) {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit' };
+        timeElement.textContent = now.toLocaleTimeString('en-US', options);
+    }
+}
+
+function setIframeSrc(iframeId, newSrc) {
+    var iframe = document.getElementById(iframeId)
+    iframe.src = newSrc;
+    console.log("Iframe with id of \"" + iframeId + "\" has it's source set to \"" + newSrc + "\".")
+}
+
+function startVm(vmIframe, vmUrl) {
+    try {
+        var vm = document.getElementById(vmIframe);
+        vm.src = vmUrl;
+    } catch (err) {
+        throwError(err);
+    }
+}
+
+function stopVm(vmIframe) {
+    try {
+        var vm = document.getElementById(vmIframe);
+        vm.src = blankPage;
+    } catch (err) {
+        throwError(err);
+    }
+}
+
+function makeDraggable(element) {
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    const titleBar = element.querySelector('.title-bar');
+    titleBar.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - element.getBoundingClientRect().left;
+        offsetY = e.clientY - element.getBoundingClientRect().top;
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDragging);
+    });
+
+    function drag(e) {
+        if (!isDragging) return;
+        element.style.left = `${e.clientX - offsetX}px`;
+        element.style.top = `${e.clientY - offsetY}px`;
+    }
+
+    function stopDragging() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDragging);
+    }
+}
+
+function spawnWindow(windowTitle, windowContent, windowWidth, windowHeight) {
+    if (windowWidth == null || windowHeight == null) {
+        throwError("Window loading failed! Please specify the window width or height.")
+        return;
+    }
+
+    try {
+        // Create the window container
+        const windowElement = document.createElement('div');
+        windowElement.classList.add('draggable', 'dropShadow');
+        windowElement.style.position = 'absolute';
+        windowElement.style.top = '100px';
+        windowElement.style.left = '100px';
+        windowElement.style.width = windowWidth + 'px';
+        windowElement.style.height = windowHeight + 'px';
+        windowElement.style.margin = '0px';
+        windowElement.style.padding = '0px';
+        windowElement.style.backgroundColor = '#ffffff';
+        windowElement.style.border = '1px solid #000000';
+        windowElement.style.borderRadius = '5px';
+        windowElement.style.textAlign = 'center';
+        windowElement.style.overflow = 'hidden';
+
+        // Create the title bar
+        const titleBar = document.createElement('div');
+        titleBar.classList.add('title-bar');
+        titleBar.style.backgroundColor = '#404040';
+        titleBar.style.color = '#ffffff';
+        titleBar.style.width = '100%';
+        titleBar.style.height = '56px'
+        titleBar.style.cursor = 'move';
+        titleBar.onclick = () => {
+            bringWindowToFront(windowElement)
+        };
+
+        // Add the title text
+        const titleText = document.createElement('span');
+        titleText.classList.add('title-bar-text');
+        titleText.innerHTML = '<br>' + windowTitle;
+
+
+        // Add the close button
+        const closeButton = document.createElement('button');
+        closeButton.classList.add('window-close-button');
+        closeButton.textContent = '×';
+        closeButton.style.backgroundColor = '#833939';
+        closeButton.style.border = '1px solid #000000';
+        closeButton.style.color = '#fff';
+        closeButton.style.fontSize = '25px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '0px';
+        closeButton.style.right = '0px';
+        closeButton.addEventListener('mouseover', () => {
+            closeButton.style.backgroundColor = '#ff0000'; // Change background color on hover
+        });
+        closeButton.addEventListener('mouseout', () => {
+            closeButton.style.backgroundColor = '#833939'; // Reset background color
+        });
+
+        closeButton.onclick = () => {
+            document.body.removeChild(windowElement); // Remove the window when closed
+        };
+
+        // Append title text and close button to the title bar
+        titleBar.appendChild(titleText);
+        titleBar.appendChild(closeButton);
+
+
+        // Create the content area
+        const contentArea = document.createElement('div');
+        contentArea.classList.add('window-content');
+        contentArea.style.padding = '10px';
+        contentArea.style.overflow = 'auto';
+        contentArea.innerHTML = windowContent;
+
+        // Append the title bar and content area to the window
+        windowElement.appendChild(titleBar);
+        windowElement.appendChild(contentArea);
+
+        // Append the window to the body
+        document.body.appendChild(windowElement);
+
+        // Make the window draggable
+        makeDraggable(windowElement);
+
+        
+        bringWindowToFront(windowElement)
+
+    } catch (err) {
+        throwError("Error creating a window: " + err)
+    }
+}
+
+document.getElementById("ver").textContent = edogosVersion;
+document.getElementById("ver2").textContent = edogosVersion;
+
+document.querySelector('[title="E-Dog OS ver"]').setAttribute('title', 'E-Dog OS ' + edogosVersion);
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateTime(); // Set the initial time
+    setInterval(updateTime, 1000); // Update the time every second
+});
 // try {
 //     screwUp();
 // } catch(err) {
@@ -975,4 +1196,5 @@ function takePicture() {
 console.log("TIP - any errors or messages that are not coming from E-Dog OS are coming from an embedded page in Bacon Explorer.");
 console.log("wait--why are you in here?");
 console.log("hi mom");
+console.debug("hi mom");
 console.log("E-Dog OS Successfully loaded");

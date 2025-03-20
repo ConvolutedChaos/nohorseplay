@@ -1,0 +1,278 @@
+/* Fonts */
+@font-face {
+    font-family: "Lucida Grande";
+    src: url("../LucidaGrande.woff2") format("woff2"),
+        url("../LucidaGrande.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "Lucida Grande", sans-serif;
+    background-color: #000000;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+#main-app {
+    /* Background settings */
+    background-image: url(../media/img/wallpaper-medium.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    width: 100vw;
+    height: 100vh;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: "Lucida Grande", sans-serif;
+}
+
+#menubar {
+    background-color: #e6e6e6;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+}
+
+/* Menu bar styles */
+#menu-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+}
+
+#main-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+}
+
+#main-menu img {
+    width: 18px;
+}
+
+.menu-item {
+    position: relative;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.menu-item:hover {
+    background-color: #0084ff;
+    border-radius: 0%;
+    color: #ffffff;
+}
+
+/* Submenu styles */
+.submenu {
+    color: #000;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+    min-width: 275px;
+    /* Set a minimum width to prevent wrapping */
+    white-space: nowrap;
+    /* Prevent text from wrapping to the next line */
+}
+
+.menu-item:hover .submenu {
+    display: block;
+}
+
+.submenu-item {
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.submenu-item:hover {
+    background-color: #e0e0e0;
+}
+
+#menubar #spacer {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Dock container */
+#dock {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(190, 190, 190, 0.5);
+    padding: 10px 20px;
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+/* Dock icons */
+.dock-icon {
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+}
+
+/* Hover effect for dock icons */
+.dock-icon:active {
+    filter: brightness(0.8);
+    /* Brighten the icon */
+}
+
+/* Dock divider */
+.dock-divider {
+    width: 2px;
+    height: 64px;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Light gray divider */
+    margin: 0 10px;
+    /* Add spacing around the divider */
+}
+
+/* Dock icon container */
+.dock-icon-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 64px;
+    /* height: 80px; */
+    /* Extra space for the indicator */
+}
+
+/* Dropdown container */
+/* Dropdown container */
+#currentAppOpen {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 150px;
+}
+
+/* Dropdown menu items */
+.dropdown-menu li {
+    padding: 5px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dropdown-menu li:hover {
+    background-color: #e0e0e0;
+}
+
+/* Show the dropdown menu when hovering over the dropdown */
+#currentAppOpen:hover .dropdown-menu {
+    display: block;
+}
+
+.title-bar {
+    background-color: #404040;
+    width: 100%;
+    height: 32px;
+    cursor: move;
+}
+
+.draggable {
+    position: absolute;
+}
+
+#baconExplorerTabOpen {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.title-bar-text {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
+
+.window-close-button {
+    width: 24px;
+    height: 24px;
+    margin: 4px;
+    font-size: 25px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    float: left;
+    transition: 0.2s;
+}
+
+.window-minimize-button {
+    width: 24px;
+    height: 24px;
+    margin: 4px;
+    font-size: 35px;
+    padding-top: 0px;
+    padding-bottom: 25px;
+    background-color: #e5ff00;
+    border-radius: 50%;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    float: left;
+    transition: 0.2s;
+}
+
+#textEdit {
+    width: 800px;
+    height: 640px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: block;
+    margin: 0px;
+    text-align: center;
+    overflow: hidden;
+}
+
+#textEditIcon {
+    background-image: url(../media/img/internet-web-browser.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#textEditIcon:hover {
+    background-color: #666666;
+}

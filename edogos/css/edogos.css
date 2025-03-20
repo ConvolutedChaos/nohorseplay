@@ -1705,3 +1705,268 @@ details {
     display: block;
     margin: 10px auto;
 }
+
+#weatherIcon {
+    background-image: url(../media/img/gnome-weather.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#weatherIcon:hover {
+    background-color: #666666;
+}
+
+#weather {
+    width: 740px;
+    height: 712px;
+    /* background-color: #2e2e2e; */
+    background: linear-gradient(to bottom, #4facfe, #00f2fe);
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#weatherStartMenuIcon {
+    background-image: url(../media/img/gnome-weather.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#weather .weatherContent {
+    width: 400px;
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+#weather .weather-header {
+    background: linear-gradient(to right, #008CFF, #00BFFF);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#weather .temperature {
+    font-size: 60px;
+    text-align: center;
+    color: #fff;
+    margin: 10px 0;
+}
+
+#weather .weather-info {
+    padding: 20px;
+    text-align: center;
+    background: #008CFF;
+    color: white;
+}
+
+#weather .alert {
+    background: red;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#weather .map-container {
+    background: #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+#weather .map-container img {
+    width: 350px;
+    height: 350px;
+}
+
+#weather .map-container #mapMarker {
+    position: absolute;
+    width: 48px;
+    height: auto;
+    left: 50%;
+    top: 75%;
+}
+
+#blockbenchIcon {
+    background-image: url(../media/img/blockbench.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#blockbenchIcon:hover {
+    background-color: #666666;
+}
+
+#blockbench {
+    width: 740px;
+    height: 612px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#blockbenchStartMenuIcon {
+    background-image: url(../media/img/blockbench.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#virtualMachinesIcon {
+    background-image: url(../media/img/computer.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#virtualMachinesIcon:hover {
+    background-color: #666666;
+}
+
+#virtualMachines {
+    width: 800px;
+    height: 612px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#virtualMachinesStartMenuIcon {
+    background-image: url(../media/img/computer.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#virtualMachines .tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 30%;
+    height: 500px;
+}
+
+/* Change background color of buttons on hover */
+#virtualMachines .tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+#virtualMachines .tab button.active {
+    background-color: #ccc;
+}
+
+.tablinks {
+    display: flex;
+    /* Use Flexbox for alignment */
+    align-items: center;
+    /* Vertically center the content */
+    justify-content: center;
+    /* Horizontally center the content */
+    gap: 8px;
+    /* Add spacing between the image and text */
+    padding: 10px 15px;
+    /* Add padding for better spacing */
+    border: none;
+    /* Remove default button border */
+    background-color: #f0f0f0;
+    /* Set a background color */
+    border-radius: 5px;
+    /* Add rounded corners */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    font-size: 25px;
+    /* Adjust font size */
+    text-align: center;
+    /* Ensure text is centered */
+    width: 100%;
+    /* Make the button take up the full width of its container */
+    box-sizing: border-box;
+    /* Include padding and border in the width calculation */
+    font-weight: bold;
+}
+
+.tablinks img {
+    width: 48px;
+    /* Set the image width */
+    height: 48px;
+    /* Set the image height */
+}
+
+
+/* Style the tab content */
+#virtualMachines .tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 66%;
+    border-left: none;
+    height: 500px;
+}
+
+#virtualMachines ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+#virtualMachines li {
+    float: left;
+}
+
+#virtualMachines .play-button {
+    color: #00ff00;
+    font-size: 15px;
+}
+
+#virtualMachines li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#virtualMachines li a:hover {
+    background-color: #111;
+    cursor: pointer;
+}
