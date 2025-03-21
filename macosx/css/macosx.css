@@ -72,6 +72,10 @@ body {
     color: #ffffff;
 }
 
+/* .menu-item img:hover {
+    filter: brightness(500%);
+} */
+
 /* Submenu styles */
 .submenu {
     color: #000;
@@ -102,7 +106,12 @@ body {
 }
 
 .submenu-item:hover {
-    background-color: #e0e0e0;
+    background-color: #0084ff;
+    color: #ffffff;
+}
+
+.submenu-item hr:hover {
+    background-color: rgba(255, 0, 0);
 }
 
 #menubar #spacer {
@@ -191,7 +200,7 @@ body {
 }
 
 .dropdown-menu li:hover {
-    background-color: #e0e0e0;
+    background-color: #0084ff;
 }
 
 /* Show the dropdown menu when hovering over the dropdown */
@@ -252,27 +261,14 @@ body {
     transition: 0.2s;
 }
 
-#textEdit {
+#safari {
     width: 800px;
     height: 640px;
     background-color: #ffffff;
     border: 1px solid #000000;
     border-radius: 5px;
-    display: block;
+    display: none;
     margin: 0px;
     text-align: center;
     overflow: hidden;
-}
-
-#textEditIcon {
-    background-image: url(../media/img/internet-web-browser.png);
-    background-size: cover;
-    width: 64px;
-    height: 64px;
-    display: none;
-    border: none;
-}
-
-#textEditIcon:hover {
-    background-color: #666666;
 }

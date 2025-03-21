@@ -1,6 +1,11 @@
 try {
     let focusedApp = "finder"; // Default focused app
 
+    var user = "Timmy Toenails";
+
+    function getUser() {
+        document.getElementById("user1").innerText = user;
+    }
 
     const draggables = document.querySelectorAll('.draggable');
     let offsetX, offsetY, currentDraggable;
@@ -174,10 +179,8 @@ try {
                 ]
             },
             {
-                name: "File", action: () => console.log("Finder > File menu clicked"), submenu: [
-                    { name: "New Folder", action: () => console.log("Finder > File > New Folder clicked") },
-                    { name: "Open", action: () => console.log("Finder > File > Open clicked") },
-                    { name: "Close", action: () => console.log("Finder > File > Close clicked") },
+                name: "File", action: () => console.log("Safavri > File menu clicked"), submenu: [
+                    { name: "About Finder", action: () => console.log("Finder > About Finder clicked") },
                 ]
             },
             {
@@ -191,32 +194,102 @@ try {
             { name: "Window", action: () => console.log("Finder > Window menu clicked") },
             { name: "Help", action: () => console.log("Finder > Help menu clicked") },
         ],
-        textEdit: [
+        safari: [
             {
-                name: "<b id='currentAppOpen'>TextEdit</b>", action: () => console.log("Finder > Finder menu clicked"), submenu: [
-                    { name: "About Finder...", action: () => console.log("Finder > About Finder clicked") },
-                    { name: "<hr>", action: () => console.log("Finder > Divider clicked") },
-                    { name: "Preferences...", action: () => console.log("Finder > Preferences clicked") },
-                    { name: "<hr>", action: () => console.log("Finder > Divider clicked") },
-                    { name: "Empty Trash...", action: () => console.log("Finder > Empty Trash clicked") },
-                    { name: "Secure Empty Trash...", action: () => console.log("Finder > Secure Empty Trash clicked") },
-
+                name: "<b id='currentAppOpen'>Safari</b>", action: () => console.log("Safari > Safari menu clicked"), submenu: [
+                    { name: "About Safari", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Report Bugs To Apple...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Preferences...", action: () => console.log("Safari > Preferences clicked") },
+                    { name: "Block Pop-Up Windows", action: () => console.log("Safari > Preferences clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Private Browsing", action: () => console.log("Safari > Empty Trash clicked") },
+                    { name: "Reset Safari...", action: () => console.log("Safari > Secure Empty Trash clicked") },
+                    { name: "Empty Cache...", action: () => console.log("Safari > Secure Empty Trash clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
                     { name: "Services", action: () => console.log("Finder > File > Services clicked") },
-
-                    { name: "Hide Finder", action: () => console.log("Finder > Hide Finder clicked") },
-                    { name: "Hide Others", action: () => console.log("Finder > Hide Others clicked") },
-                    { name: "Show All", action: () => console.log("Finder > Show All clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Hide Safari", action: () => console.log("Safari > Hide Finder clicked") },
+                    { name: "Hide Others", action: () => console.log("Safari > Hide Others clicked") },
+                    { name: "Show All", action: () => console.log("Safari > Show All clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Quit Safari", action: () => closeApp("safari") },
                 ]
             },
             {
                 name: "File", action: () => console.log("Text Editor > File menu clicked"), submenu: [
-                    { name: "New", action: () => console.log("Text Editor > File > New clicked") },
-                    { name: "Save", action: () => console.log("Text Editor > File > Save clicked") },
+                    { name: "New Window", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Open File...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Open Location...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Close Window", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Save As...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Mail Contents of This Page", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Mail Link to This Page", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Import Bookmarks...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Export Bookmarks...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Page Setup...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Print...", action: () => console.log("Safari > About Safari clicked") },
                 ]
             },
-            { name: "Edit", action: () => console.log("Text Editor > Edit menu clicked") },
-            { name: "Format", action: () => console.log("Text Editor > Format menu clicked") },
-            { name: "View", action: () => console.log("Text Editor > View menu clicked") },
+            {
+                name: "Edit", action: () => console.log("Text Editor > Edit menu clicked"), submenu: [
+                    { name: "Undo", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Redo", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Cut", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Copy", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Paste", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Delete", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Select All", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "AutoFill Form", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Find", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Spelling", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Special Characters...", action: () => console.log("Safari > About Safari clicked") },
+
+                ]
+            },
+            {
+                name: "View", action: () => console.log("Text Editor > View menu clicked"), submenu: [
+                    { name: "Hide Address Bar", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Customize Address Bar...", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Hide Bookmarks Bar", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Show Status Bar", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Stop", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Reload Page", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Make Text Bigger", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Make Text Smaller", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "View Source", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Text Encoding", action: () => console.log("Safari > About Safari clicked") },
+                ]
+            },
+            {
+                name: "History", action: () => console.log("Text Editor > View menu clicked"), submenu: [
+                    { name: "Back", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Forward", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Home", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Mark Page for SnapBack", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Page SnapBack", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "Search Results SnapBack", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Dates", action: () => console.log("Safari > About Safari clicked") },
+                    { name: "<hr>", action: () => console.log("Safari > Divider clicked") },
+                    { name: "Clear History", action: () => console.log("Safari > About Safari clicked") },
+                ]
+            },
+            { name: "Bookmarks", action: () => console.log("Text Editor > View menu clicked") },
+            { name: "Window", action: () => console.log("Text Editor > View menu clicked") },
             { name: "Help", action: () => console.log("Text Editor > Help menu clicked") },
         ],
     };
@@ -226,7 +299,7 @@ try {
     const dockApps = [
         { name: "Finder", icon: "media/img/FinderIcon_128x128x32.png", appId: "finder", isOpen: true },
         { name: "Dashboard", icon: "media/img/AppIcons/Dashboard.png", appId: "dashboard", isOpen: false },
-        { name: "Safari", icon: "media/img/compass_128x128x32.png", appId: "safari", isOpen: false },
+        { name: "Safari", icon: "media/img/compass_128x128x32.png", appId: "safari", customClick: () => openApp("safari"), isOpen: false },
         { name: "iChat", icon: "media/img/AppIcons/iChat.png", appId: "ichat", isOpen: false },
         { name: "Address Book", icon: "media/img/AppIcons/AddressBook.png", appId: "addressBook", isOpen: false },
         { name: "iTunes", icon: "media/img/AppIcons/iTunes.png", appId: "itunes", isOpen: false },
@@ -291,6 +364,8 @@ try {
         updateMenuBar("finder");
     });
 
+    getUser();
+    
     console.log("hi mom")
 } catch (error) {
     console.error(error);
