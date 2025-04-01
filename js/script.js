@@ -491,7 +491,7 @@ $document.ready(function () {
 
 	// Copyright Year
 	if (plugins.copyrightYear.length) {
-		plugins.copyrightYear.text(initialDate.getFullYear());
+		plugins.copyrightYear.text(initialDate.getFullYear() + " nohorseplay.com");
 	}
 
 	// UI To Top

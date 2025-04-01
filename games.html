@@ -33,7 +33,7 @@
 
 <body class="novi-background"><!-- IE panel-->
     <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
-                src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                src="img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
                 alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
     </div><!-- Page-->
     <div class="page text-center novi-background"><!-- Page Header-->
@@ -96,149 +96,116 @@
         <section class="section section-92 section-lg-122 bg-default novi-background"
             data-preset='{"title":"Team","category":"team","reload":true,"id":"team"}'>
             <style>
-                .range {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    /* Center horizontally */
-                    align-items: center;
-                    /* Center vertically */
+                .gallery {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 20px;
+                    max-width: 1200px;
+                    margin: auto;
                 }
 
-                .team-box {
-                    margin: 10px;
-                    /* Add some margin to space out the boxes */
-                    border: 1px solid #ccc;
-                    height: 500px;
-                    /* Add a border */
-                    border-radius: 5px;
-                    /* Optional: Add rounded corners */
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    /* Optional: Add a subtle shadow */
+                /* Card Styling */
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
                     overflow: hidden;
-                    /* Ensure content doesn't overflow the box */
+                    padding: 15px;
+                    transition: transform 0.2s ease-in-out;
                 }
 
-                .team-box-header {
-                    background-color: #f8f8f8;
-                    /* Optional: Add a background color to the header */
-                    padding: 10px;
-                    /* Optional: Add some padding to the header */
-                    border-bottom: 1px solid #ccc;
-                    /* Optional: Add a bottom border to the header */
-                }
-
-                .team-box-image img {
-                    width: 100%;
-                    /* Ensure the image takes up the full width of the container */
+                .card img {
+                    width: 480px;
                     height: auto;
-                    /* Maintain the aspect ratio of the image */
                 }
 
-                .team-box-caption {
-                    padding: 10px;
-                    /* Add some padding to the caption */
-                }
-
-                .team-box-footer {
-                    padding: 10px;
-                    /* Add some padding to the footer */
+                /* .card #coming-soon {
+                    width: 356px;
+                    height: 238px;
+                    background-color: #d4d4d4;
                     text-align: center;
-                    /* Center the button */
-                    background-color: #f8f8f8;
-                    /* Optional: Add a background color to the footer */
-                    border-top: 1px solid #ccc;
-                    /* Optional: Add a top border to the footer */
+                    font-size: 125px;
+                    font-weight: bold;
+                } */
+
+                /* .card:hover {
+                    transform: scale(1.05);
+                } */
+
+                /* 3D Model Viewer */
+                model-viewer {
+                    width: 100%;
+                    height: 250px;
+                    background-color: #ddd;
+                    border-radius: 10px;
+                }
+
+                /* Button */
+                .bbtn {
+                    display: inline-block;
+                    margin-top: 10px;
+                    padding: 8px 16px;
+                    background: #007bff;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                }
+
+                .bbtn:hover {
+                    background: #d4d4d4;
+                }
+
+                #nono {
+                    cursor: not-allowed;
+                    background: #777777;
+                    color: white;
+                }
+                
+                #nono:hover {
+                    background: #777777;
+                    text-decoration: none;
                 }
             </style>
             <div class="shell shell-wide">
                 <div class="range range-30">
-                    <div class="cell-sm-6 cell-md-4 cell-lg-3">
-                        <div class="team-box team-box-classic">
-                            <div class="team-box-header">
-                                <h5 class="team-box-name">Web Cars</h5>
-                            </div>
-                            <div class="team-box-image"><img src="img/webcars-480x321.png" alt="" width="270"
-                                    height="270">
-                            </div>
-                            <div class="team-box-caption">
-                                <p>
-                                    Web Cars is a simple car driving game. Enjoy driving around the city in your car. You can also crash into buildings, with your car's dents changing accordingly.
-                                </p>
-                            </div>
-                            <div class="team-box-footer">
-                                <a class="btn btn-default"
-                                    href="games/WebCars/">Play</a>
-                            </div>
+                    <div class="gallery">
+                        <div class="card">
+                            <img src="img/webcars-480x321.png" alt="">
+                            <h3>Web Cars</h3>
+                            <p>vroom vroom</p>
+                            <a href="games/WebCars/" class="bbtn">Play Now</a>
                         </div>
-                    </div>
-                    <div class="cell-sm-6 cell-md-4 cell-lg-3">
-                        <div class="team-box team-box-classic">
-                            <div class="team-box-header">
-                                <h5 class="team-box-name">Physics Fun</h5>
-                            </div>
-                            <div class="team-box-image"><img src="img/physicsfun-480x321.png" alt="" width="270"
-                                    height="270">
-                            </div>
-                            <div class="team-box-caption">
-                                <p>
-                                    Physics Fun is a physics-based game where you can ransack buildings with a variety of weapons. You can also pick up and throw objects.
-                                </p>
-                            </div>
-                            <div class="team-box-footer"><a class="btn btn-default"
-                                    href="games/PhysicsFun/">Play</a>
-                            </div>
+                        <div class="card">
+                            <img src="img/coming-soon.png" alt="">
+                            <h3>Web Cars V2</h3>
+                            <p>coming soon</p>
+                            <a  class="bbtn" id="nono">Coming Soon</a>
                         </div>
-                    </div>
-                    <div class="cell-sm-6 cell-md-4 cell-lg-3">
-                        <div class="team-box team-box-classic">
-                            <div class="team-box-header">
-                                <h5 class="team-box-name">Angry Birds</h5>
-                            </div>
-                            <div class="team-box-image"><img src="img/coming-soon-alt.gif" alt="" style="width: 480px; height: 235px;">
-                            </div>
-                            <div class="team-box-caption">
-                                <p>
-                                    Protect the birds from the green pigs! Shoot colored birds at the pigs with your bird-sized slingshot to destroy their structures and defeat them.
-                                </p>
-                            </div>
-                            <div class="team-box-footer"><a class="btn btn-default"
-                                    href="fun/games/AngryBirds/">Play</a>
-                            </div>
+                        <div class="card">
+                            <img src="img/physicsfun-480x321.png" alt="">
+                            <h3>Physics Fun</h3>
+                            <p>Hey, don't throw that!</p>
+                            <a href="games/PhysicsFun/" class="bbtn">Play Now</a>
                         </div>
-                    </div>
-                    <div class="cell-sm-6 cell-md-4 cell-lg-3">
-                        <div class="team-box team-box-classic">
-                            <div class="team-box-header">
-                                <h5 class="team-box-name">Basketball Simulator</h5>
-                            </div>
-                            <div class="team-box-image"><img src="img/coming-soon-alt-2.GIF" alt="" style="width: 480px; height: 235px;">
-                            </div>
-                            <div class="team-box-caption">
-                                <p>
-                                    Play the classic game with the orange ball!
-                                </p>
-                            </div>
-                            <div class="team-box-footer"><a class="btn btn-default"
-                                    href="games/BasketballSimulator/">Play</a>
-                            </div>
+                        <div class="card">
+                            <img src="img/coming-soon.png" alt="">
+                            <h3>Physics Fun V2</h3>
+                            <p>It's here!</p>
+                            <a href="games/PhysicsFunV2/" class="bbtn">Play Now</a>
                         </div>
-                    </div>
-                    <div class="cell-sm-6 cell-md-4 cell-lg-3">
-                        <div class="team-box team-box-classic">
-                            <div class="team-box-header">
-                                <h5 class="team-box-name">Tornado Simulator</h5>
-                            </div>
-                            <div class="team-box-image"><img src="img/photo-coming-soon-alt-3.GIF" alt="" style="width: 480px; height: 235px;overflow: hidden;position: relative;">
-                            </div>
-                            <div class="team-box-caption">
-                                <p>
-                                    Survive a tornado! Hide from the tornado and avoid getting pulled in.
-                                </p>
-                            </div>
-                            <div class="team-box-footer"><a class="btn btn-default"
-                                    href="games/TornadoSimulator/">Play</a>
-                            </div>
+                        <div class="card">
+                            <img src="img/basketballsimulator-480x321.png" alt="">
+                            <h3>Basketball Simulator</h3>
+                            <p>Is it rigged? I hope not.</p>
+                            <a href="games/BasketballSimulator/" class="bbtn">Play Now</a>
+                        </div>
+                        <div class="card">
+                            <img src="img/tornadosimulator-480x321.png" alt="">
+                            <h3>Tornado Simulator</h3>
+                            <p>Avoid getting taken in!</p>
+                            <a href="games/TornadoSimulator/" class="bbtn">Play Now</a>
                         </div>
                     </div>
                 </div>
