@@ -57,6 +57,10 @@ function lazyInit(element, func) {
 	$window.on('scroll', scrollHandler);
 }
 
+function teachTheUser() {
+	var teachingMessage = `Imagine you have a house, and you want it to look nice with sunlight coming through the windows and casting shadows on the floor. Instead of having to shine a flashlight into the house every time you look at it, you could just take a picture of the light and shadows and stick it onto the walls and floor. That way, it always looks like there's light in the room, even if there's no real light shining at that moment. In the ESU 10 simulator, light baking does the same thing. Instead of making your slow computer (compared to mine) calculate lighting and stuff every single time you play (which can make it super laggy), the game "bakes" the light—basically, it saves a picture of how the light looks and pastes it onto the game. This makes the game run faster while still looking good. But it only works for things that don't move, like walls and floors, because the baked light doesn’t change.`
+	window.alert(teachingMessage);
+}
 
 // Initialize All Scripts
 $document.ready(function () {

@@ -1,9 +1,9 @@
 const cacheName = "Nohorseplay-Physics Fun v2-0.2";
 const contentToCache = [
-    "Build/WebGL.loader.js",
-    "Build/WebGL.framework.js",
-    "Build/WebGL.data",
-    "Build/WebGL.wasm",
+    "Build/PhysicsFunV2.loader.js",
+    "Build/PhysicsFunV2.framework.js",
+    "Build/PhysicsFunV2.data",
+    "Build/PhysicsFunV2.wasm",
     "TemplateData/style.css"
 
 ];
