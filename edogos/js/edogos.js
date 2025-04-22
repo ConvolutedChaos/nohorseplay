@@ -84,7 +84,7 @@ function toggleApp(appElementId, appElementPanelIconId) {
     }
 
     bringWindowToFront(appElement);
-    
+
     if (appElementId === "blockbench") {
         setIframeSrc("blockbenchFrame", "https://web.blockbench.net/")
     }
@@ -1169,7 +1169,7 @@ function spawnWindow(windowTitle, windowContent, windowWidth, windowHeight) {
         // Make the window draggable
         makeDraggable(windowElement);
 
-        
+
         bringWindowToFront(windowElement)
 
     } catch (err) {
@@ -1179,6 +1179,20 @@ function spawnWindow(windowTitle, windowContent, windowWidth, windowHeight) {
 
 document.getElementById("ver").textContent = edogosVersion;
 document.getElementById("ver2").textContent = edogosVersion;
+try {
+    // This is a really big number
+    // Oh wait it says infinity
+    var reallyBigNumber = Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER * Number.MAX_SAFE_INTEGER;
+
+    // Scratch that, this is a really big number
+    var reallyBigNumber =  Number.MAX_SAFE_INTEGER - 1;
+
+    var reallyBigNumberString = reallyBigNumber.toString();
+    document.getElementById("lowestTemp").innerText = reallyBigNumber;
+} catch (err) {
+    throwError('Error! I think it\'s hot outside. error:' + err);
+    updateTitleBarText('error', err);
+}
 
 document.querySelector('[title="E-Dog OS ver"]').setAttribute('title', 'E-Dog OS ' + edogosVersion);
 

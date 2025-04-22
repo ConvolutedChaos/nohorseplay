@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>Volume Calculator</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="../img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="../games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="../angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="../scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="../stuff.html">Stuff</a></li>
+                            <li class="active"><a href="../tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-lg-122 section-65 bg-default novi-background"
+            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+            <div class="shell shell-wide">
+                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
+                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
+                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                    <div class="cell-xl-10">
+                        <h1>Volume Calculator</h1>
+                        <p class="text-italic">This is a simple volume calculator for different shapes.</p>
+                        <style>
+                            #diagram {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                margin: 20px auto;
+                                /* Optional: Adds some spacing */
+                                width: 100%;
+                                /* Ensures the container spans the page width */
+                                height: 300px;
+                                /* Adjust height as needed */
+                            }
+
+                            canvas {
+                                display: block;
+                            }
+                        </style>
+                        <script>
+                            function calculateCubeVolume() {
+                                var side = document.getElementById("side").value || 0;
+                                var volume = Math.pow(side, 3);
+                                document.getElementById("cubeVolume").innerHTML = "Volume of the cube: " + volume;
+
+                                // Draw the cube diagram
+                                drawCubeDiagram(side);
+                            }
+
+                            function drawCubeDiagram(side) {
+                                var canvas = document.getElementById("cubeDiagram");
+                                var ctx = canvas.getContext("2d");
+
+                                // Clear the canvas
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                // Draw the cube
+                                ctx.strokeStyle = "#000";
+                                ctx.lineWidth = 2;
+
+                                // Highlight the front face in blue
+                                ctx.fillStyle = "rgba(0, 0, 255, 0.2)";
+                                ctx.fillRect(50, 50, 100, 100);
+
+                                // Front face
+                                ctx.strokeRect(50, 50, 100, 100);
+
+                                // Top face
+                                ctx.beginPath();
+                                ctx.moveTo(50, 50);
+                                ctx.lineTo(80, 20);
+                                ctx.lineTo(180, 20);
+                                ctx.lineTo(150, 50);
+                                ctx.closePath();
+                                ctx.stroke();
+
+                                // Side face
+                                ctx.beginPath();
+                                ctx.moveTo(150, 50);
+                                ctx.lineTo(180, 20);
+                                ctx.lineTo(180, 120);
+                                ctx.lineTo(150, 150);
+                                ctx.closePath();
+                                ctx.stroke();
+
+                                // Add labels
+                                ctx.font = "16px Arial";
+                                ctx.fillStyle = "#000";
+                                ctx.fillText("s = " + side, 110, 45); // Label for the side
+                            }
+
+                            function calculateSphereVolume() {
+                                var radius = parseFloat(document.getElementById("radius").value) || 50; // Default radius to 50 if empty
+                                var volume = (4 / 3) * Math.PI * Math.pow(radius, 3);
+                                document.getElementById("sphereVolume").innerHTML = "Volume of the sphere: " + volume.toFixed(2);
+
+                                // Draw the sphere diagram
+                                drawSphereDiagram(radius);
+                            }
+
+                            function drawSphereDiagram(radius) {
+                                var canvas = document.getElementById("sphereDiagram");
+                                var ctx = canvas.getContext("2d");
+
+                                // Clear the canvas
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                if (radius > 0) {
+                                    ctx.strokeStyle = "#000";
+                                    ctx.lineWidth = 2;
+
+                                    // Draw the sphere
+                                    ctx.beginPath();
+                                    ctx.arc(150, 150, radius, 0, Math.PI * 2);
+                                    ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
+                                    ctx.fill();
+                                    ctx.stroke();
+
+                                    // Add labels
+                                    ctx.font = "16px Arial";
+                                    ctx.fillStyle = "#000";
+                                    ctx.fillText("r = " + radius, 150 - radius / 2, 150 - radius - 10); // Label for the radius
+                                } else {
+                                    ctx.font = "16px Arial";
+                                    ctx.fillStyle = "#000";
+                                    ctx.fillText("Invalid radius", 100, 150);
+                                }
+                            }
+
+                            function calculateRectangularPrismVolume() {
+                                var length = document.getElementById("length").value || 0;
+                                var width = document.getElementById("width").value || 0;
+                                var height = document.getElementById("height").value || 0;
+                                var volume = length * width * height;
+                                document.getElementById("rectangularPrismVolume").innerHTML = "Volume of the rectangular prism: " + volume;
+                            }
+
+                            function drawRectangularPrismDiagram(length, width, height) {
+                                var canvas = document.getElementById("rectangularPrismDiagram");
+                                var ctx = canvas.getContext("2d");
+
+                                // Clear the canvas
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                // Draw the rectangular prism
+                                ctx.strokeStyle = "#000";
+                                ctx.lineWidth = 2;
+
+                                // Draw the front face
+                                ctx.fillStyle = "rgba(0, 255, 0, 0.2)";
+                                ctx.fillRect(50, 50, length, height);
+                                ctx.strokeRect(50, 50, length, height);
+
+                                // Draw the top face
+                                ctx.beginPath();
+                                ctx.moveTo(50, 50);
+                                ctx.lineTo(50 + length / 2, 50 - width / 2);
+                                ctx.lineTo(50 + length + length / 2, 50 - width / 2);
+                                ctx.lineTo(50 + length, 50);
+                                ctx.closePath();
+                                ctx.fillStyle = "rgba(255, 255, 0, 0.2)";
+                                ctx.fill();
+                                ctx.stroke();
+
+                                // Add labels
+                                ctx.font = "16px Arial";
+                                ctx.fillStyle = "#000";
+                                ctx.fillText("l = " + length + ", w = " + width + ", h = " + height, 100, 45); // Label for dimensions
+                            }
+
+                            document.addEventListener("DOMContentLoaded", function () {
+                                var typeDropdown = document.querySelector('select[name="typeDropdown"]');
+                                var calculators = document.querySelectorAll('.calculator');
+                                var cubeCanvas = document.getElementById("cubeDiagram");
+                                var sphereCanvas = document.getElementById("sphereDiagram");
+                                var rectangularPrismCanvas = document.getElementById("rectangularPrismDiagram");
+                                var radiusInput = document.getElementById("radius");
+
+                                typeDropdown.addEventListener('change', function () {
+                                    calculators.forEach(function (calculator) {
+                                        calculator.style.display = 'none';
+                                    });
+
+                                    // Hide all diagrams initially
+                                    cubeCanvas.style.display = 'none';
+                                    sphereCanvas.style.display = 'none';
+
+                                    var selectedType = typeDropdown.value;
+                                    var selectedCalculator = document.getElementById(selectedType);
+                                    if (selectedCalculator) {
+                                        selectedCalculator.style.display = 'block';
+                                    }
+
+                                    // Show and redraw the appropriate diagram
+                                    if (selectedType === "cube") {
+                                        cubeCanvas.style.display = 'block';
+                                        drawCubeDiagram(document.getElementById("side").value || 0);
+                                    } else if (selectedType === "sphere") {
+                                        sphereCanvas.style.display = 'block';
+                                        drawSphereDiagram(parseFloat(radiusInput.value) || 50); // Default radius to 50
+                                    } else if (selectedType === "rectangularPrism") {
+                                        rectangularPrismCanvas.style.display = 'block';
+                                        drawRectangularPrismDiagram(
+                                            document.getElementById("length").value || 0,
+                                            document.getElementById("width").value || 0,
+                                            document.getElementById("height").value || 0
+                                        );
+                                    }
+
+                                });
+
+                                // Redraw sphere diagram on radius input change
+                                radiusInput.addEventListener("input", function () {
+                                    drawSphereDiagram(parseFloat(radiusInput.value) || 50);
+                                });
+
+                                // Trigger change event to show the default calculator
+                                typeDropdown.dispatchEvent(new Event('change'));
+                            });
+                        </script>
+                        <section class="section section-lg-122 section-65 bg-default novi-background">
+                            <div class="shell shell-wide">
+                                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                                    <div class="cell-xl-10">
+                                        <p>Select a shape:</p>
+                                        <select name="typeDropdown" id="typeDropdown">
+                                            <option value="cube">Cube</option>
+                                            <option value="sphere">Sphere</option>
+                                            <option value="rectangularPrism">Rectangular Prism</option>
+                                            <option value="triangularPrism">Triangular Prism</option>
+                                            <option value="pyramid">Pyramid</option>
+                                        </select>
+
+                                        <!-- Always visible canvas -->
+                                        <div id="diagram">
+                                            <canvas id="cubeDiagram" width="300" height="300"
+                                                style="display: none;"></canvas>
+                                            <canvas id="sphereDiagram" width="300" height="300"
+                                                style="display: none;"></canvas>
+                                            <canvas id="rectangularPrismDiagram" width="300" height="300"
+                                                style="display: none;"></canvas>
+                                        </div>
+
+                                        <!-- Cube Calculator -->
+                                        <div id="cube" class="calculator">
+                                            <h3>Cube</h3>
+                                            <label for="side">Side Length:</label>
+                                            <input type="number" id="side" name="side" required>
+                                            <button onclick="calculateCubeVolume()">Calculate Volume</button>
+                                            <p id="cubeVolume"></p>
+                                        </div>
+
+                                        <!-- Sphere Calculator -->
+                                        <div id="sphere" class="calculator" style="display: none;">
+                                            <h3>Sphere</h3>
+                                            <label for="radius">Radius:</label>
+                                            <input type="number" id="radius" name="radius" required>
+                                            <button onclick="calculateSphereVolume()">Calculate Volume</button>
+                                            <p id="sphereVolume"></p>
+                                        </div>
+
+                                        <!-- Rectangular Prism Calculator -->
+                                        <div id="rectangularPrism" class="calculator" style="display: none;">
+                                            <h3>Rectangular Prism</h3>
+                                            <label for="length">Length:</label>
+                                            <input type="number" id="length" name="length" required>
+                                            <br>
+                                            <label for="width">Width:</label>
+                                            <input type="number" id="width" name="width" required>
+                                            <br>
+                                            <label for="height">Height:</label>
+                                            <input type="number" id="height" name="height" required>
+                                            <br>
+                                            <button onclick="calculateRectangularPrismVolume()">Calculate
+                                                Volume</button>
+                                            <p id="rectangularPrismVolume"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script src="../js/core.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
