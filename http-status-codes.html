@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>HTTP Status Codes</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="./">Home page</a></li>
+                                <li><a href="games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="stuff.html">Stuff</a></li>
+                            <li><a href="tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-65 bg-default novi-background"
+            data-preset='{"title":"About us 3","category":"about","reload":false,"id":"about-us-3"}'>
+            <div class="shell shell-wide">
+                <div class="page-counter page-counter-bottom-5">
+                    <!-- <img class="img-responsive center-block"
+                        src="images/about-01-317x344.png" alt="" width="317" height="344"> -->
+                    <h1>HTTP Status Codes</h1>
+                    <h5>Reference this when you need it.</h5>
+                </div>
+
+            </div>
+        </section>
+        <section class="section section-80 section-md-122 section-title section-title-left bg-default novi-background"
+            data-preset='{"title":"About us 4","category":"about","reload":false,"id":"about-us-4"}'>
+            <div class="section-title-text">HTTP Status Codes</div>
+
+        </section>
+        <section class="section section-92 section-lg-122 bg-default novi-background"
+            data-preset='{"title":"Team","category":"team","reload":true,"id":"team"}'>
+            <div class="shell shell-wide">
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Status Code</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 1xx Informational -->
+                        <tr>
+                            <td colspan="2"><strong>1xx - Informational</strong></td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>Continue</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>Switching Protocols</td>
+                        </tr>
+                        <tr>
+                            <td>102</td>
+                            <td>Processing (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>103</td>
+                            <td>Early Hints</td>
+                        </tr>
+
+                        <!-- 2xx Success -->
+                        <tr>
+                            <td colspan="2"><strong>2xx - Success</strong></td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>OK</td>
+                        </tr>
+                        <tr>
+                            <td>201</td>
+                            <td>Created</td>
+                        </tr>
+                        <tr>
+                            <td>202</td>
+                            <td>Accepted</td>
+                        </tr>
+                        <tr>
+                            <td>203</td>
+                            <td>Non-Authoritative Information</td>
+                        </tr>
+                        <tr>
+                            <td>204</td>
+                            <td>No Content</td>
+                        </tr>
+                        <tr>
+                            <td>205</td>
+                            <td>Reset Content</td>
+                        </tr>
+                        <tr>
+                            <td>206</td>
+                            <td>Partial Content</td>
+                        </tr>
+                        <tr>
+                            <td>207</td>
+                            <td>Multi-Status (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>208</td>
+                            <td>Already Reported (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>226</td>
+                            <td>IM Used</td>
+                        </tr>
+
+                        <!-- 3xx Redirection -->
+                        <tr>
+                            <td colspan="2"><strong>3xx - Redirection</strong></td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>Multiple Choices</td>
+                        </tr>
+                        <tr>
+                            <td>301</td>
+                            <td>Moved Permanently</td>
+                        </tr>
+                        <tr>
+                            <td>302</td>
+                            <td>Found</td>
+                        </tr>
+                        <tr>
+                            <td>303</td>
+                            <td>See Other</td>
+                        </tr>
+                        <tr>
+                            <td>304</td>
+                            <td>Not Modified</td>
+                        </tr>
+                        <tr>
+                            <td>305</td>
+                            <td>Use Proxy (deprecated)</td>
+                        </tr>
+                        <tr>
+                            <td>306</td>
+                            <td>Switch Proxy (unused)</td>
+                        </tr>
+                        <tr>
+                            <td>307</td>
+                            <td>Temporary Redirect</td>
+                        </tr>
+                        <tr>
+                            <td>308</td>
+                            <td>Permanent Redirect</td>
+                        </tr>
+
+                        <!-- 4xx Client Errors -->
+                        <tr>
+                            <td colspan="2"><strong>4xx - Client Errors</strong></td>
+                        </tr>
+                        <tr>
+                            <td>400</td>
+                            <td>Bad Request</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>Unauthorized</td>
+                        </tr>
+                        <tr>
+                            <td>402</td>
+                            <td>Payment Required (experimental)</td>
+                        </tr>
+                        <tr>
+                            <td>403</td>
+                            <td>Forbidden</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>Not Found</td>
+                        </tr>
+                        <tr>
+                            <td>405</td>
+                            <td>Method Not Allowed</td>
+                        </tr>
+                        <tr>
+                            <td>406</td>
+                            <td>Not Acceptable</td>
+                        </tr>
+                        <tr>
+                            <td>407</td>
+                            <td>Proxy Authentication Required</td>
+                        </tr>
+                        <tr>
+                            <td>408</td>
+                            <td>Request Timeout</td>
+                        </tr>
+                        <tr>
+                            <td>409</td>
+                            <td>Conflict</td>
+                        </tr>
+                        <tr>
+                            <td>410</td>
+                            <td>Gone</td>
+                        </tr>
+                        <tr>
+                            <td>411</td>
+                            <td>Length Required</td>
+                        </tr>
+                        <tr>
+                            <td>412</td>
+                            <td>Precondition Failed</td>
+                        </tr>
+                        <tr>
+                            <td>413</td>
+                            <td>Payload Too Large</td>
+                        </tr>
+                        <tr>
+                            <td>414</td>
+                            <td>URI Too Long</td>
+                        </tr>
+                        <tr>
+                            <td>415</td>
+                            <td>Unsupported Media Type</td>
+                        </tr>
+                        <tr>
+                            <td>416</td>
+                            <td>Range Not Satisfiable</td>
+                        </tr>
+                        <tr>
+                            <td>417</td>
+                            <td>Expectation Failed</td>
+                        </tr>
+                        <tr>
+                            <td>418</td>
+                            <td>I'm a teapot (RFC 2324)</td>
+                        </tr>
+                        <tr>
+                            <td>421</td>
+                            <td>Misdirected Request</td>
+                        </tr>
+                        <tr>
+                            <td>422</td>
+                            <td>Unprocessable Content (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>423</td>
+                            <td>Locked (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>424</td>
+                            <td>Failed Dependency (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>425</td>
+                            <td>Too Early</td>
+                        </tr>
+                        <tr>
+                            <td>426</td>
+                            <td>Upgrade Required</td>
+                        </tr>
+                        <tr>
+                            <td>428</td>
+                            <td>Precondition Required</td>
+                        </tr>
+                        <tr>
+                            <td>429</td>
+                            <td>Too Many Requests</td>
+                        </tr>
+                        <tr>
+                            <td>431</td>
+                            <td>Request Header Fields Too Large</td>
+                        </tr>
+                        <tr>
+                            <td>451</td>
+                            <td>Unavailable For Legal Reasons</td>
+                        </tr>
+
+                        <!-- 5xx Server Errors -->
+                        <tr>
+                            <td colspan="2"><strong>5xx - Server Errors</strong></td>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>Internal Server Error</td>
+                        </tr>
+                        <tr>
+                            <td>501</td>
+                            <td>Not Implemented</td>
+                        </tr>
+                        <tr>
+                            <td>502</td>
+                            <td>Bad Gateway</td>
+                        </tr>
+                        <tr>
+                            <td>503</td>
+                            <td>Service Unavailable</td>
+                        </tr>
+                        <tr>
+                            <td>504</td>
+                            <td>Gateway Timeout</td>
+                        </tr>
+                        <tr>
+                            <td>505</td>
+                            <td>HTTP Version Not Supported</td>
+                        </tr>
+                        <tr>
+                            <td>506</td>
+                            <td>Variant Also Negotiates</td>
+                        </tr>
+                        <tr>
+                            <td>507</td>
+                            <td>Insufficient Storage (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>508</td>
+                            <td>Loop Detected (WebDAV)</td>
+                        </tr>
+                        <tr>
+                            <td>510</td>
+                            <td>Not Extended</td>
+                        </tr>
+                        <tr>
+                            <td>511</td>
+                            <td>Network Authentication Required</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+        </section>
+
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="../privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script src="js/core.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

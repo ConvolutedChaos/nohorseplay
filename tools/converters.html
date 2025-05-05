@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title id="pageTitle">MPH to KPH Converter</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+
+        .context {
+            margin-top: 20px;
+        }
+
+        .context ul {
+            position: relative;
+            text-align: justify;
+            left: 35%;
+        }
+
+        .context li {
+            list-style-type: disc;
+        }
+
+        input[type="checkbox"] {
+            /* Style it nicely */
+            display: inline-block;
+            position: relative;
+            background-color: #f1f1f1;
+            color: #666;
+            margin-left: 8px;
+            margin-top: 2px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .context ul {
+                position: relative;
+                text-align: justify;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="../img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="/"><img
+                                        src="../img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="../games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="../angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="../scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="../stuff.html">Stuff</a></li>
+                            <li class="active"><a href="../tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-lg-122 section-65 bg-default novi-background"
+            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+            <div class="shell shell-wide">
+                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
+                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
+                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                    <div class="cell-xl-10">
+                        <h1 id="mainHeading">Converter</h1>
+                        <p>Select a conversion below.</p>
+                        <section class="section section-lg-122 section-65 bg-default novi-background">
+                            <div class="shell shell-wide">
+                                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                                    <div class="cell-xl-10">
+                                        <div class="converter">
+                                            <label for="type">Conversion Type:</label>
+                                            <select id="type"></select>
+                                        </div>
+
+                                        <div class="converter">
+                                            <label for="fromValue">From:</label>
+                                            <input type="number" id="fromValue" />
+                                            <select id="fromUnit"></select>
+                                        </div>
+
+                                        <div class="converter">
+                                            <label for="toValue">To:</label>
+                                            <input type="number" id="toValue" disabled />
+                                            <select id="toUnit"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script>
+        try {
+
+            const conversions = {
+                length: {
+                    label: "Length",
+                    units: ["meters", "feet", "inches", "miles", "cubits", "nautical miles"],
+                    convert: (value, from, to) => {
+                        const toMeters = {
+                            meters: v => v,
+                            feet: v => v * 0.3048,
+                            inches: v => v * 0.0254,
+                            miles: v => v * 1609.344,
+                            cubits: v => v * 0.4572,
+                            "nautical miles": v => v * 1852
+                        };
+                        const fromMeters = {
+                            meters: v => v,
+                            feet: v => v / 0.3048,
+                            inches: v => v / 0.0254,
+                            miles: v => v / 1609.344,
+                            cubits: v => v / 0.4572,
+                            "nautical miles": v => v / 1852
+                        };
+                        return fromMeters[to](toMeters[from](value));
+                    }
+                },
+                temperature: {
+                    label: "Temperature",
+                    units: ["Celsius", "Fahrenheit", "Kelvin"],
+                    convert: (value, from, to) => {
+                        const toCelsius = {
+                            Celsius: v => v,
+                            Fahrenheit: v => (v - 32) * 5 / 9,
+                            Kelvin: v => v - 273.15,
+                        };
+                        const fromCelsius = {
+                            Celsius: v => v,
+                            Fahrenheit: v => (v * 9 / 5) + 32,
+                            Kelvin: v => v + 273.15,
+                        };
+                        return fromCelsius[to](toCelsius[from](value));
+                    }
+                },
+                weight: {
+                    label: "Weight",
+                    units: ["kilograms", "pounds"],
+                    convert: (value, from, to) => {
+                        const toKg = {
+                            kilograms: v => v,
+                            pounds: v => v * 0.453592,
+                        };
+                        const fromKg = {
+                            kilograms: v => v,
+                            pounds: v => v / 0.453592,
+                        };
+                        return fromKg[to](toKg[from](value));
+                    }
+                },
+                speed: {
+                    label: "Speed",
+                    units: ["km/h", "mph"],
+                    convert: (value, from, to) => {
+                        const toKmh = {
+                            "km/h": v => v,
+                            "mph": v => v * 1.60934,
+                        };
+                        const fromKmh = {
+                            "km/h": v => v,
+                            "mph": v => v / 1.60934,
+                        };
+                        return fromKmh[to](toKmh[from](value));
+                    }
+                },
+                dataSize: {
+                    label: "Data Size",
+                    units: ["b", "B", "KB", "MB", "GB", "TB"],
+                    convert: (value, from, to) => {
+                        const unitMultipliers = {
+                            b: 1,                      // bits
+                            B: 8,                      // 1 byte = 8 bits
+                            KB: 8 * 1024,
+                            MB: 8 * 1024 ** 2,
+                            GB: 8 * 1024 ** 3,
+                            TB: 8 * 1024 ** 4,
+                        };
+
+                        const valueInBits = value * unitMultipliers[from];   // normalize to bits
+                        return valueInBits / unitMultipliers[to];            // convert from bits to target unit
+                    }
+                }
+
+
+            };
+
+            const typeSelect = document.getElementById("type");
+            const fromUnit = document.getElementById("fromUnit");
+            const toUnit = document.getElementById("toUnit");
+            const fromValue = document.getElementById("fromValue");
+            const toValue = document.getElementById("toValue");
+
+            function populateTypeOptions() {
+                for (let key in conversions) {
+                    const opt = document.createElement("option");
+                    opt.value = key;
+                    opt.textContent = conversions[key].label;
+                    typeSelect.appendChild(opt);
+                }
+            }
+
+            function populateUnitOptions(type) {
+                fromUnit.innerHTML = "";
+                toUnit.innerHTML = "";
+                conversions[type].units.forEach(unit => {
+                    const opt1 = document.createElement("option");
+                    opt1.value = unit;
+                    opt1.textContent = unit;
+                    fromUnit.appendChild(opt1);
+
+                    const opt2 = document.createElement("option");
+                    opt2.value = unit;
+                    opt2.textContent = unit;
+                    toUnit.appendChild(opt2);
+                });
+            }
+
+            function updateConversion() {
+                const type = typeSelect.value;
+                const value = parseFloat(fromValue.value);
+                const from = fromUnit.value;
+                const to = toUnit.value;
+
+                if (!isNaN(value) && from && to) {
+                    const result = conversions[type].convert(value, from, to);
+                    toValue.value = isNaN(result) ? "" : result.toFixed(4);
+                } else {
+                    toValue.value = "";
+                }
+            }
+
+
+            typeSelect.addEventListener("change", () => {
+                populateUnitOptions(typeSelect.value);
+                updateConversion();
+            });
+
+            fromValue.addEventListener("input", updateConversion);
+            fromUnit.addEventListener("change", updateConversion);
+            toUnit.addEventListener("change", updateConversion);
+
+            function updateTitleAndHeading(typeKey) {
+                const label = conversions[typeKey].label;
+                document.getElementById("pageTitle").textContent = `${label} Converter`;
+                document.getElementById("mainHeading").textContent = `${label} Converter`;
+            }
+            typeSelect.addEventListener("change", () => {
+                const selectedType = typeSelect.value;
+                populateUnitOptions(selectedType);
+                updateTitleAndHeading(selectedType);
+                updateConversion();
+            });
+
+            // Initialize
+            populateTypeOptions();
+
+            const initialType = Object.keys(conversions)[0];
+            typeSelect.value = initialType;
+            populateUnitOptions(initialType);
+            updateTitleAndHeading(initialType);
+            updateConversion();
+        } catch (e) {
+            alert("Error: " + e);
+        }
+    </script>
+    <script src="../js/core.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
