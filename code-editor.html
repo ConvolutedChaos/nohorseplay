@@ -40,6 +40,21 @@
             top: 0px;
         }
 
+        .navbar button {
+            color: white !important;
+            text-decoration: none !important;
+            background-color: #00000000;
+            box-shadow: none;
+            font-size: 18px !important;
+            font-family: serif;
+            margin: 0 15px !important;
+            padding: 10px 15px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            border-radius: 5px !important;
+            transition: 0.3s !important;
+        }
+
         .navbar a {
             color: white;
             text-decoration: none;
@@ -186,25 +201,31 @@
     <div class="navbar">
         <a href="/"><img src="icons/even_more_icons/home.png" alt="Home">Homepage</a>
         <span class="divider">|</span>
-        <a onclick="clearCode()"><img src="icons/apCancel.png" alt="Clear Code"><b>Clear</b></a>
-        <a onclick="runCode()"><img src="icons/play_green.png" alt="Run Code"><b>Run</b></a>
+        <button onclick="clearCode()"><img src="icons/apCancel.png" alt="Clear Code"><b>Clear</b></button>
+        <button onclick="runCode()"><img src="icons/play_green.png" alt="Run Code"><b>Run</b></button>
     </div>
     <div class="container">
         <div class="editor">
-            <h3>HTML</h3>
-            <textarea id="html-code"></textarea>
+            <label for="html-code">
+                <h3>HTML</h3>
+            </label>
+            <textarea name="html-code" id="html-code"></textarea>
         </div>
         <div class="editor">
-            <h3>CSS</h3>
-            <textarea id="css-code"></textarea>
+            <label for="css-code">
+                <h3>CSS</h3>
+            </label>
+            <textarea name="css-code" id="css-code"></textarea>
         </div>
         <div class="editor">
-            <h3>JavaScript</h3>
-            <textarea id="js-code"></textarea>
+            <label for="js-code">
+                <h3>JavaScript</h3>
+            </label>
+            <textarea name="js-code" id="js-code"></textarea>
         </div>
         <div class="editor">
             <h3>Preview</h3>
-            <iframe id="output"></iframe>
+            <iframe id="output" title="Preview Output"></iframe>
         </div>
     </div>
 
