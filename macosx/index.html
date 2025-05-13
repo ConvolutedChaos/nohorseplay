@@ -15,7 +15,7 @@
                 <li class="menu-item">
                     <img src="media/img/blue-apple-logo-icon-0.png" alt="">
                     <ul class="submenu">
-                        <li class="submenu-item">About This Mac...</li>
+                        <li class="submenu-item" onclick="openApp('aboutMac', false)">About This Mac...</li>
                         <li class="submenu-item">Software Update...</li>
                         <li class="submenu-item">Mac OS X Software...</li>
                         <hr>
@@ -41,17 +41,36 @@
             <ul id="menu-items"></ul>
         </div>
         <!--Debugging-->
+        <div id="aboutMac" class="draggable dropShadow" >
+            <div class="title-bar">
+                <!--Window bar-->
+    
+                <button class="window-close-button" title="Close"
+                    onclick="closeApp('aboutMac')">
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('aboutMac')"><span
+                        style="font-size: 35px;"></span>
+                </button>
+                <span class="title-bar-text">About This Mac</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div id="finderContent">
+
+            </div>
+        </div>
         <div id="safari" class="draggable dropShadow" >
             <div class="title-bar">
                 <!--Window bar-->
     
                 <button class="window-close-button" title="Close"
-                    onclick="closeApp('textEdit')">
+                    onclick="closeApp('safari')">
                 </button>
-                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('textEdit')"><span
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('safari')"><span
                         style="font-size: 35px;"></span>
                 </button>
-                <span class="title-bar-text">textEdit</span>
+                <span class="title-bar-text">Safari</span>
                 <br>
                 <br>
                 <br>

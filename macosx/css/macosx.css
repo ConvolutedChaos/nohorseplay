@@ -272,3 +272,14 @@ body {
     text-align: center;
     overflow: hidden;
 }
+#aboutMac {
+    width: 640px;
+    height: 480px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    text-align: center;
+    overflow: hidden;
+}

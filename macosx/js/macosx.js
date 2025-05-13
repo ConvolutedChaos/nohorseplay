@@ -1,7 +1,17 @@
 try {
     let focusedApp = "finder"; // Default focused app
 
-    var user = "Timmy Toenails";
+    var user = prompt("Please enter a user name:");
+    var untrimmedUser = user;
+
+    if (user === null || user === "") {
+        user = "Timmy Toenails";
+    } else {
+        user = user.trim();
+        if (user.length > 20) {
+            user = user.substring(0, 20);
+        }
+    }
 
     function getUser() {
         document.getElementById("user1").innerText = user;
@@ -62,7 +72,7 @@ try {
         windowElement.style.zIndex = highestZIndex + 1;
     }
 
-    function openApp(appElementId) {
+    function openApp(appElementId, hasMenus) {
         var appElement = document.getElementById(appElementId);
         // var appElementPanelIcon = document.getElementById(appElementPanelIconId);
 
@@ -72,7 +82,9 @@ try {
         appElement.style.display = "block";
         // appElementPanelIcon.style.display = "block";
         console.log("Opened the app. Elements made visible: " + appElementId + ".");
-        updateMenuBar(appElementId);
+        if (hasMenus) {
+            updateMenuBar(appElementId);
+        }
         bringWindowToFront(appElement);
     }
     function updateMenuBar(appName) {
@@ -130,7 +142,7 @@ try {
     function closeApp(appElementId) {
         var appElement = document.getElementById(appElementId);
         // var appElementPanelIcon = document.getElementById(appElementPanelIconId);
-
+        
         console.log(appElement);
         // console.log(appElementPanelIcon);
 
@@ -299,7 +311,7 @@ try {
     const dockApps = [
         { name: "Finder", icon: "media/img/FinderIcon_128x128x32.png", appId: "finder", isOpen: true },
         { name: "Dashboard", icon: "media/img/AppIcons/Dashboard.png", appId: "dashboard", isOpen: false },
-        { name: "Safari", icon: "media/img/compass_128x128x32.png", appId: "safari", customClick: () => openApp("safari"), isOpen: false },
+        { name: "Safari", icon: "media/img/compass_128x128x32.png", appId: "safari", customClick: () => openApp("safari", true), isOpen: false },
         { name: "iChat", icon: "media/img/AppIcons/iChat.png", appId: "ichat", isOpen: false },
         { name: "Address Book", icon: "media/img/AppIcons/AddressBook.png", appId: "addressBook", isOpen: false },
         { name: "iTunes", icon: "media/img/AppIcons/iTunes.png", appId: "itunes", isOpen: false },
@@ -331,7 +343,7 @@ try {
                 const iconContainer = document.createElement("div");
                 iconContainer.classList.add("dock-icon-container");
 
-                // Create the app icon
+                // Create the app iconupdateMenuBar('finder');
                 const img = document.createElement("img");
                 img.src = app.icon;
                 img.alt = app.name;
