@@ -1,9 +1,9 @@
 const cacheName = "Nohorseplay-Web Cars 2.0-0.1";
 const contentToCache = [
-    "Build/WebCarsV2.loader.js",
-    "Build/WebCarsV2.framework.js",
-    "Build/WebCarsV2.data",
-    "Build/WebCarsV2.wasm",
+    "Build/web car.loader.js",
+    "Build/web car.framework.js",
+    "Build/web car.data",
+    "Build/web car.wasm",
     "TemplateData/style.css"
 
 ];
