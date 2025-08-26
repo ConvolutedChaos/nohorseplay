@@ -1,6 +1,4 @@
-var hostOSReference = navigator.platform;
-var hostOSText = document.getElementById("host-os");
-hostOSText.innerText = hostOSReference;
+document.getElementById("host-os").innerText = navigator.platform;
 
 function checkPassword(event) {
     event.preventDefault(); // Prevent form submission

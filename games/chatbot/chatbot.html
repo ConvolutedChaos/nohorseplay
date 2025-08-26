@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Chatbot</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			background: #f0f0f5;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+		}
+
+		h1 {
+			color: #333;
+		}
+
+		#chat {
+			width: 100%;
+			max-width: 500px;
+			background: white;
+			border-radius: 12px;
+			padding: 20px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			overflow-y: auto;
+			height: 400px;
+			margin-bottom: 15px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.bubble {
+			padding: 10px 15px;
+			border-radius: 20px;
+			margin: 10px 0;
+			max-width: 80%;
+			word-wrap: break-word;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.user {
+			background: #0078d7;
+			color: white;
+			align-self: flex-end;
+			margin-left: auto;
+			border-bottom-right-radius: 0px;
+		}
+
+		.bot {
+			background: #e4e6eb;
+			color: #333;
+			align-self: flex-start;
+			margin-right: auto;
+			border-bottom-left-radius: 0px;
+		}
+
+		#inputContainer {
+			display: flex;
+			width: 100%;
+			max-width: 500px;
+		}
+
+		#message {
+			flex: 1;
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 20px 0 0 20px;
+			border: 1px solid #ccc;
+			outline: none;
+		}
+
+		#sendButton {
+			padding: 10px 20px;
+			font-size: 16px;
+			border: none;
+			background-color: #0078d7;
+			color: white;
+			border-radius: 0 20px 20px 0;
+			cursor: pointer;
+		}
+
+		#sendButton:hover {
+			background-color: #005fa3;
+		}
+	</style>
+</head>
+
+<body>
+<!-- 
+	<h1>E-Dog Chatbot</h1> -->
+	<div id="chat"></div>
+
+	<div id="inputContainer">
+		<input type="text" id="message" placeholder="Type your message..." />
+		<button id="sendButton" onclick="sendMessage()">Send</button>
+	</div>
+
+	<script src="rivescript.min.js"></script>
+
+	<script>
+		const bot = new RiveScript();
+
+		let typeSpeed = 16; // ms
+
+
+		bot.loadFile("bot.rive")
+			.then(loading_done)
+			.catch(loading_error);
+
+		function loading_done() {
+			console.log("Bot ready!");
+			bot.sortReplies();
+		}
+
+		function loading_error(error) {
+			console.error("Error loading bot: ", error);
+		}
+
+		function sendMessage() {
+			const input = document.getElementById("message");
+			const chat = document.getElementById("chat");
+			const msg = input.value.trim();
+
+			if (msg === "") return;
+
+			// User bubble
+			const userBubble = document.createElement("div");
+			userBubble.className = "bubble user";
+			userBubble.textContent = msg;
+			chat.appendChild(userBubble);
+			chat.scrollTop = chat.scrollHeight;
+
+			// Bot thinking...
+			bot.reply("local-user", msg).then(function (reply) {
+				const botBubble = document.createElement("div");
+				botBubble.className = "bubble bot";
+				chat.appendChild(botBubble);
+				typeText(botBubble, reply.replace(/\n/g, "<br>"), typeSpeed); // 💥 Magic here
+			});
+
+			input.value = "";
+			input.focus();
+		}
+
+		// Typewriter effect that handles <br>
+		function typeText(element, text, speed) {
+			let i = 0;
+			element.innerHTML = ""; // Start fresh
+
+			function type() {
+				if (i < text.length) {
+					// If there's a <br> tag starting here, insert it all at once
+					if (text.substr(i, 4) === "<br>") {
+						element.innerHTML += "<br>";
+						i += 4;
+					} else {
+						element.innerHTML += text.charAt(i);
+						i++;
+					}
+					element.scrollIntoView({ behavior: "smooth", block: "end" });
+					setTimeout(type, speed);
+				}
+			}
+			type();
+		}
+
+
+		// Send on Enter
+		document.getElementById("message").addEventListener("keydown", function (e) {
+			if (e.key === "Enter") sendMessage();
+		});
+	</script>
+</body>
+
+</html>

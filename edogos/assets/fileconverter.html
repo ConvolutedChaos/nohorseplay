@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TIFF to PNG Converter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+    #drop-zone {
+      border: 3px dashed #888;
+      padding: 2em;
+      margin-bottom: 1em;
+      background: #f0f0f0;
+    }
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖼️ TIFF to PNG Converter</h1>
+  <div id="drop-zone">Drop TIFF files here or click to select</div>
+  <input type="file" id="file-input" accept=".tif,.tiff" multiple style="display: none;" />
+  <div id="output"></div>
+  <canvas id="canvas"></canvas>
+
+  <script src="https://unpkg.com/utif@3.1.0/UTIF.min.js"></script>
+  <script>
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const output = document.getElementById("output");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Handle drag & drop
+    dropZone.addEventListener("click", () => fileInput.click());
+    dropZone.addEventListener("dragover", e => {
+      e.preventDefault();
+      dropZone.style.background = "#d0f0d0";
+    });
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.style.background = "#f0f0f0";
+    });
+    dropZone.addEventListener("drop", e => {
+      e.preventDefault();
+      dropZone.style.background = "#f0f0f0";
+      handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener("change", () => {
+      handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+      [...files].forEach(file => {
+        if (!file.name.match(/\.(tif|tiff)$/i)) {
+          alert(`🚫 Not a TIFF file: ${file.name}`);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function () {
+          const buffer = reader.result;
+          const ifds = UTIF.decode(buffer);
+          UTIF.decodeImages(buffer, ifds);
+
+          ifds.forEach((ifd, index) => {
+            const rgba = UTIF.toRGBA8(ifd);
+            canvas.width = ifd.width;
+            canvas.height = ifd.height;
+            const imageData = ctx.createImageData(ifd.width, ifd.height);
+            imageData.data.set(rgba);
+            ctx.putImageData(imageData, 0, 0);
+
+            // Create PNG blob
+            canvas.toBlob(blob => {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = file.name.replace(/\.(tif|tiff)$/i, "") + `_page${index + 1}.png`;
+              link.textContent = `Download: ${link.download}`;
+              link.style.display = "block";
+              output.appendChild(link);
+            }, "image/png");
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    }
+  </script>
+</body>
+</html>

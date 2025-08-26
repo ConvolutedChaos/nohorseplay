@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h1>The Window Navigator Object</h1>
+    <h2>The The geolocation Property</h2>
+
+    <p id="demo"></p>
+
+    <script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById("demo").innerHTML =
+                "Geolocation is not supported by this browser.";
+        }
+
+        function showPosition(position) {
+            document.getElementById("demo").innerHTML =
+                "Latitude: " + position.coords.latitude + "<br>" +
+                "Longitude: " + position.coords.longitude;
+        }
+
+        function showError(error) {
+            document.getElementById("demo").innerHTML = "Unable to retrieve location: " + error;
+        }
+    </script>
+
+</body>
+
+</html>

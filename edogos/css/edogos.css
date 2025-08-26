@@ -1,21 +1,445 @@
+/* 
+Do I need this? No.
+:root {
+    --bacon-explorer-offset: 56px;
+} 
+*/
+
+html,
 body {
-    background-image: url(../media/img/beta-fish-hd.jpg);
-    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: url('../media/img/beta-fish-hd.jpg') no-repeat center center;
     background-size: cover;
     overflow: hidden;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-#taskbar {
+.spinner {
     position: absolute;
-    bottom: 0px;
+    top: 50%;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.hidden {
+    display: none;
+}
+
+.draggable {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+}
+
+#edogos-desktop {
+    display: none;
+}
+
+#edogosBootScreen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    text-align: center;
+    padding-top: 25px;
+}
+
+#edogosLoginScreen {
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#progress-bar {
+    width: 500px;
+    height: 15px;
+    border: none;
+    margin-top: 1rem;
+    background-color: #444;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#progress-fill {
+    background: rgb(255, 255, 255);
+    height: 100%;
+    width: 0%;
+    transition: width 0.2s;
+}
+
+#edogosLoginScreen .top-bar {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#edogosLoginScreen .login-container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    border: 1px solid #888888;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#edogosLoginScreen #user-text {
+    margin: 10px;
+    margin-bottom: 25px;
+    color: #cccccc;
+}
+
+#edogosLoginScreen input[type="password"] {
+    width: 256px;
+    padding: 10px;
+    padding-right: 30px;
+    font-size: 16px;
+    border: 1px solid #cccccc;
+    color: #aaaaaa;
+    background-color: #00000050;
+    border-radius: 5px;
+    outline: none;
+}
+
+#edogosLoginScreen .input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#edogosLoginScreen .top-right {
+    margin: 10px;
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    top: 0px;
+    right: 50px;
+}
+
+#edogosLoginScreen .power-button {
+    width: 24px;
+    height: 24px;
+    background: url('../media/img/shutdown.svg') no-repeat center;
+    background-size: contain;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#edogosLoginScreen .power-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#edogosLoginScreen .power-menu button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+#edogosLoginScreen .power-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#edogosLoginScreen #host-os {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: #ffffff;
+}
+
+#edogosSetupScreen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: #d1d1d1;
+    text-align: center;
+    padding-top: 25px;
+}
+
+#loadingSetupText {
+    display: none;
+    width: 320px;
+    height: 128px;
+    background-color: #dddddd;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    position: fixed;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#loadingSetupText>div {
+    height: 100%;
+    position: absolute;
+}
+
+#loadingSetupText>div:nth-child(1) {
+    width: 30%;
     left: 0px;
+}
+
+#loadingSetupText>div:nth-child(1) img {
+    margin: 5px;
+    width: 84px;
+    height: auto;
+}
+
+#loadingSetupText>div:nth-child(2) {
+    width: 70%;
+    right: 0px;
+    text-align: center;
+    padding-top: 25px;
+}
+
+#edogosSetup {
+    width: 800px;
+    height: 640px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    margin: 0px;
+    text-align: center;
+    overflow: hidden;
+    min-width: 550px;
+    min-height: 550px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#setup-error {
+    color: rgb(255, 255, 255);
+    display: none;
+    margin-top: 10px;
+    font-size: 15px;
+    padding: 5px;
+    background-color: #da3b3b;
+    border: 3px solid #791e1e;
+    border-radius: 5px;
+}
+
+.setup-box {
+    position: fixed;
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    width: 320px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.setup-box h2 {
+    margin-bottom: 10px;
+}
+
+.setup-box p {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.setup-box input[type='text'],
+.setup-box input[type='password'] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.setup-box button {
+    background: #0078d4;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.setup-box button:hover {
+    background: #005fa3;
+}
+
+@keyframes windowOpen {
+    from {
+        transform: scale(0.95) translateY(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes windowClose {
+    from {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(0.95) translateY(40px);
+        opacity: 0;
+    }
+}
+
+@keyframes windowMinimize {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(0.8) translateY(100px);
+        opacity: 0;
+    }
+}
+
+@keyframes windowMaximize {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes windowMinimizeToIcon {
+    to {
+        transform: var(--minimize-transform, scale(0.1)) translate(var(--minimize-x, 0), var(--minimize-y, 0));
+        opacity: 0;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shakeX {
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-10px);
+    }
+
+    40% {
+        transform: translateX(10px);
+    }
+
+    60% {
+        transform: translateX(-10px);
+    }
+
+    80% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.window-anim-minimize-to-icon {
+    animation: windowMinimizeToIcon 0.35s cubic-bezier(.4, 2, .6, 1) forwards;
+    z-index: 9999 !important;
+}
+
+/* Utility classes for animation */
+.window-anim-open {
+    animation: windowOpen 0.25s cubic-bezier(.4, 2, .6, 1) forwards;
+}
+
+.window-anim-close {
+    animation: windowClose 0.18s cubic-bezier(.4, 2, .6, 1) forwards;
+}
+
+.window-anim-minimize {
+    animation: windowMinimize 0.25s cubic-bezier(.4, 2, .6, 1) forwards;
+}
+
+.window-anim-maximize {
+    animation: windowMaximize 0.25s cubic-bezier(.4, 2, .6, 1) forwards;
+}
+
+.anim-shakeX {
+    animation: shakeX 0.4s ease-in-out;
+}
+
+#taskbar {
+    display: flex;
+    justify-content: space-between;
+    /* Pushes left and right containers apart */
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
     height: 64px;
     background-color: #444444;
     width: 100%;
+    z-index: 100;
+}
+
+.taskbar-left {
     display: flex;
-    justify-content: flex-start;
     align-items: center;
+    /* left-side icons here */
+}
+
+.taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* space between right icons */
+    margin-right: 15px;
 }
 
 #wifiIcon {
@@ -24,12 +448,6 @@ body {
     font-size: 25px;
     width: 32px;
     height: 32px;
-    float: right;
-    margin: 15px;
-    position: fixed;
-    right: 290px;
-    color: #ffffff;
-    cursor: pointer;
 }
 
 #wifiIcon:hover {
@@ -167,12 +585,8 @@ body {
 
 #date-div {
     font-size: 25px;
-    float: right;
-    margin: 15px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-    position: fixed;
-    right: 5px;
     color: #ffffff;
 }
 
@@ -195,6 +609,8 @@ body {
     margin: 0px;
     text-align: center;
     overflow: hidden;
+    min-width: 550px;
+    min-height: 550px;
 }
 
 #baconExplorerIcon {
@@ -208,6 +624,311 @@ body {
 
 #baconExplorerIcon:hover {
     background-color: #666666;
+}
+
+#baconExplorerContent {
+    width: 100%;
+    height: calc(100% - 56px);
+    display: flex;
+    flex-direction: column;
+}
+
+#browserImageView {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgb(14, 14, 14);
+}
+
+#browserImageView img {
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+    margin: auto;
+    background-color: hsl(0, 0%, 90%);
+}
+
+#newTabElement {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
+    background: url('../media/img/beta-fish-hd.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+#bacon-explorer-clock {
+    font-size: 5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+#newTabSearchBar {
+    padding: 0.75rem 1rem;
+    width: 100%;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#newTabSearchBarContainer {
+    width: 100%;
+    max-width: 500px;
+}
+
+#newTabQuicklinksContainer {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#newTabQuicklinksContainer a {
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#newTabQuicklinksContainer a:hover {
+    text-decoration: underline;
+}
+
+/* Extracted from #edog-newtab and its children */
+#edog-newtab {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+#edog-newtab .center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 2rem;
+}
+
+#edog-newtab .top-left {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    text-align: left;
+}
+
+#edog-newtab .top-left-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#edog-newtab .top-left-stats {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+#edog-clock {
+    font-size: 5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+#edog-newtab .search-bar-container {
+    width: 100%;
+    max-width: 500px;
+}
+
+#edog-newtab .search-bar {
+    padding: 0.75rem 1rem;
+    width: 100%;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#edog-newtab .quick-links {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#edog-newtab .quick-links a {
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+}
+
+#bookmark-bar {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: #222;
+    border-bottom: 1px solid #333;
+    align-items: center;
+}
+
+#bookmark-bar button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+#bookmark-bar button:hover {
+    background: #444;
+}
+
+#bookmark-list li {
+    padding: 4px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+}
+
+#bookmark-list li:hover {
+    background: #333;
+}
+
+
+.edog-tab-bar {
+    display: flex;
+    background: #222;
+    border-bottom: 1px solid #333;
+    overflow-x: auto;
+    align-items: center;
+}
+
+.edog-tab-bar button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    margin: 2px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.edog-tab-bar button.active {
+    background: #444;
+    font-weight: bold;
+}
+
+.edog-tab-bar img {
+    width: 16px;
+    height: 16px;
+}
+
+.close-btn {
+    margin-left: auto;
+    color: #aaa;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
+.edog-browser-toolbar {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: #111;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.edog-browser-toolbar input {
+    flex: 1;
+    padding: 4px;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+.edog-browser-toolbar button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edog-browser-toolbar button:hover {
+    background: #555;
+}
+
+.edog-browser-body {
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.iframe-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+#baconExplorer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+}
+
+#baconExplorer iframe.active {
+    display: block;
+}
+
+.edog-devtools {
+    width: 300px;
+    background: #0e0e0e;
+    border-left: 1px solid #333;
+    padding: 8px;
+    font-size: 12px;
+    display: none;
+    overflow: auto;
+    color: #fff;
+}
+
+.edog-devtools.active {
+    display: block;
 }
 
 .window-close-button {
@@ -272,98 +993,20 @@ body {
     background-color: #666666;
 }
 
-#baconExplorer #baconExplorerContent {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-#baconExplorer #startPage {
-    text-align: left;
-    padding: 15px;
-    height: 500px;
-    width: 100%;
-    top: 148px;
-    left: 0px;
-    position: absolute;
-    background-color: #00aaaa;
-    z-index: 1;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-    background-color: #333;
-    padding: 10px;
-}
-
-.navbar input {
-    flex-grow: 1;
-    padding: 5px;
-    margin: 0 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.navbar button {
-    padding: 5px 10px;
-    background-color: #555;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 5px;
-    font-size: 15px;
-}
-
-.navbar button:hover {
-    background-color: #777;
-}
-
-iframe {
-    height: 492px;
-    border: none;
-}
-
-.bookmarks {
-    display: flex;
-    gap: 5px;
-    padding: 10px;
-    background-color: #444;
-    color: #ffffff;
-    height: 25px;
-}
-
-.bookmarks button {
-    background-color: #666;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.bookmarks button:hover {
-    background-color: #888;
-}
-
 .draggable {
     position: absolute;
+    cursor: move;
 }
 
 .title-bar {
     background-color: #404040;
     width: 100%;
     height: 56px;
-    cursor: move;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
-#baconExplorerTabOpen {
-    color: #ffffff;
-    font-weight: bold;
-}
 
 .title-bar-text {
     color: #ffffff;
@@ -629,7 +1272,7 @@ iframe {
 #drawingProgram {
     width: 740px;
     height: 580px;
-    background-color: #797979;
+    background-color: #bbbbbb;
     border: 1px solid #000000;
     border-radius: 5px;
     display: none;
@@ -638,6 +1281,7 @@ iframe {
     padding: 0px;
     overflow: hidden;
     overflow-y: hidden;
+    color: #fff;
 }
 
 #drawingProgramStartMenuIcon {
@@ -653,10 +1297,79 @@ iframe {
     background-color: #666666;
 }
 
-#drawingProgram iframe {
-    width: 738px;
-    height: 506px;
+.edog-paint-menubar {
+    background: #2a2a2a;
+    padding: 5px 10px;
+    display: flex;
+    gap: 20px;
+}
+
+.edog-paint-menu {
+    position: relative;
+}
+
+.edog-paint-menu>span {
+    cursor: pointer;
+    user-select: none;
+}
+
+.edog-paint-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #333;
+    border: 1px solid #444;
+    z-index: 10;
+}
+
+.edog-paint-dropdown>div {
+    padding: 5px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.edog-paint-dropdown>div:hover {
+    background-color: #444;
+}
+
+.edog-paint-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edog-paint-canvasarea {
+    flex: 1;
+    padding: 10px;
+    background: #111;
+}
+
+.color-picker {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
     overflow: hidden;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.color-picker input[type="color"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+#paintCanvas {
+    background: white;
+    border: 1px solid #555;
+    cursor: crosshair;
 }
 
 .rightbar img {
@@ -683,28 +1396,6 @@ iframe {
 
 .rightbar li:hover {
     background-color: #3a3a3a;
-}
-
-#baconExplorer #bookmarksBar {
-    padding-left: 15px;
-}
-
-#bookmarksBar #bookmarkButton {
-    height: 22px;
-    margin: 5px;
-    float: left;
-    border: 1px solid #000000;
-    border-radius: 3px;
-    padding: 5px;
-    background-color: #ccc;
-}
-
-#bookmarksBar #bookmarkIcon {
-    margin: 0px;
-    padding: 0px;
-    margin-right: 6px;
-    width: 16px;
-    height: 16px;
 }
 
 .helpfulInfo {
@@ -761,70 +1452,14 @@ iframe {
     border: none;
 }
 
-#mediaPlayer .video-container {
-    position: relative;
+#mediaPlayerContent {
     max-width: 640px;
-}
-
-#mediaPlayer video {
-    width: 100%;
-    border-radius: 8px;
-}
-
-#mediaPlayer .controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #333;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-
-#rewind,
-#play,
-#stop,
-#forward,
-#repeat,
-#shuffle,
-#volume {
-    background: none;
-    border: none;
+    background: #111;
     color: white;
-    font-size: 20px;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-#time {
-    color: #ffffff;
-}
-
-#mediaPlayer button:hover {
-    color: #ddd;
-}
-
-.volume-container {
-    position: relative;
-}
-
-#mediaPlayer .volume-slider {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    background: #444;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-#mediaPlayer .volume-slider input {
-    writing-mode: vertical-lr;
-    direction: rtl;
-    height: 100px;
+    font-family: sans-serif;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #000;
 }
 
 .upnextbar {
@@ -912,9 +1547,9 @@ iframe {
 }
 
 #debugTools {
-    width: 790px;
-    height: 590px;
-    background-color: #5351c0;
+    width: 400px;
+    height: 400px;
+    background-color: #7a7a86;
     border: 1px solid #000000;
     border-radius: 5px;
     display: none;
@@ -932,6 +1567,17 @@ iframe {
     height: 64px;
     display: block;
     border: none;
+}
+
+#debugTools .debugButton {
+    width: 150px;
+    height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 1rem;
 }
 
 #calculatorIcon {
@@ -998,11 +1644,6 @@ iframe {
     font-size: 2em;
     margin-bottom: 10px;
     margin-top: 10px;
-}
-
-#desktop {
-    width: 100%;
-    height: 100%;
 }
 
 #fileExplorer .content {
@@ -1300,7 +1941,7 @@ iframe {
     height: 100%;
 }
 
-details {
+#detailedSystemInfo details {
     border: 1px solid #ccc;
     margin-bottom: 5px;
     padding: 5px;
@@ -1382,11 +2023,13 @@ details {
 }
 
 #terminal .terminalContent {
-    height: 435px;
+    height: calc(100% - 56px);
     padding: 10px;
+    padding-bottom: 0px;
     font-family: monospace;
     overflow: auto;
     overflow-x: hidden;
+    scrollbar-color: #444 #222;
     background-color: black;
     /* Ensure the background color matches */
     color: white;
@@ -1512,6 +2155,12 @@ details {
     border-radius: 5px;
     background-color: #272727;
     cursor: pointer;
+}
+
+#appStore .appStoreContent .app .app-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
 }
 
 #appStore .appStoreContent .app img {
@@ -1839,6 +2488,11 @@ details {
     left: 15px;
 }
 
+#blockbenchFrame {
+    width: 100%;
+    height: calc(100% - 56px);
+}
+
 #virtualMachinesIcon {
     background-image: url(../media/img/computer.png);
     background-size: 100% 100%;
@@ -1969,4 +2623,333 @@ details {
 #virtualMachines li a:hover {
     background-color: #111;
     cursor: pointer;
+}
+
+#taskManagerIcon {
+    background-image: url(../media/img/utilities-system-monitor.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#taskManagerIcon:hover {
+    background-color: #666666;
+}
+
+#taskManager {
+    width: 650px;
+    height: 500px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#taskManagerStartMenuIcon {
+    background-image: url(../media/img/utilities-system-monitor.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#taskManagerContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+}
+
+.task-table-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-table th,
+.task-table td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+.task-table th {
+    background: #2a2a2a;
+}
+
+.task-table tr:hover {
+    background-color: #292929;
+}
+
+.end-task-btn {
+    background: crimson;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#cpuGraph,
+#ramGraph {
+    display: block;
+    background: #111;
+    border-top: 1px solid #444;
+    margin-bottom: 10px;
+}
+
+#taskManager .graphs {
+    padding: 10px;
+    display: none;
+}
+
+.task-manager-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    background: #1e1e1e;
+    color: white;
+}
+
+.task-manager-header button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+#physicsSimulatorIcon {
+    background-image: url(../media/img/media-player.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#physicsSimulatorIcon:hover {
+    background-color: #666666;
+}
+
+#physicsSimulator {
+    width: 800px;
+    height: 600px;
+    /* No BG color-the iframe takes care of that*/
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#physicsSimulatorStartMenuIcon {
+    background-image: url(../media/img/utilities-system-monitor.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#physicsIframe {
+    width: 100%;
+    height: calc(100% - 56px);
+    border: none;
+    background-color: #2e2e2e;
+}
+
+.resizeable {
+    resize: both;
+    min-width: 400px;
+    min-height: 400px;
+}
+
+#userPromptIcon {
+    background-image: url(../media/img/utilities-system-monitor.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#userPromptIcon:hover {
+    background-color: #666666;
+}
+
+#userPrompt {
+    width: 512px;
+    height: 256px;
+    background-color: #2e2e2e;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#promptContainer {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-radius: 10px;
+    font-family: sans-serif;
+}
+
+#promptContainer #questionIcon {
+    font-size: 32px;
+    margin-right: 16px;
+    color: #0055cc;
+}
+
+#promptContainer #promptContent {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+#promptContainer #promptButtonGroup {
+    display: flex;
+    gap: 8px;
+}
+
+#promptContainer #promptButtonGroup .promptButton {
+    padding: 8px 16px;
+    background-color: #cccccc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.15rem;
+}
+
+#promptContainer #promptButtonGroup .promptButtonRed {
+    background-color: #f44336;
+}
+
+#promptContainer #promptButtonGroup .promptButtonGreen {
+    background-color: #4caf50;
+}
+
+#fontSettings {
+    width: 800px;
+    height: 600px;
+    background-color: #3a3a3a;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    display: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    color: #fff;
+}
+
+#fontSettingsIcon {
+    background-image: url(../media/img/preferences-desktop-font.png);
+    background-size: 100% 100%;
+    width: 64px;
+    height: 64px;
+    display: none;
+    border: none;
+}
+
+#fontSettingsIcon:hover {
+    background-color: #666666;
+}
+
+#fontSettingsStartMenuIcon {
+    background-image: url(../media/img/preferences-desktop-font.png);
+    background-size: cover;
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+}
+
+#fontSettings .fontSettingsContent {
+    padding: 20px;
+    overflow: auto;
+    /* Enable scrolling when content overflows */
+    height: calc(100% - 100px);
+    /* Adjust the height to fit within the app store window */
+}
+
+#fontSettings .fontSettingsContent h2 {
+    margin-bottom: 20px;
+}
+
+#fontSettings .fontSettingsContent #availableFontsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#fontSettings .fontSettingsContent .availableFont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #272727;
+    cursor: pointer;
+}
+
+#fontSettings .fontSettingsContent .availableFont .availableFont-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+#fontSettings .fontSettingsContent .availableFont img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 10px;
+}
+
+#fontSettings .fontSettingsContent .availableFont span {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#fontSettings .fontSettingsContent .availableFont p {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+#fontSettings .fontSettingsContent .availableFont button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#fontSettings .fontSettingsContent .availableFont button:hover {
+    background-color: #0056b3;
 }

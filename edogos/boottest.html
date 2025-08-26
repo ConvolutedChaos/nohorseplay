@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-Dog OS Booting...</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: black;
+      color: lime;
+    }
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #progress-bar {
+      width: 80%;
+      height: 20px;
+      border: 2px solid lime;
+      margin-top: 1rem;
+      position: relative;
+    }
+    #progress-fill {
+      background: lime;
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s;
+    }
+    #desktop {
+      display: none;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="boot-screen">
+    <div>Booting E-Dog OS...</div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+  </div>
+
+  <div id="desktop">
+    <h1>🐾 Welcome to E-Dog OS!</h1>
+    <p>All systems go.</p>
+    <!-- Load heavy scripts or apps here -->
+  </div>
+
+  <script>
+    const progressFill = document.getElementById('progress-fill');
+    let progress = 0;
+
+    // Simulate progress updates
+    const interval = setInterval(() => {
+      progress += Math.random() * 10;
+      progress = Math.min(progress, 90); // Cap it at 90% until load
+      progressFill.style.width = progress + '%';
+    }, 200);
+
+    // When content is ready (can use 'DOMContentLoaded' or 'load')
+    window.addEventListener('load', () => {
+      clearInterval(interval);
+      progressFill.style.width = '100%';
+
+      // Delay a bit for dramatic effect, then switch
+      setTimeout(() => {
+        document.getElementById('boot-screen').style.display = 'none';
+        document.getElementById('desktop').style.display = 'block';
+      }, 500); // Half a second just to show full bar
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,938 @@
+/* fonts */
+@font-face {
+	font-family: 'Pro Display Regular';
+	src: url('fonts/SF-Pro-Display-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'San Francisco';
+	src: url('fonts/SFUIDisplay-Thin.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: 1.5px;
+}
+
+@font-face {
+	font-family: 'San Francisco Light';
+	src: url('fonts/SFUIDisplay-Ultralight.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'San Francisco Bold';
+	src: url('fonts/SFUIDisplay-Bold.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: 1.5px;
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes shakeX {
+	0% {
+		transform: translateX(0);
+	}
+
+	25% {
+		transform: translateX(-30px);
+	}
+
+	50% {
+		transform: translateX(30px);
+	}
+
+	75% {
+		transform: translateX(-30px);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+body,
+html {
+	font-family: 'San Francisco', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-size: 1rem;
+	overflow: hidden;
+}
+
+#mainApp {
+	background-color: #ddd;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+#appDock {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: calc(100% - 30px);
+	height: 150px;
+	margin: 15px;
+	border-radius: 15px;
+	background-color: #ffffff6e;
+	box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	overflow: hidden;
+}
+
+#appDock .appIcon {
+	width: 120px;
+	height: 120px;
+	display: flex;
+	background-color: rgb(105, 105, 105);
+	border-radius: 15px;
+	justify-content: center;
+	align-items: center;
+	object-fit: contain;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	transition: transform 0.2s ease-in-out;
+	overflow: hidden;
+}
+
+#homeScreen {
+	position: relative;
+	width: calc(100% - 30px);
+	height: calc(100% - 230px);
+	margin: 15px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	grid-template-rows: repeat(auto-fill, minmax(120px, 1fr));
+	grid-gap: 15px;
+
+	background-color: #ffffff83;
+	border-radius: 15px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+#homeScreen .appIcon {
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin: 15px;
+	border-radius: 25px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+#homeScreen .appIcon img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 120px;
+	height: 120px;
+}
+
+.appIcon .appName {
+	width: 100%;
+	text-align: center;
+	margin-top: 8px;
+	font-size: 1.1rem;
+	color: #222;
+	font-family: inherit;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.appIcon:active {
+	scale: 1.25;
+}
+
+.iconCrop {
+	width: 140px !important;
+	height: 140px !important;
+}
+
+.alert {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 300px;
+	height: 200px;
+	padding: 20px;
+	background-color: #dddddd;
+	border-radius: 15px;
+	font-size: 1.2rem;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.alert button {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	height: 40px;
+	font-size: 1.2rem;
+	background-color: #dddddd;
+	color: rgb(0, 0, 200);
+	outline: none;
+	border: none;
+	border-top: 1px solid #444444;
+}
+
+.alert button:active {
+	background-color: #cccccc;
+}
+
+#statusBar {
+	width: 100%;
+	height: 30px;
+	/* background-color: #cccccc; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+#statusBar span {
+	font-size: 1.3rem;
+	font-weight: 600;
+	letter-spacing: 1.5px;
+	color: #000000;
+}
+
+#statusBar #airplaneIndicator {
+	position: absolute;
+	left: 10px;
+	width: 20px;
+	height: 20px;
+}
+
+#statusBar #battery {
+	position: absolute;
+	right: 10px;
+	width: 30px;
+	height: 30px;
+	background: url('icons/battery-bg-black.png') no-repeat center center;
+	background-size: contain;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+}
+
+#statusBar #batteryFill {
+	background-color: #000000;
+	width: 23px;
+	height: 40%;
+	position: relative;
+	left: -2px;
+	transform: scaleX(1);
+	transform-origin: left;
+}
+
+#lowBatteryScreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	color: #ffffff;
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	z-index: 100000;
+}
+
+#lowBatteryScreen #lowBatteryIcon {
+	background: url('icons/battery-bg-white.png') no-repeat center center;
+	background-size: contain;
+	position: fixed;
+	width: 150px;
+	height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#lowBatteryScreen #lowBatteryFill {
+	background-color: #ff0000;
+	border-radius: 4px;
+	width: 117px;
+	height: 40%;
+	position: relative;
+	left: -8px;
+	transform: scaleX(0.1);
+	transform-origin: left;
+}
+
+.icon-black {
+	filter: brightness(0) invert(1);
+}
+
+.icon-white {
+	filter: none;
+}
+
+.fadeOutAnimation {
+	animation: fadeOut 0.5s forwards;
+}
+
+/* #region Passcode */
+
+#passcode-container {
+	font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+	color: white;
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: none;
+}
+
+#passcode-container h1 {
+	font-size: 1.9rem;
+	margin-top: 40px;
+	font-weight: 100;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	letter-spacing: 1.25px;
+}
+
+#passcode-container .dots {
+	display: flex;
+	gap: 18px;
+	margin-top: 30px;
+	margin-bottom: 40px;
+	/* Add this for more space below the dots */
+}
+
+#passcode-container .dot {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 1.5px solid white;
+	background: transparent;
+}
+
+#passcode-container .dot.filled {
+	background: white;
+}
+
+#passcode-container .numpad {
+	display: grid;
+	grid-template-columns: repeat(3, 82px);
+	grid-gap: 20px;
+	margin-bottom: 40px;
+}
+
+#passcode-container .numpad button {
+	width: 82px;
+	height: 82px;
+	border-radius: 41px;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	color: white;
+	font-size: 28px;
+	font-weight: 200;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+#passcode-container .numpad button:active {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+#passcode-container .bottom-row {
+	width: auto;
+	max-width: 350px;
+	margin: 0 auto;
+	display: flex;
+	gap: 80px;
+	/* space between buttons */
+	justify-content: center;
+	padding: 0 0 30px 0;
+	/* only bottom padding */
+}
+
+#passcode-container .bottom-row button {
+	background: none;
+	border: none;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 18px;
+	font-weight: 400;
+	/* transition: color 0.5s ease-out; */
+}
+
+#passcode-container .bottom-row button:active {
+	/* background-color: rgba(150, 150, 150, 0.5);
+	border-radius: 5px; */
+
+	color: #777777;
+}
+
+/* #endregion */
+
+/* #region Lock screen */
+
+#lockScreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: url('https://wallpapers.com/images/hd/goofy-ahh-picture-qac9af6ki3kmjwvx.jpg') no-repeat center center;
+	background-size: cover;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+#lockScreenContent {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+}
+
+#dateTimeWrapper {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 80px;
+	/* Adjust as needed */
+	margin-bottom: 20px;
+}
+
+#lockScreen #time {
+	margin: 0px;
+
+	font-family: 'San Francisco Light', sans-serif;
+	font-size: 12rem;
+	font-weight: lighter;
+	color: white;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	margin-bottom: 20px;
+}
+
+#lockScreen #date {
+	margin: 0px;
+
+	font-family: 'San Francisco', sans-serif;
+	font-size: 2rem;
+	font-weight: 500;
+	color: white;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	margin-bottom: 20px;
+}
+
+#passcode-container,
+#slideToUnlock {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	transition: opacity 0.3s;
+}
+
+#slideToUnlock {
+	top: 70%;
+	z-index: 2;
+	opacity: 0.8;
+	color: #ffffff;
+	font-size: 3rem;
+}
+
+#passcode-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 10000;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s;
+}
+
+#passcode-container.active {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#lockScreenContent.passcode-active #dateTimeWrapper,
+#lockScreenContent.passcode-active #slideToUnlock {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s;
+}
+
+/* #endregion */
+
+.anim-shakeX {
+	animation: shakeX 0.3s ease-in-out;
+}
+
+#apps {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	top: 0;
+	pointer-events: none;
+}
+
+#apps>* {
+	pointer-events: auto;
+}
+
+.app {
+	width: 100%;
+	height: 100%;
+}
+
+#baconExplorer {
+	display: none;
+}
+
+
+/* 
+Old #homeButton styles
+
+position: fixed;
+display: block;
+left: 50%;
+bottom: 25px;
+transform: translateX(-50%);
+width: 115px;
+height: 115px;
+background-color: #111111;
+border: 1px solid #cccccc;
+border-radius: 50%;
+font-family: Arial,
+Helvetica,
+sans-serif;
+font-size: 100px;
+color: #ffffff;
+
+*/
+
+#homeButton {
+	position: fixed;
+	display: block;
+	left: -1px;
+	top: 25%;
+	transform: translateY(-25%);
+	width: 50px;
+	height: 115px;
+	background-color: #111111;
+	border: 1px solid #cccccc;
+	border-radius: 8px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 80px;
+	color: #ffffff;
+	z-index: 9999999;
+}
+
+#homeButton span {
+	position: absolute;
+	top: calc(50% - 8px);
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	padding: 0;
+}
+
+#homeButton:active {
+	background-color: #777777;
+}
+
+/* #region Photos */
+
+#photos {
+	display: none;
+	background-color: #fff;
+	font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+#photos .tab {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#photos .album-btn {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	/* Horizontal layout */
+	align-items: center;
+	/* Vertically center items */
+	justify-content: flex-start;
+	font-family: 'San Francisco', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+	color: black;
+	padding: 16px 24px;
+	width: 100%;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	font-size: 2rem;
+	margin: 2px 0;
+	min-height: 180px;
+	/* Ensures enough height for large images */
+	box-sizing: border-box;
+}
+
+.album-preview {
+	width: 170px;
+	height: 170px;
+	object-fit: cover;
+	/* background: #ddd; */
+	margin-right: 24px;
+	/* Space between image and text */
+	flex-shrink: 0;
+	/* Prevent image from shrinking */
+}
+
+.album-info {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.album-name {
+	font-size: 2rem;
+	font-weight: bolder;
+	letter-spacing: 1.5px;
+	color: #000000;
+	margin-bottom: 8px;
+}
+
+.album-count {
+	position: static;
+	/* Remove absolute positioning */
+	padding: 2px 10px;
+	font-size: 1.3rem;
+	font-weight: bold;
+	margin-top: 0;
+}
+
+#photos .album-btn:hover {
+	background-color: #ccc;
+}
+
+#photos .tabcontent {
+	display: none;
+	width: 100vw;
+	height: 100vh;
+	box-sizing: border-box;
+	padding: 60px 20px 20px 20px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #fff;
+}
+
+#photos .tabcontent.active {
+	display: block;
+}
+
+#photos .back-btn {
+	position: absolute;
+	left: 20px;
+	top: 52px;
+	font-size: 2rem;
+	font-family: 'San Francisco Bold';
+	color: #186fc1;
+	padding: 8px 16px;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+#photos .photo-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 16px;
+	margin-top: 40px;
+}
+
+#photos .photo-grid img {
+	width: 100%;
+	height: 180px;
+	object-fit: cover;
+	background: #ddd;
+}
+
+#photos .album-title {
+	text-align: center;
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 2rem;
+}
+
+.photo-preview-modal {
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	bottom: 0;
+	width: 100vw;
+	height: calc(100vh - 60px);
+	background: rgba(0, 0, 0, 0.95);
+	/* Slightly darker for fullscreen effect */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.photo-preview-content {
+	background: none;
+	/* Remove background for true fullscreen */
+	border-radius: 0;
+	padding: 0;
+	box-shadow: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	max-width: 100vw;
+	max-height: 100vh;
+}
+
+.photo-preview-content img {
+	width: 100vw;
+	height: 100vh;
+	max-width: 100vw;
+	max-height: 100vh;
+	object-fit: contain;
+	/* Scale to fit, keep aspect ratio */
+	border-radius: 0;
+	margin-bottom: 0;
+	background: #000;
+}
+
+#photoPreviewDate {
+	color: #000000;
+	font-family: 'San Francisco Bold';
+	font-size: 1.2rem;
+	position: absolute;
+	top: 24px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.photo-preview-actions-bottom {
+	background-color: #ddd;
+	width: 100%;
+	height: 48px;
+	position: absolute;
+	bottom: 30px;
+	left: 0;
+}
+
+.photo-preview-actions-bottom button:nth-child(1) {
+	font-size: 2rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	left: 0;
+	position: absolute;
+}
+
+.photo-preview-actions-bottom button:nth-child(2) {
+	font-size: 2rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	right: 0;
+	position: absolute;
+}
+
+.favorite-icon {
+	height: 48px !important;
+	width: auto !important;
+	background: none !important;
+}
+
+.trash-icon {
+	height: 42px !important;
+	width: auto !important;
+	background: none !important;
+}
+
+.photo-preview-actions-top {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	text-align: center;
+	padding: 16px 24px;
+	gap: 24px;
+	background: rgba(255, 255, 255, 1);
+	z-index: 2;
+	height: 40px;
+}
+
+.photo-preview-actions-top button {
+	font-size: 2rem;
+	color: #000000;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 8px 12px;
+}
+
+.photo-preview-close {
+	position: absolute;
+	top: 8px;
+	left: 12px;
+	color: #186fc1 !important;
+	font-weight: bold;
+	font-size: 2rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+/* #endregion */
+
+/* #region Bacon Explorer */
+
+#baconExplorerContent {
+	width: 100%;
+	height: calc(100% - 35px);
+	background-color: #ffffff;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+#topBar {
+	width: 100%;
+	height: 84px;
+	border-bottom: 1px solid #bbbbbb;
+	background-color: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#topBar input[type='text'] {
+	font-family: 'San Francisco';
+	height: 48px;
+	border: none;
+	background-color: #e6e6e6;
+	width: calc(100% - 64px);
+	text-align: center;
+	font-weight: 900;
+	letter-spacing: 1.5px;
+	font-size: 2rem;
+}
+
+#topBar #reloadButton {
+	position: absolute;
+	right: 25px;
+	width: 48px;
+	height: 48px;
+	border: none;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+#topBar #reloadButton img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+#reloadIcon {
+	display: block;
+}
+
+#stopReloadIcon {
+	display: none;
+}
+
+#bottomBar {
+	width: 100%;
+	height: 72px;
+	border-top: 1px solid #bbbbbb;
+	background-color: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: absolute;
+	bottom: 0;
+	padding: 0 24px;
+}
+
+#bottomBar button {
+	width: 52px;
+	height: 52px;
+	margin: 0;
+	border: none;
+	background-color: unset;
+}
+
+#bottomBar button img {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+#browserFrame {
+	width: 100%;
+	height: calc(100% - 158px);
+}
+
+/* #endregion */
+
+g {}

@@ -1,9 +1,8 @@
 body {
-    padding-top: 25px;
+    padding: 25px;
     background-color: #000000;
     text-align: center;
-    padding-left: 25%;
-    padding-right: 25%;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .logo {
@@ -12,7 +11,10 @@ body {
 }
 
 .progress {
-    width: 100%;
+    width: 400px;
+    /* Set a fixed, shorter width */
+    margin: 0 auto;
+    /* Center horizontally */
     background-color: #444444;
     border-radius: 7px;
     cursor: wait;
@@ -20,12 +22,36 @@ body {
 
 .bar {
     width: 0%;
-    height: 30px;
+    height: 18px;
+    /* Make the bar shorter */
     background-color: #ffffff;
     text-align: center;
-    line-height: 30px;
+    line-height: 18px;
+    /* Match the new height */
     border-radius: 7px;
-    animation: progress-animation 10s;
+    animation: progress-animation 11s;
+}
+
+h3 {
+    color: #ffffff;
+    font-size: 18px;
+    margin-top: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#bootStage1 {
+    display: block;
+}
+
+#bootStage2 {
+    display: none;
+}
+
+#bootMenu {
+    display: none;
 }
 
 @keyframes progress-animation {
@@ -47,6 +73,10 @@ body {
 
     75% {
         width: 55%;
+    }
+
+    90% {
+        width: 95%;
     }
 
     100% {

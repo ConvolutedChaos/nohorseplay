@@ -6,154 +6,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Dog OS</title>
     <link rel="stylesheet" href="css/edogos.css">
-
 </head>
 
 <body>
+    <div id="edogos-desktop">
 
-    <span style="display: none;" id="dateandtime"></span>
-    <div id="desktop">
-        <!-- <div id="desktopFile" onclick="openApp('fileExplorer', 'fileExplorerIcon')">
-            <img id="fileIcon" src="media/img/user-home.png">
-            <br>
-            <span id="fileLabel">Home</span>
-        </div> -->
-    </div>
-    <div id="taskbar">
-        <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" title="Menu"></button>
+        <div id="taskbar">
+            <div class="taskbar-left">
+                <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" title="Menu"></button>
 
-        <div id="baconExplorerIcon" class="taskbar-icon" title="Bacon Explorer"
-            onclick="unminimizeApp('baconExplorer')"></div>
+                <div id="baconExplorerIcon" class="taskbar-icon" title="Bacon Explorer"
+                    onclick="unminimizeApp('baconExplorer')"></div>
 
-        <div id="systemSettingsIcon" class="taskbar-icon" title="System Settings"
-            onclick="unminimizeApp('systemSettings')"></div>
+                <div id="systemSettingsIcon" class="taskbar-icon" title="System Settings"
+                    onclick="unminimizeApp('systemSettings')"></div>
 
-        <div id="backgroundSettingsIcon" class="taskbar-icon" title="Background Settings"
-            onclick="unminimizeApp('backgroundSettings')"></div>
+                <div id="backgroundSettingsIcon" class="taskbar-icon" title="Background Settings"
+                    onclick="unminimizeApp('backgroundSettings')"></div>
 
-        <div id="aboutEdogosIcon" class="taskbar-icon" title="About E-Dog OS" onclick="unminimizeApp('aboutEdogos')">
-        </div>
-
-        <div id="drawingProgramIcon" class="taskbar-icon" title="Background Settings"
-            onclick="unminimizeApp('drawingProgram')"></div>
-
-        <div id="mediaPlayerIcon" class="taskbar-icon" title="Media Player" onclick="unminimizeApp('mediaPlayer')">
-        </div>
-
-        <div id="fileExplorerIcon" class="taskbar-icon" title="File Explorer" onclick="unminimizeApp('fileExplorer')">
-        </div>
-
-        <div id="debugToolsIcon" class="taskbar-icon" title="Debug Tools" onclick="unminimizeApp('debugTools')">
-        </div>
-
-        <div id="calculatorIcon" class="taskbar-icon" title="Calculator" onclick="unminimizeApp('calculator')">
-        </div>
-
-        <div id="shutdownIcon" class="taskbar-icon" title="Session" onclick="unminimizeApp('shutdown')">
-        </div>
-
-        <div id="errorIcon" class="taskbar-icon" title="Error" onclick="unminimizeApp('error')">
-        </div>
-
-        <div id="detailedSystemInfoIcon" class="taskbar-icon" title="Detailed System Info"
-            onclick="unminimizeApp('detailedSystemInfo')">
-        </div>
-
-        <div id="terminalIcon" class="taskbar-icon" title="Terminal" onclick="unminimizeApp('terminal')">
-        </div>
-
-        <div id="appStoreIcon" class="taskbar-icon" title="App Store" onclick="unminimizeApp('appStore')">
-        </div>
-
-        <div id="textEditorIcon" class="taskbar-icon" title="Text Editor" onclick="unminimizeApp('textEditor')">
-        </div>
-
-        <div id="dialUpIcon" class="taskbar-icon" title="Dial Up" onclick="unminimizeApp('dialUp')">
-        </div>
-
-        <div id="cameraIcon" class="taskbar-icon" title="Camera" onclick="unminimizeApp('camera')">
-        </div>
-
-        <div id="weatherIcon" class="taskbar-icon" title="Weather" onclick="unminimizeApp('weather')">
-        </div>
-
-        <div id="blockbenchIcon" class="taskbar-icon" title="Blockbench" onclick="unminimizeApp('blockbench')">
-        </div>
-
-        <div id="virtualMachinesIcon" class="taskbar-icon" title="Virtual Machines"
-            onclick="unminimizeApp('virtualMachines')">
-        </div>
-
-        <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
-        <div id="date-div"></div>
-    </div>
-
-    <div id="startMenu">
-        <div class="startMenuContent">
-            <div class="menu">
-                <input id="Search" type="text" class="search" placeholder="Search...">
-                <div class="sidebar">
-                    <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"
-                        src="media/img/internet-web-browser.png" alt="Bacon Explorer">
-                    <img onclick="toggleApp('fileExplorer', 'fileExplorerIcon');" src="media/img/folder.png"
-                        alt="Files">
-                    <img onclick="toggleApp('systemSettings', 'systemSettingsIcon');" src="media/img/settings.png"
-                        alt="System Settings">
-                    <img class="powerimg" onclick="toggleApp('shutdown', 'shutdownIcon');"
-                        src="media/img/system-shutdown.png" alt="Power">
+                <div id="aboutEdogosIcon" class="taskbar-icon" title="About E-Dog OS"
+                    onclick="unminimizeApp('aboutEdogos')">
                 </div>
-                <div class="categories">
-                    <div onclick="showCategory('all-apps')">All Applications</div>
-                    <!-- <div onclick="showCategory('accessories')">Accessories</div>
+
+                <div id="drawingProgramIcon" class="taskbar-icon" title="Background Settings"
+                    onclick="unminimizeApp('drawingProgram')"></div>
+
+                <div id="mediaPlayerIcon" class="taskbar-icon" title="Media Player"
+                    onclick="unminimizeApp('mediaPlayer')">
+                </div>
+
+                <div id="fileExplorerIcon" class="taskbar-icon" title="File Explorer"
+                    onclick="unminimizeApp('fileExplorer')">
+                </div>
+
+                <div id="debugToolsIcon" class="taskbar-icon" title="Debug Tools" onclick="unminimizeApp('debugTools')">
+                </div>
+
+                <div id="calculatorIcon" class="taskbar-icon" title="Calculator" onclick="unminimizeApp('calculator')">
+                </div>
+
+                <div id="shutdownIcon" class="taskbar-icon" title="Session" onclick="unminimizeApp('shutdown')">
+                </div>
+
+                <div id="errorIcon" class="taskbar-icon" title="Error" onclick="unminimizeApp('error')">
+                </div>
+
+                <div id="detailedSystemInfoIcon" class="taskbar-icon" title="Detailed System Info"
+                    onclick="unminimizeApp('detailedSystemInfo')">
+                </div>
+
+                <div id="terminalIcon" class="taskbar-icon" title="Terminal" onclick="unminimizeApp('terminal')">
+                </div>
+
+                <div id="appStoreIcon" class="taskbar-icon" title="App Store" onclick="unminimizeApp('appStore')">
+                </div>
+
+                <div id="textEditorIcon" class="taskbar-icon" title="Text Editor" onclick="unminimizeApp('textEditor')">
+                </div>
+
+                <div id="dialUpIcon" class="taskbar-icon" title="Dial Up" onclick="unminimizeApp('dialUp')">
+                </div>
+
+                <div id="cameraIcon" class="taskbar-icon" title="Camera" onclick="unminimizeApp('camera')">
+                </div>
+
+                <div id="weatherIcon" class="taskbar-icon" title="Weather" onclick="unminimizeApp('weather')">
+                </div>
+
+                <div id="blockbenchIcon" class="taskbar-icon" title="Blockbench" onclick="unminimizeApp('blockbench')">
+                </div>
+
+                <div id="virtualMachinesIcon" class="taskbar-icon" title="Virtual Machines"
+                    onclick="unminimizeApp('virtualMachines')">
+                </div>
+
+                <div id="taskManagerIcon" class="taskbar-icon" title="Task Manager"
+                    onclick="unminimizeApp('taskManager')">
+                </div>
+
+                <div id="physicsSimulatorIcon" class="taskbar-icon" title="Physics Simulator"
+                    onclick="unminimizeApp('physicsSimulator')">
+                </div>
+
+                <div id="userPromptIcon" class="taskbar-icon" title="Prompt" onclick="unminimizeApp('userPrompt')">
+                </div>
+
+                <div id="fontSettingsIcon" class="taskbar-icon" title="Font Settings"
+                    onclick="unminimizeApp('fontSettings')">
+                </div>
+            </div>
+
+            <div class="taskbar-right">
+                <div id="wifiIcon" title="Connected to WiFi. Signal strength: Good"></div>
+                <div id="date-div"></div>
+            </div>
+        </div>
+
+        <div id="startMenu">
+            <div class="startMenuContent">
+                <div class="menu">
+                    <input id="Search" type="text" class="search" placeholder="Search...">
+                    <div class="sidebar">
+                        <img onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"
+                            src="media/img/internet-web-browser.png" alt="Bacon Explorer">
+                        <img onclick="toggleApp('fileExplorer', 'fileExplorerIcon');" src="media/img/folder.png"
+                            alt="Files">
+                        <img onclick="toggleApp('systemSettings', 'systemSettingsIcon');" src="media/img/settings.png"
+                            alt="System Settings">
+                        <img class="powerimg" onclick="toggleApp('shutdown', 'shutdownIcon');"
+                            src="media/img/system-shutdown.png" alt="Power">
+                    </div>
+                    <div class="categories">
+                        <div onclick="showCategory('all-apps')">All Applications</div>
+                        <!-- <div onclick="showCategory('accessories')">Accessories</div>
                     <div onclick="showCategory('games')">Games</div>
                     <div onclick="showCategory('graphics')">Graphics</div>
                     <div onclick="showCategory('internet')">Internet</div>
                     <div onclick="showCategory('office')">Office</div>
                     <div onclick="showCategory('programming')">Programming</div> -->
-                </div>
-                <div id="all-apps" class="apps">
-                    <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img
-                            src="media/img/software-properties.png" alt="">About E-Dog OS</div>
-                    <div onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"><img
-                            src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
-                    <div onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon');"><img
-                            src="media/img/system-settings-backgrounds.png" alt="">Background Settings</div>
-                    <div onclick="toggleApp('calculator', 'calculatorIcon');"><img
-                            src="media/img/accessories-calculator.png" alt="">Calculator</div>
-                    <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png"
-                            alt="">Debug Tools</div>
-                    <div onclick="toggleApp('dialUp', 'dialUpIcon');"><img src="media/img/telephone.png" alt="">Dial Up
                     </div>
-                    <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img src="media/img/drawing.png"
-                            alt="">Drawing</div>
-                    <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png"
-                            alt="">File Explorer</div>
-                    <div onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon');"><img src="media/img/media-player.png"
-                            alt="">Media Player</div>
-                    <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img src="media/img/settings.png"
-                            alt="">System Settings</div>
-                    <div onclick="toggleApp('terminal', 'terminalIcon');"><img src="media/img/utilities-terminal.png"
-                            alt="">Terminal</div>
-                    <div onclick="toggleApp('appStore', 'appStoreIcon');"><img
-                            src="media/img/system-software-install.png" alt="">App Store</div>
-                    <div onclick="toggleApp('textEditor', 'textEditorIcon');"><img
-                            src="media/img/accessories-text-editor.png" alt="">Text Editor</div>
-                    <div onclick="toggleApp('camera', 'cameraIcon');"><img src="media/img/accessories-camera.png"
-                            alt="">Camera</div>
-                </div>
-                <div id="accessories" class="apps hidden">
-                    <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
-                </div>
-                <div id="games" class="apps hidden">
+                    <div id="all-apps" class="apps">
+                        <div onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon');"><img
+                                src="media/img/software-properties.png" alt="">About E-Dog OS</div>
+                        <div onclick="toggleApp('baconExplorer', 'baconExplorerIcon');"><img
+                                src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
+                        <div onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon');"><img
+                                src="media/img/system-settings-backgrounds.png" alt="">Background Settings</div>
+                        <div onclick="toggleApp('calculator', 'calculatorIcon');"><img
+                                src="media/img/accessories-calculator.png" alt="">Calculator</div>
+                        <div onclick="toggleApp('debugTools', 'debugToolsIcon');"><img src="media/img/passwords.png"
+                                alt="">Debug Tools</div>
+                        <div onclick="toggleApp('dialUp', 'dialUpIcon');"><img src="media/img/telephone.png" alt="">Dial
+                            Up
+                        </div>
+                        <div onclick="toggleApp('drawingProgram', 'drawingProgramIcon');"><img
+                                src="media/img/drawing.png" alt="">Drawing</div>
+                        <div onclick="toggleApp('fileExplorer', 'fileExplorerIcon');"><img src="media/img/folder.png"
+                                alt="">File Explorer</div>
+                        <div onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon');"><img
+                                src="media/img/media-player.png" alt="">Media Player</div>
+                        <div onclick="toggleApp('systemSettings', 'systemSettingsIcon');"><img
+                                src="media/img/settings.png" alt="">System Settings</div>
+                        <div onclick="toggleApp('terminal', 'terminalIcon');"><img
+                                src="media/img/utilities-terminal.png" alt="">Terminal</div>
+                        <div onclick="toggleApp('appStore', 'appStoreIcon');"><img
+                                src="media/img/system-software-install.png" alt="">App Store</div>
+                        <div onclick="toggleApp('textEditor', 'textEditorIcon');"><img
+                                src="media/img/accessories-text-editor.png" alt="">Text Editor</div>
+                        <div onclick="toggleApp('camera', 'cameraIcon');"><img src="media/img/accessories-camera.png"
+                                alt="">Camera</div>
+                    </div>
+                    <div id="accessories" class="apps hidden">
+                        <div><img src="media/img/accessories-calculator.png" alt="">Calculator</div>
+                    </div>
+                    <div id="games" class="apps hidden">
 
-                </div>
-                <div id="graphics" class="apps hidden">
-                    <div><img src="media/img/drawing.png" alt="">Drawing</div>
-                </div>
-                <div id="internet" class="apps hidden">
-                    <div><img src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
-                </div>
-                <!-- <div id="office" class="apps hidden">
+                    </div>
+                    <div id="graphics" class="apps hidden">
+                        <div><img src="media/img/drawing.png" alt="">Drawing</div>
+                    </div>
+                    <div id="internet" class="apps hidden">
+                        <div><img src="media/img/internet-web-browser.png" alt="">Bacon Explorer</div>
+                    </div>
+                    <!-- <div id="office" class="apps hidden">
                     <div><img src="writer.png" alt="">LibreOffice Writer</div>
                     <div><img src="calc.png" alt="">LibreOffice Calc</div>
                 </div>
@@ -161,474 +176,849 @@
                     <div><img src="vscode.png" alt="">VS Code</div>
                     <div><img src="arduino.png" alt="">Arduino IDE</div>
                 </div> -->
-                <div id="soundandvideo" class="apps hidden">
+                    <div id="soundandvideo" class="apps hidden">
 
-                </div>
-                <div id="preferences" class="apps hidden">
-                    <div><img src="media/img/settings.png" alt="">System Settings</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="baconExplorer" class="draggable dropShadow">
-        <div class="title-bar">
-            <!--Window bar-->
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('baconExplorer', 'baconExplorerIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('baconExplorer')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text"><span id="baconExplorerTabOpen">Start Page</span> - Bacon Explorer</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div id="baconExplorerContent">
-            <div class="tabs">
-
-            </div>
-            <div class="navbar">
-                <button onclick="goBack()"><b>&lt;</b></button>
-                <button onclick="goForward()"><b>&gt;</b></button>
-                <button onclick="reloadPage()"><span>&#8635;</span></button>
-                <button onclick="goHome()">🏠</button>
-                <input type="text" id="url" placeholder="Enter A URL" value="">
-                <button onclick="loadPage()">Go</button>
-                <button onclick="toggleBookmark()">&#9733;</button>
-                <button onclick="window.alert(tipMessage);">?</button>
-            </div>
-            <div class="bookmarks" id="bookmarks"></div>
-            <iframe id="browserFrame" src="assets/baconExplorerWelcomePage.html"></iframe>
-            <div id="startPage">
-                <h1>Welcome to Bacon Explorer</h1>
-                <hr>
-                <h2>Quick Links</h2>
-                <ul>
-                    <li><a style="cursor: pointer; color: #001696;"
-                            onclick="closeStartPage(), goToPage('https://nohorseplay.com')">Nohorseplay</a></li>
-                    <li><a style="cursor: pointer; color: #001696;"
-                            onclick="closeStartPage(), goToPage('https://www.wikipedia.org')">Wikipedia</a></li>
-                    <li><a style="cursor: pointer; color: #001696;"
-                            onclick="closeStartPage(), goToPage('https://www.boredbutton.com')">Bored Button</a></li>
-                </ul>
-                <hr>
-                <h2>Your Bookmarks</h2>
-                <ul id="bookmarksList">
-
-                </ul>
-                <hr>
-                <h2>Customize Background</h2>
-                <input type="color" id="bgColorPicker" value="#00aaaa">
-                <button onclick="changeBackground()">Change Background</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="systemSettings" class="draggable dropShadow">
-        <div class="title-bar">
-            <!--Window bar-->
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('systemSettings', 'systemSettingsIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('systemSettings')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">System Settings</span>
-            <br>
-            <br>
-            <br>
-            <hr>
-        </div>
-        <br>
-
-        <!--Window content-->
-
-        <span class="systemSettingsButton" onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')">
-            <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
-            <br>
-            <span class="settingDescription">
-                Desktop BG
-            </span>
-        </span>
-        <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS ver">
-            <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
-            <br>
-            <span class="settingDescription">
-                About E-Dog OS
-            </span>
-        </span>
-    </div>
-
-    <div id="backgroundSettings" class="draggable dropShadow">
-        <div class="title-bar">
-            <!--Window bar-->
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('backgroundSettings')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Desktop Background</span>
-            <br>
-            <br>
-            <br>
-            <hr>
-        </div>
-        <br>
-
-        <!--Window content-->
-        <!-- hi mom -->
-        <p>Choose an image&nbsp;<img src="../icons/image.png"></p>
-
-        <div class="wallpaperButtonContainer">
-            <button class="setWallpaperButton" id="setWallpaper1" onclick="setWallpaper1();" title="Cat"></button>
-            <button class="setWallpaperButton" id="setWallpaper2" onclick="setWallpaper2();"
-                title="Tree in lavender field"></button>
-            <button class="setWallpaperButton" id="setWallpaper3" onclick="setWallpaper3();"
-                title="Not much to see here.. it's just a fish.."></button>
-            <button class="setWallpaperButton" id="setWallpaper4" onclick="setWallpaper4();"
-                title="US Post office break room"></button>
-            <button class="setWallpaperButton" id="setWallpaper5" onclick="setWallpaper5();"
-                title="my eyes hurt already"></button>
-            <button class="setWallpaperButton" id="setWallpaper6" onclick="setWallpaper6();"
-                title="There doesn't appear to be anything here.. :&lpar;"></button>
-        </div>
-        <br>
-        <div class="uploadImageContainer">
-            <p>Upload an image&nbsp;<img src="../icons/even_more_icons/drive-upload.png"></p>
-            <input type="file" id="imageInput" accept="image/*">
-            <br>
-            <br>
-            <img id="imagePreview" src="#" alt="Image Preview" title="Image Preview">
-        </div>
-    </div>
-
-    <div id="aboutEdogos" class="draggable dropShadow">
-        <div class="title-bar">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('aboutEdogos')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">About E-Dog OS</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <br>
-        <img class="edogosLogo" src="media/img/android-chrome-192x192.png">
-        <br>
-        <div class="aboutTable">
-            <br>
-            <hr>
-            <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
-                class="rightText">E-Dog OS <span id="ver"></span></span>
-            <br>
-            <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
-                class="rightText">Intel&copy; Core&trade; i7-6700K CPU @
-                4.00GHz &times; 4</span>
-            <br>
-            <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/memory.png">&nbsp;Memory</span><span
-                class="rightText">31.3 GiB</span>
-            <br>
-            <hr>
-            <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span class="rightText">250.8
-                GB</span>
-            <br>
-            <hr>
-            <span class="leftText"><img src="../icons/even_more_icons/graphic-card.png">&nbsp;Graphics Card</span><span
-                class="rightText">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</span>
-            <br>
-            <hr>
-            <img src="../icons/apInfo.png">&nbsp;<a style="cursor: pointer; color: #000128;"
-                onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">More Info</a>
-        </div>
-
-    </div>
-
-    <div id="drawingProgram" class="draggable dropShadow">
-        <div class="title-bar">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('drawingProgram', 'drawingProgramIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('drawingProgram')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Drawing</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <br>
-        <iframe src="assets/drawingProgram.html" frameborder="0"></iframe>
-    </div>
-
-    <div id="mediaPlayer" class="draggable dropShadow">
-        <div class="title-bar">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon'), resetVideo();">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('mediaPlayer')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">raisins.mp4 - Media Player</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="video-container">
-            <video id="video" src="media/video/test-pattern.mp4">Your browser does not support the video element. How do
-                you get by in life? Upgrade your browser.</video>
-            <div class="controls">
-                <button id="rewind">&#171;</button>
-                <button id="play">&#9658;</button>
-                <button id="stop">&#9632;</button>
-                <button id="forward">&#187;</button>
-                <span id="time">00:00</span>
-                <!-- <button id="repeat">&#10226;</button>
-                <button id="shuffle">&#128256;</button> -->
-                <div class="volume-container">
-                    <button id="volume">&#128266;</button>
-                    <div class="volume-slider">
-                        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="1">
+                    </div>
+                    <div id="preferences" class="apps hidden">
+                        <div><img src="media/img/settings.png" alt="">System Settings</div>
                     </div>
                 </div>
             </div>
+        </div>
 
-        </div>
-        <div class="upnextbar">
-            <ul>
-                <li onclick="replayVideo()">raisins.mp4</li>
-            </ul>
-        </div>
-    </div>
+        <div id="baconExplorer" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+                <!--Window bar-->
 
-    <div id="fileExplorer" class="draggable dropShadow">
-        <div class="title-bar">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('fileExplorer', 'fileExplorerIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('fileExplorer')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span id="fileExplorerTitleBarText" class="title-bar-text">File Explorer</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="toolbar">
-            <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%;" onclick="goBack()"
-                title="Back">&#11013;</button>
-            <button
-                style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%; transform: rotate(180deg)"
-                onclick="goForward()" title="Forward">&#11013;</button>
-        </div>
-        <div class="content">
-            <div class="sidebar">
-                <ul>
-                    <li onclick="openFolder('Home')">Home</li>
-                    <li onclick="openFolder('Documents')">Documents</li>
-                    <li onclick="openFolder('Downloads')">Downloads</li>
-                    <li onclick="openFolder('Pictures')">Pictures</li>
-                    <li onclick="openFolder('Music')">Music</li>
-                    <li onclick="openFolder('Videos')">Videos</li>
-                </ul>
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('baconExplorer', 'baconExplorerIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('baconExplorer')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Bacon Explorer</span>
+                <br>
+                <br>
+                <br>
             </div>
-            <div class="main-panel" id="mainPanel">
-                <!-- Icons will be populated here -->
+            <div id="baconExplorerContent">
+                <div id="edog-tab-bar" class="edog-tab-bar">
+                    <!-- Dynamic tabs go here
+                 old symbol:➕
+                -->
+                    <button id="edog-new-tab" title="New Tab">+</button>
+                </div>
+
+                <div class="edog-browser-toolbar">
+                    <button onclick="edogBrowser.goBack()" title="Go Back">&lt;</button>
+                    <button onclick="edogBrowser.goForward()" title="Go Forward">&gt;</button>
+                    <button onclick="edogBrowser.reload()" title="Reload Active Page">&#8635;</button>
+                    <input id="edog-browser-url" type="text" placeholder="Enter a URL" />
+                    <button onclick="edogBrowser.go()" title="Go">Go</button>
+                    <button onclick="edogBrowser.addBookmark()">&#128970;</button>
+                    <button onclick="edogBrowser.togglePageInfo()"
+                        title="Page Info (limited availability)">&#8505;</button>
+                </div>
+                <div id="bookmark-bar"
+                    style="display: flex; gap: 6px; padding: 4px; background: #222; border-top: 1px solid #444; border-bottom: 1px solid #444; overflow-x: auto;">
+                </div>
+
+                <div class="edog-browser-body">
+                    <div id="iframe-container" class="iframe-wrapper">
+                        <!-- Dynamic iframes go here -->
+                    </div>
+                    <div id="newTabElement">
+                        <div
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
+
+                            <!-- Top Left -->
+                            <div style="position: absolute; top: 20px; left: 30px; text-align: left;">
+                                <!-- <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 10px;">E-Dog OS</div> -->
+                                <div style="display: flex; gap: 1.5rem; font-size: 0.9rem; opacity: 0.8;">
+                                    <div><strong>4,138,296</strong><span> Trackers Blocked</span></div>
+                                    <div><strong>1.93 TB</strong><span> Bandwidth Saved</span></div>
+                                    <div><strong>2 yrs</strong><span> Time Saved</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Clock -->
+                            <div id="bacon-explorer-clock">--:--
+                            </div>
+
+                            <!-- Search Bar -->
+                            <div id="newTabSearchBarContainer">
+                                <input type="text" id="newTabSearchBar" placeholder="Search or enter URL...">
+                            </div>
+
+                            <!-- Quick Links -->
+                            <div id="newTabQuicklinksContainer">
+                                <a onclick="edogBrowser.openWebPage(nohorseplayUrl);">🏠
+                                    nohorseplay</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="browserImageView">
+                        <img src="https://www.w3schools.com/images/stop.gif">
+                    </div>
+                    <div id="edog-devtools" class="edog-devtools">
+                        <h4>Dev Tools</h4>
+                        <pre id="dev-output">No tab selected.</pre>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="bottom-toolbar">
-            <input type="range" min="50" max="100" value="75" id="zoomSlider" oninput="updateZoom(this.value)">
-            <span id="fileCount">0 items</span>, <span id="freeSpace"
-                title="I think you need a bigger hard drive...">Free space: 0 bytes</span>
+
+        <div id="systemSettings" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+                <!--Window bar-->
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('systemSettings', 'systemSettingsIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('systemSettings')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">System Settings</span>
+                <br>
+                <br>
+                <br>
+                <hr>
+            </div>
+            <br>
+
+            <!--Window content-->
+
+            <span class="systemSettingsButton" onclick="openApp('backgroundSettings', 'backgroundSettingsIcon')">
+                <img class="systemSettingsButtonImage" src="media/img/system-settings-backgrounds.png">
+                <br>
+                <span class="settingDescription">
+                    Desktop BG
+                </span>
+            </span>
+            <span class="systemSettingsButton" onclick="openApp('aboutEdogos', 'aboutEdogosIcon')" title="E-Dog OS ver">
+                <img class="systemSettingsButtonImage" src="media/img/software-properties.png">
+                <br>
+                <span class="settingDescription">
+                    About E-Dog OS
+                </span>
+            </span>
         </div>
-    </div>
 
-    <div id="debugTools" class="draggable dropShadow">
-        <div class="title-bar">
+        <div id="backgroundSettings" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+                <!--Window bar-->
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('backgroundSettings', 'backgroundSettingsIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize"
+                    onclick="minimizeApp('backgroundSettings')"><span style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Desktop Background</span>
+                <br>
+                <br>
+                <br>
+                <hr>
+            </div>
+            <br>
 
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('debugTools', 'debugToolsIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('debugTools')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
+            <!--Window content-->
+            <!-- hi mom -->
+            <p>Choose an image&nbsp;<img src="../icons/image.png"></p>
+
+            <div class="wallpaperButtonContainer">
+                <button class="setWallpaperButton" id="setWallpaper1" onclick="setWallpaper1();" title="Cat"></button>
+                <button class="setWallpaperButton" id="setWallpaper2" onclick="setWallpaper2();"
+                    title="Tree in lavender field"></button>
+                <button class="setWallpaperButton" id="setWallpaper3" onclick="setWallpaper3();"
+                    title="Not much to see here.. it's just a fish.."></button>
+                <button class="setWallpaperButton" id="setWallpaper4" onclick="setWallpaper4();"
+                    title="US Post office break room"></button>
+                <button class="setWallpaperButton" id="setWallpaper5" onclick="setWallpaper5();"
+                    title="my eyes hurt already"></button>
+                <button class="setWallpaperButton" id="setWallpaper6" onclick="setWallpaper6();"
+                    title="There doesn't appear to be anything here.. :&lpar;"></button>
+            </div>
             <br>
-            <span class="title-bar-text">Debug Tools</span>
-            <br>
-            <br>
-            <br>
+            <div class="uploadImageContainer">
+                <p>Upload an image&nbsp;<img src="../icons/even_more_icons/drive-upload.png"></p>
+                <input type="file" id="imageInput" accept="image/*">
+                <br>
+                <br>
+                <img id="imagePreview" src="#" alt="Image Preview" title="Image Preview">
+            </div>
         </div>
-        <h2>Use these at your own risk.</h2>
-        <br>
-        <button onclick="crashSystem('FORCED_CRASH');">Crash System</button>
-        <hr>
-        <button
-            onclick="throwError('Fatal error while processing<br> request&lpar;debug&rpar;. <br>Error code: debug_01');">Throw
-            Error</button>
-    </div>
 
-    <div id="calculator" class="draggable dropShadow">
-        <div class="title-bar">
+        <div id="aboutEdogos" class="draggable resizeable dropShadow">
+            <div class="title-bar">
 
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('calculator', 'calculatorIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('calculator')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('aboutEdogos', 'aboutEdogosIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('aboutEdogos')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">About E-Dog OS</span>
+                <br>
+                <br>
+                <br>
+            </div>
             <br>
-            <span class="title-bar-text">Calculator</span>
+            <img class="edogosLogo" src="media/img/android-chrome-192x192.png">
             <br>
-            <br>
-            <br>
+            <div class="aboutTable">
+                <br>
+                <hr>
+                <span class="leftText"><img src="../icons/laptop.png">&nbsp;Operating System</span><span
+                    class="rightText">E-Dog OS <span id="ver"></span></span>
+                <br>
+                <hr>
+                <span class="leftText"><img src="../icons/even_more_icons/processor.png">&nbsp;Processor</span><span
+                    class="rightText">Intel&copy; Core&trade; i7-6700K CPU @
+                    4.00GHz &times; 4</span>
+                <br>
+                <hr>
+                <span class="leftText"><img src="../icons/even_more_icons/memory.png">&nbsp;Memory</span><span
+                    class="rightText">31.3 GiB</span>
+                <br>
+                <hr>
+                <span class="leftText"><img src="../icons/drive.png">&nbsp;Hard Drives</span><span
+                    class="rightText">250.8
+                    GB</span>
+                <br>
+                <hr>
+                <span class="leftText"><img src="../icons/even_more_icons/graphic-card.png">&nbsp;Graphics
+                    Card</span><span class="rightText">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</span>
+                <br>
+                <hr>
+                <img src="../icons/apInfo.png">&nbsp;<a style="cursor: pointer; color: #000128;"
+                    onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">More Info</a>
+            </div>
+
         </div>
-        <input type="text" class="display" id="display" disabled>
-        <div class="buttons">
-            <button onclick="clearDisplay()">C</button>
-            <button onclick="appendToDisplay('7')">7</button>
-            <button onclick="appendToDisplay('8')">8</button>
-            <button onclick="appendToDisplay('9')">9</button>
-            <button onclick="appendToDisplay('/')">/</button>
-            <button onclick="appendToDisplay('4')">4</button>
-            <button onclick="appendToDisplay('5')">5</button>
-            <button onclick="appendToDisplay('6')">6</button>
-            <button onclick="appendToDisplay('*')">*</button>
-            <button onclick="appendToDisplay('1')">1</button>
-            <button onclick="appendToDisplay('2')">2</button>
-            <button onclick="appendToDisplay('3')">3</button>
-            <button onclick="appendToDisplay('-')">-</button>
-            <button onclick="appendToDisplay('0')">0</button>
-            <button onclick="appendToDisplay('.')">.</button>
-            <button onclick="calculateResult()">=</button>
-            <button onclick="appendToDisplay('+')">+</button>
-        </div>
-    </div>
 
-    <div id="shutdown" class="draggable dropShadow">
-        <div class="title-bar">
+        <div id="drawingProgram" class="draggable resizeable dropShadow">
+            <div class="title-bar">
 
-            <button class="window-close-button" title="Close" onclick="toggleApp('shutdown', 'shutdownIcon')">&times;
-            </button>
-            <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
-                    style="font-size: 35px;">-</span>
-            </button> -->
-            <br>
-            <span class="title-bar-text">Shutdown</span>
-            <br>
-            <br>
-            <br>
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('drawingProgram', 'drawingProgramIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('drawingProgram')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Drawing</span>
+                <br>
+                <br>
+                <br>
+            </div>
+
+            <div class="edog-paint-menubar">
+                <div class="edog-paint-menu">
+                    <span>File &#9662;</span>
+                    <div class="edog-paint-dropdown">
+                        <div onclick="save()">Save</div>
+                        <div onclick="clear()">Clear</div>
+                    </div>
+                </div>
+                <div class="edog-paint-menu">
+                    <span>Edit &#9662;</span>
+                    <div class="edog-paint-dropdown">
+                        <div onclick="undo()">Undo</div>
+                        <div onclick="redo()">Redo</div>
+                    </div>
+                </div>
+                <div class="edog-paint-controls">
+                    <label>Brush:
+                        <input type="range" id="brushSize" min="1" max="50" value="5">
+                    </label>
+                    <div class="color-picker" id="colorBox">
+                        <input type="color" id="colorPicker" value="#000000" />
+                    </div>
+
+                    <script>
+                        const input = document.getElementById('colorPicker');
+                        const box = document.getElementById('colorBox');
+
+                        input.addEventListener('input', () => {
+                            box.style.backgroundColor = input.value;
+                        });
+
+                        // Initial preview
+                        box.style.backgroundColor = input.value;
+                    </script>
+                </div>
+            </div>
+
+            <div class="edog-paint-canvasarea">
+                <canvas id="paintCanvas" width="600" height="380"></canvas>
+            </div>
         </div>
-        <div class="shutdownContent">
-            <h3>Shut down this system now?</h3>
+
+        <div id="mediaPlayer" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('mediaPlayer', 'mediaPlayerIcon'), resetVideo();">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('mediaPlayer')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">raisins.mp4 - Media Player</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <!-- Your browser does not support the video element. How do
+                you get by in life? Upgrade your browser. -->
+            <div id="mediaPlayerContent">
+                <video id="edogVideo" src="media/video/test-pattern.mp4" style="width: 100%; display: block;">
+                    Your browser does not support the video element. How do
+                    you get by in life? Upgrade your browser.
+                </video>
+                <div style="padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    <input id="progressBar" type="range" value="0" min="0" max="100" step="0.1" style="width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <button id="playPauseBtn" style="padding: 4px 10px;">▶️</button>
+                            <button id="muteBtn" style="padding: 4px 10px;">🔊</button>
+                            <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1"
+                                style="width: 80px;">
+                        </div>
+                        <button id="fullscreenBtn" style="padding: 4px 10px;">⛶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="fileExplorer" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('fileExplorer', 'fileExplorerIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('fileExplorer')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span id="fileExplorerTitleBarText" class="title-bar-text">File Explorer</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="toolbar">
+                <button style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%;"
+                    onclick="goBack()" title="Back">&#11013;</button>
+                <button
+                    style="width: 32px; height: 32px; border: 1px solid #000000; border-radius: 50%; transform: rotate(180deg)"
+                    onclick="goForward()" title="Forward">&#11013;</button>
+            </div>
+            <div class="content">
+                <div class="sidebar">
+                    <ul>
+                        <li onclick="openFolder('Home')">Home</li>
+                        <li onclick="openFolder('Documents')">Documents</li>
+                        <li onclick="openFolder('Downloads')">Downloads</li>
+                        <li onclick="openFolder('Pictures')">Pictures</li>
+                        <li onclick="openFolder('Music')">Music</li>
+                        <li onclick="openFolder('Videos')">Videos</li>
+                    </ul>
+                </div>
+                <div class="main-panel" id="mainPanel">
+                    <!-- Icons will be populated here -->
+                </div>
+            </div>
+            <div class="bottom-toolbar">
+                <input type="range" min="50" max="100" value="75" id="zoomSlider" oninput="updateZoom(this.value)">
+                <span id="fileCount">0 items</span>, <span id="freeSpace"
+                    title="I think you need a bigger hard drive...">Free space: 0 bytes</span>
+            </div>
+        </div>
+
+        <div id="debugTools" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('debugTools', 'debugToolsIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('debugTools')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Debug Tools</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <!-- <h2>Use these at your own risk.</h2>
+        <br> -->
+            <button class="debugButton" onclick="crashSystem('FORCED_CRASH');">Crash System</button>
+            <button class="debugButton"
+                onclick="throwError(`This is an error box. Got that? <br>If not visit ${wikiLink}.`, true);">Throw
+                Error</button>
+            <button class="debugButton" onclick="openEverySingleApp();">Open Every App</button>
+            <button class="debugButton" onclick="closeEverySingleApp();">Close Every App</button>
+            <button class="debugButton" onclick="document.location=document.location">Reload the page</button>
+        </div>
+
+        <div id="calculator" class="draggable resizeable dropShadow">
+            <div class="title-bar">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('calculator', 'calculatorIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('calculator')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Calculator</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <input type="text" class="display" id="display" disabled>
             <div class="buttons">
-                <!-- <button class="suspend">Suspend</button> -->
-                <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
-                <button
-                    onclick="console.log('Attempting to log out...'), window.location.href='login.html', console.error('Log out failed!'), throwError('Log out failed!');"
-                    class="logout">Log Out</button>
-                <button
-                    onclick="console.log('Attempting to restart...'), window.location.href='boot.html', console.error('Restart failed!'), throwError('Restart failed!');"
-                    class="restart">Restart</button>
-                <button
-                    onclick="console.log('Attempting to shut down...'), window.close(), console.error('Shutdown failed!'), throwError('Shutdown failed!');"
-                    class="shutdown">Shut Down</button>
-
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="appendToDisplay('/')">/</button>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="appendToDisplay('*')">*</button>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="appendToDisplay('-')">-</button>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button onclick="calculateResult()">=</button>
+                <button onclick="appendToDisplay('+')">+</button>
             </div>
         </div>
-    </div>
 
-    <div id="error" class="draggable dropShadow">
-        <div class="title-bar">
+        <div id="shutdown" class="draggable dropShadow">
+            <div class="title-bar">
 
-            <button class="window-close-button" title="Close" onclick="toggleApp('error', 'errorIcon')">&times;
-            </button>
-            <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('shutdown', 'shutdownIcon')">&times;
+                </button>
+                <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
                     style="font-size: 35px;">-</span>
             </button> -->
-            <br>
-            <span class="title-bar-text">Error</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="errorContent">
-            <img class="errorIcon" src="media/img/dialog-error.png">
-            <br><br><br><span style="font-size: 15pt; width: 15px;"><b id="errorContainer">Error</b></span>
-            <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
-        </div>
-    </div>
+                <br>
+                <span class="title-bar-text">Shutdown</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="shutdownContent">
+                <h3>Shut down this system now?</h3>
+                <div class="buttons">
+                    <!-- <button class="suspend">Suspend</button> -->
+                    <button onclick="toggleApp('shutdown', 'shutdownIcon');" class="cancel">Cancel</button>
+                    <button
+                        onclick="console.log('Attempting to log out...'),document.getElementById('edogos-desktop').style.display = 'none',document.getElementById('edogosSetupScreen').style.display = 'none',document.getElementById('edogosLoginScreen').style.display = 'flex',document.getElementById('edogosBootScreen').style.display = 'none',closeEverySingleApp();"
+                        class="logout">Log Out</button>
+                    <button
+                        onclick="console.log('Attempting to restart...'),location=location;"
+                        class="restart">Restart</button>
+                    <button
+                        onclick="console.log('Attempting to shut down...');"
+                        class="shutdown">Shut Down</button>
 
-    <div id="detailedSystemInfo" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
+                </div>
+            </div>
+        </div>
 
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('detailedSystemInfo')"><span
+        <div id="error" class="draggable dropShadow">
+            <div class="title-bar">
+
+                <button class="window-close-button" title="Close" onclick="toggleApp('error', 'errorIcon')">&times;
+                </button>
+                <!-- <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('shutdown')"><span
                     style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Detailed System Info</span>
-            <br>
-            <br>
-            <br>
+            </button> -->
+                <br>
+                <span class="title-bar-text">Error</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="errorContent">
+                <img class="errorIcon" src="media/img/dialog-error.png">
+                <br><br><br><span style="font-size: 15pt; width: 15px;"><b id="errorContainer">Error</b></span>
+                <button class="errorConfirm" onclick="toggleApp('error', 'errorIcon')">Bummer</button>
+            </div>
         </div>
-        <div style="display: flex; height: 100%;">
-            <div class="sidebar">
-                <h3>Contents</h3>
-                <div>
-                    <button class="button-collapse"
-                        onclick="toggleContent('hardware'), showContent('hardware-overview')">Hardware</button>
-                    <div id="hardware" class="content">
-                        <button onclick="showContent('hardware-browser')">Browser</button>
-                        <button onclick="showContent('hardware-screen')">Screen</button>
+
+        <div id="detailedSystemInfo" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('detailedSystemInfo', 'detailedSystemInfoIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize"
+                    onclick="minimizeApp('detailedSystemInfo')"><span style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Detailed System Info</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div style="display: flex; height: 100%;">
+                <div class="sidebar">
+                    <h3>Contents</h3>
+                    <div>
+                        <button class="button-collapse"
+                            onclick="toggleContent('hardware'), showContent('hardware-overview')">Hardware</button>
+                        <div id="hardware" class="content">
+                            <button onclick="showContent('hardware-browser')">Browser</button>
+                            <button onclick="showContent('hardware-screen')">Screen</button>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <button class="button-collapse" onclick="toggleContent('network')">Network</button>
-                    <div id="network" class="content">
-                        <button onclick="showContent('network-wifi')">Wi-Fi</button>
-                        <button onclick="showContent('network-ethernet')">Ethernet</button>
+                    <div>
+                        <button class="button-collapse" onclick="toggleContent('network')">Network</button>
+                        <div id="network" class="content">
+                            <button onclick="showContent('network-wifi')">Wi-Fi</button>
+                            <button onclick="showContent('network-ethernet')">Ethernet</button>
+                        </div>
                     </div>
-                </div>
-                <!-- <div>
+                    <!-- <div>
                     <button class="button-collapse" onclick="toggleContent('software')">Software</button>
                     <div id="software" class="content">
                         <button onclick="showContent('software-os')">Operating System</button>
                         <button onclick="showContent('software-apps')">Applications</button>
                     </div>
                 </div> -->
+                </div>
+                <div class="main-content">
+                    <div id="hardware-overview">
+                        <h2>Hardware Overview</h2>
+                        <table>
+                            <tr>
+                                <td>Operating System:</td>
+                                <td>E-Dog OS v0.3.8</td>
+                            </tr>
+                            <tr>
+                                <td>Host Operating System:</td>
+                                <td id="systemSettings1"></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 140px;">Processor:</td>
+                                <td>Intel&copy; Core&trade; i7-6700K CPU @ 4.00GHz &times; 4</td>
+                            </tr>
+                            <tr>
+                                <td>Memory:</td>
+                                <td>31.3 GiB</td>
+                            </tr>
+                            <tr>
+                                <td>Hard Drives:</td>
+                                <td>250.8 GB</td>
+                            </tr>
+                            <tr>
+                                <td>Graphics Card:</td>
+                                <td style="width: 420px;">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="hardware-browser" style="display:none;">
+                        <h2>Browser</h2>
+                        <table>
+                            <tr>
+                                <td style="width: 140px;">User Agent:</td>
+                                <td id="systemSettings2"></td>
+                            </tr>
+                            <tr>
+                                <td>Platform:</td>
+                                <td id="systemSettings6" style="width: 420px;"></td>
+                            </tr>
+                            <tr>
+                                <td><abbr title="no not THAT kind of location &gt;&colon;&rpar;">Location:</abbr></td>
+                                <td id="systemSettings7"></td>
+                            </tr>
+                            <tr>
+                                <td>Cookies Enabled:</td>
+                                <td id="systemSettings8"></td>
+                            </tr>
+                            <tr>
+                                <td>Language:</td>
+                                <td id="systemSettings9"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="hardware-screen" style="display:none;">
+                        <h2>Screen</h2>
+                        <table>
+                            <tr>
+                                <td style="width: 100px;">Width:</td>
+                                <td id="systemSettings3"></td>
+                            </tr>
+                            <tr>
+                                <td>Height:</td>
+                                <td style="width: 420px;" id="systemSettings4"></td>
+                            </tr>
+                            <tr>
+                                <td>Color Depth:</td>
+                                <td id="systemSettings5"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="network-wifi" style="display:none;">
+                        <h2>Wi-Fi</h2>
+                        <table>
+                            <tr>
+                                <td>Network Status:</td>
+                                <td>Connected</td>
+                            </tr>
+                            <tr>
+                                <td>Online:</td>
+                                <td id="systemSettings10"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="network-ethernet" style="display:none;">
+                        <h2>Ethernet</h2>
+                        <table>
+                            <tr>
+                                <td>Enabled:</td>
+                                <td>false</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="software-os" style="display:none;">
+                        <h2>Operating System</h2>
+                        <p>macOS version details...</p>
+                    </div>
+                    <div id="software-apps" style="display:none;">
+                        <h2>Applications</h2>
+                        <p>Installed apps...</p>
+                    </div>
+                </div>
+                <script>
+                    document.getElementById("systemSettings1").innerHTML = navigator.platform;
+                    document.getElementById("systemSettings2").innerHTML = navigator.appVersion;
+                    document.getElementById("systemSettings3").innerHTML = screen.width + "px";
+                    document.getElementById("systemSettings4").innerHTML = screen.height + "px";
+                    document.getElementById("systemSettings5").innerHTML = screen.colorDepth;
+                    document.getElementById("systemSettings6").innerHTML = navigator.platform;
+                    document.getElementById("systemSettings7").innerHTML = window.location.href;
+                    document.getElementById("systemSettings8").innerHTML = navigator.cookieEnabled;
+                    document.getElementById("systemSettings9").innerHTML = navigator.language;
+                    document.getElementById("systemSettings10").innerHTML = navigator.onLine;
+                </script>
             </div>
-            <div class="main-content">
+        </div>
+
+        <div id="terminal" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('terminal', 'terminalIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('terminal')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Terminal</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="terminalContent">
+                <div id="output">Type 'help' for a list of commands.<br></div>
+                <div id="inputContainer">
+                    <span id="prefix">
+                        <span class="user">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;
+                    </span>
+                    <input type="text" id="terminalShell" onkeydown="handleInput(event)" autocomplete="off"
+                        spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <div id="appStore" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('appStore', 'appStoreIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('appStore')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">App Store</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="appStoreContent">
+                <h2>Available Apps</h2>
+                <div id="availableAppsContainer"></div>
+            </div>
+        </div>
+
+        <div id="textEditor" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('textEditor', 'textEditorIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('textEditor')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Text Editor</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <!-- Text Editor... -->
+            <div class="textEditorContent">
+                <textarea id="textEditorArea" placeholder="Start typing..." autocomplete="off"></textarea>
+                <div class="textEditorButtons">
+                    <button onclick="saveText()">Save</button>
+                    <button onclick="clearText()">Clear</button>
+                    <button onclick="loadText()">Load</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dialUp" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('dialUp', 'dialUpIcon'), stopDialUp()">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('dialUp')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Dial Up</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="dialUpContent">
+                <button style="margin: 5px;" onclick="dialUp()">Connect</button>
+            </div>
+            <video id="dialUpStatus" src="media/video/aol.mp4"></video>
+        </div>
+
+        <div id="camera" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close" onclick="toggleApp('camera', 'cameraIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('camera')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Camera</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="cameraContent">
+                <video id="webcam" autoplay playsinline></video>
+                <button onclick="startWebcam()">Start Camera</button>
+                <button onclick="stopWebcam()">Stop Camera</button>
+                <button onclick="takePicture()">Take Picture</button>
+                <canvas id="snapshotCanvas" style="display: none;"></canvas>
+                <img id="capturedImage" alt="Captured Image"
+                    style="display: none; margin-top: 10px; border: 1px solid #ccc;">
+            </div>
+        </div>
+
+        <div id="weather" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close" onclick="toggleApp('weather', 'weatherIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Weather</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="weatherContent">
+                <div class="weather-header">Kearney, NE As of <span id="weatherTime"></span> CDT</div>
+                <div class="weather-info">
+                    <div class="temperature">-298&deg;</div>
+                    <div>Sunny</div>
+                    <div>High 63&deg; - Low -<span id="lowestTemp"></span>&deg;</div>
+                </div>
+                <div class="alert">BLIZZARD WARNING</div>
+                <div class="map-container">
+                    <img src="../img/map2.png" alt="Weather Map">
+                    <img id="mapMarker" src="../icons/new/map-blue-dot.png" alt="Map Marker">
+                </div>
+            </div>
+        </div>
+
+        <div id="blockbench" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('blockbench', 'blockbenchIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Blockbench</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <iframe src="" frameborder="0" id="blockbenchFrame"></iframe>
+        </div>
+
+        <div id="virtualMachines" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('virtualMachines', 'virtualMachinesIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('virtualMachines')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Virtual Machines</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="tab">
+                <button class="tablinks" onclick="openCity(event, 'edogosVm')" id="defaultOpen"><img
+                        src="media/img/android-chrome-192x192.png" alt="">E-Dog OS</button>
+                <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+                <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+            </div>
+
+            <div id="edogosVm" class="tabcontent">
+                <ul>
+                    <li>
+
+                        <a
+                            onclick="spawnWindow(`E-Dog OS - Virtual Machines`, `<iframe src='boot.html' frameborder='0' style='width: 100%; height: calc(100% - 56px); position: absolute; top: 56px; left: 0px;'></iframe>`, '800', '600',)"><span
+                                class="play-button">&#11208;</span> Start</a>
+                    </li>
+                </ul>
+                <br>
                 <div id="hardware-overview">
-                    <h2>Hardware Overview</h2>
                     <table>
                         <tr>
-                            <td>Operating System:</td>
-                            <td>E-Dog OS v0.3.8</td>
-                        </tr>
-                        <tr>
-                            <td>Host Operating System:</td>
-                            <td id="systemSettings1"></td>
+                            <td>VM Operating System:</td>
+                            <td>E-Dog OS <span id="ver2"></span></td>
                         </tr>
                         <tr>
                             <td style="width: 140px;">Processor:</td>
@@ -648,359 +1038,277 @@
                         </tr>
                     </table>
                 </div>
-                <div id="hardware-browser" style="display:none;">
-                    <h2>Browser</h2>
-                    <table>
-                        <tr>
-                            <td style="width: 140px;">User Agent:</td>
-                            <td id="systemSettings2"></td>
-                        </tr>
-                        <tr>
-                            <td>Platform:</td>
-                            <td id="systemSettings6" style="width: 420px;"></td>
-                        </tr>
-                        <tr>
-                            <td><abbr title="no not THAT kind of location &gt;&colon;&rpar;">Location:</abbr></td>
-                            <td id="systemSettings7"></td>
-                        </tr>
-                        <tr>
-                            <td>Cookies Enabled:</td>
-                            <td id="systemSettings8"></td>
-                        </tr>
-                        <tr>
-                            <td>Language:</td>
-                            <td id="systemSettings9"></td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="hardware-screen" style="display:none;">
-                    <h2>Screen</h2>
-                    <table>
-                        <tr>
-                            <td style="width: 100px;">Width:</td>
-                            <td id="systemSettings3"></td>
-                        </tr>
-                        <tr>
-                            <td>Height:</td>
-                            <td style="width: 420px;" id="systemSettings4"></td>
-                        </tr>
-                        <tr>
-                            <td>Color Depth:</td>
-                            <td id="systemSettings5"></td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="network-wifi" style="display:none;">
-                    <h2>Wi-Fi</h2>
-                    <table>
-                        <tr>
-                            <td>Network Status:</td>
-                            <td>Connected</td>
-                        </tr>
-                        <tr>
-                            <td>Online:</td>
-                            <td id="systemSettings10"></td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="network-ethernet" style="display:none;">
-                    <h2>Ethernet</h2>
-                    <table>
-                        <tr>
-                            <td>Enabled:</td>
-                            <td>false</td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="software-os" style="display:none;">
-                    <h2>Operating System</h2>
-                    <p>macOS version details...</p>
-                </div>
-                <div id="software-apps" style="display:none;">
-                    <h2>Applications</h2>
-                    <p>Installed apps...</p>
-                </div>
             </div>
+
+            <div id="Paris" class="tabcontent">
+                <h3>Paris</h3>
+                <p>Paris is the capital of France.</p>
+            </div>
+
+            <div id="Tokyo" class="tabcontent">
+                <h3>Tokyo</h3>
+                <p>Tokyo is the capital of Japan.</p>
+            </div>
+
             <script>
-                document.getElementById("systemSettings1").innerHTML = navigator.platform;
-                document.getElementById("systemSettings2").innerHTML = navigator.appVersion;
-                document.getElementById("systemSettings3").innerHTML = screen.width + "px";
-                document.getElementById("systemSettings4").innerHTML = screen.height + "px";
-                document.getElementById("systemSettings5").innerHTML = screen.colorDepth;
-                document.getElementById("systemSettings6").innerHTML = navigator.platform;
-                document.getElementById("systemSettings7").innerHTML = window.location.href;
-                document.getElementById("systemSettings8").innerHTML = navigator.cookieEnabled;
-                document.getElementById("systemSettings9").innerHTML = navigator.language;
-                document.getElementById("systemSettings10").innerHTML = navigator.onLine;
+                function openCity(evt, cityName) {
+                    var i, tabcontent, tablinks;
+                    tabcontent = document.getElementsByClassName("tabcontent");
+                    for (i = 0; i < tabcontent.length; i++) {
+                        tabcontent[i].style.display = "none";
+                    }
+                    tablinks = document.getElementsByClassName("tablinks");
+                    for (i = 0; i < tablinks.length; i++) {
+                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                    }
+                    document.getElementById(cityName).style.display = "block";
+                    evt.currentTarget.className += " active";
+                }
+
+                // Get the element with id="defaultOpen" and click on it
+                document.getElementById("defaultOpen").click();
             </script>
         </div>
+
+        <div id="taskManager" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('taskManager', 'taskManagerIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('taskManager')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Task Manager</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="taskManagerContent">
+                <!--Header with 2 tabs-->
+                <div class="task-manager-header">
+                    <button class="active"
+                        onclick="document.getElementById('taskManagerTaskTable').style.display = 'table', document.getElementById('taskManagerGraphs').style.display = 'none'">Processes</button>
+                    <button
+                        onclick="document.getElementById('taskManagerTaskTable').style.display = 'none', document.getElementById('taskManagerGraphs').style.display = 'block'">Performance</button>
+                </div>
+                <div class="task-table-container">
+                    <table class="task-table" id="taskManagerTaskTable">
+                        <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>CPU %</th>
+                                <th>Memory</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-list">
+                            <!-- Processes will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="graphs" id="taskManagerGraphs">
+                    <h4>CPU</h4>
+                    <canvas id="cpuGraph" width="480" height="100"></canvas>
+                    <h4>Memory</h4>
+                    <canvas id="ramGraph" width="480" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="physicsSimulator" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('physicsSimulator', 'physicsSimulatorIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('physicsSimulator')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Physics Simulator</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <iframe id="physicsIframe" frameborder="0"></iframe>
+        </div>
+
+        <div id="userPrompt" class="draggable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('userPrompt', 'userPromptIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('userPrompt')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Prompt</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div id="promptContainer">
+                <!-- Question Mark Icon -->
+                <img id="questionIcon" src="media/img/dialog-question.png" alt="Question Mark Icon">
+
+                <!-- Message and Buttons -->
+                <div style="flex: 1;">
+                    <div id="promptContent">
+                        Are you sure you want to launch the pizza cannon?
+                    </div>
+                    <div id="promptButtonGroup">
+                        <button class="promptButton promptButtonGreen">
+                            Yes
+                        </button>
+                        <button class="promptButton promptButtonRed">
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="fontSettings" class="draggable resizeable dropShadow">
+            <div class="title-bar" style="text-align: center;">
+
+                <button class="window-close-button" title="Close"
+                    onclick="toggleApp('fontSettings', 'fontSettingsIcon')">&times;
+                </button>
+                <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('fontSettings')"><span
+                        style="font-size: 35px;">-</span>
+                </button>
+                <br>
+                <span class="title-bar-text">Font Settings</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="fontSettingsContent">
+                <div id="availableFontsContainer">
+                    <div class="availableFont dropShadow" style="font-family: Arial, sans-serif;">
+                        <p style="font-size: 64pt; margin-top: 0px;">Abc</p>
+                        <span>Arial</span>
+                        <br>
+                        <div class="availableFont-buttons">
+                            <button
+                                onclick="spawnWindow(`Font Preview`, `<p>The quick brown fox jumps over the lazy dog.</p>`, '350', '350', false)">Preview</button>
+                            <button onclick="">Use</button>
+                        </div>
+                    </div>
+                    <div class="availableFont dropShadow">
+                        <p style="font-size: 64pt; margin-top: 0px; font-family: 'Courier New', monospace;">Abc</p>
+                        <span style="font-family: 'Courier New', monospace">Courier New</span>
+                        <br>
+                        <div class="availableFont-buttons">
+                            <button onclick="">Use</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="crashScreen">
+            <h1>System Crash</hjson>
+                <p>Oh no! The system has crashed. Please restart your computer.</p>
+                <button onclick="window.location.href='boot.html'">Restart</button>
+
+        </div>
+
     </div>
 
-    <div id="terminal" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close" onclick="toggleApp('terminal', 'terminalIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('terminal')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Terminal</span>
-            <br>
-            <br>
-            <br>
+    <div id="edogosBootScreen">
+        <img class="logo" src="media/img/android-chrome-192x192.png" alt="E-Dog OS Logo">
+        <div class="boot-progress-bar">
+            <div class="boot-progress-fill"></div>
         </div>
-        <div class="terminalContent">
-            <div id="output">Type 'help' for a list of commands.<br></div>
-            <div id="inputContainer">
-                <span id="prefix">
-                    <span class="user">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;
-                </span>
-                <input type="text" id="terminalShell" onkeydown="handleInput(event)" autocomplete="off"
-                    spellcheck="false">
+        <div>Booting E-Dog OS...</div>
+        <div id="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div id="edogosLoginScreen">
+        <div class="top-bar">
+            <span id="host-os" title="YOUR operating system"></span>
+            <div class="top-right" id="time"></div>
+            <div class="power-button" onclick="togglePowerMenu();"></div>
+            <div class="power-menu" id="power-menu">
+                <button
+                    onclick="console.log('Attempting to shut down...'), window.close();">Shut
+                    Down...</button>
+                <button
+                    onclick="console.log('Attempting to restart...'),location=location;">Restart...</button>
+            </div>
+        </div>
+        <div class="login-container">
+            <p id="user-text">e-dog</p>
+            <form onsubmit="checkPassword(event)">
+                <input type="text" name="Username" id="Username" autocomplete="username" hidden>
+                <div class="input-wrapper">
+                    <input id="loginScreenPassword" type="password" autocomplete="current-password"
+                        placeholder="Enter password" />
+                    <!-- <div id="password-loading-spinner" class="spinner hidden"></div> -->
+                    <div id="password-loading-spinner" class="spinner hidden"></div>
+                </div>
+                <input type="submit" value="Login" hidden>
+                <!-- <input type="submit" value="Submit" hidden> -->
+            </form>
+        </div>
+    </div>
+
+    <div id="edogosSetupScreen">
+        <div id="edogosSetup" class="dropShadow">
+            <div class="title-bar">
+                <!--Window bar-->
+
+                <button class="window-close-button" title="Close"
+                    onclick="(function(){if(confirm('If you close this window then E-Dog OS Setup will close and the computer might restart. Do you want to continue?')){location=location;}})()">
+                    &times;
+                </button>
+                <br>
+                <span class="title-bar-text">E-Dog OS Setup</span>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div id="edogosSetupContent" style="padding-top: 15px;">
+                <div class="setup-box">
+                    <form id="setup-form">
+                        <input type="text" id="setup-username" autocomplete="username" placeholder="New Username" title="Type a user name to use here." spellcheck="false" required>
+                        <input type="password" id="setup-password" autocomplete="new-password" placeholder="New Password" title="Choose a strong password to use here. It will be used in some aspects of E-Dog OS." required>
+                        <input type="password" id="setup-password-confirm" autocomplete="new-password" placeholder="Confirm Password"  title="Retype your new password here. To make sure you didn't misspell anything." required>
+                        <br>
+                        <br>
+                        <label for="usePasswordToLogInCheckbox">Use password to log in</label> <input type="checkbox" name="usePasswordToLogInCheckbox" id="usePasswordToLogInCheckbox">
+                        <br>
+                        <p id="setup-error"></p>
+                        <button type="submit">Continue</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="appStore" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close" onclick="toggleApp('appStore', 'appStoreIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('appStore')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">App Store</span>
-            <br>
-            <br>
-            <br>
+    <div id="loadingSetupText">
+        <div>
+            <img src="media/img/dialog-information.png" alt="Information icon">
         </div>
-        <div class="appStoreContent">
-            <h2>Available Apps</h2>
-            <div id="availableAppsContainer"></div>
+        <div>
+            Setup is loading, please wait...
         </div>
     </div>
-
-    <div id="textEditor" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('textEditor', 'textEditorIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('textEditor')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Text Editor</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <!-- Text Editor... -->
-        <div class="textEditorContent">
-            <textarea id="textEditorArea" placeholder="Start typing..." autocomplete="off"></textarea>
-            <div class="textEditorButtons">
-                <button onclick="saveText()">Save</button>
-                <button onclick="clearText()">Clear</button>
-                <button onclick="loadText()">Load</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="dialUp" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('dialUp', 'dialUpIcon'), stopDialUp()">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('dialUp')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Dial Up</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="dialUpContent">
-            <button style="margin: 5px;" onclick="dialUp()">Connect</button>
-        </div>
-        <video id="dialUpStatus" src="media/video/aol.mp4"></video>
-    </div>
-
-    <div id="camera" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close" onclick="toggleApp('camera', 'cameraIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('camera')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Camera</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="cameraContent">
-            <video id="webcam" autoplay playsinline></video>
-            <button onclick="startWebcam()">Start Camera</button>
-            <button onclick="stopWebcam()">Stop Camera</button>
-            <button onclick="takePicture()">Take Picture</button>
-            <canvas id="snapshotCanvas" style="display: none;"></canvas>
-            <img id="capturedImage" alt="Captured Image"
-                style="display: none; margin-top: 10px; border: 1px solid #ccc;">
-        </div>
-    </div>
-
-    <div id="weather" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close" onclick="toggleApp('weather', 'weatherIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Weather</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="weatherContent">
-            <div class="weather-header">Kearney, NE As of <span id="weatherTime"></span> CDT</div>
-            <div class="weather-info">
-                <div class="temperature">-298&deg;</div>
-                <div>Sunny</div>
-                <div>High 63&deg; - Low -<span id="lowestTemp"></span>&deg;</div>
-            </div>
-            <div class="alert">BLIZZARD WARNING</div>
-            <div class="map-container">
-                <img src="../img/map2.png" alt="Weather Map">
-                <img id="mapMarker" src="../icons/new/map-blue-dot.png" alt="Map Marker">
-            </div>
-        </div>
-    </div>
-
-    <div id="blockbench" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('blockbench', 'blockbenchIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('weather')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Blockbench</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <iframe src="" frameborder="0" id="blockbenchFrame" style="width: 740px; height: 550px;"></iframe>
-    </div>
-
-    <div id="virtualMachines" class="draggable dropShadow">
-        <div class="title-bar" style="text-align: center;">
-
-            <button class="window-close-button" title="Close"
-                onclick="toggleApp('virtualMachines', 'virtualMachinesIcon')">&times;
-            </button>
-            <button class="window-minimize-button" title="Minimize" onclick="minimizeApp('virtualMachines')"><span
-                    style="font-size: 35px;">-</span>
-            </button>
-            <br>
-            <span class="title-bar-text">Virtual Machines</span>
-            <br>
-            <br>
-            <br>
-        </div>
-        <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'edogosVm')" id="defaultOpen"><img
-                    src="../android-chrome-192x192.png" alt="">E-Dog OS</button>
-            <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-            <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
-        </div>
-
-        <div id="edogosVm" class="tabcontent">
-            <ul>
-                <li>
-
-                    <a
-                        onclick="spawnWindow(`E-Dog OS - Virtual Machines`, `<iframe src='boot.html' frameborder='0' style='width: 800px; height: 580px; position: absolute; top: 56px; left: 0px;'></iframe>`, '800', '600',)"><span
-                            class="play-button">&#11208;</span> Start</a>
-                </li>
-            </ul>
-            <br>
-            <div id="hardware-overview">
-                <table>
-                    <tr>
-                        <td>VM Operating System:</td>
-                        <td>E-Dog OS <span id="ver2"></span></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 140px;">Processor:</td>
-                        <td>Intel&copy; Core&trade; i7-6700K CPU @ 4.00GHz &times; 4</td>
-                    </tr>
-                    <tr>
-                        <td>Memory:</td>
-                        <td>31.3 GiB</td>
-                    </tr>
-                    <tr>
-                        <td>Hard Drives:</td>
-                        <td>250.8 GB</td>
-                    </tr>
-                    <tr>
-                        <td>Graphics Card:</td>
-                        <td style="width: 420px;">NVIDIA Corporation AD104 [GeForce RTX 4070 SUPER]</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="Paris" class="tabcontent">
-            <h3>Paris</h3>
-            <p>Paris is the capital of France.</p>
-        </div>
-
-        <div id="Tokyo" class="tabcontent">
-            <h3>Tokyo</h3>
-            <p>Tokyo is the capital of Japan.</p>
-        </div>
-
-        <script>
-            function openCity(evt, cityName) {
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-                tablinks = document.getElementsByClassName("tablinks");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-                document.getElementById(cityName).style.display = "block";
-                evt.currentTarget.className += " active";
-            }
-
-            // Get the element with id="defaultOpen" and click on it
-            document.getElementById("defaultOpen").click();
-        </script>
-    </div>
-
-    <div id="crashScreen">
-        <h1>System Crash</hjson>
-            <p>Oh no! The system has crashed. Please restart your computer.</p>
-            <button onclick="window.location.href='boot.html'">Restart</button>
-
-    </div>
-
+    <noscript
+        style="position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%); font-size: 3rem; font-weight: bold; text-align: center;">
+        Your browser does not support JavaScript. How do you get by in life? Upgrade your browser. Please.
+    </noscript>
 </body>
 
 <!-- Leave the script at ze botom plese. IDK why it dos not wok at de top. -->
 <script src="js/edogos.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+<script src="js/math.min.js"></script>
 
 <!-- hi mom -->
 

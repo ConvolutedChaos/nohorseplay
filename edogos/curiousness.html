@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <label for="minRange">Min Range</label> <input type="number" name="minRange" id="minRange">
+    <br>
+    <br>
+    <label for="maxRange">Max Range</label> <input type="number" name="maxRange" id="maxRange">
+    <br>
+    <br>
+    <input type="submit" value="Generate" onclick="getRange()">
+
+
+
+    <script>
+        function getRange() {
+            const min = document.getElementById('minRange').value;
+            const max = document.getElementById('maxRange').value;
+
+            if (min === '' || max === '') {
+                alert('Please enter both min and max values.');
+                return;
+            }
+
+            if (isNaN(min) || isNaN(max)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+
+            if (parseInt(min) >= parseInt(max)) {
+                alert('Min value must be less than Max value.');
+                return;
+            }
+
+            const range = [];
+            for (let i = parseInt(min); i <= parseInt(max); i++) {
+                range.push(i);
+            }
+
+            console.log(range);
+        }
+    </script>
+</body>
+</html>
