@@ -103,7 +103,7 @@
 	<script>
 		const bot = new RiveScript();
 
-		let typeSpeed = 16; // ms
+		let typeSpeed = 6; // ms
 
 
 		bot.loadFile("bot.rive")
@@ -131,7 +131,7 @@
 			userBubble.className = "bubble user";
 			userBubble.textContent = msg;
 			chat.appendChild(userBubble);
-			chat.scrollTop = chat.scrollHeight;
+			// chat.scrollTop = chat.scrollHeight;
 
 			// Bot thinking...
 			bot.reply("local-user", msg).then(function (reply) {
@@ -160,7 +160,7 @@
 						element.innerHTML += text.charAt(i);
 						i++;
 					}
-					element.scrollIntoView({ behavior: "smooth", block: "end" });
+					// element.scrollIntoView({ behavior: "smooth", block: "end" });
 					setTimeout(type, speed);
 				}
 			}

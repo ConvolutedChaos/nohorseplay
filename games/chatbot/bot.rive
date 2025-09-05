@@ -25,6 +25,7 @@
 ! var author   = JK Rowling
 ! var job      = robot
 ! var website  = nohorseplay.com
+! var weight   = 353
 
 // Substitutions
 ! sub &quot;    = "
@@ -126,6 +127,7 @@
 ! sub bf        = boyfriend
 ! sub b/f       = boyfriend
 ! sub b/f/f     = best friend forever
+! sub bff       = best friend forever
 ! sub :-)       = smile
 ! sub :)        = smile
 ! sub :d        = grin
@@ -188,6 +190,7 @@
 ! array measure    = inch in centimeter cm millimeter mm meter m inches centimeters millimeters meters
 ! array yes        = yes yeah yep yup ya yea
 ! array no         = no nah nope nay
+! array mathop     = + - * / ÷ ×
 
 // Learn stuff about our users.
 
@@ -280,6 +283,10 @@
 + how old are you
 - I'm <bot age> years old.
 - I'm <bot age>.
+
++ how much do you weigh
+- I weigh <bot weight> pounds.
+- I'm <bot weight>.
 
 + are you a (@malenoun) or a (@femalenoun)
 - I'm a <bot sex>.
@@ -578,6 +585,15 @@
 - Do you want to be able to <star>?
 - Perhaps you don't want to <star>.
 
+# + what is * (@mathop) * [*]
+# - No cheating on math, buddy.
+# 
+# + whats * (@mathop) * [*]
+# - No cheating on math, buddy.
+# 
+# + what's * (@mathop) * [*]
+# - No cheating on math, buddy.
+
 + (what|who|when|where|how) [*]
 - Why do you ask?
 - Does that question interest you?
@@ -640,3 +656,4 @@
   ^7. Divide batter into pans and bake for 25–30 minutes.\n
   ^\n
   ^Enjoy!
+
