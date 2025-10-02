@@ -995,13 +995,14 @@ body {
 
 .draggable {
     position: absolute;
-    cursor: move;
+    /* cursor: move; */
 }
 
 .title-bar {
     background-color: #404040;
     width: 100%;
     height: 56px;
+    cursor: move;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -2062,7 +2063,7 @@ body {
     /* Match the font */
 }
 
-#terminal #prefix .user {
+#terminal #prefix #terminalUser {
     color: lightgreen;
     /* Color for the user part */
 }
@@ -2285,7 +2286,7 @@ body {
 #dialUp {
     width: auto;
     height: auto;
-    background-color: #2e2e2e;
+    background-color: #aeb0b0;
     border: 1px solid #000000;
     border-radius: 5px;
     display: none;
@@ -2319,8 +2320,8 @@ body {
 }
 
 #camera {
-    width: 640px;
-    height: 512px;
+    width: 410px;
+    height: 600px;
     background-color: #2e2e2e;
     border: 1px solid #000000;
     border-radius: 5px;
@@ -2341,18 +2342,65 @@ body {
     left: 15px;
 }
 
+/* Camera App Styling */
+#camera .cameraContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px 0 0 0;
+    gap: 18px;
+}
+
 #camera #webcam {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ccc;
+    width: 340px;
+    max-width: 90vw;
+    height: 240px;
+    background: #111;
+    border-radius: 12px;
+    border: 2px solid #333;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
     margin-bottom: 10px;
+    object-fit: cover;
+}
+
+#camera .cameraContent button {
+    background: #0078d4;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 22px;
+    margin: 0 6px 0 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+}
+
+#camera .cameraContent button:last-child {
+    margin-right: 0;
+}
+
+#camera .cameraContent button:hover {
+    background: #005fa3;
+}
+
+#camera #snapshotCanvas {
+    display: none;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: 1px solid #888;
+    background: #222;
 }
 
 #camera #capturedImage {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 10px auto;
+    display: none;
+    margin-top: 16px;
+    border: 2px solid #0078d4;
+    border-radius: 10px;
+    max-width: 340px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
 }
 
 #weatherIcon {
@@ -2952,4 +3000,33 @@ body {
 
 #fontSettings .fontSettingsContent .availableFont button:hover {
     background-color: #0056b3;
+}
+
+#desktopFiles {
+    width: 100%;
+    height: calc(100% - 64px);
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: grid;
+    grid-template-columns: repeat(5, 110px);
+    /* 5 columns, fixed width */
+    grid-auto-rows: 110px;
+    /* fixed row height */
+    gap: 16px;
+    padding: 16px;
+    align-items: start;
+    justify-content: start;
+    /* align icons to the left */
+}
+
+#desktopFiles .desktopFileContainer {
+    height: 160px;
+    width: 130px;
+    text-align: center;
+}
+
+#desktopFiles img {
+    height: 95px;
 }

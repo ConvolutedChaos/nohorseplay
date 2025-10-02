@@ -11,6 +11,13 @@
 <body>
     <div id="edogos-desktop">
 
+        <div id="desktopFiles">
+            <div id="startSetupButton" class="desktopFileContainer" onclick="startSetup();">
+                <img src="media/img/filetypes/application-x-cd-image.png" alt="Setup E-Dog OS Icon">
+                <span>Setup E-Dog OS</span>
+            </div>
+        </div>
+
         <div id="taskbar">
             <div class="taskbar-left">
                 <button onclick="openStartMenu()" id="startMenuIcon" class="taskbar-icon" title="Menu"></button>
@@ -520,6 +527,7 @@
                 <div class="sidebar">
                     <ul>
                         <li onclick="openFolder('Home')">Home</li>
+                        <li onclick="openFolder('Desktop')">Desktop</li>
                         <li onclick="openFolder('Documents')">Documents</li>
                         <li onclick="openFolder('Downloads')">Downloads</li>
                         <li onclick="openFolder('Pictures')">Pictures</li>
@@ -624,12 +632,9 @@
                     <button
                         onclick="console.log('Attempting to log out...'),document.getElementById('edogos-desktop').style.display = 'none',document.getElementById('edogosSetupScreen').style.display = 'none',document.getElementById('edogosLoginScreen').style.display = 'flex',document.getElementById('edogosBootScreen').style.display = 'none',closeEverySingleApp();"
                         class="logout">Log Out</button>
-                    <button
-                        onclick="console.log('Attempting to restart...'),location=location;"
+                    <button onclick="console.log('Attempting to restart...'),location=location;"
                         class="restart">Restart</button>
-                    <button
-                        onclick="console.log('Attempting to shut down...');"
-                        class="shutdown">Shut Down</button>
+                    <button onclick="shutDownSystem();" class="shutdown">Shut Down</button>
 
                 </div>
             </div>
@@ -834,7 +839,7 @@
                 <div id="output">Type 'help' for a list of commands.<br></div>
                 <div id="inputContainer">
                     <span id="prefix">
-                        <span class="user">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;
+                        <span id="terminalUser">edog</span>@<span class="host">edog-OS</span>:~$&nbsp;
                     </span>
                     <input type="text" id="terminalShell" onkeydown="handleInput(event)" autocomplete="off"
                         spellcheck="false">
@@ -889,7 +894,7 @@
             </div>
         </div>
 
-        <div id="dialUp" class="draggable resizeable dropShadow">
+        <div id="dialUp" class="draggable dropShadow">
             <div class="title-bar" style="text-align: center;">
 
                 <button class="window-close-button" title="Close"
@@ -1000,8 +1005,8 @@
             <div class="tab">
                 <button class="tablinks" onclick="openCity(event, 'edogosVm')" id="defaultOpen"><img
                         src="media/img/android-chrome-192x192.png" alt="">E-Dog OS</button>
-                <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-                <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+                <!-- <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+                <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button> -->
             </div>
 
             <div id="edogosVm" class="tabcontent">
@@ -1009,7 +1014,7 @@
                     <li>
 
                         <a
-                            onclick="spawnWindow(`E-Dog OS - Virtual Machines`, `<iframe src='boot.html' frameborder='0' style='width: 100%; height: calc(100% - 56px); position: absolute; top: 56px; left: 0px;'></iframe>`, '800', '600',)"><span
+                            onclick="spawnWindow(`E-Dog OS - Virtual Machines`, `<iframe src='index.html?vm=1' frameborder='0' style='width: 100%; height: calc(100% - 56px); position: absolute; top: 56px; left: 0px;'></iframe>`, '800', '600',)"><span
                                 class="play-button">&#11208;</span> Start</a>
                     </li>
                 </ul>
@@ -1236,11 +1241,9 @@
             <div class="top-right" id="time"></div>
             <div class="power-button" onclick="togglePowerMenu();"></div>
             <div class="power-menu" id="power-menu">
-                <button
-                    onclick="console.log('Attempting to shut down...'), window.close();">Shut
+                <button onclick="console.log('Attempting to shut down...'), window.close();">Shut
                     Down...</button>
-                <button
-                    onclick="console.log('Attempting to restart...'),location=location;">Restart...</button>
+                <button onclick="console.log('Attempting to restart...'),location=location;">Restart...</button>
             </div>
         </div>
         <div class="login-container">
@@ -1277,12 +1280,19 @@
             <div id="edogosSetupContent" style="padding-top: 15px;">
                 <div class="setup-box">
                     <form id="setup-form">
-                        <input type="text" id="setup-username" autocomplete="username" placeholder="New Username" title="Type a user name to use here." spellcheck="false" required>
-                        <input type="password" id="setup-password" autocomplete="new-password" placeholder="New Password" title="Choose a strong password to use here. It will be used in some aspects of E-Dog OS." required>
-                        <input type="password" id="setup-password-confirm" autocomplete="new-password" placeholder="Confirm Password"  title="Retype your new password here. To make sure you didn't misspell anything." required>
+                        <input type="text" id="setup-username" autocomplete="username" placeholder="New Username"
+                            title="Type a user name to use here." spellcheck="false" required>
+                        <input type="password" id="setup-password" autocomplete="new-password"
+                            placeholder="New Password"
+                            title="Choose a strong password to use here. It will be used in some aspects of E-Dog OS."
+                            required>
+                        <input type="password" id="setup-password-confirm" autocomplete="new-password"
+                            placeholder="Confirm Password"
+                            title="Retype your new password here. To make sure you didn't misspell anything." required>
                         <br>
                         <br>
-                        <label for="usePasswordToLogInCheckbox">Use password to log in</label> <input type="checkbox" name="usePasswordToLogInCheckbox" id="usePasswordToLogInCheckbox">
+                        <label for="usePasswordToLogInCheckbox">Use password to log in</label> <input type="checkbox"
+                            name="usePasswordToLogInCheckbox" id="usePasswordToLogInCheckbox">
                         <br>
                         <p id="setup-error"></p>
                         <button type="submit">Continue</button>

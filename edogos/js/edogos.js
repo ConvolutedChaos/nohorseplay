@@ -909,7 +909,8 @@ function calculateResult() {
 //#region File Explorer
 const folders = {
     "Home": [{ name: "Desktop", icon: "media/img/user-desktop.png", type: "folder" }, { name: "Documents", icon: "media/img/folder-documents.png", type: "folder" }, { name: "Downloads", icon: "media/img/folder-download.png", type: "folder" }, { name: "Music", icon: "media/img/folder-music.png", type: "folder" }, { name: "Pictures", icon: "media/img/folder-pictures.png", type: "folder" }, { name: "Videos", icon: "media/img/folder-videos.png", type: "folder" }],
-    "Documents": [{ name: "Reports", icon: "media/img/filetypes/text-x-generic.png", type: "file" }, { name: "Notes", icon: "media/img/filetypes/text-x-generic.png", type: "file" }, { name: "Projects", icon: "media/img/filetypes/text-x-generic.png", type: "file" }],
+    "Desktop": [{ name: "Hidden File", icon: "media/img/filetypes/text-x-generic.png", type: "file" }],
+    "Documents": [{ name: "README", icon: "media/img/filetypes/text-x-generic.png", type: "file" }],
     "Downloads": [{ name: "File1.zip", icon: "media/img/filetypes/package-x-generic.png", type: "file" }, { name: "Setup.exe", icon: "media/img/filetypes/application-x-executable.png", type: "file" }],
     "Pictures": [{ name: "Image1.png", icon: "media/img/filetypes/image-x-generic.png", type: "file" }, { name: "Photo.jpg", icon: "media/img/filetypes/image-x-generic.png", type: "file" }],
     "Music": [{ name: "Song1.mp3", icon: "media/img/filetypes/audio-x-generic.png", type: "file" }, { name: "Song2.mp3", icon: "media/img/filetypes/audio-x-generic.png", type: "file" }],
@@ -1008,7 +1009,7 @@ function parseCommand(commandToParse) {
     switch (command) {
         case "help":
             // hi mom
-            output.innerHTML += "Available commands: help, clear, date, time, echo, exit, close, crash, throwError('error'), wallpaper, tips, about, open, install, console.log('message')";
+            output.innerHTML += "Available commands: help, clear, date, time, echo, exit, close, crash, throwError('error'), wallpaper, tips, about, open, install, version, console.log('message')";
             break;
         case "clear":
             console.clear();
@@ -1043,6 +1044,9 @@ function parseCommand(commandToParse) {
             break;
         case "about":
             output.innerHTML += systemSpecs + "<br>";
+            break;
+        case "version":
+            output.innerHTML += "E-Dog OS " + edogosVersion;
             break;
         default:
             if (command.startsWith("open ")) {
@@ -1903,6 +1907,7 @@ if (willBoot) {
             if (isFirstVisit()) {
                 if (confirm('It appears that this is your first time logging into E-Dog OS. Would you like to set up your computer now? If you click \'Cancel\', you can still set up later.')) {
                     document.getElementById('loadingSetupText').style.display = 'block';
+                    document.getElementById('startSetupButton').style.display = 'none';
                     setTimeout(() => {
                         document.getElementById('loadingSetupText').style.display = 'none';
                         document.getElementById('edogosSetupScreen').style.display = 'block';
@@ -1910,13 +1915,26 @@ if (willBoot) {
                 }
                 else {
                     document.getElementById('edogos-desktop').style.display = 'block';
+                    document.getElementById('startSetupButton').style.display = 'block';
                 }
                 // You could trigger a modal, animation, or tutorial here
                 return;
             }
+            else {
+                document.getElementById('startSetupButton').style.display = 'none';
+            }
             document.getElementById('edogosLoginScreen').style.display = 'flex';
         }, 500); // Half a second just to show full bar
     });
+}
+
+function startSetup() {
+    document.getElementById('loadingSetupText').style.display = 'block';
+    setTimeout(() => {
+        document.getElementById('loadingSetupText').style.display = 'none';
+        document.getElementById('edogos-desktop').style.display = 'none';
+        document.getElementById('edogosSetupScreen').style.display = 'block';
+    }, 1250);
 }
 
 //#endregion
@@ -2027,7 +2045,7 @@ function handleSetup(username, password, usePasswordToLogIn) {
         // else {
         //     document.getElementById('edogos-desktop').style.display = 'block';
         // }
-        location = location
+        location = location;
     }, 500);
 }
 //#endregion
@@ -2036,6 +2054,19 @@ function handleSetup(username, password, usePasswordToLogIn) {
 
 document.getElementById("ver").textContent = edogosVersion;
 document.getElementById("ver2").textContent = edogosVersion;
+
+function shutDownSystem() {
+    console.log("Attempting to shut down...");
+    
+    const params = new URLSearchParams(window.location.search);
+    const vmParam = params.get('vm'); // returns "1" if ?vm=1 is present
+
+    if (vmParam) {
+        // Do something, e.g. open a VM window
+        document.body.style.background = '#000000'
+        document.body.innerHTML = `<h1 style='color:#ffffff;text-align:center;'>You may close the VM window now.</h1>`;
+    }
+}
 
 function setIframeSrc(iframeId, newSrc) {
     var iframe = document.getElementById(iframeId)
@@ -2093,6 +2124,7 @@ if (localStorage.getItem('edogos_password')) {
 if (localStorage.getItem('edogos_username')) {
     systemUsername = localStorage.getItem('edogos_username');
     document.getElementById('user-text').innerText = systemUsername;
+    document.getElementById("terminalUser").innerHTML = systemUsername;
 }
 
 // document.addEventListener('DOMContentLoaded', () => {
