@@ -1,4 +1,4 @@
-const cacheName = "Nohorseplay-ESU10-1.1";
+const cacheName = "Nohorseplay-ESU10-1.5";
 const contentToCache = [
     "Build/ESU10.loader.js",
     "Build/ESU10.framework.js",
