@@ -1,9 +1,9 @@
-const cacheName = "Nohorseplay-Physics Fun v2-0.2";
+const cacheName = "Nohorseplay-Physics Fun v2-0.3";
 const contentToCache = [
     "Build/PhysicsFunV2.loader.js",
-    "Build/PhysicsFunV2.framework.js",
-    "Build/PhysicsFunV2.data",
-    "Build/PhysicsFunV2.wasm",
+    "Build/PhysicsFunV2.framework.js.unityweb",
+    "Build/PhysicsFunV2.data.unityweb",
+    "Build/PhysicsFunV2.wasm.unityweb",
     "TemplateData/style.css"
 
 ];
