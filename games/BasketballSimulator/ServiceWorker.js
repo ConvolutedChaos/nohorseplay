@@ -1,9 +1,9 @@
-const cacheName = "Nohorseplay-Basketball Simulator-0.1";
+const cacheName = "Nohorseplay-BasketballSimulator-0.1";
 const contentToCache = [
     "Build/BasketballSimulator.loader.js",
-    "Build/BasketballSimulator.framework.js",
-    "Build/BasketballSimulator.data",
-    "Build/BasketballSimulator.wasm",
+    "Build/BasketballSimulator.framework.js.unityweb",
+    "Build/BasketballSimulator.data.unityweb",
+    "Build/BasketballSimulator.wasm.unityweb",
     "TemplateData/style.css"
 
 ];

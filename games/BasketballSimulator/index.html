@@ -60,14 +60,20 @@
       var loaderUrl = buildUrl + "/BasketballSimulator.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/BasketballSimulator.data",
-        frameworkUrl: buildUrl + "/BasketballSimulator.framework.js",
-        codeUrl: buildUrl + "/BasketballSimulator.wasm",
+        dataUrl: buildUrl + "/BasketballSimulator.data.unityweb",
+        frameworkUrl: buildUrl + "/BasketballSimulator.framework.js.unityweb",
+        codeUrl: buildUrl + "/BasketballSimulator.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Nohorseplay",
-        productName: "Basketball Simulator",
+        productName: "BasketballSimulator",
         productVersion: "0.1",
         showBanner: unityShowBanner,
+        // errorHandler: function(err, url, line) {
+        //    alert("error " + err + " occurred at line " + line);
+        //    // Return 'true' if you handled this error and don't want Unity
+        //    // to process it further, 'false' otherwise.
+        //    return true;
+        // },
       };
 
       // By default Unity keeps WebGL canvas render target size matched with
@@ -85,6 +91,7 @@
         document.getElementsByTagName('head')[0].appendChild(meta);
       }
 
+
       canvas.style.background = "url('" + buildUrl + "/BasketballSimulator.jpg') center / cover";
       loadingBar.style.display = "block";
 
@@ -101,5 +108,6 @@
       };
       document.body.appendChild(script);
     </script>
+    <script src="../cookie-clear.js"></script>
   </body>
 </html>
