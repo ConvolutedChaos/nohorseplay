@@ -79,16 +79,25 @@
         <section class="section section-65 bg-default novi-background"
             data-preset='{"title":"About us 3","category":"about","reload":false,"id":"about-us-3"}'>
             <div class="shell shell-wide">
+                <style>
+                    .bulletPoint {
+                        font-size: 15px;
+                        margin: 0px 5px 0px 5px;
+                        padding: 0px;
+                    }
+                </style>
+
                 <div class="page-counter page-counter-bottom-5">
                     <!-- <img class="img-responsive center-block"
                         src="images/about-01-317x344.png" alt="" width="317" height="344"> -->
                     <h1>Games</h1>
                     <h5>You can play these in your browser.</h5>
-                    <a href="#"
-                        onclick="alert('To apply an update, add \'?clearCookies=true\' to the end of the game URL.\nExample: games/ESU10/index.html?clearCookies=true')">How
-                        to update?</a>
-                    <br>
-                    <a href="changelogs.html">Changelogs</a>
+                    <p>
+                        <a href="#" onclick="showMessage();">How to update?</a><span
+                            class="bulletPoint">&#x2022;</span><a href="changelogs.html">Changelogs</a><span
+                            class="bulletPoint">&#x2022;</span><a href="https://forms.gle/cF1c9bzEee1PF16n6">Game
+                            Suggestion</a>
+                    </p>
                 </div>
 
             </div>
@@ -192,7 +201,7 @@
                         <div class="card">
                             <img src="img/physicsfunV2-480x321.png" alt="">
                             <h3>Physics Fun V2</h3>
-                            <p>It's here!</p>
+                            <p>Throw a chair across the room.</p>
                             <a href="games/PhysicsFunV2/" class="bbtn">Play Now</a>
                         </div>
                         <div class="card">
@@ -292,6 +301,11 @@
     <div class="snackbars" id="form-output-global"></div>
 
     <!-- Java script-->
+    <script>
+        function showMessage() {
+            alert('To apply an update, add \'?clearCookies=true\' to the end of the game URL.\nExample: games/ESU10/index.html?clearCookies=true');
+        }
+    </script>
     <script src="js/core.min.js"></script>
     <script src="js/script.js"></script>
 </body>
