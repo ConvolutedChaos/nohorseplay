@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Characters</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            text-align: center;
+        }
+
+        .error {
+            font-weight: bold;
+            color: #bd0000;
+        }
+
+        #characterInfo {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+        }
+
+        .header {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="characterInfo">
+
+    </div>
+</body>
+<script>
+    // check if the character is Lily or Jonas, then provide specific content
+    characterContent = {
+        jonas: {
+            description: "Jonas is the main character in The Giver. He is often careful about his language.",
+            age: 11,
+            backgroundColor: "#b7c4e7"
+        },
+        lily: {
+            description: "Lily is Jonas's sister.",
+            age: 7,
+            role: "Family member",
+            backgroundColor: "#e7b7db"
+        },
+        mom: {
+            description: "Mom is, well, Jonas's mother",
+            age: null,
+            role: "Family member",
+            backgroundColor: "#e7b7db"
+        },
+        dad: {
+            description: "Lily is Jonas's sister.",
+            age: 7,
+            role: "Family member",
+            backgroundColor: "#e7b7db"
+        },
+        asher: {
+            description: "Asher is Jonas best friend. He is clumsy and usually late to class.",
+            age: 11,
+            role: "Supporting character",
+            backgroundColor: "#b7c4e7"
+        }
+    };
+
+
+    // grab URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const character = urlParams.get('c');
+
+    // make the first letter uppercase
+    const capitalizedCharacter = character.charAt(0).toUpperCase() + character.slice(1);
+
+    // set the content based on the character
+    if (characterContent[character]) {
+        document.getElementById('characterInfo').innerHTML = `<h2>Description</h2><p>${characterContent[character].description}</p>`;
+
+
+        document.body.style.backgroundColor = characterContent[character].backgroundColor;
+    } else {
+        document.getElementById('characterDescription').classList.add("error");
+        document.getElementById('characterDescription').innerHTML = "Character not found";
+    }
+
+    document.title = `The Giver: ${capitalizedCharacter}`;
+    // document.body.innerHTML = `<h1>Character: ${capitalizedCharacter}</h1>`;
+
+</script>
+
+</html>
