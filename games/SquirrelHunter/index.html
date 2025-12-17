@@ -23,6 +23,19 @@
 	</div>
 
 	<script>
+		let password = "VjJwT1MwMVhTbGhOVjJocFlsaG9lbHBIWXpsUVVUMDk=";
+
+
+        let realPassword = atob(atob(atob(atob(password))));
+
+        let input = prompt("Please enter the password.\nThis is dev-only content.\nThis page will be unlocked when the game is officially released.");
+
+        if (input !== realPassword) {
+            window.location.href = "/";
+        }
+	</script>
+
+	<script>
 		window.addEventListener("load", function () {
 			if ("serviceWorker" in navigator) {
 				navigator.serviceWorker.register("ServiceWorker.js");
