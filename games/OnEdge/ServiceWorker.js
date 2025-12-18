@@ -1,4 +1,4 @@
-const cacheName = "Nohorseplay-OnEdge-0.5";
+const cacheName = "Nohorseplay-OnEdge-0.5.1";
 const contentToCache = [
     "Build/OnEdge.loader.js",
     "Build/OnEdge.framework.js.unityweb",
