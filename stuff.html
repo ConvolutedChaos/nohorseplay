@@ -31,11 +31,15 @@
     </style>
 </head>
 
-<body class="novi-background"><!-- IE panel-->
-    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
-                src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
-                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
-    </div><!-- Page-->
+<body class="novi-background">
+    <!-- IE panel-->
+    <div class="ie-panel">
+        <a href="http://windows.microsoft.com/en-US/internet-explorer/">
+            <img src="/img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today.">
+        </a>
+    </div>
+
     <div class="page text-center novi-background"><!-- Page Header-->
         <header class="section page-head"
             data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
@@ -49,17 +53,17 @@
                     <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
                         <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
                                 data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="index.html"><img
-                                        src="img/logo-medium.png" width="172" height="75" alt=""></a></div>
+                            <div class="rd-navbar-brand"><a class="brand-name" href="/"><img
+                                        src="/img/logo-medium.png" width="172" height="75" alt=""></a></div>
                         </div>
                         <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
                             <ul class="rd-navbar-nav">
                                 <li><a href="./">Home page</a></li>
-                                <li><a href="games.html">Games</a></li>
+                                <li><a href="/games.html">Games</a></li>
                                 <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
                                     <ul class="rd-navbar-dropdown">
-                                        <li><a href="angry-birds-gallery.html">realistic angry birds</a></li>
-                                        <li><a href="scary-gallery.html">scary</a></li>
+                                        <li><a href="/misc/angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="/misc/scary-gallery.html">scary</a></li>
                                         <!-- <ul class="rd-navbar-dropdown">
 												<li><a href="#">fresh</a></li>
 												<li><a href="#">archive</a></li>
@@ -85,55 +89,51 @@
                     <div class="cell-xl-10">
                         <h1>Stuff</h1>
                         <script>
+                            const panel = document.querySelector(".ie-panel");
+                            panel.style.display = "none";
+
                             function amhfitrilc() {
-                                var randomBodyParts = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomAdjectives = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomWords = ["Man", "Fallen", "River", "Lego", "City"];
-                                var eabe = ["Man", "Fallen", "River", "Lego", "City"];
-                                var randomBodyPart = randomBodyParts[Math.floor(Math.random() * 5)];
-                                var randomAdjective = randomAdjectives[Math.floor(Math.random() * 5)];
-                                var randomWord = randomWords[Math.floor(Math.random() * 5)];
-                                var rnadomeabe = randomWords[Math.floor(Math.random() * 5)];
+                                let randomBodyParts = ["Man", "Fallen", "River", "Lego", "City"];
+                                let randomAdjectives = ["Man", "Fallen", "River", "Lego", "City"];
+                                let randomWords = ["Man", "Fallen", "River", "Lego", "City"];
+                                let eabe = ["Man", "Fallen", "River", "Lego", "City"];
+                                let randomBodyPart = randomBodyParts[Math.floor(Math.random() * 5)];
+                                let randomAdjective = randomAdjectives[Math.floor(Math.random() * 5)];
+                                let randomWord = randomWords[Math.floor(Math.random() * 5)];
+                                let rnadomeabe = randomWords[Math.floor(Math.random() * 5)];
                                 alert("A " + randomBodyPart + " has " + randomAdjective + "ed into a " + rnadomeabe + " in " + randomWord + " City!")
+                            }
+
+                            function showIE8Panel() {
+                                if (panel.style.display === "none") {
+                                    panel.style.display = "block";
+                                } else {
+                                    panel.style.display = "none";
+                                }
                             }
                         </script>
                         <div class="range range-26 range-drag offset-top-34">
                             <div class="cell-sm-6 cell-md-3">
                                 <ul class="list-marked">
-                                    <li><a href="misc/KKWS/">Krusty Krab Website</a></li>
-                                    <li><a href="#" onclick="window.open('/misc/ChatRoom/chat.html');">Chat Room</a></li>
+                                    <li><a href="404.html">404 Not Found Page</a></li>
                                     <li><a href="misc/bee-movie-script.html">The entire bee movie script</a></li>
-                                </ul>
-                            </div>
-                            <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
                                     <li><a href="misc/potion-index.html">Potion Index</a></li>
-                                    <li><a href="#" onclick="amhfitrilc();">A Man has fallen into the river in Lego
-                                            City</a></li>
-
                                 </ul>
                             </div>
                             <div class="cell-sm-6 cell-md-3">
                                 <ul class="list-marked">
                                     <li><a href="misc/http-status-codes.html">HTTP Status Codes List</a></li>
-                                    <li><a href="misc/vid/bill.mp4"><b>▶</b> billnye.mp4 </a></li>
+                                    <li><a href="misc/billnye.mp4"><b>▶</b> billnye.mp4 </a></li>
                                     <li><a href="edogos/">E-Dog OS</a></li>
                                 </ul>
                             </div>
                             <div class="cell-sm-6 cell-md-3">
                                 <ul class="list-marked">
-                                    <li><a href="404.html">404 Not Found Page</a></li>
-                                    <li><a href="old/OldWebsite/">The old homepage</a></li>
-                                    <li><a href="misc/clock-error.html">Is your clock ahead..?</a></li>
+                                    <li><a href="#" onclick="amhfitrilc();">A Man has fallen into the river in Lego
+                                            City</a></li>
+                                    <li><a href="#" onclick="showIE8Panel();">You need to upgrade your browser.</a></li>
                                 </ul>
                             </div>
-                            <!-- <div class="cell-sm-6 cell-md-3">
-                                <ul class="list-marked">
-                                    <li><a href="soundboard.html">Soundboard</a></li>
-                                    <li><a href="potion-index.html">Potion Index</a></li>
-                                    <li><a href="clock-error.html">Is your clock ahead..?</a></li>
-                                </ul>
-                            </div> -->
                         </div>
                     </div>
                 </div>
