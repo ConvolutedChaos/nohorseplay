@@ -30,7 +30,8 @@ footer {
 
 .topnav {
     background-color: #d4d4d4;
-    position: -webkit-sticky; /*<-- For Safari */
+    position: -webkit-sticky;
+    /*<-- For Safari */
     position: sticky;
     top: 0;
 }
@@ -68,6 +69,7 @@ button {
     border-radius: 10px;
     background-color: red;
 }
+
 .gotolongdiv:hover {
     height: 50px;
     width: 200px;
