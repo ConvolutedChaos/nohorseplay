@@ -59,16 +59,16 @@
 		}
 
 		var buildUrl = "Build";
-		var loaderUrl = buildUrl + "/WebCars2.loader.js";
+		var loaderUrl = buildUrl + "/WebCarVersionTwo.loader.js";
 		var config = {
 			arguments: [],
-			dataUrl: buildUrl + "/WebCars2.data",
-			frameworkUrl: buildUrl + "/WebCars2.framework.js",
-			codeUrl: buildUrl + "/WebCars2.wasm",
+			dataUrl: buildUrl + "/WebCarVersionTwo.data.unityweb",
+			frameworkUrl: buildUrl + "/WebCarVersionTwo.framework.js.unityweb",
+			codeUrl: buildUrl + "/WebCarVersionTwo.wasm.unityweb",
 			streamingAssetsUrl: "StreamingAssets",
 			companyName: "Nohorseplay",
 			productName: "Web Cars V2",
-			productVersion: "1.5",
+			productVersion: "1.7",
 			showBanner: unityShowBanner,
 			// errorHandler: function(err, url, line) {
 			//    alert("error " + err + " occurred at line " + line);
@@ -94,7 +94,7 @@
 		}
 
 
-		canvas.style.background = "url('" + buildUrl + "/WebCars2.jpg') center / cover";
+		canvas.style.background = "url('" + buildUrl + "/WebCarVersionTwo.jpg') center / cover";
 		loadingBar.style.display = "block";
 
 		var script = document.createElement("script");
