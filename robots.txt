@@ -1,2 +1,13 @@
+# Allow major search engines
+User-agent: Googlebot
+Disallow:
+
+User-agent: Bingbot
+Disallow:
+
+User-agent: DuckDuckBot
+Disallow:
+
+# Block other crawlers and similar tools. That means you Ashyr.
 User-agent: *
 Disallow: /
