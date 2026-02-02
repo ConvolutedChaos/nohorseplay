@@ -22,14 +22,19 @@
 		<div id="unity-warning"> </div>
 	</div>
 	<script>
-		const PASSWORD = "VmxaamVFNUZNVmRqUmxKU1ltdEtWbFpxUW1GalZrNVdWbTF3YkZwNk1Eaz0=";
+		let w = ["V", "m", "0", "w", "d", "2", "Q", "y", "V", "k", "Z", "O", "V", "W", "R", "p", "U", "m", "1", "o", "V", "F", "l", "t", "e", "E", "t", "X", "R", "m", "x", "V", "U", "m", "5", "k", "V", "l", "J", "s", "c", "H", "p", "W", "M", "j", "V", "r", "V", "l", "U", "x", "V", "2", "N", "E", "Q", "l", "V", "W", "b", "H", "B", "Q", "W", "V", "d", "4", "Y", "W", "M", "x", "Z", "H", "F", "R", "b", "U", "Z", "X", "V", "m", "x", "s", "M", "1", "Z", "t", "M", "X", "p", "l", "R", "m", "R", "I", "V", "m", "t", "W", "U", "m", "J", "V", "W", "l", "R", "W", "b", "X", "h", "z", "T", "T", "F", "a", "d", "G", "N", "F", "d", "F", "R", "N", "V", "W", "w", "1", "V", "k", "d", "0", "c", "2", "F", "G", "S", "n", "N", "j", "R", "m", "h", "h", "V", "j", "N", "S", "a", "F", "U", "x", "W", "m", "t", "W", "M", "X", "B", "F", "V", "W", "x", "w", "V", "0", "1", "E", "V", "j", "V", "W", "R", "3", "h", "h", "Y", "T", "F", "s", "V", "1", "N", "u", "U", "l", "Z", "i", "a", "0", "p", "Y", "W", "V", "R", "G", "Y", "V", "l", "W", "c", "F", "h", "l", "R", "3", "R", "Y", "U", "j", "F", "K", "S", "V", "V", "t", "M", "T", "B", "U", "b", "E", "p", "H", "V", "2", "p", "W", "V", "1", "J", "s", "c", "F", "h", "W", "a", "k", "p", "H", "U", "0", "Z", "a", "d", "V", "J", "s", "S", "l", "d", "S", "M", "0", "0", "1"];
+		function d(p, l = 1) { let u = p.join(""); for (let i = 0; i < l; i++) { u = atob(u); } return u; } const t = prompt("Enter password:"); const rw = d(w, 10);
 
-		const entered = prompt("Enter password:");
-
-		if (entered !== atob(atob(atob(atob(atob(PASSWORD)))))) {
-			document.body.innerHTML = "<h1 style='text-align:center;margin-top:20vh;'>403 Forbidden</h1>";
+		if (t !== rw) {
+			document.body.innerHTML = `
+				<h1 style="text-align:center;margin-top:20vh;">
+					403 Forbidden
+				</h1>
+			`;
 			throw new Error("Unauthorized");
 		}
+
+		console.log("Access granted");
 	</script>
 	<script>
 		window.addEventListener("load", function () {
@@ -78,7 +83,7 @@
 			streamingAssetsUrl: "StreamingAssets",
 			companyName: "Nohorseplay",
 			productName: "WebCarsV3",
-			productVersion: "0.2",
+			productVersion: "0.3",
 			showBanner: unityShowBanner,
 			// errorHandler: function(err, url, line) {
 			//    alert("error " + err + " occurred at line " + line);
