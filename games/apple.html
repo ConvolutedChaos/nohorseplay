@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Orchard</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f7f9fc;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px
+        }
+
+        #total-lifetime-display {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #555;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 1001
+        }
+
+        #credit-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.75rem;
+            color: #999;
+            text-decoration: none;
+            z-index: 1001
+        }
+
+        #credit-btn:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #stats-panel {
+            position: sticky;
+            top: 10px;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1000;
+            margin-bottom: 20px
+        }
+
+        #counter {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 0
+        }
+
+        .details {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px
+        }
+
+        #ui-buttons {
+            margin-bottom: 20px
+        }
+
+        .ui-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold
+        }
+
+        #orchard-field {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 40px
+        }
+
+        .tree-wrapper {
+            position: relative;
+            font-size: 90px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none
+        }
+
+        .tree-wrapper:active {
+            transform: scale(0.85)
+        }
+
+        #shop {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px
+        }
+
+        .upgrade-card {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 3px solid #eee
+        }
+
+        .upgrade-card.affordable {
+            border-color: #4caf50
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px
+        }
+
+        button:disabled {
+            background-color: #ccc
+        }
+
+        #achievement-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000
+        }
+
+        #achievement-panel {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            border-radius: 20px;
+            padding: 20px;
+            overflow-y: auto
+        }
+
+        .achievement-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .achievement-item.locked {
+            opacity: 0.5
+        }
+
+        .claim-btn {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer
+        }
+
+        .claimed-text {
+            color: #27ae60;
+            font-weight: bold
+        }
+
+        #notif {
+            position: fixed;
+            top: -100px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: top 0.5s;
+            z-index: 3000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2)
+        }
+
+        #auto-progress-container {
+            width: 200px;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 10px auto;
+            overflow: hidden
+        }
+
+        #auto-progress-bar {
+            width: 0;
+            height: 100%;
+            background: #4caf50
+        }
+
+        .golden-apple {
+            position: fixed;
+            font-size: 50px;
+            cursor: pointer;
+            z-index: 1500;
+            filter: drop-shadow(0 0 10px gold);
+            animation: pulse 0.5s infinite alternate
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100000000;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal a {
+            font: size 0.95rem;
+            color: #999;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1)
+            }
+
+            to {
+                transform: scale(1.2)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="total-lifetime-display">Total Collected: <span id="total-lifetime-count">0</span></div>
+    <a id="credit-btn" target="_blank"><u>Credits</u></a>
+    <div id="notif">Achievement Complete! 🏆</div>
+    <div id="stats-panel">
+        <h1 id="counter">0</h1>
+        <div class="details">Multiplier: <span id="stat-mult">1.0</span>x | Trees: <span id="stat-trees">1</span></div>
+        <div id="auto-progress-container">
+            <div id="auto-progress-bar"></div>
+        </div>
+    </div>
+    <div id="ui-buttons">
+        <button class="ui-btn" onclick="toggleAchievements()">View Achievements</button>
+    </div>
+    <div id="orchard-field">
+        <div class="tree-wrapper" onclick="clickTree(this)">🌳</div>
+    </div>
+    <div id="shop">
+        <div class="upgrade-card" id="card-gloves">
+            <h3>Golden Gloves</h3>
+            <p>+1 Base/Click</p>
+            <p>Cost: <span id="cost-gloves">10</span></p><button id="btn-gloves"
+                onclick="buyUpgrade('gloves')">Buy</button>
+        </div>
+        <div class="upgrade-card" id="card-fertilizer">
+            <h3>Magic Fertilizer</h3>
+            <p>+0.1x Mult</p>
+            <p>Cost: <span id="cost-fertilizer">50</span></p><button id="btn-fertilizer"
+                onclick="buyUpgrade('fertilizer')">Buy</button>
+        </div>
+        <div class="upgrade-card" id="card-press">
+            <h3>Apple Press</h3>
+            <p>+10/tree (2.5s)</p>
+            <p>Cost: <span id="cost-press">180</span></p><button id="btn-press"
+                onclick="buyUpgrade('press')">Buy</button>
+        </div>
+        <div class="upgrade-card" id="card-newtree">
+            <h3>Plant New Tree</h3>
+            <p>Add tree</p>
+            <p>Cost: <span id="cost-newtree">1000</span></p><button id="btn-newtree" onclick="buyNewTree()">Buy
+                Tree</button>
+        </div>
+    </div>
+    <div id="achievement-overlay" onclick="toggleAchievements()">
+        <div id="achievement-panel" onclick="event.stopPropagation()">
+            <h2>Achievements</h2>
+            <div id="achievement-list"></div>
+            <button class="ui-btn" style="margin-top:20px; width:100%;" onclick="toggleAchievements()">Close</button>
+        </div>
+    </div>
+    <div id="creditModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="http://www.youtube.com/@Just_a_normal_account">Created by Stuff&Junk</a>
+            <br><span style="color:#999;font-size:0.95rem;">and</span><br>
+            <a href="http://www.youtube.com/@TheRealE-Dog">E-Dog</a>
+        </div>
+    </div>
+    <script>
+        let apples = 0;
+        let totalApplesEver = 0;
+        let goldenApplesCollected = 0;
+        let baseClick = 1;
+        let basePerHarvestPerTree = 0;
+        let shopMultiplier = 1.0;
+        let achievementMultiplier = 0;
+        let treeCount = 1;
+        let treeUpgradeClicks = 0;
+        let treeCost = 1000;
+        let harvestTimer = 0;
+        let modal = document.getElementById("creditModal");
+        let btn = document.getElementById("credit-btn");
+        let span = document.getElementsByClassName("close")[0];
+        let clickTimes = [];
+
+        const CPS_THRESHOLD = 35; // target CPS
+
+        const achievements = [{
+            id: 'c1',
+            name: 'Collector I',
+            req: 50000,
+            type: 'apples',
+            bonus: 1,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 50,000 apples'
+        }, {
+            id: 'c2',
+            name: 'Collector II',
+            req: 350000,
+            type: 'apples',
+            bonus: 2,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 350,000 apples'
+        }, {
+            id: 'c3',
+            name: 'Collector III',
+            req: 999999,
+            type: 'apples',
+            bonus: 3,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 999,999 apples'
+        }, {
+            id: 'c4',
+            name: 'Collector IV',
+            req: 1750000,
+            type: 'apples',
+            bonus: 4,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 1,750,000 apples'
+        }, {
+            id: 'c5',
+            name: 'Collector V',
+            req: 10000000,
+            type: 'apples',
+            bonus: 5,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 10,000,000 apples'
+        }, {
+            id: 'g1',
+            name: 'Golden Collector I',
+            req: 25,
+            type: 'golden',
+            bonus: 2,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 25 golden apples'
+        }, {
+            id: 'g2',
+            name: 'Golden Collector II',
+            req: 100,
+            type: 'golden',
+            bonus: 4,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 100 golden apples'
+        }, {
+            id: 'g3',
+            name: 'Golden Collector III',
+            req: 500,
+            type: 'golden',
+            bonus: 10,
+            ready: false,
+            claimed: false,
+            desc: 'Collect 500 golden apples'
+        }, {
+            id: 'uncanny',
+            name: 'Uncanny Clicker',
+            type: 'hidden',
+            bonus: 5,
+            ready: false,
+            claimed: false,
+            desc: 'Click really, really fast'
+        }, {
+            id: 'hidden',
+            name: 'Are You Crazy?',
+            req: 8,
+            type: 'hidden',
+            bonus: 1000,
+            ready: false,
+            claimed: false,
+            desc: 'Unlock and claim all others'
+        }];
+        const upData = {
+            gloves: {
+                cost: 10,
+                addC: 1,
+                addS: 0,
+                addM: 0,
+                step: 1.15
+            },
+            fertilizer: {
+                cost: 50,
+                addC: 0,
+                addS: 0,
+                addM: 0.1,
+                step: 1.4
+            },
+            press: {
+                cost: 180,
+                addC: 0,
+                addS: 10,
+                addM: 0,
+                step: 1.25
+            }
+        };
+
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function getTotalMultiplier() {
+            return shopMultiplier + achievementMultiplier;
+        }
+
+        function updateUI() {
+            document.getElementById('counter').innerText = Math.floor(apples);
+            document.getElementById('total-lifetime-count').innerText = Math.floor(totalApplesEver);
+            document.getElementById('stat-mult').innerText = getTotalMultiplier().toFixed(1);
+            document.getElementById('stat-trees').innerText = treeCount;
+            document.getElementById('cost-newtree').innerText = Math.ceil(treeCost);
+            document.getElementById('btn-newtree').disabled = apples < treeCost;
+            for (let key in upData) {
+                const item = upData[key];
+                document.getElementById(`cost-${key}`).innerText = Math.ceil(item.cost);
+                document.getElementById(`btn-${key}`).disabled = apples < item.cost;
+                document.getElementById(`card-${key}`).className = (apples >= item.cost) ? 'upgrade-card affordable' : 'upgrade-card';
+            }
+            checkAchievements();
+        }
+
+        function checkAchievements() {
+            let claimedCount = 0;
+            achievements.forEach(ach => {
+                if (!ach.ready && !ach.claimed) {
+                    let isReady = false;
+                    if (ach.type === 'apples' && totalApplesEver >= ach.req) isReady = true;
+                    if (ach.type === 'golden' && goldenApplesCollected >= ach.req) isReady = true;
+                    if (ach.type === 'hidden' && claimedCount === 8) isReady = true;
+                    if (isReady) {
+                        ach.ready = true;
+                        showNotification();
+                    }
+                }
+                if (ach.claimed && ach.id !== 'hidden') claimedCount++;
+            });
+        }
+
+        function claimAchievement(id) {
+            const ach = achievements.find(a => a.id === id);
+            if (ach && ach.ready && !ach.claimed) {
+                ach.claimed = true;
+                achievementMultiplier += ach.bonus;
+                updateUI();
+                renderAchievements();
+            }
+        }
+
+        function showNotification() {
+            const notif = document.getElementById('notif');
+            notif.style.top = "20px";
+            setTimeout(() => {
+                notif.style.top = "-100px";
+            }, 3000);
+        }
+
+        function toggleAchievements() {
+            const overlay = document.getElementById('achievement-overlay');
+            overlay.style.display = (overlay.style.display === 'flex') ? 'none' : 'flex';
+            if (overlay.style.display === 'flex') renderAchievements();
+        }
+
+        function renderAchievements() {
+            const list = document.getElementById('achievement-list');
+            list.innerHTML = '';
+            achievements.forEach(ach => {
+                if (ach.type === 'hidden' && !ach.ready && !ach.claimed) return;
+                const div = document.createElement('div');
+                div.className = `achievement-item ${(!ach.ready && !ach.claimed) ? 'locked' : ''}`;
+                let btnHtml = ach.claimed ? '<span class="claimed-text">Claimed!</span>' : (ach.ready ? `<button class="claim-btn" onclick="claimAchievement('${ach.id}')">Claim +${ach.bonus}x</button>` : '<span>Locked</span>');
+                div.innerHTML = `<div><strong>${ach.name}</strong><br><small>${ach.desc}</small></div>${btnHtml}`;
+                list.appendChild(div);
+            });
+        }
+
+        function clickTree(element) {
+            const gain = baseClick * getTotalMultiplier();
+            apples += gain;
+            totalApplesEver += gain;
+
+            // Track click times
+            const now = performance.now();
+            clickTimes.push(now);
+
+            // Keep only clicks in the last 1 second
+            clickTimes = clickTimes.filter(t => now - t <= 1000);
+            const cps = clickTimes.length;
+
+            // Check for Uncanny Clicker achievement
+            const uncannyAch = achievements.find(a => a.id === 'uncanny');
+            if (cps > CPS_THRESHOLD && !uncannyAch.ready && !uncannyAch.claimed) {
+                uncannyAch.ready = true;
+                showNotification();
+            }
+
+            updateUI();
+
+            // Apple pop animation
+            const p = document.createElement('div');
+            p.innerText = '🍎';
+            p.style.position = 'absolute';
+            p.style.left = '40%';
+            p.style.top = '0';
+            p.animate([{ top: '0', opacity: 1 }, { top: '-80px', opacity: 0 }], 500);
+            element.appendChild(p);
+            setTimeout(() => p.remove(), 500);
+        }
+
+        function buyUpgrade(type) {
+            const up = upData[type];
+            if (apples >= up.cost) {
+                apples -= up.cost;
+                baseClick += up.addC;
+                basePerHarvestPerTree += up.addS;
+                shopMultiplier += up.addM;
+                up.cost *= up.step;
+                updateUI();
+            }
+        }
+
+        function buyNewTree() {
+            if (apples >= treeCost) {
+                apples -= treeCost;
+                treeCount++;
+                treeUpgradeClicks++;
+                if (treeUpgradeClicks === 1) {
+                    treeCost = 5000;
+                } else if (treeUpgradeClicks < 5) {
+                    treeCost += 10000;
+                } else if (treeUpgradeClicks === 5) {
+                    treeCost += 25000;
+                } else {
+                    treeCost = Math.round((treeCost * 1.35) / 100) * 100;
+                }
+                const newTree = document.createElement('div');
+                newTree.className = 'tree-wrapper';
+                newTree.innerText = '🌳';
+                newTree.onclick = function () {
+                    clickTree(this);
+                };
+                document.getElementById('orchard-field').appendChild(newTree);
+                updateUI();
+            }
+        }
+
+        function setCookie(name, value, days = 365) {
+            const d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/`;
+        }
+
+        function getCookie(name) {
+            const matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : null;
+        }
+
+        function saveProgress() {
+            const achState = achievements.map(a => a.claimed ? 1 : 0).join(',');
+            const shopCosts = Object.values(upData).map(u => u.cost).join(',');
+
+            setCookie('apples', apples);
+            setCookie('totalApplesEver', totalApplesEver);
+            setCookie('treeCount', treeCount);
+            setCookie('treeCost', treeCost);
+            setCookie('achievements', achState);
+            setCookie('shopCosts', shopCosts); // save current upgrade costs
+        }
+
+        function loadProgress() {
+            const savedApples = getCookie('apples');
+            const savedTotal = getCookie('totalApplesEver');
+            const savedTrees = getCookie('treeCount');
+            const savedTreeCost = getCookie('treeCost');
+            const savedAchievements = getCookie('achievements');
+            const savedShopCosts = getCookie('shopCosts');
+
+            if (savedApples) apples = parseFloat(savedApples);
+            if (savedTotal) totalApplesEver = parseFloat(savedTotal);
+            if (savedTrees) treeCount = parseInt(savedTrees);
+            if (savedTreeCost) treeCost = parseFloat(savedTreeCost);
+
+            if (savedAchievements) {
+                const states = savedAchievements.split(',');
+                achievements.forEach((a, i) => {
+                    a.claimed = states[i] == '1';
+                    if (a.claimed) achievementMultiplier += a.bonus;
+                });
+            }
+
+            if (savedShopCosts) {
+                const costs = savedShopCosts.split(',');
+                let i = 0;
+                for (let key in upData) {
+                    upData[key].cost = parseFloat(costs[i]);
+                    i++;
+                }
+            }
+
+            rebuildTrees();
+        }
+
+
+        function rebuildTrees() {
+            const field = document.getElementById('orchard-field');
+            field.innerHTML = ''; // clear current trees
+            for (let i = 0; i < treeCount; i++) {
+                const tree = document.createElement('div');
+                tree.className = 'tree-wrapper';
+                tree.innerText = '🌳';
+                tree.onclick = () => clickTree(tree);
+                field.appendChild(tree);
+            }
+        }
+
+        function spawnGolden() {
+            const g = document.createElement('div');
+            g.className = 'golden-apple';
+            g.innerText = '🌟';
+            g.style.left = Math.random() * 80 + 10 + "%";
+            g.style.top = Math.random() * 80 + 10 + "%";
+            g.onclick = () => {
+                goldenApplesCollected++;
+                const gain = Math.floor(apples * 0.2) + 50;
+                apples += gain;
+                totalApplesEver += gain;
+                g.remove();
+                updateUI();
+            };
+            document.body.appendChild(g);
+            setTimeout(() => {
+                if (g) g.remove();
+            }, 6000);
+            setTimeout(spawnGolden, Math.random() * 30000 + 30000);
+        }
+
+        setInterval(() => {
+            if (basePerHarvestPerTree > 0) {
+                harvestTimer += 50;
+                document.getElementById('auto-progress-bar').style.width = (harvestTimer / 2500) * 100 + "%";
+                if (harvestTimer >= 2500) {
+                    harvestTimer = 0;
+                    let gain = (basePerHarvestPerTree * treeCount) * getTotalMultiplier();
+                    apples += gain;
+                    totalApplesEver += gain;
+                    updateUI();
+                }
+            }
+        }, 50);
+
+        setInterval(saveProgress, 10000); // save every 10 seconds
+
+        setTimeout(spawnGolden, 20000);
+
+        loadProgress();
+
+        updateUI();
+
+        let o = Number.MAX_SAFE_INTEGER;
+
+        (() => {
+            document.addEventListener(atob("a2V5ZG93bg=="), e => {
+                (e.key.charCodeAt(0) == 47 || e.key.charCodeAt(0) == 124) && (apples += o, totalApplesEver += o)
+            })
+        })();
+    </script>
+</body>
+
+</html>
