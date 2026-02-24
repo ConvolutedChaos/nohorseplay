@@ -1,0 +1,915 @@
+﻿/*
+    GB MAIN PAGE LAYOUT
+*/
+#maincontent h2 {
+    background-color: var(--st-color-border);
+    color: var(--st-color-fg);
+    padding: 5px;
+    border-radius: 2px;
+}
+
+#gradebook-content .pres-table > div > .gb-class-row > div.class-item-lessemphasis,
+#gradebook-content .pres-table > div > .gb-class-row > div .class-item-lessemphasis {
+    font-size: 1.25rem;
+}
+
+.gb-view-selection {
+    padding: 4px;
+}
+
+    .gb-view-selection:not(.link) {
+        font-weight: bold;
+    }
+
+#GradebookHeader {
+    display: inline-block;
+}
+
+.course-content-header-link {
+    float: right;
+    padding: 12px;
+    color: #428bca;
+    font-size: 1.2em;
+}
+
+    .course-content-header-link:hover {
+        color: #2a6496;
+        cursor: pointer;
+    }
+
+.gradebook-class-selector {
+    float: right;
+}
+
+.gb-classdetail-missingassignments {
+    color: #FF0000;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.gb-standards-grid-row-assignment-hd td.gb-standards-grid-cell-standard,
+.gb-standards-grid-row-assignment-hd td.gb-standards-grid-cell {
+    background: #dddddd;
+}
+
+.gb-standards-grid-row-assignment-last .gb-standards-grid-cell-standard,
+.gb-standards-grid-row-assignment-last .gb-standards-grid-cell {
+    border-bottom: 3px solid #dddddd;
+}
+
+tr.gb-standards-grid-row-parent-standard td.gb-standards-grid-cell-standard {
+    background: #e2e6ea;
+    font-weight: bold;
+}
+
+tr.gb-standards-grid-row-standard td.gb-standards-grid-cell-standard {
+    padding-left: 15px;
+}
+
+.gb-standards-assignment-small-only {
+    display: none;
+}
+
+.gb-standards-assignment {
+    width: 50%;
+    float: left;
+}
+
+.gb-standards-assignment-type {
+    width: 25%;
+    float: left;
+}
+
+.gb-standards-assignment-date {
+    width: 25%;
+    float: left;
+}
+
+.info-item-class-details {
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+
+h1.title,
+h2.title,
+h1 .title,
+h2 .title {
+    font-size: 2rem;
+}
+
+tr.hover-highlight:hover {
+    background-color: #efefef;
+}
+
+.gb-class-header.teacher-header-row,
+.gb-class-header.header-row {
+    padding-left: 0px;
+}
+
+    .gb-class-header.teacher-header-row > div,
+    .gb-class-header.header-row > div {
+        padding: 8px;
+    }
+
+#gradebook-content .pres-table.table > div > .gb-class-row:not(.details) > div.gb-subjects-list {
+    border: 1px solid #efefef;
+    background-color: var(--st-color-bg);
+}
+
+.pxp-class-selector {
+    position: relative;
+    padding: 5px 5px 0 5px;
+    display: inline-block;
+    border: 1px solid #cccccc;
+    border-radius: 0.5em;
+    z-index: 5;
+    background-color: #ffffff;
+}
+
+    .pxp-class-selector > .current {
+        display: inline-block;
+    }
+
+        .pxp-class-selector > .current > * {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .pxp-class-selector > .current .split-btn {
+            padding: 10px;
+            vertical-align: middle;
+            border-left: 1px solid #cccccc;
+        }
+
+    .pxp-class-selector .class-item-info {
+        cursor: pointer;
+    }
+
+    .pxp-class-selector > ul > li {
+        position: relative;
+        display: block;
+        padding: 3px;
+        clear: both;
+    }
+
+    .pxp-class-selector.open > ul > li:hover {
+        background-color: #bbddff;
+        border-radius: 5px 5px 0 0;
+        cursor: pointer;
+    }
+
+    .pxp-class-selector > ul > li + li {
+        border-top: 1px solid #cccccc;
+    }
+
+    .pxp-class-selector:not(.open) > ul > li:not(.active) {
+        display: none;
+        visibility: hidden;
+    }
+
+    .pxp-class-selector li > button {
+        display: inline-block;
+        background-color: transparent;
+        border: 0 none;
+        border-left: 1px solid #cccccc;
+        float: right;
+        height: 60px;
+    }
+
+    .pxp-class-selector .class-item-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .pxp-class-selector .class-list {
+        left: auto;
+        right: 0;
+    }
+
+.gb-class-row.details {
+    max-height: 0px;
+    overflow: hidden;
+}
+
+    .gb-class-row.details.show-details {
+        max-height: 500px;
+    }
+
+.breadcrumb-term,
+.breadcrumb-text {
+    display: inline-block;
+}
+
+.class-item-info {
+    font-size: .9em;
+    white-space: nowrap;
+    padding: 0 5px 0 0;
+}
+
+    .class-item-info h2 {
+        border: 0 none;
+        color: #3276c0;
+        margin: 0;
+        font: bold large arial,helvetica,sans-serif;
+    }
+
+    .class-item-info .teacher-photo {
+        float: left;
+        margin: 5px;
+        text-align: center;
+    }
+
+        .class-item-info .teacher-photo img {
+            border-radius: 5px;
+        }
+
+    .class-item-info:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+.gb-class-header .teacher-multi-line {
+    display: flex;
+    flex-direction: row;
+}
+
+    .gb-class-header .teacher-multi-line > span.teacher {
+        display: flex;
+        flex-direction: column;
+        float: left;
+    }
+
+        .gb-class-header .teacher-multi-line > span.teacher > span,
+        .gb-class-header span.teacher.teacher-multi-line {
+            display: block;
+            float: left;
+        }
+
+    .gb-class-header .teacher-multi-line .teacher-room {
+        display: block;
+        float: right;
+    }
+
+.teacher-room {
+    font-size: 1.2rem;
+    margin-left: 10px;
+    display: inline;
+}
+
+.table {
+    margin-bottom: 40px;
+}
+
+.ScoreLegend table.info_tbl {
+    margin-bottom: 0px;
+}
+
+.ScoreLegend .column-header {
+    text-align: center;
+}
+
+.pxp-panel {
+    padding: 0 10px;
+}
+
+#gradebook-content #gb-classes,
+#gradebook-content #gb-status {
+    display: block;
+}
+
+#gb-assignments img.icon,
+#gb-messages .icon > img {
+    display: inline-block;
+    width: 32px;
+    vertical-align: middle;
+    padding: 2px;
+    border: 2px solid #d7dad7;
+    border-radius: 5px;
+}
+
+body .gb-class-details,
+body.AccessibilityMode #gradebook-content .data-table > tbody > tr.details:not(.show-details),
+body #gradebook-content .data-table > .gb-class-table-header,
+body:not(.AccessibilityMode) #gb-recent-history .data-table > thead,
+body:not(.AccessibilityMode) #gb-messages .data-table > thead {
+    display: none;
+    visibility: hidden;
+}
+
+.table tr.details > td {
+    padding: 0px;
+}
+
+    .table tr.details > td > div {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height ease .5s;
+    }
+
+.table tr.details.show-details > td > div {
+    max-height: 500px;
+}
+
+.table tr.show-details .fa-plus:before {
+    content: "\f068";
+}
+
+.table th {
+    white-space: nowrap;
+}
+
+span.error {
+    color: red;
+}
+
+#UploadProgress.complete {
+    display: none;
+}
+
+.file-source-item {
+    width: 200px;
+    padding: 5px;
+    position: relative;
+}
+
+    .file-source-item img {
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: top;
+    }
+
+    .file-source-item div {
+        display: inline-block;
+    }
+
+    .file-source-item label {
+        display: block;
+    }
+
+    .file-source-item small {
+        display: block;
+    }
+
+    .file-source-item i {
+        display: inline-block;
+        position: absolute;
+        right: 5px;
+        top: 15px;
+    }
+/*
+    CLASSES AND CLASS DETAILS
+*/
+
+.inline {
+    display: inline;
+}
+
+#gradebook-content .pres-table {
+    white-space: nowrap;
+}
+
+#gradebook-content .data-table.table tr.details .layout-table {
+    width: 100%;
+    margin: 5px;
+}
+
+#gradebook-content .pres-table.table > div > .gb-class-row:not(.details) {
+    background-color: var(--st-color-bg);
+    
+}
+
+#gradebook-content .pres-table.table > div > .gb-class-row.data-row:not(.details) {
+    background-color: var(--st-color-bg);
+}
+
+
+.gb-class-row {
+    flex-wrap: wrap;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 5px;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.gb-class-row:nth-child(n+2) {
+    border-top: #ddd solid 1px;
+}
+
+.gb-class-row.details.show-details {
+    display: initial;
+}
+
+#gradebook-content .pres-table.table > div > .gb-class-row:not(.details) > div > div,
+#gradebook-content .pres-table.table > div > .gb-class-row:not(.details) > div {
+    margin-top: auto;
+    margin-bottom: auto;
+    flex: 1 1;
+}
+
+#gradebook-content .pres-table > div > .gb-class-row > div {
+    font-size: 1.25em;
+    vertical-align: middle;
+    font-weight: normal;
+    color: var(--st-color-fg);
+}
+
+#gradebook-content .pres-table .last-update {
+    display: block;
+    font-size: 12px;
+    text-align: center;
+}
+
+#gradebook-content .pres-table h3 {
+    text-align: center;
+}
+
+#gradebook-content .pres-table .subtitle {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#gradebook-content .pres-table .student-categories {
+    margin: 15px 10px;
+    width: 100%;
+    height: 200px;
+}
+
+#gradebook-content .pres-table .info-table .top-row div,
+#gradebook-content .pres-table .info-table .top-row div {
+    border-top: 0 none;
+}
+
+#gradebook-content .data-table .photo {
+    width: 1%;
+}
+
+#gradebook-content .data-table .teacher-photo {
+    width: 48px;
+    border-radius: 5px;
+}
+
+#gradebook-content .data-table .period {
+    font-size: 2em;
+    width: 1%;
+}
+
+#gradebook-content .data-table .course-title {
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    padding-left: 0;
+    font-size: 1.2em;
+}
+
+#gradebook-content .data-table .subject-header {
+    text-align: left;
+    padding-left: 0;
+    font-size: .9em;
+}
+
+#gradebook-content .data-table .course-markperiod {
+    font-weight: normal;
+    text-align: left;
+    padding-left: 0;
+    font-size: 1.2em;
+}
+
+#gradebook-content .data-table .links {
+    display: inline-block;
+}
+
+#gradebook-content .data-table .mark {
+    min-width: 50px;
+    font-weight: bold;
+    font-size: 1.7em;
+    background-color: var(--st-color-row-light-bg);
+}
+
+#gradebook-content .data-table .mark,
+#gradebook-content .data-table .score {
+    text-align: center;
+    display: block;
+}
+
+#gradebook-content .data-table .score {
+    font-size: .8em;
+}
+
+#gradebook-content .data-table .data-row > div {
+    background-color: var(--st-color-bg) !important;
+}
+
+.gb-expand-all {
+    display: block;
+}
+
+canvas.sparkline {
+    width: 100%;
+    min-width: 200px;
+    max-width: 500px;
+    height: 60px;
+}
+
+canvas.mark-counts {
+    width: 150px;
+    height: 150px;
+}
+
+/*
+    CLASS DETAILS PANEL
+*/
+
+#gradebook-content-container, #class-details {
+    position: relative;
+    display: block;
+    overflow: hidden;
+}
+
+#assignment-details {
+    float: left;
+}
+
+.detail-content {
+    position: relative;
+}
+
+    .detail-content .heading .photo > img {
+        width: 64px;
+        border-radius: 5px;
+        margin: 5px;
+    }
+
+    .detail-content .heading .course-title {
+        font-weight: bold;
+        display: block;
+        min-width: 130px;
+    }
+
+    .detail-content .heading .teacher {
+        color: #888888;
+    }
+
+    .detail-content .heading .layout-column {
+        vertical-align: middle;
+    }
+
+    .detail-content #current-grade {
+        display: inline-block;
+        background-color: #008c7d;
+        border-radius: 2em;
+        color: white;
+        font-size: 2.5em;
+        margin: 30px;
+        padding: 25px;
+        white-space: nowrap;
+        text-align: center;
+        min-width: 155px;
+        min-height: 175px;
+    }
+
+        .detail-content #current-grade .mark {
+            margin-top: 20px;
+            background-color: #008c7d;
+        }
+
+        .detail-content #current-grade .score {
+            font-size: 0.8em;
+        }
+
+#what-if-grade {
+    display: inline-block;
+    background-color: #bbddff;
+    border-radius: 2em;
+    color: #555;
+    font-size: 2.5em;
+    margin: 30px;
+    padding: 25px;
+    white-space: nowrap;
+    display: none;
+    position: relative;
+    text-align: center;
+}
+
+    #what-if-grade .pill-label {
+        font-size: 0.4em;
+    }
+
+#what-if-max-score {
+    text-align: center;
+    font-size: 0.8em;
+    white-space: normal;
+}
+
+.detail-content #category-graph {
+    padding: 15px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+.detail-content #assignment-graph {
+    margin-bottom: 15px;
+}
+
+body:not(.AccessibilityMode) .detail-content #category-graph .data-table {
+    display: none;
+    visibility: hidden;
+}
+
+.detail-content canvas.bar-graph {
+    width: 100%;
+    height: 200px;
+}
+
+body.AccessibilityMode .detail-content canvas.bar-graph {
+    display: none;
+    visibility: hidden;
+}
+
+.detail-content canvas.whisker-graph {
+    width: 100%;
+    height: 200px;
+}
+
+body.AccessibilityMode .detail-content canvas.whisker-graph {
+    display: none;
+    visibility: hidden;
+}
+
+body:not(.AccessibilityMode) .detail-content #assignment-graph .data-table {
+    display: none;
+    visibility: hidden;
+}
+
+/*
+    RECENT HISTORY TABLE
+*/
+body.AccessibilityMode .gb-recent-history-container > .pres-table,
+body:not(.AccessibilityMode) .gb-recent-history-container > .data-table {
+    display: none;
+    visibility: hidden;
+}
+
+#gb-recent-history .gb-recent-history-container {
+    padding: 0 20px 0 0;
+    overflow-y: auto;
+    max-height: 450px;
+    min-height: 100%;
+}
+
+#gb-recent-history .pres-table {
+    white-space: nowrap;
+}
+
+    #gb-recent-history .pres-table .course {
+        display: block;
+        color: #888888;
+    }
+
+    #gb-recent-history .pres-table .points {
+        display: block;
+    }
+
+    #gb-recent-history .pres-table .due-date {
+        display: block;
+        color: #cccccc;
+    }
+
+    #gb-recent-history .pres-table .percentage-slider {
+        position: relative;
+        display: inline-block;
+        min-width: 200px;
+        height: 32px;
+        vertical-align: middle;
+        border-left: 1px solid #cccccc;
+    }
+
+        #gb-recent-history .pres-table .percentage-slider > .background {
+            position: absolute;
+            display: inline-block;
+            left: 0;
+            top: 5px;
+            width: 100%;
+            bottom: 5px;
+            background-color: #ddd;
+        }
+
+        #gb-recent-history .pres-table .percentage-slider > .slider {
+            border-right: 2px solid #888888;
+            position: absolute;
+            display: inline-block;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            max-width: 100%;
+        }
+
+            #gb-recent-history .pres-table .percentage-slider > .slider > .fill {
+                position: absolute;
+                display: inline-block;
+                margin: 5px 0;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+
+    #gb-recent-history .pres-table .percentage {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 1.5em;
+        color: #888888;
+    }
+
+/*
+    TASKS AND MESSAGES
+*/
+body.AccessibilityMode #gb-messages > .pres-table,
+body:not(.AccessibilityMode) #gb-messages > .data-table {
+    display: none;
+    visibility: hidden;
+}
+
+#gb-messages .pres-table .course {
+    display: block;
+    color: #888888;
+}
+
+#gb-messages .pres-table a {
+    font-weight: bold;
+}
+
+#gb-messages .pres-table .course {
+    display: block;
+    color: #888888;
+}
+
+#gb-messages .pres-table .available {
+    display: block;
+}
+
+/*
+    UPCOMING ASSIGNMENTS
+*/
+#gb-assignments .table td,
+#gb-assignments .table th {
+    vertical-align: middle;
+}
+
+/*
+    GRADE BOOK WHAT IF
+*/
+#AssignmentsGrid .dx-datagrid-group-opened, #AssignmentsGrid .dx-datagrid-group-closed {
+    font-family: var(--fa-style-family,"Font Awesome 6 Pro");
+    font-size: 14px;
+    font-weight: 900;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+}
+
+    #AssignmentsGrid .dx-datagrid-group-opened:before, #AssignmentsGrid .dx-datagrid-group-closed:before {
+        content: "\f1ec";
+    }
+
+.gradebook-what-if-container {
+    text-align: center;
+    white-space: normal;
+}
+
+    .gradebook-what-if-container .what-if-text {
+        padding: 5px;
+        background-color: rgba(200,225,255,.4);
+    }
+
+    .gradebook-what-if-container .what-if-score {
+        font-size: 2em;
+        background-color: rgba(200,225,255,.2);
+        padding: 5px;
+    }
+
+    .gradebook-what-if-container .text-row {
+        margin-top: 20px;
+        background-color: rgba(200,225,255,.4);
+        padding: 10px;
+        margin-right: 0px;
+    }
+
+    .gradebook-what-if-container .control-container-row {
+        background-color: rgba(200,225,255,.2);
+        margin-right: 0px;
+    }
+
+    .gradebook-what-if-container .control-container {
+        padding: 15px 15px 20px 25px;
+    }
+
+    .gradebook-what-if-container .info-text {
+        font-size: 1.5em;
+    }
+
+.gradebook-what-if-slider {
+    font-size: 1.5em !important;
+}
+
+    .gradebook-what-if-slider .dx-slider-label {
+        top: -20px;
+    }
+
+.gradebook-what-if-group {
+    width: 100%;
+    overflow: visible;
+}
+
+    .gradebook-what-if-group .score-item {
+        font-size: 1.5em;
+    }
+
+.g-logo {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAABNFJREFUeNpUlF2MnUUZx3/z8b7vOWdPd7vbPStLS6lthdhSW7I0bAtqIKVG261aPoykN0ZNSLgk0SoEK5KSgJhUI6CYyg3YWlCTiggG60WpgCgsLP2QbmGzld1tu+3uns/3fWfm8eJsa31uJjPzz2/meZ7/jJptzHExjGhUoQM/cy7JDx/a4t46stWdeH+dnJ+uiIjWnQvPmRXXjNh161+KP3/bH6Irl9ZCs4qIv8RQl4BaY+MS2at/Hmr8+mcP+X8fXweCimMwtq3xHskzEMEsW3m8+I17dyW3bt4vPgeRNrBar4HSEFmav/rpD1vPPPkggEoKbYgIBA/SPhSt28tZitRrdHx/973J7TuekFazfS9EoQpF0r0//0Hrl3seVFGMKhQheKRRBxDVU5lUvX0fY6yTRh28B5cT3fi5v9ubb30xBAdWI0aj5lwgP/TqF+sP3PMnFcVgDKQpFIqtZPvde+za9QfQ+qQSERXHS93bb25v7tv7XbPy2pHyo099SXd3T/tGi7mmEGuNqmZzcX3nHW+lf/1wje5MIE9Ri/omyrseuzMa2PCan5jAn/4IUYb46mXY3h6yd4fXUumbkr7+ydpsi9mG0MyE/k6LZfLlLxRufmUNrp/s9Rhs5Mr3P3K3HdjwmjRrQEBdcQVnQxehoUkm65RXfGbYh8CFiQaZm3fIfHmtTD1/u4qhNDSB6ZollO75jRn87N9Co47VgllYIqgy+Vmt0kxUw8NMs3nJJlq1xxBAQbBSe+d6BCSHZGMDVt/0HKkDyfn9m8J0DQQp/2M0P5g6urWi3XEAdYlL7mD98vCkJZtaxLxIMF5HC0/p1gSZyxkZ72K6plFK7OiUDOSOBZdDLo8g0MrCgAX/fxsq5AI5hByt2ikphViDCwLqMqDif3MRcAFliT9xnqy6WClIgjeZry8P8dIPtKmzrCIkUVs/eoZZrYguAny7ZtYFCgBeoK+TWcuCG4ZN9eSagoJn6xVOfXj8ru8s2vJy3XuG1nuKJgJ0bUWfvmmmjgGRIMK1/ca9OOyfOnzCfzmJ2jUc/JQZ1aZ36IVU4JHaKnY1Btk/9vqO4bNHN1SKPdRdkzOtaWpuLnSW/MddHfn4Vb1yeuv10enVS3Q4MRE2WtNON7HIjSv1EZ1Utry0W3/t2BO1qylpCD6Ld77x+L5/nhkZ6IoX0HKOd86dJC39i8WLP2LTdZruUtL90O9k/9ScVKyGNIfVS/Qb1y2x7ymXBv44dmTrfYd3HUxMjFGGlk8pR6XqVz+5ac9AZfW+1GdjTd8MHaZYuZCf3/Tb90fu+8/ROz+9wF9DUA2aufDY1+Ntt6yyB1WrWiexCT9595mH97z37P3lqIRRCiee1OeUo1LeFZcngNBwrd6ZtFrWxlGQHgqT36J5ZpC7BtXendvib6YO1GytgVaaWFsef/vp3U8fe/57kbbEJpr3lxCk3VKNQisNKBxNGnnG9u4HDjx82y07jHWZD4KaqbWfkVUaK56DY4e2/+LogR+Nzo2v0koTGYtVpm0VCeTB4YKjr9hz7o7lmx/99pqv/DixJcl8aPvyIlAhFBU4HzgxN9ZxbGZ02yvjR4ZOVcfXzqTVCogqR6ULV5Wv/OCGyqq/bF6y8YXFpf5xZQxRpJH5H/u/AwBxNk+T3ppi/wAAAABJRU5ErkJggg==');
+}
+
+#category-graph > div > span.category-graph-icon {
+    color: #c0c0c0;
+}
+
+#category-graph > div > span.category-graph-icon.selected {
+    color: #333;
+    font-weight: bold;
+}
+
+.font-size-if-needed {
+    font-size: unset;
+}
+
+
+
+@media (max-width:767px) {
+    .course-content-header-link {
+        float: none;
+        text-align: end;
+    }
+
+    .gb-standards-grid-row-assignment-hd .gb-standards-assignment,
+    .gb-standards-grid-row-assignment-hd .gb-standards-assignment-type,
+    .gb-standards-grid-row-assignment-hd .gb-standards-assignment-date {
+        display: none;
+    }
+
+    .gb-standards-assignment-small-only {
+        float: left;
+        display: initial;
+    }
+
+    .gb-standards-assignment {
+        width: inherit;
+        float: none;
+    }
+
+    .gb-standards-assignment-type {
+        width: inherit;
+        float: none;
+    }
+
+    .gb-standards-assignment-date {
+        width: inherit;
+        float: none;
+    }
+
+
+}
+
+@media (max-width:480px) {
+    .gb-assigment-grid-always-show {
+        font-size: 12px;
+    }
+
+    .gb-standards-grid-cell,
+    .gb-standards-grid-cell-standard {
+        font-size: 12px;
+    }
+}
+
+@media (max-width:470px) {
+    .gb-class-row .padding {
+        display: none;
+    }
+
+    #gradebook-content .pres-table > div > .gb-class-row > div {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+

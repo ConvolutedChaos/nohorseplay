@@ -1,0 +1,361 @@
+body.hide-scroll {
+    overflow: hidden;
+}
+
+body div.tooltip {
+    z-index: 9999;
+}
+
+pre {
+    word-wrap: break-word;
+}
+
+.tip-content {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tip-content-large {
+    width: 300px;
+    max-height: 300px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.title-underline {
+    border-bottom: solid 1px #ccc;
+    padding-bottom: 5px;
+    height: 35px;
+}
+
+.after-title-underline {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.line-overflow-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* add this here so any page that might show a resource has the correct styles */
+.global-resource {
+    color: #718faa;
+    font-size: 12px;
+    max-width: 300px;
+    float: left;
+    margin-right: 10px;
+}
+
+    .global-resource .ResourceName {
+        font-size: 12px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+        .global-resource .ResourceName h5 {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 14px;
+        }
+
+    .global-resource a {
+        text-decoration: none;
+        display: block;
+    }
+
+    .global-resource .urlLoading {
+        background: url('/resources/GBResources/ajax_loader.png') no-repeat;
+        background-position-x: center;
+        background-position-y: center;
+        min-height: 100px;
+    }
+
+    .global-resource .file-icon {
+        float: left;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+.table thead > tr > th, .table > thead > tr > th, .table > thead > tr > td, .table > tbody > tr > th {
+    background-color: #eee;
+    background: linear-gradient(to bottom, rgb(250,250,250) 0, #ddddddb5 100%);
+}
+
+figure.image img {
+    max-width: 100%;
+}
+
+.hoverable {
+    -webkit-transition: -webkit-box-shadow 0.55s;
+    transition: -webkit-box-shadow 0.55s;
+    transition: box-shadow 0.55s;
+    transition: box-shadow 0.55s, -webkit-box-shadow 0.55s;
+    -webkit-box-shadow: 0;
+    box-shadow: 0;
+}
+
+    .hoverable:hover {
+        -webkit-transition: -webkit-box-shadow 0.45s;
+        transition: -webkit-box-shadow 0.45s;
+        transition: box-shadow 0.45s;
+        transition: box-shadow 0.45s, -webkit-box-shadow 0.45s;
+        -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+.hovering {
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.z-depth-1 {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.z-depth-1-half {
+    box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.z-depth-2 {
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+.circle-avatar {
+    line-height: 0;
+    display: inline-block;
+    margin: 5px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.4);
+    transition: linear 0.25s;
+    height: 32px;
+    width: 32px;
+}
+
+    .circle-avatar img {
+        border-radius: 50%;
+    }
+
+    .circle-avatar:hover {
+        transition: ease-out 0.2s;
+        border: 2px solid rgba(255,255,255,0.8);
+        -webkit-transition: ease-out 0.2s;
+    }
+
+.pointer {
+    cursor: pointer;
+}
+
+@keyframes flashbg {
+    0% {
+        background-color: rgba(255, 255, 0, 1);
+    }
+
+    100% {
+        background-color: rgba(255, 255, 0, 0);
+    }
+}
+
+.flash-bg {
+    animation-name: flashbg;
+    animation-duration: 900ms;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+}
+
+.dx-link.dx-link-edit {
+    align-items: flex-start;
+    background-color: transparent;
+    border-color: transparent;
+    border-style: outset;
+    border-width: 2px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    color: #337ab7 !important;
+    cursor: pointer;
+    display: inline-block;
+    height: 22px;
+    line-height: 16.0001px;
+    padding: 1px 6px 1px 6px;
+    text-align: center;
+    text-decoration: none;
+}
+
+    .dx-link.dx-link-edit:hover {
+        background-color: rgba(51, 122, 183, 0.1);
+        border-color: transparent;
+        text-decoration: none;
+    }
+
+.dx-link.dx-link-delete {
+    align-items: flex-start;
+    background-color: transparent;
+    border-color: transparent;
+    border-style: outset;
+    border-width: 2px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    color: #d43f3a !important;
+    cursor: pointer;
+    display: inline-block;
+    height: 22px;
+    line-height: 16.0001px;
+    padding: 1px 6px 1px 6px;
+    text-align: center;
+    text-decoration: none;
+}
+
+    .dx-link.dx-link-delete:hover {
+        background-color: rgba(212, 63, 58, 0.1);
+        border-color: transparent;
+        text-decoration: none;
+    }
+
+.dx-button.dx-right-icon .dx-icon {
+    float: right;
+    padding-left: 10px;
+    margin-right: 0px;
+}
+
+[contenteditable] {
+    padding: 3px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    outline: none;
+}
+
+[contenteditable="true"]:hover {
+    border: 1px solid #dcdcdc;
+    background-color: var(--st-color-input-bg, #fff);
+    color: var(--st-color-input-fg, #333);
+}
+
+[contenteditable="true"]:focus-visible {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background-color: var(--st-color-input-bg, #fff);
+    color: var(--st-color-input-fg, #333);
+}
+
+[contenteditable="true"].invalid {
+    border: 1px solid red;
+}
+
+    [contenteditable="true"].invalid:before {
+        content: '\f071';
+        font-family: 'Font Awesome 6 Pro';
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        font-weight: 900;
+        color: red;
+        float: right;
+    }
+
+.big-button-group {
+    display: block;
+}
+
+    .big-button-group .button-container i {
+        font-size: 75px;
+        color: #555;
+        margin-top: 5px;
+    }
+
+    .big-button-group .button-container div {
+        font-size: 20px;
+        white-space: normal;
+        line-height: 22px;
+        color: #555;
+        margin-top: 8px;
+    }
+
+    .big-button-group .dx-buttongroup-item {
+        border: 2px solid #ccc;
+        padding: 3px;
+        margin: 5px;
+        width: 150px;
+        height: 150px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        -webkit-transition: -webkit-box-shadow 0.55s;
+        transition: -webkit-box-shadow 0.55s;
+        transition: box-shadow 0.55s;
+        transition: box-shadow 0.55s, -webkit-box-shadow 0.55s;
+        -webkit-box-shadow: 0;
+        box-shadow: 0;
+        border-radius: 5px !important;
+    }
+
+    .big-button-group .dx-state-hover {
+        background-color: #E3F2FD !important;
+        -webkit-transition: -webkit-box-shadow 0.45s;
+        transition: -webkit-box-shadow 0.45s;
+        transition: box-shadow 0.45s;
+        transition: box-shadow 0.45s, -webkit-box-shadow 0.45s;
+        -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .big-button-group .dx-item-selected {
+        background-color: #BBDEFB !important;
+    }
+
+body[data-theme="1"] .dark-mode-bg {
+    background-color: #8f8f8f5c !important;
+}
+
+/* flexbox helpers until we update bootstrap */
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.flex-col {
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.flex-col-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+}
+
+.big-button {
+    font-size: 1.2em;
+}
+
+/* overrides for devexpress styling */
+.dx-widget {
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+    font-weight: 600;
+}
+
+body[data-color-theme="dark"] .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+    color: var(--st-grid-heading-fg, #000);
+    background-color: var(--st-grid-heading-bg, #f1f1f1);
+}

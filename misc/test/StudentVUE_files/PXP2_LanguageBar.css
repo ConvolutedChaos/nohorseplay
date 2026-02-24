@@ -1,0 +1,48 @@
+﻿
+footer.footer .languagesDropDown {
+    float: right;
+}
+
+.languagesDropDown {
+    pointer-events: all;
+}
+
+.languagesDropDown .btn {
+    width: auto;
+    padding: 2px 5px;
+}
+
+footer.footer .languagesDropDown .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+ul.languageList {
+    display: block;
+    white-space: nowrap;
+}
+
+.languagesDropDown .dropdown-menu ul > li {
+    display: block;
+}
+
+.languagesDropDown .dropdown-menu ul > li[data-selected=True],
+.languagesDropDown .dropdown-menu ul > li:hover {
+    background-color: var(--st-color-hover-bg);
+    color: var(--st-color-hover-fg);
+}
+
+.languagesDropDown .dropdown-menu ul > li > a {
+    color: var(--st-color-dropdown-fg);
+    padding: 10px;
+    display: block;
+    font-weight: bold;
+}
+
+.languagesDropDown .dropdown-menu ul > li > a:hover {
+    text-decoration: none;
+}
+
+.languages > li > a {
+    cursor: pointer;
+}

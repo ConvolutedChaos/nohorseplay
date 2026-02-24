@@ -1,0 +1,457 @@
+import { requireContext as de, customElement as Y } from "./common.bundle.js";
+import { sharedConfig as ie, createRenderEffect as I, createContext as re, createMemo as T, createComponent as y, Show as q, createSignal as x, useContext as ce, onMount as ue, createEffect as fe, For as z, untrack as he } from "./solid.bundle.js";
+import { lunchCounts as ee } from "./pxp.api.bundle.js";
+import { Select as B, ST as pe } from "./st.bundle.js";
+function me(t, n, e) {
+  let r = e.length, s = n.length, o = r, a = 0, l = 0, i = n[s - 1].nextSibling, f = null;
+  for (; a < s || l < o; ) {
+    if (n[a] === e[l]) {
+      a++, l++;
+      continue;
+    }
+    for (; n[s - 1] === e[o - 1]; )
+      s--, o--;
+    if (s === a) {
+      const c = o < r ? l ? e[l - 1].nextSibling : e[o - l] : i;
+      for (; l < o; ) t.insertBefore(e[l++], c);
+    } else if (o === l)
+      for (; a < s; )
+        (!f || !f.has(n[a])) && n[a].remove(), a++;
+    else if (n[a] === e[o - 1] && e[l] === n[s - 1]) {
+      const c = n[--s].nextSibling;
+      t.insertBefore(e[l++], n[a++].nextSibling), t.insertBefore(e[--o], c), n[s] = e[o];
+    } else {
+      if (!f) {
+        f = /* @__PURE__ */ new Map();
+        let m = l;
+        for (; m < o; ) f.set(e[m], m++);
+      }
+      const c = f.get(n[a]);
+      if (c != null)
+        if (l < c && c < o) {
+          let m = a, _ = 1, A;
+          for (; ++m < s && m < o && !((A = f.get(n[m])) == null || A !== c + _); )
+            _++;
+          if (_ > c - l) {
+            const $ = n[a];
+            for (; l < c; ) t.insertBefore(e[l++], $);
+          } else t.replaceChild(e[l++], n[a++]);
+        } else a++;
+      else n[a++].remove();
+    }
+  }
+}
+function U(t, n, e) {
+  let r;
+  const s = () => {
+    const a = document.createElement("template");
+    return a.innerHTML = t, a.content.firstChild;
+  }, o = () => (r || (r = s())).cloneNode(!0);
+  return o.cloneNode = o, o;
+}
+function S(t, n) {
+  ie.context && t.isConnected || (n == null ? t.removeAttribute("class") : t.className = n);
+}
+function p(t, n, e, r) {
+  if (e !== void 0 && !r && (r = []), typeof n != "function") return H(t, n, r, e);
+  I((s) => H(t, n(), s, e), r);
+}
+function H(t, n, e, r, s) {
+  const o = !!ie.context && t.isConnected;
+  if (o) {
+    !e && (e = [...t.childNodes]);
+    let i = [];
+    for (let f = 0; f < e.length; f++) {
+      const c = e[f];
+      c.nodeType === 8 && c.data.slice(0, 2) === "!$" ? c.remove() : i.push(c);
+    }
+    e = i;
+  }
+  for (; typeof e == "function"; ) e = e();
+  if (n === e) return e;
+  const a = typeof n, l = r !== void 0;
+  if (t = l && e[0] && e[0].parentNode || t, a === "string" || a === "number") {
+    if (o || a === "number" && (n = n.toString(), n === e))
+      return e;
+    if (l) {
+      let i = e[0];
+      i && i.nodeType === 3 ? i.data !== n && (i.data = n) : i = document.createTextNode(n), e = N(t, e, r, i);
+    } else
+      e !== "" && typeof e == "string" ? e = t.firstChild.data = n : e = t.textContent = n;
+  } else if (n == null || a === "boolean") {
+    if (o) return e;
+    e = N(t, e, r);
+  } else {
+    if (a === "function")
+      return I(() => {
+        let i = n();
+        for (; typeof i == "function"; ) i = i();
+        e = H(t, i, e, r);
+      }), () => e;
+    if (Array.isArray(n)) {
+      const i = [], f = e && Array.isArray(e);
+      if (V(i, n, e, s))
+        return I(() => e = H(t, i, e, r, !0)), () => e;
+      if (o) {
+        if (!i.length) return e;
+        if (r === void 0) return [...t.childNodes];
+        let c = i[0], m = [c];
+        for (; (c = c.nextSibling) !== r; ) m.push(c);
+        return e = m;
+      }
+      if (i.length === 0) {
+        if (e = N(t, e, r), l) return e;
+      } else f ? e.length === 0 ? te(t, i, r) : me(t, e, i) : (e && N(t), te(t, i));
+      e = i;
+    } else if (n.nodeType) {
+      if (o && n.parentNode) return e = l ? [n] : n;
+      if (Array.isArray(e)) {
+        if (l) return e = N(t, e, r, n);
+        N(t, e, null, n);
+      } else e == null || e === "" || !t.firstChild ? t.appendChild(n) : t.replaceChild(n, t.firstChild);
+      e = n;
+    }
+  }
+  return e;
+}
+function V(t, n, e, r) {
+  let s = !1;
+  for (let o = 0, a = n.length; o < a; o++) {
+    let l = n[o], i = e && e[t.length], f;
+    if (!(l == null || l === !0 || l === !1)) if ((f = typeof l) == "object" && l.nodeType)
+      t.push(l);
+    else if (Array.isArray(l))
+      s = V(t, l, i) || s;
+    else if (f === "function")
+      if (r) {
+        for (; typeof l == "function"; ) l = l();
+        s = V(t, Array.isArray(l) ? l : [l], Array.isArray(i) ? i : [i]) || s;
+      } else
+        t.push(l), s = !0;
+    else {
+      const c = String(l);
+      i && i.nodeType === 3 && i.data === c ? t.push(i) : t.push(document.createTextNode(c));
+    }
+  }
+  return s;
+}
+function te(t, n, e = null) {
+  for (let r = 0, s = n.length; r < s; r++) t.insertBefore(n[r], e);
+}
+function N(t, n, e, r) {
+  if (e === void 0) return t.textContent = "";
+  const s = r || document.createTextNode("");
+  if (n.length) {
+    let o = !1;
+    for (let a = n.length - 1; a >= 0; a--) {
+      const l = n[a];
+      if (s !== l) {
+        const i = l.parentNode === t;
+        !o && !a ? i ? t.replaceChild(s, l) : t.insertBefore(s, e) : i && l.remove();
+      } else o = !0;
+    }
+  } else t.insertBefore(s, e);
+  return [s];
+}
+var ge = /* @__PURE__ */ U(`<div class=calendar data-bind="with: aagCalendar"><div class="flexbox horizontal"style=width:100%><button type=button class="btn btn-xs btn-default"data-bind="click: setPrevious"><span class="fa fa-chevron-left"role=presentation></span><span class=sr-only></span></button><button type=button class="btn btn-xs btn-default auto"style=text-align:center;font-weight:bold data-bind="text: monthName, click: setCurrent"></button><button type=button class="btn btn-xs btn-default"data-bind="click: setNext"><span class="fa fa-chevron-right"role=presentation></span><span class=sr-only></span></button></div><table class=cal-month-table><caption class=sr-only></caption><thead class=sr-only><tr><th scope=col></th><th scope=col></th><th scope=col></th><th scope=col></th><th scope=col></th><th scope=col></th><th scope=col></th></tr></thead><tbody data-bind="foreach: weeks"><tr data-bind="foreach: days"><td data-bind="click: setDate, css: { otherMonth: otherMonth, 'blue-dorito': isToday }, attr: { 'data-events': eventTypes }"><div class=day><span class=date data-bind="text: date">`);
+class se {
+  calendarData = x();
+  translate(n) {
+    return n;
+  }
+}
+class xe {
+  context;
+}
+const oe = re(new se()), ye = () => ce(oe);
+function k(t) {
+  const n = T(() => t.context || new se()), e = T(() => n()?.calendarData[0]());
+  return y(oe.Provider, {
+    get value() {
+      return n();
+    },
+    get children() {
+      return y(q, {
+        get when() {
+          return e();
+        },
+        get children() {
+          return y(De, {});
+        }
+      });
+    }
+  });
+}
+k.defaultProps = new xe();
+function De() {
+  const t = ye();
+  return (() => {
+    var n = ge(), e = n.firstChild, r = e.firstChild, s = r.firstChild, o = s.nextSibling, a = r.nextSibling, l = a.nextSibling, i = l.firstChild, f = i.nextSibling, c = e.nextSibling, m = c.firstChild, _ = m.nextSibling, A = _.firstChild, $ = A.firstChild, M = $.nextSibling, h = M.nextSibling, g = h.nextSibling, b = g.nextSibling, C = b.nextSibling, P = C.nextSibling;
+    return p(o, () => t.translate("Previous")), p(f, () => t.translate("Next")), p(m, () => t.translate("MonthAtAGlance")), p($, () => t.translate("Sun")), p(M, () => t.translate("Mon")), p(h, () => t.translate("Tue")), p(g, () => t.translate("Wed")), p(b, () => t.translate("Thu")), p(C, () => t.translate("Fri")), p(P, () => t.translate("Sat")), n;
+  })();
+}
+var Ce = /* @__PURE__ */ U("<div>PXP Test Build");
+class Oe {
+}
+function j() {
+  return Ce();
+}
+j.defaultProps = new Oe();
+class be {
+  constructor() {
+  }
+}
+const L = {
+  "pxp-lunch-counts": "_pxp-lunch-counts_1cfwy_1",
+  "pxp-lunch-panel": "_pxp-lunch-panel_1cfwy_21",
+  "pxp-lunch-future-order-row": "_pxp-lunch-future-order-row_1cfwy_33",
+  "pxp-lunch-future-order-date": "_pxp-lunch-future-order-date_1cfwy_49"
+};
+var we = /* @__PURE__ */ U('<table class="table table-striped"><tbody><tr><td><div><div></div><div>'), _e = /* @__PURE__ */ U('<div><h2 class=panel-heading></h2><div class=panel-body><table class="table table-striped"><tbody>'), ve = /* @__PURE__ */ U("<div><div><h2 class=panel-heading></h2><div class=panel-body><h2>"), $e = /* @__PURE__ */ U("<tr><td><div><div></div><div>");
+const ae = re(), Ue = () => de(ae);
+class Pe {
+  AGU = "";
+}
+function Q(t) {
+  const n = new be();
+  return y(ae.Provider, {
+    value: n,
+    get children() {
+      return y(Le, t);
+    }
+  });
+}
+const ne = (t) => {
+  let n;
+  if (t) {
+    const [e, r, s] = t.split("/") || "";
+    n = new Date(parseInt(s), parseInt(e) - 1, parseInt(r));
+  }
+  return n;
+}, Se = (t, n) => {
+  let e = NaN;
+  return t && n && (t.setHours(0, 0, 0, 0), n.setHours(0, 0, 0, 0), e = t.getTime() - n.getTime(), e = e < 0 ? -1 : e > 1 ? 1 : 0), e;
+}, le = (t) => {
+  switch (t) {
+    case "01":
+      return "JAN";
+    case "02":
+      return "FEB";
+    case "03":
+      return "MAR";
+    case "04":
+      return "APRIL";
+    case "05":
+      return "MAY";
+    case "06":
+      return "JUNE";
+    case "07":
+      return "JULY";
+    case "08":
+      return "AUG";
+    case "09":
+      return "SEPT";
+    case "10":
+      return "OCT";
+    case "11":
+      return "NOV";
+    case "12":
+      return "DEC";
+  }
+};
+function Le(t) {
+  ue(async () => {
+    A();
+  });
+  const [n, e] = x(), [r, s] = x(), [o, a] = x([]), [l, i] = x(!1), [f, c] = x();
+  let m = !1, _ = [];
+  const A = async () => {
+    const h = await ee.LoadLunchOrders(t.AGU);
+    if (h) {
+      let g = h.lunchOrdersForStudent?.studentLunchOrders?.sort((d, u) => Se(ne(d.mealDate), ne(u.mealDate))), b = h.validSchoolDays.map((d) => ({
+        mealDate: d.split(" ")[0]
+      })).slice(0), C = {
+        mealDate: b[0].mealDate,
+        mealGU: x(""),
+        mealOptionID: x("")
+      }, P = b.slice(1).map((d) => {
+        for (const u of g)
+          if (u.mealDate == d.mealDate) {
+            let O = u;
+            return O.mealOptionID = x(u.mealOptionID ?? ""), O.mealGU = x(u.mealGU ?? ""), O;
+          }
+        return {
+          mealDate: d.mealDate,
+          mealGU: x(""),
+          mealOptionID: x("")
+        };
+      });
+      for (const d of g)
+        if (d.mealDate == C.mealDate) {
+          let u = d;
+          u.mealOptionID = x(d.mealOptionID ?? ""), u.mealGU = x(d.mealGU ?? ""), C = u;
+        }
+      if (h.cutOffTime) {
+        const d = new Date(h.cutOffTime), u = /* @__PURE__ */ new Date();
+        u.setHours(d.getHours(), d.getMinutes(), 0, 0), c(u), f() && i(/* @__PURE__ */ new Date() > f());
+      }
+      e(h), a(P), s(C), [r(), ...o()].forEach((d) => {
+        let u = !0;
+        fe(() => {
+          const [O] = d.mealOptionID[0]();
+          u ? u = !1 : (_.push({
+            order: d,
+            mealOption: O
+          }), $());
+        });
+      });
+    }
+  }, $ = async () => {
+    if (_.length > 0 && !m) {
+      m = !0;
+      const h = _.shift();
+      if (h) {
+        const g = h.mealOption, b = he(h.order.mealGU[0]);
+        let C = await M({
+          ...h.order,
+          mealGU: b,
+          mealOptionID: g,
+          delete: g == "" || g == null,
+          mealText: n()?.lunchOrdersListForSchool.lunchOrderList.find((P) => g === P.mealOptionID.toString())?.orderDescription
+        });
+        C && h.order.mealGU[1](C), m = !1, $();
+      }
+    }
+  }, M = async (h) => {
+    try {
+      return (await ee.UpdateLunchOrder(h, t.AGU)).mealGU ?? "";
+    } catch (g) {
+      pe.ShowMessage(g).done(() => {
+        f() && i(/* @__PURE__ */ new Date() > f());
+      });
+    }
+    return "";
+  };
+  return (() => {
+    var h = ve(), g = h.firstChild, b = g.firstChild, C = b.nextSibling, P = C.firstChild;
+    return p(b, () => window.PXP.Translations.LunchCount.TodayOrder || "Today's Order"), p(P, (() => {
+      var d = T(() => !!l());
+      return () => d() ? window.PXP.Translations.LunchCount.SelectionPassed || "Locked: Selection time passed" : (window.PXP.Translations.LunchCount.OrderBy + ": " || "Order by: ") + new Date(n()?.cutOffTime).toLocaleTimeString(void 0, {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: !0
+      });
+    })()), p(C, y(q, {
+      get when() {
+        return r() !== void 0;
+      },
+      get children() {
+        var d = we(), u = d.firstChild, O = u.firstChild, E = O.firstChild, F = E.firstChild, v = F.firstChild, J = v.nextSibling;
+        return d.style.setProperty("margin-bottom", "0"), p(v, () => le(r().mealDate?.split("/")[0] ?? "") + " " + parseInt(r().mealDate?.split("/")[1] ?? "")), J.style.setProperty("width", "120px"), p(J, y(q, {
+          get when() {
+            return l() == !1;
+          },
+          get fallback() {
+            return T(() => r()?.mealText ?? (window.PXP.Translations.LunchCount.NoOrder || "No Order Placed for Today"));
+          },
+          get children() {
+            return y(B, {
+              get value() {
+                return r().mealOptionID;
+              },
+              get displayValue() {
+                return T(() => n()?.lunchOrdersListForSchool.lunchOrderList.find((D) => r().mealOptionID[0]() === D.mealOptionID.toString())?.orderDescription);
+              },
+              get children() {
+                return y(z, {
+                  get each() {
+                    return [{
+                      mealOptionID: "",
+                      orderDescription: ""
+                    }, ...n()?.lunchOrdersListForSchool.lunchOrderList ?? []];
+                  },
+                  children: (D) => y(B.Option, {
+                    get value() {
+                      return D.mealOptionID;
+                    },
+                    get children() {
+                      return D.orderDescription;
+                    }
+                  })
+                });
+              }
+            });
+          }
+        })), I((D) => {
+          var X = L["pxp-lunch-future-order-row"], G = L["pxp-lunch-future-order-date"];
+          return X !== D.e && S(F, D.e = X), G !== D.t && S(v, D.t = G), D;
+        }, {
+          e: void 0,
+          t: void 0
+        }), d;
+      }
+    }), null), p(h, y(q, {
+      get when() {
+        return T(() => o() !== void 0 && o().length > 0)() && n() !== void 0;
+      },
+      get children() {
+        var d = _e(), u = d.firstChild, O = u.nextSibling, E = O.firstChild, F = E.firstChild;
+        return p(u, () => window.PXP.Translations.LunchCount.FutureOrder || "Future Orders"), E.style.setProperty("margin-bottom", "0"), p(F, () => o().map((v, J) => (() => {
+          var D = $e(), X = D.firstChild, G = X.firstChild, R = G.firstChild, W = R.nextSibling;
+          return p(R, () => le(v.mealDate?.split("/")[0] ?? "") + " " + parseInt(v.mealDate?.split("/")[1] ?? "")), W.style.setProperty("width", "120px"), p(W, y(B, {
+            get value() {
+              return v.mealOptionID;
+            },
+            get displayValue() {
+              return T(() => n()?.lunchOrdersListForSchool.lunchOrderList.find((w) => v.mealOptionID[0]() === w.mealOptionID.toString())?.orderDescription);
+            },
+            get children() {
+              return y(z, {
+                get each() {
+                  return [{
+                    mealOptionID: "",
+                    orderDescription: ""
+                  }, ...n()?.lunchOrdersListForSchool.lunchOrderList ?? []];
+                },
+                children: (w) => y(B.Option, {
+                  get value() {
+                    return w.mealOptionID;
+                  },
+                  get children() {
+                    return w.orderDescription;
+                  }
+                })
+              });
+            }
+          })), I((w) => {
+            var K = L["pxp-lunch-future-order-row"], Z = L["pxp-lunch-future-order-date"];
+            return K !== w.e && S(G, w.e = K), Z !== w.t && S(R, w.t = Z), w;
+          }, {
+            e: void 0,
+            t: void 0
+          }), D;
+        })())), I(() => S(d, `panel panel-default ${L["pxp-lunch-panel"]}`)), d;
+      }
+    }), null), I((d) => {
+      var u = L["pxp-lunch-counts"], O = `panel panel-default ${L["pxp-lunch-panel"]}`;
+      return u !== d.e && S(h, d.e = u), O !== d.t && S(g, d.t = O), d;
+    }, {
+      e: void 0,
+      t: void 0
+    }), h;
+  })();
+}
+Q.defaultProps = new Pe();
+Y.register("pxp-datepicker", "pxp", k.defaultProps, k);
+Y.register("pxp-launch-pad", "pxp", j.defaultProps, j);
+Y.register("pxp-lunch-counts", "pxp", Q.defaultProps, Q);
+export {
+  k as Datepicker,
+  j as LaunchPad,
+  Q as LunchCounts,
+  Pe as LunchCountsProps,
+  Oe as PXPLaunchPadProps,
+  Ue as requireLunchCountsContext,
+  ye as usePxpDatepickerContext
+};
+//# sourceMappingURL=pxp.bundle.js.map

@@ -1,0 +1,557 @@
+﻿/*
+    The horizontal bar chart, summarizing the detail grid
+*/
+body {
+    overflow-y: scroll;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.PXPHeaderLogo {
+	padding-top: 32px;
+}
+
+#DistrictName {
+    bottom: 100%;
+    color: var(--st-color-violet);
+    display: block;
+    font-family: "century gothic";
+    font-size: 1.5em;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.pxp-launch-btn-goback {
+	float:left;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 6px 12px;
+	min-height: 70px;
+	margin: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-items: center;
+	align-items: center;
+	color: #aaa;
+}
+
+.pxp-launch-btn-goback .fa {
+	font-size: 48px;
+}
+
+.mobile-header .pxp-launch-btn-goback {
+	float: none;
+	min-height: 0;
+	border-color: #ccc !important;
+}
+
+.mobile-header .pxp-launch-btn-goback .fa {
+	font-size: inherit;
+}
+
+.cart-widget {
+	display: inline-block;
+	vertical-align: top;
+}
+
+table > tbody > tr.empty-row:not(:only-of-type) {
+    display: none;
+    visibility: hidden;
+}
+
+.table .no-data {
+    display: block;
+    font-style: italic;
+    text-align: center;
+}
+
+.table.info-table > tbody > tr > td {
+    font-weight: bold;
+}
+
+.table.info-table > tbody > tr > th {
+    font-weight: normal;
+}
+
+.pxp-summary-chart > .row {
+	margin: 0;
+}
+
+.pxp-summary-chart {
+    display: inline-block;
+    float: left;
+}
+.pxp-summary-chart ul {
+    list-style-type: none;
+    padding: 0;
+}
+.pxp-summary-chart li {
+    display: block;
+    min-width: 300px;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+#maincontent .pxp-summary-chart li > a {
+    line-height: normal;
+    display: table;
+    min-width: 100%;
+    table-layout: fixed;
+    color: #888888;
+}
+.pxp-summary-chart .title {
+    font-size: 1.5em;
+    padding: 5px;
+    line-height: normal;
+    display: table-cell;
+    width: 50%;
+    color: #337ab7;
+}
+.pxp-summary-chart .bar-container {
+    position: relative;
+    display: table-cell;
+    width: 50%;
+    border-left: 2px solid #cccccc;
+}
+.pxp-summary-chart .bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 3px 0;
+}
+.pxp-summary-chart .bar:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.pxp-summary-chart .segment {
+    display: inline-block;
+    vertical-align: middle;
+    float: left;
+    height: 100%;
+    min-height: 26px;
+}
+
+.pxp-summary-chart .segment:last-child {
+    border-radius: 0 2px 2px 0;
+}
+
+/*
+    Smoothly transition when showing/hiding details
+*/
+.pxp-chart > .details {
+    clear: both;
+    overflow: hidden;
+    display: block;
+    max-height: 500px;
+
+    transition: max-height 0.25s linear;
+}
+
+.pxp-summary,
+.pxp-summary-details > div {
+    padding-left: 50px;
+}
+
+.pxp-summary-details:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.pxp-summary-details > .pxp-ring-chart, 
+.pxp-summary-details > .summary-details-table {
+    float: left;
+}
+
+.pxp-summary > .details {
+    overflow: hidden;
+    display: inline-block;
+    max-height: 500px;
+    float: left;
+
+    transition: max-height 0.25s linear;
+}
+
+.mobile-header {
+	display: none;
+	visibility: hidden;
+
+	top: 0;
+	position: sticky;
+	z-index: 1000;
+	background-color: #555;
+	color: #eee;
+}
+
+.mobile-header .btn {
+	background-color: transparent;
+	border-color: transparent;
+	color: #eee;
+}
+
+.mobile-header .main-nav > ul {
+	list-style-type: none;
+	padding: 5px 10px;
+}
+
+.mobile-header .student-list {
+	color: #222;
+	width: 300px;
+}
+
+.mobile-header .student-list > li {
+	padding: 2px 10px;
+}
+
+.mobile-header .student-list > li:not(:last-of-type) {
+	border-bottom: 1px solid #ccc;
+}
+
+.mobile-header .student-list .student-id {
+	display: block;
+	font-size: .9em;
+	color: #888;
+}
+
+.mobile-header .student-list .student-name {
+	white-space: nowrap;
+	font-weight: bold;
+	color: #3276c0;
+	font: bold large arial,helvetica,sans-serif;
+}
+
+@media (max-width:1024px) {
+    .pxp-summary,
+    .pxp-summary-details > div {
+        padding-left: 0px;
+    }
+}
+
+@media (max-width:767px) {
+    .layout-table > .layout-column.gb-current-grade > #current-grade {
+        margin-left: 33%;
+    }
+
+    .layout-table > .layout-column.gb-current-grade,
+	.detail-content #category-graph {
+		display: block;
+	}
+
+    #maincontent h1.no-border {
+        display: none;
+    }
+
+	#maincontent .breadcrumb-header {
+        padding-top: .5rem;
+    }
+
+	.mobile-header {
+		display: block;
+		visibility: visible;
+	}
+
+    .mobile-header .dropdown-menu {
+		max-height: 600px;
+		overflow: auto;
+	}
+
+	.pxp-navbar-container {
+		position: relative;
+		display: block;
+		right: 0;
+	}
+
+	#maincontent {
+		border-top: 0px none;
+	}
+
+	.pxp-main-header,
+	#MainDiv > h1,
+	h1.uppercase,
+	#mainnav {
+		display: none;
+		visibility: hidden;
+	}
+
+	.pxp-summary > .details {
+		overflow: auto;
+		max-width: 100%;
+	}
+
+    .container {
+        width: 100%;
+        min-height:1080px; 
+    }
+
+	.two-col-layout > .left-panel,
+	.two-col-layout > .right-panel
+	{
+		display: block;
+		border-left: 0px none;
+	}
+
+	.two-col-layout > .left-panel > h1 {
+		max-width: 100%;
+		overflow: hidden;
+	}
+
+	.PXPHeaderLogo {
+		position: relative;
+		padding-top: 0px;
+	}
+}
+
+@media (max-width:375px) {
+	.pxp-summary > .details {
+		overflow: auto;
+		max-width: 300px;
+	}
+}
+
+/*
+    The summary details, when drilling into the summary chart
+*/
+.pxp-summary-container {
+	position: relative;
+}
+
+h1 > .subtitle {
+	float: right;
+	color: var(--st-color-red-fg);
+}
+
+.pxp-summary-container > .pxp-summary-details .dismiss-btn {
+	display: table;
+	width: 100%;
+	text-align: center;
+	background-color: var(--st-color-heading-bg);
+	color: var(--st-color-heading-fg);
+}
+
+#maincontent .pxp-summary-container > .pxp-summary-details h1 > a {
+	font-size: inherit;
+	color: inherit;
+}
+
+.pxp-summary-container > .pxp-summary-details .dismiss-btn:hover {
+	background-color: var(--st-color-hover-bg);
+	color: var(--st-color-hover-fg);
+}
+
+.pxp-summary-container > .pxp-summary-details .dismiss-btn > span {
+	display: table-cell;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart > canvas {
+	width: 300px;
+	height: 300px;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart > ul {
+	display: table;
+	list-style-type: none;
+	padding: 0;
+	margin: auto;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart > ul li {
+	list-style-type: none;
+	display: table-row;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart > ul li > span {
+	display: table-cell;
+	white-space: nowrap;
+	padding: 10px;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart > ul li > span:last-child {
+	font-weight: bold;
+}
+
+.pxp-summary-container > .pxp-summary-details .pxp-ring-chart,
+.pxp-summary-container > .pxp-summary-details > .summary-details-table {
+	width: auto;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.pxp-chart:not(.show-details) > .details,
+.pxp-summary-container:not(.show-details) .pxp-summary > .details {
+	max-height: 0;
+}
+
+#class-details:not(.loading) .loader,
+.calendar-details:not(.loading) .loader,
+.pxp-summary-container:not(.loading) .loader {
+	display: none;
+	visibility: hidden;
+}
+
+.content-stack-item .loader {
+	min-height: 600px;
+}
+
+.content-stack-item .loader,
+#class-details .loader,
+.calendar-details .loader,
+.pxp-summary-container .loader {
+	visibility: visible;
+	display: block;
+	position: relative;
+	z-index: 1;
+	border-radius: 5px;
+	text-align: center;
+	width: 100%;
+	margin: auto;
+}
+
+span.teacher-name {
+	font-size: 1.2rem;
+}
+
+.content-stack-item .loader > span,
+#class-details .loader > span,
+.calendar-details .loader > span,
+.pxp-summary-container .loader > span {
+	vertical-align: middle;
+}
+
+.content-stack-item .loader img,
+#class-details .loader img,
+.calendar-details .loader img,
+.pxp-summary-container .loader img {
+	display: block;
+	margin: auto;
+	padding: 5px;
+	height: 100px;
+}
+
+/* Emphasize data instead of labels */
+.popover table td {
+	font-weight: bold;
+	text-align: right;
+}
+
+.popover table th {
+	font-weight: normal;
+}
+
+.compose-frame {
+	width: 1098px;
+	height: 610px;
+}
+
+.composeDialog .modal-body {
+	padding: 0;
+}
+
+.term-selector.pull-right .dropdown-menu {
+	left: auto;
+	right: 0;
+}
+
+/*Use this for elements that should not show up on the screen (print only)*/
+@media screen {
+	.hide-for-screen {
+		display: none !important;
+	}
+}
+
+/*Use this for elements that should not be printed*/
+@media print {
+	body #mainnav.hide-for-print[role="navigation"] {
+		display: none !important;
+	}
+
+	.hide-for-print {
+		display: none !important;
+	}
+
+	.hide-for-screen {
+		display: inherit !important;
+	}
+
+	.hide-for-screen div {
+		display: block !important;
+	}
+	a[href]:after {
+		content: none !important;
+	}
+}
+
+.dx-grid-auto-container {
+	display: block;
+	overflow: auto;
+	max-width: 100%;
+}
+
+.signature-canvas {
+    border: 2px solid #cccccc;
+    border-radius: 15px;
+    background-color: white;
+}
+
+.signature-field {
+    border: 2px solid #e1e1e1;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.sig-summary {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.sig-summary-value {
+    opacity: 0;
+    transition: opacity ease-in-out 250ms;
+    width: 201px;
+    background-color: #fff;
+    box-shadow: 4px 5px 5px #efefef;
+    color: #000;
+    text-align: center;
+    border-radius: 6px;
+    border: #d7d7d7 solid 2px;
+    padding: 5px 0px;
+    position: absolute;
+    z-index: 1;
+    top: -25px;
+}
+
+
+.sig-summary:hover .sig-summary-value {
+    opacity: 1;
+}
+
+mleft {
+    margin-left: 25px;
+}
+
+.oen-status-btn-grp {
+    margin-bottom: 25px;
+}
+
+.overlay-loading {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: black;
+    opacity: .25;
+}
+
+.loadingIcon-middle {
+    position: fixed;
+    top: 50%;
+}

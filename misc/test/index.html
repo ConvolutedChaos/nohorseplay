@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+
+    <title>StudentVUE</title>
+
+    <meta content="en-US" name="language">
+    <meta content="private - general audiences" name="rating">
+    <meta content="2005 - Edupoint,Inc" name="copyright">
+    <meta content="Edupoint, LLC" name="author">
+    <link rel="Shortcut Icon" href="synergy.ico">
+    <link rel="stylesheet" href="StudentVUE_files/Light.css" type="text/css" id="CssTheme">
+
+    <link id="ctl00_ctl00_schemes_font-awesome_min_css" href="StudentVUE_files/font-awesome.min.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP_Form_css" href="StudentVUE_files/PXP_Form.css" type="text/css" rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_js_ST_es6-promise_auto_min_js" src="StudentVUE_files/es6-promise.auto.min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_json2_min_js" src="StudentVUE_files/json2.min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_gbapp_pvue_js" src="StudentVUE_files/gbapp_pvue.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_jquery_min_js" src="StudentVUE_files/jquery_min.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_GBResources_jquery_ui_min_css" href="StudentVUE_files/jquery_ui_min.css" type="text/css"
+        rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_GBResources_jquery_ui_min_js" src="StudentVUE_files/jquery_ui_min.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_GBResources_pnotify_min_css" href="StudentVUE_files/pnotify_min.css" type="text/css"
+        rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_GBResources_pnotify_min_js" src="StudentVUE_files/pnotify_min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_knockout_latest_js" src="StudentVUE_files/knockout_latest.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_knockout_mapping_latest_js"
+        src="StudentVUE_files/knockout_mapping_latest.js.download" type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP_jquery_ui_touch-punch_min_js"
+        src="StudentVUE_files/PXP_jquery.ui.touch-punch.min.js.download" type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXPUtility_js" src="StudentVUE_files/PXPUtility.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXPPlugins_js" src="StudentVUE_files/PXPPlugins.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_GBResources_bootstrap_3_min_css" href="StudentVUE_files/bootstrap_3_min.css" type="text/css"
+        rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_GBResources_bootstrap_3_min_js" src="StudentVUE_files/bootstrap_3_min.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_schemes_GB_IAPlugins_css" href="StudentVUE_files/IAPlugins.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_Global_css" href="StudentVUE_files/PXP2_Global.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_CKEDITOR5_ckeditor-content_css" href="StudentVUE_files/ckeditor-content.css"
+        type="text/css" rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_stwebcommon_scripts_ko_components_js" src="StudentVUE_files/ko.components.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_api_v1_bundle_st_bundle_css" href="StudentVUE_files/st.bundle.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_api_v1_bundle_pxp_bundle_css" href="StudentVUE_files/pxp.bundle.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_api_v1_bundle_sis_bundle_css" href="StudentVUE_files/sis.bundle.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP_Home_css" href="StudentVUE_files/PXP_Home.css" type="text/css" rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_Home_css" href="StudentVUE_files/PXP2_Home.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP_Color_css" href="StudentVUE_files/PXP_Color.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_Widget_css" href="StudentVUE_files/PXP2_Widget.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_OENNotice_css" href="StudentVUE_files/OENNotice.css" type="text/css"
+        rel="stylesheet">
+    <link id="ctl00_ctl00_resources_GBPlugins_plugins_DevExpress_Content_dx_common_css"
+        href="StudentVUE_files/dx.common.css" type="text/css" rel="stylesheet">
+    <link id="ctl00_ctl00_resources_GBPlugins_plugins_DevExpress_Content_dx_light_compact_css"
+        href="StudentVUE_files/dx.light.compact.css" type="text/css" rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_DXOverride_css" href="StudentVUE_files/PXP2_DXOverride.css"
+        type="text/css" rel="stylesheet">
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_SM_css" href="StudentVUE_files/PXP2_SM.css" type="text/css"
+        rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_js_ST_moment_min_js" src="StudentVUE_files/moment.min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_resources_GBPlugins_plugins_DevExpress_Scripts_dx_all_js"
+        src="StudentVUE_files/dx.all.js.download" type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_ST_ICanHaz-custom_min_js" src="StudentVUE_files/ICanHaz-custom.min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP_Home_js" src="StudentVUE_files/PXP_Home.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_Home_js" src="StudentVUE_files/PXP2_Home.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_Widget_js" src="StudentVUE_files/PXP2_Widget.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_KOCounselor_js" src="StudentVUE_files/PXP2_KOCounselor.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_Editor_ckeditor_js" src="StudentVUE_files/ckeditor.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_StreamsNotifications_js"
+        src="StudentVUE_files/StreamsNotifications.js.download" type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_Gradebook_css" href="StudentVUE_files/PXP2_Gradebook.css" type="text/css"
+        rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_Gradebook_js" src="StudentVUE_files/PXP2_Gradebook.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_GoogleDrive_js" src="StudentVUE_files/GoogleDrive.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_OneDrive_js" src="StudentVUE_files/OneDrive.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_DropBox_js" src="StudentVUE_files/PXP2_DropBox.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_jquery_ddslick_min_js" src="StudentVUE_files/jquery_ddslick_min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_exceljs_min_js" src="StudentVUE_files/exceljs_min.js.download"
+        type="text/javascript"></script> -->
+    <!-- <script id="ctl00_ctl00_GBResources_FileSaver_min_js" src="StudentVUE_files/FileSaver_min.js.download"
+        type="text/javascript"></script> -->
+    <link id="ctl00_ctl00_schemes_PXP2_PXP2_LanguageBar_css" href="StudentVUE_files/PXP2_LanguageBar.css"
+        type="text/css" rel="stylesheet">
+    <!-- <script id="ctl00_ctl00_js_PXP_PXP2_LanguageBar_js" src="StudentVUE_files/PXP2_LanguageBar.js.download"
+        type="text/javascript"></script> -->
+    <link type="text/css" rel="stylesheet" href="StudentVUE_files/content.app.css">
+    <link type="text/css" rel="stylesheet" href="StudentVUE_files/microsoft.onedrive.chooser.css">
+    <link type="text/css" rel="stylesheet" href="StudentVUE_files/pxp.gradebook.what.if.css">
+    <link rel="stylesheet" href="StudentVUE_files/common.bundle.css">
+    <style id="css-ddslick" type="text/css">
+        .cke {
+            visibility: hidden;
+        }
+
+        .dd-select {
+            border-radius: 2px;
+            border: solid 1px #ccc;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dd-desc {
+            color: #aaa;
+            display: block;
+            overflow: hidden;
+            font-weight: normal;
+            line-height: 1.4em;
+        }
+
+        .dd-selected {
+            overflow: hidden;
+            display: block;
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .dd-pointer {
+            width: 0;
+            height: 0;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            margin-top: -3px;
+        }
+
+        .dd-pointer-down {
+            border: solid 5px transparent;
+            border-top: solid 5px #000;
+        }
+
+        .dd-pointer-up {
+            border: solid 5px transparent !important;
+            border-bottom: solid 5px #000 !important;
+            margin-top: -8px;
+        }
+
+        .dd-options {
+            border: solid 1px #ccc;
+            border-top: none;
+            list-style: none;
+            box-shadow: 0px 1px 5px #ddd;
+            display: none;
+            position: absolute;
+            z-index: 2000;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            overflow: auto;
+        }
+
+        .dd-option {
+            padding: 10px;
+            display: block;
+            border-bottom: solid 1px #ddd;
+            overflow: hidden;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.25s ease-in-out;
+            -webkit-transition: all 0.25s ease-in-out;
+            -moz-transition: all 0.25s ease-in-out;
+            -o-transition: all 0.25s ease-in-out;
+            -ms-transition: all 0.25s ease-in-out;
+        }
+
+        .dd-options>li:last-child>.dd-option {
+            border-bottom: none;
+        }
+
+        .dd-option:hover {
+            background: #f3f3f3;
+            color: #000;
+        }
+
+        .dd-selected-description-truncated {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .dd-option-selected {
+            background: #f6f6f6;
+        }
+
+        .dd-option-image,
+        .dd-selected-image {
+            vertical-align: middle;
+            float: left;
+            margin-right: 5px;
+            max-width: 64px;
+        }
+
+        .dd-image-right {
+            float: right;
+            margin-right: 15px;
+            margin-left: 5px;
+        }
+
+        .dd-container {
+            position: relative;
+        }
+
+        .dd-selected-text {
+            font-weight: bold
+        }
+
+        .ql-container {
+            position: relative;
+            overflow: hidden
+        }
+
+        @media(pointer: coarse) {
+            .ql-cursor-caret-container {
+                z-index: -1
+            }
+        }
+
+        .ql-cursor.hidden {
+            display: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container,
+        .ql-cursor .ql-cursor-flag {
+            position: absolute
+        }
+
+        .ql-cursor .ql-cursor-flag {
+            z-index: 1;
+            transform: translate3d(-1px, -100%, 0);
+            opacity: 0;
+            visibility: hidden;
+            color: #fff;
+            padding-bottom: 2px;
+            border-radius: 0 3px 3px 0
+        }
+
+        .ql-cursor .ql-cursor-flag.flag-flipped {
+            border-radius: 3px 0 0 3px;
+            transform: translate3d(calc(-100% + 1px), -100%, 0)
+        }
+
+        @media screen {
+            .ql-cursor .ql-cursor-flag {
+                transition: opacity 0ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms, visibility 0ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms
+            }
+        }
+
+        .ql-cursor .ql-cursor-flag .ql-cursor-name {
+            margin-left: 5px;
+            margin-right: 5px;
+            display: inline-block;
+            margin-top: -2px;
+            white-space: nowrap
+        }
+
+        .ql-cursor .ql-cursor-flag.no-delay[style] {
+            transition-delay: unset !important
+        }
+
+        .ql-cursor .ql-cursor-caret-container {
+            cursor: text;
+            margin-left: -9px;
+            padding: 0 9px
+        }
+
+        .ql-cursor .ql-cursor-caret-container.hover+.ql-cursor-flag {
+            opacity: 1;
+            visibility: visible;
+            transition: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container.no-pointer {
+            pointer-events: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container .ql-cursor-caret {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            margin-left: -1px;
+            background-color: attr(data-color)
+        }
+
+        .ql-cursor .ql-cursor-selection-block {
+            position: absolute;
+            pointer-events: none
+        }
+
+        .ql-container {
+            position: relative;
+            overflow: hidden
+        }
+
+        @media(pointer: coarse) {
+            .ql-cursor-caret-container {
+                z-index: -1
+            }
+        }
+
+        .ql-cursor.hidden {
+            display: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container,
+        .ql-cursor .ql-cursor-flag {
+            position: absolute
+        }
+
+        .ql-cursor .ql-cursor-flag {
+            z-index: 1;
+            transform: translate3d(-1px, -100%, 0);
+            opacity: 0;
+            visibility: hidden;
+            color: #fff;
+            padding-bottom: 2px;
+            border-radius: 0 3px 3px 0
+        }
+
+        .ql-cursor .ql-cursor-flag.flag-flipped {
+            border-radius: 3px 0 0 3px;
+            transform: translate3d(calc(-100% + 1px), -100%, 0)
+        }
+
+        @media screen {
+            .ql-cursor .ql-cursor-flag {
+                transition: opacity 0ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms, visibility 0ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms
+            }
+        }
+
+        .ql-cursor .ql-cursor-flag .ql-cursor-name {
+            margin-left: 5px;
+            margin-right: 5px;
+            display: inline-block;
+            margin-top: -2px;
+            white-space: nowrap
+        }
+
+        .ql-cursor .ql-cursor-flag.no-delay[style] {
+            transition-delay: unset !important
+        }
+
+        .ql-cursor .ql-cursor-caret-container {
+            cursor: text;
+            margin-left: -9px;
+            padding: 0 9px
+        }
+
+        .ql-cursor .ql-cursor-caret-container.hover+.ql-cursor-flag {
+            opacity: 1;
+            visibility: visible;
+            transition: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container.no-pointer {
+            pointer-events: none
+        }
+
+        .ql-cursor .ql-cursor-caret-container .ql-cursor-caret {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            margin-left: -1px;
+            background-color: attr(data-color)
+        }
+
+        .ql-cursor .ql-cursor-selection-block {
+            position: absolute;
+            pointer-events: none
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000000;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            padding-top: 40px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .modal-close {
+            color: #aaaaaa;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <link type="text/css" rel="stylesheet" href="StudentVUE_files/render.direct.css">
+</head>
+
+<body id="ctl00_ctl00_MainBody" class="NoHeaderImage browser-Chrome bver-144_0 ignore-theme no-touch" data-theme="2">
+    <div aria-label="Accessiblity Options" class="sr-only">
+        <a href="https://ne-kps-psv.edupoint.com/accessibility.html" target="_blank">Synergy Accessibility Tips</a>
+        <a href="https://ne-kps-psv.edupoint.com/#" role="button" id="AccessButton">Accessibility Mode</a>
+    </div>
+
+    <header id="MobileHeader" class="mobile-header">
+        <div class="pull-right dropdown">
+            <button type="button" class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                <span class="fa fa-user-circle" role="presentation"></span>
+                <span class="sr-only">Main Menu</span>
+                <span class="caret" role="presentation"></span>
+            </button>
+            <div class="dropdown-menu main-nav">
+                <ul class="">
+                    <li id="ctl00_ctl00_MainContent_tabMyAccount"><a
+                            href="https://ne-kps-psv.edupoint.com/PXP2_MyAccount.aspx?AGU=0">My Account</a></li>
+                    <li id="ctl00_ctl00_MainContent_tabHelp" class="openModalButton"><a
+                            href="javascript:void(0)">Help</a></li>
+
+                    <li id="ctl00_ctl00_MainContent_tabLogout"><a
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Login_Student.aspx?Logout=1">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layout-table middle">
+            <div class="layout-column"></div>
+            <div class="layout-column">
+                <div class="btn-group dropdown">
+                    <button type="button" class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span>Jimmy</span>
+                        <span class="caret" role="presentation"></span>
+                    </button>
+                    <ul class="dropdown-menu student-list">
+                        <li>
+                            <div class="layout-table top">
+                                <div class="student-photo layout-column">
+                                    <img class="accountPicture" alt="Student Photo" width="40" height="50"
+                                        src="StudentVUE_files/jimmy.png">
+                                    <span class="student-id">ID: ?????</span>
+                                </div>
+                                <div class="layout-column">
+                                    <span class="student-name">Jimmy</span>
+                                    <div class="school">Sunrise Middle School</div>
+                                    <div class="phone">(???-????-????)</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="layout-column">
+                <div class="btn-group dropdown">
+                    <button type="button" class="btn dropdown-toggle btn-nav-dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <span class="sr-only">Current Module</span>
+                        <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation" alt="icon"
+                            src="StudentVUE_files/icon_Gradebook.png">
+                        <span class="desc">Grade Book</span>
+                        <span class="caret nav-dropdown-icon" role="presentation"></span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="list-group pxp-left-nav" role="list">
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/Home_PXP2.aspx?AGU=0" data-desc="Home">
+                                <span class="desc">Home</span>
+                            </a>
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Messages.aspx?AGU=0">
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_Messages_gs.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_Messages.png">
+                                <span class="desc">Synergy Mail</span>
+                                <span>
+                                    <span title="0 unread messages"
+                                        class="MessageNotificationBox collapse SynergyMailUnread"
+                                        style="display: none;">0</span>
+                                </span>
+                            </a>
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Calendar.aspx?AGU=0" data-desc="Calendar">
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_Calendar_gs.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_Calendar.png">
+                                <span class="desc">Calendar</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Attendance.aspx?AGU=0"
+                                data-desc="Attendance">
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_Attendance.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_Attendance.png">
+                                <span class="desc">Attendance</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_ClassSchedule.aspx?AGU=0"
+                                data-desc="Class Schedule">
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_ClassSchedule.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_ClassSchedule.png">
+
+                                <span class="desc">Class Schedule</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_CourseHistory.aspx?AGU=0"
+                                data-desc="Course History">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_CourseHistory.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_CourseHistory.png">
+
+                                <span class="desc">Course History</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_CourseRequest.aspx?AGU=0"
+                                data-desc="Course Request">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_CourseRequest.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_CourseRequest.png">
+
+                                <span class="desc">Course Request</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item active" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Gradebook.aspx?AGU=0&amp;studentGU=1BC40664-C162-4397-84C8-02008E2CF572"
+                                data-desc="Grade Book">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_Gradebook_gs.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_Gradebook.png">
+
+                                <span class="desc">Grade Book</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_MTSS.aspx?AGU=0&amp;studentGU=1BC40664-C162-4397-84C8-02008E2CF572"
+                                data-desc="MTSS">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_MTSS_gs.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_MTSS.png">
+
+                                <span class="desc">MTSS</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_ReportCard.aspx?AGU=0"
+                                data-desc="Report Card">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_ReportCard_gs.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_ReportCard.png">
+
+                                <span class="desc">Report Card</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Student.aspx?AGU=0" data-desc="Student Info">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_StudentInfo.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_StudentInfo.png">
+
+                                <span class="desc">Student Info</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_TestHistory.aspx?AGU=0"
+                                data-desc="Test History">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_TestHistory.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_TestHistory.png">
+
+                                <span class="desc">Test History</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_StateTests.aspx?AGU=0"
+                                data-desc="State Tests">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_StateTests.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_StateTests.png">
+
+                                <span class="desc">State Tests</span>
+                                <span></span>
+                            </a>
+
+                            <a class="list-group-item" role="listitem"
+                                href="https://ne-kps-psv.edupoint.com/PXP2_Documents.aspx?AGU=0" data-desc="Documents">
+
+                                <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="gs icon" src="StudentVUE_files/icon_Documents.png">
+                                <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                    alt="icon" src="StudentVUE_files/icon_Documents.png">
+
+                                <span class="desc">Documents</span>
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="USER_ERROR"></div>
+        <header id="ctl00_ctl00_MainContent_PXPHeader" class="pxp-main-header">
+            <div id="ctl00_ctl00_MainContent_StudentSelector" class="pxp-student-header hide-for-print"
+                aria-label="Student Selector" role="region">
+                <div class="current">
+                    <div class="student-info" tabindex="0" data-agu="0">
+                        <div class="student-photo">
+                            <img class="accountPicture" alt="Student Photo" src="StudentVUE_files/jimmy.png"
+                                width="40" height="50">
+                            <span class="student-id">ID: ?????</span>
+                        </div>
+                        <div class="student-details">
+                            <h2 style="white-space: nowrap">
+                                <span class="student-name">Jimmy</span>
+                            </h2>
+
+                            <div class="school">Sunrise Middle School</div>
+                            <div class="phone">(???-????-????)</div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div></div>
+            <div class="pxp-navbar-container hide-for-print" aria-label="System Links" role="region">
+                <ul class="pxp-navbar">
+                    <li id="ctl00_ctl00_MainContent_tabMyAccount"><a
+                            href="https://ne-kps-psv.edupoint.com/PXP2_MyAccount.aspx?AGU=0">My Account</a></li>
+                    <li id="ctl00_ctl00_MainContent_tabHelp" class="openModalButton"><a
+                            href="javascript:void(0)">Help</a></li>
+
+                    <li id="ctl00_ctl00_MainContent_tabLogout"><a
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Login_Student.aspx?Logout=1">Logout</a></li>
+                </ul>
+            </div>
+
+            <div class="pull-right hide-for-print greeting-container" style="position:relative"
+                aria-label="District announcements" role="region">
+                <span id="DistrictName">
+                    Kearney Public Schools
+                </span>
+                <span id="Greeting" style="color:var(--st-color-fg)">Good <span id="greeting">morning</span>, <span
+                        id="firstNameDisplay">Jimmy</span> <span id="lastNameDisplay">Neutron</span>, <span
+                        id="greeting-date">12/31/9999</span></span>
+            </div>
+        </header>
+
+
+
+        <div class="tab-content">
+            <div class="pxp-container ">
+                <div id="mainnav" class="hide-for-print" role="navigation" aria-label="Menu">
+
+                    <div class="list-group pxp-left-nav" role="list">
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/Home_PXP2.aspx?AGU=0" data-desc="Home">
+
+                            <span class="desc">Home</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Messages.aspx?AGU=0" data-desc="Synergy Mail">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_Messages_gs.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_Messages.png">
+
+                            <span class="desc">Synergy Mail</span>
+                            <span><span title="0 unread message"
+                                    class="MessageNotificationBox collapse SynergyMailUnread"
+                                    style="display: none;">0</span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Calendar.aspx?AGU=0" data-desc="Calendar">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_Calendar_gs.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_Calendar.png">
+
+                            <span class="desc">Calendar</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Attendance.aspx?AGU=0" data-desc="Attendance">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_Attendance.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_Attendance.png">
+
+                            <span class="desc">Attendance</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_ClassSchedule.aspx?AGU=0"
+                            data-desc="Class Schedule">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_ClassSchedule.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_ClassSchedule.png">
+
+                            <span class="desc">Class Schedule</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_CourseHistory.aspx?AGU=0"
+                            data-desc="Course History">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_CourseHistory.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_CourseHistory.png">
+
+                            <span class="desc">Course History</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_CourseRequest.aspx?AGU=0"
+                            data-desc="Course Request">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_CourseRequest.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_CourseRequest.png">
+
+                            <span class="desc">Course Request</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item active" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Gradebook.aspx?AGU=0&amp;studentGU=1BC40664-C162-4397-84C8-02008E2CF572"
+                            data-desc="Grade Book">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_Gradebook_gs.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_Gradebook.png">
+
+                            <span class="desc">Grade Book</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_MTSS.aspx?AGU=0&amp;studentGU=1BC40664-C162-4397-84C8-02008E2CF572"
+                            data-desc="MTSS">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_MTSS_gs.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_MTSS.png">
+
+                            <span class="desc">MTSS</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_ReportCard.aspx?AGU=0" data-desc="Report Card">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_ReportCard_gs.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_ReportCard.png">
+
+                            <span class="desc">Report Card</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Student.aspx?AGU=0" data-desc="Student Info">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_StudentInfo.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_StudentInfo.png">
+
+                            <span class="desc">Student Info</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_TestHistory.aspx?AGU=0" data-desc="Test History">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_TestHistory.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_TestHistory.png">
+
+                            <span class="desc">Test History</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_StateTests.aspx?AGU=0" data-desc="State Tests">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_StateTests.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_StateTests.png">
+
+                            <span class="desc">State Tests</span>
+                            <span></span>
+                        </a>
+
+                        <a class="list-group-item" role="listitem"
+                            href="https://ne-kps-psv.edupoint.com/PXP2_Documents.aspx?AGU=0" data-desc="Documents">
+
+                            <img class="icon-gs" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="gs icon" src="StudentVUE_files/icon_Documents.png">
+                            <img class="icon" width="24" height="24" style="margin-right:4px" role="presentation"
+                                alt="icon" src="StudentVUE_files/icon_Documents.png">
+
+                            <span class="desc">Documents</span>
+                            <span></span>
+                        </a>
+                    </div>
+
+                </div>
+                <div id="maincontent">
+                    <form name="aspnetForm" method="post" action="https://ne-kps-psv.edupoint.com/PXP2_Gradebook.aspx"
+                        id="aspnetForm">
+                        <div>
+                            <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+                            <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+                            <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
+                                value="9ye7HPvyDipJT0QkVoERXXj5/ch8at9mgTaDzYQFp25kR7Hkvpr+PGCK4Hk46z9/t8xFmcmcIBcToFVKI7i4n92tE5F8AO61Jilt27Hs/iQ=">
+                        </div>
+
+                        <!-- <script type="text/javascript">
+                            //<![CDATA[
+                            var theForm = document.forms['aspnetForm'];
+                            if (!theForm) {
+                                theForm = document.aspnetForm;
+                            }
+                            function __doPostBack(eventTarget, eventArgument) {
+                                if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+                                    theForm.__EVENTTARGET.value = eventTarget;
+                                    theForm.__EVENTARGUMENT.value = eventArgument;
+                                    theForm.submit();
+                                }
+                            }
+                            //]]>
+                        </script> -->
+
+
+                        <!-- <script src="StudentVUE_files/WebResource.axd" type="text/javascript"></script> -->
+
+
+                        <!-- 
+                         <script type="text/javascript">
+                            //<![CDATA[
+                            window.LoadRemoteStyleSheet('schemes_font-awesome_min_css', '/schemes/font-awesome.min.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP_Form_css', '/schemes/PXP_Form.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_ST_es6-promise_auto_min_js', '/js/ST/es6-promise.auto.min.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_json2_min_js', '/js/PXP/json2.min.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('GBResources_gbapp_pvue_js', '/resources/GBResources/gbapp_pvue.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_jquery_min_js', '/resources/GBResources/jquery_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteStyleSheet('GBResources_jquery_ui_min_css', '/resources/GBResources/jquery_ui_min.css?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_jquery_ui_min_js', '/resources/GBResources/jquery_ui_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteStyleSheet('GBResources_pnotify_min_css', '/resources/GBResources/pnotify_min.css?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_pnotify_min_js', '/resources/GBResources/pnotify_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_knockout_latest_js', '/resources/GBResources/knockout_latest.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_knockout_mapping_latest_js', '/resources/GBResources/knockout_mapping_latest.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP_jquery_ui_touch-punch_min_js', '/js/PXP/PXP_jquery.ui.touch-punch.min.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXPUtility_js', '/js/PXP/PXPUtility.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXPPlugins_js', '/js/PXP/PXPPlugins.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('GBResources_bootstrap_3_min_css', '/resources/GBResources/bootstrap_3_min.css?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_bootstrap_3_min_js', '/resources/GBResources/bootstrap_3_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteStyleSheet('schemes_GB_IAPlugins_css', '/schemes/GB/IAPlugins.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_Global_css', '/schemes/PXP2/PXP2_Global.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_CKEDITOR5_ckeditor-content_css', '/schemes/CKEDITOR5/ckeditor-content.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('stwebcommon_scripts_ko_components_js', '/stwebcommon/scripts/ko.components.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('api_v1_bundle_st_bundle_js', '/api/v1/bundle/st.bundle.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('api_v1_bundle_st_bundle_css', '/api/v1/bundle/st.bundle.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('api_v1_bundle_pxp_bundle_js', '/api/v1/bundle/pxp.bundle.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('api_v1_bundle_pxp_bundle_css', '/api/v1/bundle/pxp.bundle.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('api_v1_bundle_sis_bundle_js', '/api/v1/bundle/sis.bundle.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('api_v1_bundle_sis_bundle_css', '/api/v1/bundle/sis.bundle.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP_Home_css', '/schemes/PXP_Home.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_Home_css', '/schemes/PXP2/PXP2_Home.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP_Color_css', '/schemes/PXP_Color.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_Widget_css', '/schemes/PXP2/PXP2_Widget.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_OENNotice_css', '/schemes/OENNotice.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('resources_GBPlugins_plugins_DevExpress_Content_dx_common_css', '/resources/GBPlugins/plugins/DevExpress/Content/dx.common.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('resources_GBPlugins_plugins_DevExpress_Content_dx_light_compact_css', '/resources/GBPlugins/plugins/DevExpress/Content/dx.light.compact.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_DXOverride_css', '/schemes/PXP2/PXP2_DXOverride.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_SM_css', '/schemes/PXP2/PXP2_SM.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_ST_moment_min_js', '/js/ST/moment.min.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP_SMBundle_js', '/js/PXP/PXP_SMBundle.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('resources_GBPlugins_plugins_DevExpress_Scripts_dx_all_js', '/resources/GBPlugins/plugins/DevExpress/Scripts/dx.all.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_ST_ICanHaz-custom_min_js', '/js/ST/ICanHaz-custom.min.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP_Home_js', '/js/PXP/PXP_Home.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_Home_js', '/js/PXP/PXP2_Home.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_Widget_js', '/js/PXP/PXP2_Widget.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_KOCounselor_js', '/js/PXP/PXP2_KOCounselor.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('Editor_ckeditor_js', '/Editor/ckeditor.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('GBResources_StreamsNotifications_js', '/resources/GBResources/StreamsNotifications.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_Gradebook_css', '/schemes/PXP2/PXP2_Gradebook.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_Gradebook_js', '/js/PXP/PXP2_Gradebook.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_GoogleDrive_js', '/js/PXP/GoogleDrive.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_OneDrive_js', '/js/PXP/OneDrive.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_DropBox_js', '/js/PXP/PXP2_DropBox.js?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('GBResources_jquery_ddslick_min_js', '/resources/GBResources/jquery_ddslick_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_exceljs_min_js', '/resources/GBResources/exceljs_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteScript('GBResources_FileSaver_min_js', '/resources/GBResources/FileSaver_min.js?2026-01-15T13%3a21%3a38.0000000');
+                            window.LoadRemoteStyleSheet('schemes_PXP2_PXP2_LanguageBar_css', '/schemes/PXP2/PXP2_LanguageBar.css?2026-02-05T18%3a46%3a24.0000000');
+                            window.LoadRemoteScript('js_PXP_PXP2_LanguageBar_js', '/js/PXP/PXP2_LanguageBar.js?2026-02-05T18%3a46%3a24.0000000');
+                            //]]>
+                        </script> -->
+
+                        <!--<script src="StudentVUE_files/ScriptResource.axd" type="text/javascript"></script> -->
+                        <!-- <script src="StudentVUE_files/ScriptResource(1).axd" type="text/javascript"></script> -->
+                        <div>
+                            <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="165FEB4B">
+                        </div>
+                        <div style="position:absolute; right:100%;display:inline-block;opacity:0" aria-hidden="true">
+                            <input name="fake-username" tabindex="-1">
+                            <input type="password" name="fake-password" autocomplete="off" tabindex="-1">
+                        </div>
+
+
+                        <div id="MainDiv" style="position: relative;">
+                            <div>
+                                <h1 class="hide-for-screen no-border">Jimmy</h1>
+                                <div class="student-grade-description hide-for-screen">Grade 07</div>
+                                <div class="student-id hide-for-screen">ID: ?????</div>
+                                <div class="breadcrumb-bottom hide-for-screen fullwidth"></div>
+                                <div id="BindingRoot">
+                                    <h1 id="GradebookHeader" class="no-border uppercase">Grade Book</h1>
+                                    <div class="breadcrumb-header dx-toolbar dx-widget dx-state-invisible dx-visibility-change-handler dx-collection"
+                                        role="toolbar">
+                                        <div class="dx-toolbar-items-container">
+                                            <div class="dx-toolbar-before" role="presentation">
+                                                <div class="dx-item dx-toolbar-item dx-toolbar-button">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div role="button" aria-label="All Classes"
+                                                            class="dx-widget dx-button dx-button-mode-contained dx-button-normal dx-button-has-text hide-for-print"
+                                                            tabindex="0">
+                                                            <div class="dx-button-content"><span
+                                                                    class="dx-button-text">All Classes</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-state-invisible dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden" value="13">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-e0dcb7b8-75ed-aeec-4223-ad517c1bbdec"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder dx-state-invisible">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden"
+                                                                    value="940B13A9-6EF5-4CEC-BE84-D29AF8701BB4">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-b841cd0b-83ef-b3fe-bde5-80bec3eb4d34"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder dx-state-invisible">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden" value="4131">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-fd8ae2bd-2b47-3463-48bd-6e5375861f91"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder dx-state-invisible">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-state-invisible dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-texteditor-empty dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden" value="-1">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-cbad9f14-02c5-22ff-09b0-58c816786141"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder"></div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-state-invisible dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-texteditor-empty dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden" value="-1">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-5fb8bcdb-a6bb-b4e6-757c-9b1ded71531b"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder"></div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-state-invisible dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div class="dx-show-invalid-badge dx-selectbox dx-textbox dx-texteditor dx-dropdowneditor-button-visible dx-editor-outlined dx-widget dx-dropdowneditor dx-dropdowneditor-field-clickable"
+                                                            style="width: auto;">
+                                                            <div
+                                                                class="dx-dropdowneditor-input-wrapper dx-selectbox-container">
+                                                                <input type="hidden"
+                                                                    value="5C3A7809-9B46-4BB5-BBEE-F24B3367A14C">
+                                                                <div class="dx-texteditor-container">
+                                                                    <div class="dx-texteditor-input-container"><input
+                                                                            autocomplete="off" placeholder="Select..."
+                                                                            class="dx-texteditor-input"
+                                                                            aria-haspopup="listbox"
+                                                                            aria-autocomplete="none" role="combobox"
+                                                                            type="text" readonly="" spellcheck="false"
+                                                                            tabindex="0" aria-expanded="false">
+                                                                        <div id="dx-71d07df1-a755-40a4-ba36-afcd350b3d3f"
+                                                                            data-dx_placeholder="Select..."
+                                                                            class="dx-placeholder dx-state-invisible">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="dx-texteditor-buttons-container">
+                                                                        <div></div>
+                                                                        <div role="button"
+                                                                            class="dx-widget dx-button-normal dx-dropdowneditor-button"
+                                                                            aria-label="Select">
+                                                                            <div class="dx-button-content">
+                                                                                <div class="dx-dropdowneditor-icon">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="dx-toolbar-center" role="presentation"></div>
+                                            <div class="dx-toolbar-after" role="presentation">
+                                                <div
+                                                    class="dx-item dx-toolbar-item dx-toolbar-button dx-toolbar-item-auto-hide">
+                                                    <div class="dx-item-content dx-toolbar-item-content">
+                                                        <div role="group"
+                                                            class="dx-buttongroup dx-buttongroup-mode-text dx-widget"
+                                                            tabindex="0">
+                                                            <div class="dx-buttongroup-wrapper dx-widget dx-collection">
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-buttongroup-first-item dx-shape-standard link gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Subjects View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Subjects View</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Subjects View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Subjects View</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard link gb-view-selection"
+                                                                    role="button" aria-label="Assignment View"
+                                                                    aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Assignment
+                                                                            View</span></div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Assignment View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Assignment
+                                                                            View</span></div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard link gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Standards View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Standards View</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Standards View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Standards View</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard link gb-view-selection"
+                                                                    role="button" aria-label="Course Content View"
+                                                                    aria-pressed="false"></div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Course Content View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Course Content
+                                                                            View</span></div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-shape-standard link gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Posts View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Posts View</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="dx-widget dx-button dx-button-mode-text dx-button-normal dx-button-has-text dx-state-invisible dx-item dx-buttongroup-item dx-item-content dx-buttongroup-item-content dx-buttongroup-last-item dx-shape-standard gb-view-selection dx-state-invisible"
+                                                                    role="button" aria-label="Posts View"
+                                                                    aria-hidden="true" aria-pressed="false">
+                                                                    <div class="dx-button-content"><span
+                                                                            class="dx-button-text">Posts View</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="dx-toolbar-button dx-toolbar-menu-container dx-state-invisible">
+                                                    <div class="dx-widget dx-button dx-button-mode-contained dx-button-normal dx-button-has-icon dx-dropdownmenu dx-dropdownmenu-button"
+                                                        role="button" aria-label="overflow" tabindex="0"
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                        <div class="dx-button-content"><i
+                                                                class="dx-icon dx-icon-overflow"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="breadcrumb-bottom"></div>
+                            </div>
+
+
+
+                            <div id="mainContentArea">
+                                <div id="gradebook-content">
+                                    <div id="gb-classes" class="pxp-panel">
+                                        <div id="ctl00_ctl00_MainContent_PXPMainContent_repSchoolClasses_ctl01_ctl00_SchoolClassesPanel"
+                                            class="update-panel">
+                                            <h2 class="flexbox horizontal flex-space-between">
+                                                <span class="title">Classes for Sunrise Middle School</span>
+                                                <div id="ctl00_ctl00_MainContent_PXPMainContent_repSchoolClasses_ctl01_ctl00_TermSelector_TermSelector"
+                                                    class="term-selector pull-right">
+                                                    <div class="btn-group btn-group-xs dropdown">
+                                                        <button type="button" class="btn btn-link">
+                                                            <div class="current breadcrumb-term">
+                                                                Term <span id="school-term">0</span>
+                                                            </div>
+                                                            <i class="glyphicon glyphicon-chevron-down"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </h2>
+                                            <div class="table data-table pres-table">
+                                                <div class="gb-class-table-header">
+                                                    <div>
+                                                        <div class="col-sm" scope="col"><span class="sr-only">Hide or
+                                                                Show More Information</span></div>
+                                                        <div class="col-sm" scope="col">Photo</div>
+                                                        <div class="col-sm" scope="col">Period</div>
+                                                        <div class="col-sm" scope="col">Class</div>
+                                                        <div class="col-sm" scope="col"><span
+                                                                class="sr-only">Teacher</span></div>
+                                                        <div class="col-sm" scope="col">Room</div>
+
+                                                        <div class="col-sm" scope="col">Scoring Trends</div>
+
+                                                        <div class="col-sm" scope="col">Score</div>
+                                                        <div class="col-sm" scope="col">Links</div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- <div>
+                                                    <div class="row gb-class-header gb-class-row flexbox horizontal">
+                                                        <div scope="row">
+                                                            <button type="button" style="padding-bottom: 0px;" class="btn btn-link course-title">[Class Index Here]: [Class Name]</button>
+                                                        </div>
+                                                        <div>
+                                                            <div class="teacher hide-for-screen">[Teacher FirstName] [Teacher LastName]</div>
+                                                            <span class="teacher hide-for-print" role="presentation">
+                                                                <span class="pxp-contact-info" style="white-space:nowrap;">
+                                                                    <a href="javascript:void(0)">[Teacher FirstName] [Teacher LastName]</a>
+                                                                    <a href="javascript:void(0)">
+                                                                        <span class="fa fa-envelope" aria-label="Send Message"></span>
+                                                                    </a>
+                                                                </span>
+                                                            </span>
+                                                            <div class="teacher-room hide-for-print">Room: 100</div>
+                                                        </div>
+                                                        <div>&nbsp;</div>
+                                                    </div>
+
+                                                    <div class="row gb-class-row">
+                                                        <div class="col-sm-8 flexbox horizontal flex-wrap">
+                                                            <div>
+                                                                <div class="hide-for-print inline">
+                                                                    <button type="button" class="btn btn-xs btn-link">
+                                                                        <span class="sr-only">Toggle More Information</span>
+                                                                        <i class="glyphicon glyphicon-chevron-right"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="inline" scope="row">
+                                                                    <button type="button" style="padding-bottom: 0px" class="btn btn-link course-markperiod">TRM[Term Index]</button>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <span class="mark">[Grade For Class, example: B+]</span>
+                                                                <span class="score">[Grade Percentage for Class, example: 88.4%]</span>
+                                                            </div>
+                                                            <div class="class-item-lessemphasis hide-for-print">
+                                                                <div>[# of Missing Assignments] Missing Assignments</div>
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 hide-for-print">
+                                                            <canvas class="sparkline" width="345" height="60"
+                                                                style="width: 345px;"></canvas>
+                                                            <span class="last-update">Last Update: [Last Updated Date, format M/DD/YYYY, M can be two digits as well]</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="details gb-class-row">
+                                                        <div class="flexbox horizontal flex-space-between flex-wrap">
+                                                            <div>
+                                                                <h3>Student Performance</h3>
+                                                                <canvas class="student-categories" width="400"
+                                                                    height="200" style="width: 400px;"></canvas>
+                                                            </div>
+                                                            <div style="text-align: center; width: 50%">
+                                                                <h3 class="mark-counts">Class Grades</h3>
+                                                                <canvas class="mark-counts" width="150" height="150"
+                                                                    style="width: 150px;"></canvas>
+                                                            </div>
+                                                            <div>&nbsp;</div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="gb-status" class="hide-for-print">
+                                        <div class="pxp-panel">
+                                            <h2 class="title">Recent History</h2>
+                                            <div class="gb-student-assignments-grid">
+                                                <table class="table table-striped">
+                                                    <tbody>
+                                                        <!-- <tr>
+                                                            <td>
+                                                                <div>
+                                                                    <a href="javascript:void(0)">Assignment Title</a>
+                                                                </div>
+                                                                <div>Lindner, E Accel Math 7(2)</div>
+                                                                <div>Due Date: 12/31/9999</div>
+                                                                <div>Score: 5 out of 5</div>
+                                                            </td>
+                                                        </tr> -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div id="gb-assignments" class="pxp-panel">
+                                            <h2 class="title">Upcoming Assignments</h2>
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                    <!-- <tr class="gb-upcoming-assignment">
+                                                        <td>
+                                                            <div>
+                                                                <a href="javascript:void(0)">Upcoming Assignment
+                                                                    Title</a>
+                                                            </div>
+                                                            <div>Jimmy, A Geography 7(7)</div>
+                                                            <div>Due Date: 12/31/9999</div>
+                                                            <div>Points: 0</div>
+                                                        </td>
+                                                    </tr> -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <footer id="ctl00_ctl00_PXPFooter" class="footer hide-for-print" aria-label="Footer">
+        <div class="action-bar">
+            <div role="region" aria-label="System links" id="SystemLinks">
+                <ul class="system-links">
+                    <li>
+                        <a href="https://ne-kps-psv.edupoint.com/Login_Student_PXP.aspx?Logout=1"
+                            id="ctl00_ctl00_lnkLogin">Logout</a>
+                    </li>
+                    <li>
+                        <a href="https://ne-kps-psv.edupoint.com/PXP2_Contact.aspx"
+                            id="ctl00_ctl00_lnkContact">Contact</a>
+                    </li>
+                    <li>
+                        <a href="https://ne-kps-psv.edupoint.com/PXP2_Privacy.aspx"
+                            id="ctl00_ctl00_lnkPrivacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="legal" class="center">
+            <a target="_blank" href="http://www.edupoint.com/">
+                <img src="StudentVUE_files/EduPointLogo_WHITE.png" id="ctl00_ctl00_EESLogo"
+                    style="padding-bottom: 3px; border: 0px" alt="Edupoint Educational Systems" title="Synergy 2026-NE">
+            </a>
+            <br>
+            &copy; Copyright 2026 Edupoint, LLC
+        </div>
+
+        <div id="accessToggle">
+            <i class="glyphicon glyphicon-ok checked"></i>
+            <a href="https://ne-kps-psv.edupoint.com/#" role="button">Accessibility
+                Mode</a>
+        </div>
+    </footer>
+
+    <div class="_contextMenuContainer_yog7m_1"></div>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h1>Edit This Page</h1>
+            <h2>Info</h2>
+            <h5>For display use only.</h5>
+            <form id="infoForm">
+                <label for="infoId">ID:</label>
+                <input type="number" id="infoId" name="infoId" placeholder="12345" required>
+                <br>
+                <br>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Jimmy" required>
+                <br>
+                <br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Neutron" required>
+                <br>
+                <br>
+                <label for="displayNumber">Phone Number (top-left corner):</label>
+                <input type="tel" id="displayNumber" name="displayNumber" required pattern="\d{3}-\d{3}-\d{4}"
+                    placeholder="123-456-7890">
+                <br>
+                <br>
+                <label for="accountPicture">Account Picture URL:</label>
+                <input type="url" id="accountPicture" name="accountPicture" placeholder="https://example.com/image.jpg"
+                    required pattern="https?://.*\.(png|jpg|jpeg|gif)$" style="width: 100%; max-width: 400px;">
+                <br>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+            <h2>Add a Class</h2>
+            <form id="editForm">
+                <label for="classIndex">Class Index:</label>
+                <input type="number" id="classIndex" name="classIndex" placeholder="1, 2, etc" required>
+                <br>
+                <br>
+                <label for="className">Class Name:</label>
+                <input type="text" id="className" name="className" placeholder="Math, English, etc" required>
+                <br>
+                <br>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Jimmy" required>
+                <br>
+                <br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Neutron" required>
+                <br>
+                <br>
+                <label for="currentGrade">Current Grade:</label>
+                <input type="text" id="currentGrade" name="currentGrade" placeholder="A+, B-, etc" required>
+                <br>
+                <br>
+                <label for="currentGradePercentage">Current Grade Percentage:</label>
+                <input type="text" id="currentGradePercentage" name="currentGradePercentage"
+                    placeholder="100%, 75%, etc" required>
+                <br>
+                <br>
+                <label for="missingAssignments">Missing Assignments:</label>
+                <input type="number" id="missingAssignments" name="missingAssignments" placeholder="1, 2, etc" required>
+                <br>
+                <br>
+                <label for="lastUpdated">Last Updated:</label>
+                <input type="datetime-local" id="lastUpdated" name="lastUpdated" placeholder="2/23/2026, etc" required>
+                <br>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const greeting = document.getElementById("greeting");
+        const greetingDate = document.getElementById("greeting-date");
+        const schoolTerm = document.getElementById("school-term");
+        const infoId = document.getElementsByClassName("student-id");
+
+        //#region Greetings
+
+        const now = new Date();
+        const hours = now.getHours();
+
+        let greetingText;
+        if (hours < 12) {
+            greetingText = "morning";
+        } else if (hours < 18) {
+            greetingText = "afternoon";
+        } else {
+            greetingText = "evening";
+        }
+
+        greeting.innerText = greetingText;
+
+        // const theDate = now.toLocaleDateString(undefined, {
+        //     weekday: "long",
+        //     month: "long",
+        //     day: "numeric",
+        //     year: "numeric"
+        // });
+
+        const theDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+
+        greetingDate.innerText = theDate;
+
+        //#endregion
+
+        //#region School Term
+        function getSchoolTerm(date = new Date()) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            // Determine the "school year start" based on August
+            const schoolYearStart = new Date(year, 7, 14); // Aug 14
+            let currentYear = year;
+
+            // If we're in Jan–May, the term actually belongs to the school year started last year
+            if (month < 7) currentYear = year - 1;
+
+            const termDates = [
+                { term: 1, start: new Date(currentYear, 7, 14), end: new Date(currentYear, 9, 16) }, // Aug 14 - Oct 16
+                { term: 2, start: new Date(currentYear, 9, 17), end: new Date(currentYear, 11, 19) }, // Oct 17 - Dec 19
+                { term: 3, start: new Date(currentYear + 1, 0, 6), end: new Date(currentYear + 1, 2, 13) }, // Jan 6 - Mar 13
+                { term: 4, start: new Date(currentYear + 1, 2, 16), end: new Date(currentYear + 1, 4, 21) } // Mar 16 - May 21
+            ];
+
+            for (let t of termDates) {
+                if (date >= t.start && date <= t.end) {
+                    return t.term;
+                }
+            }
+
+            return 0; // Not in school term
+        }
+
+        schoolTerm.innerText = getSchoolTerm();
+
+        //#endregion 
+
+        function addGradebookRow({
+            classIndex,
+            className,
+            teacherFirstName,
+            teacherLastName,
+            termIndex,
+            grade,
+            gradePercent,
+            missingAssignments,
+            lastUpdatedDate
+        }) {
+            // Find the container
+            const container = document.querySelector('.table.data-table.pres-table');
+            if (!container) return;
+
+            // Create the HTML as a template literal
+            const html = `
+                                                <div>
+                                                    <div class="row gb-class-header gb-class-row flexbox horizontal">
+                                                        <div scope="row">
+                                                            <button type="button" style="padding-bottom: 0px;" class="btn btn-link course-title">${classIndex}: ${className}</button>
+                                                        </div>
+                                                        <div>
+                                                            <div class="teacher hide-for-screen">${teacherFirstName} ${teacherLastName}</div>
+                                                            <span class="teacher hide-for-print" role="presentation">
+                                                                <span class="pxp-contact-info" style="white-space:nowrap;">
+                                                                    <a href="javascript:void(0)">${teacherFirstName} ${teacherLastName}</a>
+                                                                    <a href="javascript:void(0)">
+                                                                        <span class="fa fa-envelope" aria-label="Send Message"></span>
+                                                                    </a>
+                                                                </span>
+                                                            </span>
+                                                            <div class="teacher-room hide-for-print">Room: 100</div>
+                                                        </div>
+                                                        <div>&nbsp;</div>
+                                                    </div>
+
+                                                    <div class="row gb-class-row">
+                                                        <div class="col-sm-8 flexbox horizontal flex-wrap">
+                                                            <div>
+                                                                <div class="hide-for-print inline">
+                                                                    <button type="button" class="btn btn-xs btn-link">
+                                                                        <span class="sr-only">Toggle More Information</span>
+                                                                        <i class="glyphicon glyphicon-chevron-right"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="inline" scope="row">
+                                                                    <button type="button" style="padding-bottom: 0px" class="btn btn-link course-markperiod">TRM${termIndex}</button>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <span class="mark">${grade}</span>
+                                                                <span class="score">${gradePercent}</span>
+                                                            </div>
+                                                            <div class="class-item-lessemphasis hide-for-print">
+                                                                <div>${missingAssignments || 0} Missing Assignment${Number(missingAssignments) === 1 ? '' : 's'}</div>
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 hide-for-print">
+                                                            <canvas class="sparkline" width="345" height="60"
+                                                                style="width: 345px;"></canvas>
+                                                            <span class="last-update">Last Update: ${lastUpdatedDate}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="details gb-class-row">
+                                                        <div class="flexbox horizontal flex-space-between flex-wrap">
+                                                            <div>
+                                                                <h3>Student Performance</h3>
+                                                                <canvas class="student-categories" width="400"
+                                                                    height="200" style="width: 400px;"></canvas>
+                                                            </div>
+                                                            <div style="text-align: center; width: 50%">
+                                                                <h3 class="mark-counts">Class Grades</h3>
+                                                                <canvas class="mark-counts" width="150" height="150"
+                                                                    style="width: 150px;"></canvas>
+                                                            </div>
+                                                            <div>&nbsp;</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        // randomId[i].innerText = "ID: 4" + Math.floor(Math.random() * 10000).toString().padStart(4, "0");
+
+        const editModal = document.getElementById("edit-modal");
+        const openModalButton = document.getElementsByClassName("openModalButton");
+        const closeModalButton = document.getElementsByClassName("modal-close")[0];
+
+        for (let i = 0; i < openModalButton.length; i++) {
+            openModalButton[i].onclick = function () {
+                editModal.style.display = "block";
+            }
+        }
+
+        closeModalButton.onclick = function () {
+            editModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == editModal) {
+                editModal.style.display = "none";
+            }
+        }
+
+        const editForm = document.getElementById("editForm");
+        const infoForm = document.getElementById("infoForm");
+
+        editForm.addEventListener("submit", (e) => {
+            e.preventDefault(); // stops the page from navigating/reloading
+            addGradebookRow({
+                classIndex: editForm.classIndex.value,
+                className: editForm.className.value,
+                teacherFirstName: editForm.firstName.value,
+                teacherLastName: editForm.lastName.value,
+                termIndex: getSchoolTerm(now),
+                grade: editForm.currentGrade.value,
+                gradePercent: editForm.currentGradePercentage.value,
+                missingAssignments: editForm.missingAssignments.value,
+                lastUpdatedDate: editForm.lastUpdated.value
+            });
+        });
+
+        infoForm.addEventListener("submit", (e) => {
+            e.preventDefault(); // stops the page from navigating/reloading
+            let phone = document.getElementsByClassName("phone");
+            let name = document.getElementsByClassName("student-name");
+            let firstName = document.getElementById("firstNameDisplay");
+            let lastName = document.getElementById("lastNameDisplay");
+            let accountPicture = document.getElementsByClassName("accountPicture");
+
+            let url = infoForm.accountPicture.value.trim();
+
+            // Regex check for valid image URL
+            if (!/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/i.test(url)) {
+                alert('Please enter a valid image URL (png, jpg, jpeg, gif).');
+                return;
+            }
+
+            for (let i = 0; i < accountPicture.length; i++) {
+                accountPicture[i].src = url;
+            }
+
+            for (let i = 0; i < phone.length; i++) {
+                phone[i].innerText = infoForm.displayNumber.value;
+            }
+
+            for (let i = 0; i < name.length; i++) {
+                name[i].innerText = infoForm.firstName.value;
+            }
+
+            firstName.innerText = infoForm.firstName.value;
+            lastName.innerText = infoForm.lastName.value;
+
+            for (let i = 0; i < infoId.length; i++) {
+                infoId[i].innerText = "ID: " + infoForm.infoId.value;
+            }
+
+        });
+    </script>
+</body>
+
+</html>

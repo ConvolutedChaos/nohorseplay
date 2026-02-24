@@ -1,0 +1,98 @@
+﻿const PXP_PERMISSION_SLIPS = (() => {
+	const me = {}; // Private objects
+	const pub = {}; // Public objects
+	pub.Model = {}; // KO Model
+	me.updatePermissionSlipTab = function (data) {
+
+		while (data && (data.d !== undefined || (typeof data === 'object' && data.Count !== undefined && data.FeatureEnabled === undefined))) {
+			data = data.d ?? data;  
+			if (typeof data === 'string') data = JSON.parse(data);
+		}
+
+		if (!data?.FeatureEnabled) {
+			const ul = document.querySelector('ul.pxp-navbar');
+			if (ul) ul.querySelector('li#tabPermSlips')?.remove();
+			return;
+		}
+
+		const ul = document.querySelector('ul.pxp-navbar');
+		if (!ul) return;
+
+		let li = ul.querySelector('li#tabPermSlips');
+		if (!li) {
+			li = document.createElement('li');
+			li.id = 'tabPermSlips';
+			ul.insertBefore(li, ul.firstChild);
+		}
+
+		let a = li.querySelector('a');
+		if (!a) {
+			a = document.createElement('a');
+			a.href = 'PXP2_PermissionSlips.aspx';
+			a.textContent = 'Permission Slips';
+			li.appendChild(a);
+		}
+
+		const count = data.Count || 0;
+		if (count === 0) return;
+
+		let nearestEndDate = null;
+		if (data.NearestEndDate) {
+			const match = /\/Date\((\d+)\)\//.exec(data.NearestEndDate);
+			if (match) nearestEndDate = new Date(parseInt(match[1]));
+		}
+		if (!nearestEndDate) return;
+
+		const now = new Date();
+		const endDate = new Date(nearestEndDate.getFullYear(), nearestEndDate.getMonth(), nearestEndDate.getDate(), 23, 59, 59);
+		const daysLeft = Math.max(1, Math.round((endDate - now) / (1000 * 60 * 60 * 24)));
+		const backgroundColor = daysLeft > 15 ? "#4CAF50" : daysLeft > 5 ? "#FFC107" : "#F44336";
+		const textColor = daysLeft > 5 ? "#000000" : "#FFFFFF";
+		const fontSize = daysLeft <= 5 ? "1.2em" : "1em";
+		const liStyle = daysLeft <= 5 ? "margin-top: -1px;" : "";
+
+		li.setAttribute('style', liStyle);
+		a.style.backgroundColor = backgroundColor;
+		a.style.color = textColor;
+		a.style.fontSize = fontSize;
+
+		const badge = document.createElement('span');
+		badge.style.backgroundColor = '#000000';
+		badge.style.color = '#FFFFFF';
+		badge.style.padding = '4px 8px';
+		badge.style.borderRadius = '12px';
+		badge.style.marginLeft = '6px';
+		badge.style.fontSize = '10pt';
+		badge.textContent = count;
+
+		a.innerHTML = `<span style="padding-left: 3px;">${a.textContent}</span> ${badge.outerHTML}`;
+	};
+	me.loadBadgeData = function () {
+		fetch('PXP2_PermissionSlips.aspx/GetBadgeData', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json; charset=utf-8' },
+			body: JSON.stringify({})
+		})
+			.then(response => {
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				return response.json();
+			})
+			.then(rawData => {
+				let payload = rawData;
+				if (payload && payload.d !== undefined) {
+					payload = typeof payload.d === 'string' ? JSON.parse(payload.d) : payload.d;
+				}
+
+				me.updatePermissionSlipTab(payload);
+			})
+			.catch(error => {
+				// Silently fail – tab just won't appear (safe default when feature flag unknown)
+				console.log('Fetch Error (Permission Slips badge):', error);
+			});
+	};
+	document.addEventListener('DOMContentLoaded', function () {
+		console.log('DOMContentLoaded event fired, calling loadBadgeData');
+		me.loadBadgeData();
+	});
+	return pub;
+})();

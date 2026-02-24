@@ -1,0 +1,2542 @@
+import { createProxySignal as De, componentApi as Je, date as jr, requireContext as Xe, customElement as ce } from "./common.bundle.js";
+import { sharedConfig as _e, createRenderEffect as y, untrack as Br, createContext as ie, createMemo as B, createComponent as g, useContext as Ne, createSignal as M, createEffect as ge, Switch as xe, Match as Y, For as K, Show as G, onMount as Kr, $PROXY as be, $TRACK as pt, getListener as it, batch as zr, mergeProps as Ee } from "./solid.bundle.js";
+import { Spinner as ht, Icon as Ur, STComponentWrapperProps as Re, Card as Ae, Button as lr, requireViewContext as Qe, RadioGroup as tt, Popover as rt } from "./st.bundle.js";
+import { k12HallpassStudentrestrictions as Fr, k12HallpassStuhallpasses as Wr, k12HallpassStuhallpasssummary as er, k12IncidentSummary as Yr } from "./sis.api.bundle.js";
+const Jr = ["allowfullscreen", "async", "autofocus", "autoplay", "checked", "controls", "default", "disabled", "formnovalidate", "hidden", "indeterminate", "inert", "ismap", "loop", "multiple", "muted", "nomodule", "novalidate", "open", "playsinline", "readonly", "required", "reversed", "seamless", "selected"], Xr = /* @__PURE__ */ new Set(["className", "value", "readOnly", "formNoValidate", "isMap", "noModule", "playsInline", ...Jr]), Qr = /* @__PURE__ */ new Set(["innerHTML", "textContent", "innerText", "children"]), Zr = /* @__PURE__ */ Object.assign(/* @__PURE__ */ Object.create(null), {
+  className: "class",
+  htmlFor: "for"
+}), pr = /* @__PURE__ */ Object.assign(/* @__PURE__ */ Object.create(null), {
+  class: "className",
+  formnovalidate: {
+    $: "formNoValidate",
+    BUTTON: 1,
+    INPUT: 1
+  },
+  ismap: {
+    $: "isMap",
+    IMG: 1
+  },
+  nomodule: {
+    $: "noModule",
+    SCRIPT: 1
+  },
+  playsinline: {
+    $: "playsInline",
+    VIDEO: 1
+  },
+  readonly: {
+    $: "readOnly",
+    INPUT: 1,
+    TEXTAREA: 1
+  }
+});
+function en(e, t) {
+  const r = pr[e];
+  return typeof r == "object" ? r[t] ? r.$ : void 0 : r;
+}
+const tn = /* @__PURE__ */ new Set(["beforeinput", "click", "dblclick", "contextmenu", "focusin", "focusout", "input", "keydown", "keyup", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup", "pointerdown", "pointermove", "pointerout", "pointerover", "pointerup", "touchend", "touchmove", "touchstart"]);
+function rn(e, t, r) {
+  let i = r.length, s = t.length, a = i, o = 0, l = 0, d = t[s - 1].nextSibling, n = null;
+  for (; o < s || l < a; ) {
+    if (t[o] === r[l]) {
+      o++, l++;
+      continue;
+    }
+    for (; t[s - 1] === r[a - 1]; )
+      s--, a--;
+    if (s === o) {
+      const h = a < i ? l ? r[l - 1].nextSibling : r[a - l] : d;
+      for (; l < a; ) e.insertBefore(r[l++], h);
+    } else if (a === l)
+      for (; o < s; )
+        (!n || !n.has(t[o])) && t[o].remove(), o++;
+    else if (t[o] === r[a - 1] && r[l] === t[s - 1]) {
+      const h = t[--s].nextSibling;
+      e.insertBefore(r[l++], t[o++].nextSibling), e.insertBefore(r[--a], h), t[s] = r[a];
+    } else {
+      if (!n) {
+        n = /* @__PURE__ */ new Map();
+        let v = l;
+        for (; v < a; ) n.set(r[v], v++);
+      }
+      const h = n.get(t[o]);
+      if (h != null)
+        if (l < h && h < a) {
+          let v = o, w = 1, m;
+          for (; ++v < s && v < a && !((m = n.get(t[v])) == null || m !== h + w); )
+            w++;
+          if (w > h - l) {
+            const x = t[o];
+            for (; l < h; ) e.insertBefore(r[l++], x);
+          } else e.replaceChild(r[l++], t[o++]);
+        } else o++;
+      else t[o++].remove();
+    }
+  }
+}
+const tr = "_$DX_DELEGATE";
+function S(e, t, r) {
+  let i;
+  const s = () => {
+    const o = document.createElement("template");
+    return o.innerHTML = e, o.content.firstChild;
+  }, a = () => (i || (i = s())).cloneNode(!0);
+  return a.cloneNode = a, a;
+}
+function ar(e, t = window.document) {
+  const r = t[tr] || (t[tr] = /* @__PURE__ */ new Set());
+  for (let i = 0, s = e.length; i < s; i++) {
+    const a = e[i];
+    r.has(a) || (r.add(a), t.addEventListener(a, an));
+  }
+}
+function F(e, t, r) {
+  _e.context && e.isConnected || (r == null ? e.removeAttribute(t) : e.setAttribute(t, r));
+}
+function u(e, t) {
+  _e.context && e.isConnected || (t == null ? e.removeAttribute("class") : e.className = t);
+}
+function me(e, t, r, i) {
+  if (i)
+    Array.isArray(r) ? (e[`$$${t}`] = r[0], e[`$$${t}Data`] = r[1]) : e[`$$${t}`] = r;
+  else if (Array.isArray(r)) {
+    const s = r[0];
+    e.addEventListener(t, r[0] = (a) => s.call(e, r[1], a));
+  } else e.addEventListener(t, r);
+}
+function nn(e, t, r = {}) {
+  const i = Object.keys(t || {}), s = Object.keys(r);
+  let a, o;
+  for (a = 0, o = s.length; a < o; a++) {
+    const l = s[a];
+    !l || l === "undefined" || t[l] || (rr(e, l, !1), delete r[l]);
+  }
+  for (a = 0, o = i.length; a < o; a++) {
+    const l = i[a], d = !!t[l];
+    !l || l === "undefined" || r[l] === d || !d || (rr(e, l, !0), r[l] = d);
+  }
+  return r;
+}
+function Ce(e, t, r) {
+  if (!t) return r ? F(e, "style") : t;
+  const i = e.style;
+  if (typeof t == "string") return i.cssText = t;
+  typeof r == "string" && (i.cssText = r = void 0), r || (r = {}), t || (t = {});
+  let s, a;
+  for (a in r)
+    t[a] == null && i.removeProperty(a), delete r[a];
+  for (a in t)
+    s = t[a], s !== r[a] && (i.setProperty(a, s), r[a] = s);
+  return r;
+}
+function je(e, t = {}, r, i) {
+  const s = {};
+  return y(() => s.children = Ge(e, t.children, s.children)), y(() => typeof t.ref == "function" && or(t.ref, e)), y(() => sn(e, t, r, !0, s, !0)), s;
+}
+function or(e, t, r) {
+  return Br(() => e(t, r));
+}
+function c(e, t, r, i) {
+  if (r !== void 0 && !i && (i = []), typeof t != "function") return Ge(e, t, i, r);
+  y((s) => Ge(e, t(), s, r), i);
+}
+function sn(e, t, r, i, s = {}, a = !1) {
+  t || (t = {});
+  for (const o in s)
+    if (!(o in t)) {
+      if (o === "children") continue;
+      s[o] = nr(e, o, null, s[o], r, a);
+    }
+  for (const o in t) {
+    if (o === "children")
+      continue;
+    const l = t[o];
+    s[o] = nr(e, o, l, s[o], r, a);
+  }
+}
+function ln(e) {
+  return e.toLowerCase().replace(/-([a-z])/g, (t, r) => r.toUpperCase());
+}
+function rr(e, t, r) {
+  const i = t.trim().split(/\s+/);
+  for (let s = 0, a = i.length; s < a; s++) e.classList.toggle(i[s], r);
+}
+function nr(e, t, r, i, s, a) {
+  let o, l, d, n, h;
+  if (t === "style") return Ce(e, r, i);
+  if (t === "classList") return nn(e, r, i);
+  if (r === i) return i;
+  if (t === "ref")
+    a || r(e);
+  else if (t.slice(0, 3) === "on:") {
+    const v = t.slice(3);
+    i && e.removeEventListener(v, i), r && e.addEventListener(v, r);
+  } else if (t.slice(0, 10) === "oncapture:") {
+    const v = t.slice(10);
+    i && e.removeEventListener(v, i, !0), r && e.addEventListener(v, r, !0);
+  } else if (t.slice(0, 2) === "on") {
+    const v = t.slice(2).toLowerCase(), w = tn.has(v);
+    if (!w && i) {
+      const m = Array.isArray(i) ? i[0] : i;
+      e.removeEventListener(v, m);
+    }
+    (w || r) && (me(e, v, r, w), w && ar([v]));
+  } else if (t.slice(0, 5) === "attr:")
+    F(e, t.slice(5), r);
+  else if ((h = t.slice(0, 5) === "prop:") || (d = Qr.has(t)) || (n = en(t, e.tagName)) || (l = Xr.has(t)) || (o = e.nodeName.includes("-"))) {
+    if (h)
+      t = t.slice(5), l = !0;
+    else if (_e.context && e.isConnected) return r;
+    t === "class" || t === "className" ? u(e, r) : o && !l && !d ? e[ln(t)] = r : e[n || t] = r;
+  } else
+    F(e, Zr[t] || t, r);
+  return r;
+}
+function an(e) {
+  const t = `$$${e.type}`;
+  let r = e.composedPath && e.composedPath()[0] || e.target;
+  for (e.target !== r && Object.defineProperty(e, "target", {
+    configurable: !0,
+    value: r
+  }), Object.defineProperty(e, "currentTarget", {
+    configurable: !0,
+    get() {
+      return r || document;
+    }
+  }), _e.registry && !_e.done && (_e.done = _$HY.done = !0); r; ) {
+    const i = r[t];
+    if (i && !r.disabled) {
+      const s = r[`${t}Data`];
+      if (s !== void 0 ? i.call(r, s, e) : i.call(r, e), e.cancelBubble) return;
+    }
+    r = r._$host || r.parentNode || r.host;
+  }
+}
+function Ge(e, t, r, i, s) {
+  const a = !!_e.context && e.isConnected;
+  if (a) {
+    !r && (r = [...e.childNodes]);
+    let d = [];
+    for (let n = 0; n < r.length; n++) {
+      const h = r[n];
+      h.nodeType === 8 && h.data.slice(0, 2) === "!$" ? h.remove() : d.push(h);
+    }
+    r = d;
+  }
+  for (; typeof r == "function"; ) r = r();
+  if (t === r) return r;
+  const o = typeof t, l = i !== void 0;
+  if (e = l && r[0] && r[0].parentNode || e, o === "string" || o === "number") {
+    if (a || o === "number" && (t = t.toString(), t === r))
+      return r;
+    if (l) {
+      let d = r[0];
+      d && d.nodeType === 3 ? d.data !== t && (d.data = t) : d = document.createTextNode(t), r = $e(e, r, i, d);
+    } else
+      r !== "" && typeof r == "string" ? r = e.firstChild.data = t : r = e.textContent = t;
+  } else if (t == null || o === "boolean") {
+    if (a) return r;
+    r = $e(e, r, i);
+  } else {
+    if (o === "function")
+      return y(() => {
+        let d = t();
+        for (; typeof d == "function"; ) d = d();
+        r = Ge(e, d, r, i);
+      }), () => r;
+    if (Array.isArray(t)) {
+      const d = [], n = r && Array.isArray(r);
+      if (st(d, t, r, s))
+        return y(() => r = Ge(e, d, r, i, !0)), () => r;
+      if (a) {
+        if (!d.length) return r;
+        if (i === void 0) return [...e.childNodes];
+        let h = d[0], v = [h];
+        for (; (h = h.nextSibling) !== i; ) v.push(h);
+        return r = v;
+      }
+      if (d.length === 0) {
+        if (r = $e(e, r, i), l) return r;
+      } else n ? r.length === 0 ? ir(e, d, i) : rn(e, r, d) : (r && $e(e), ir(e, d));
+      r = d;
+    } else if (t.nodeType) {
+      if (a && t.parentNode) return r = l ? [t] : t;
+      if (Array.isArray(r)) {
+        if (l) return r = $e(e, r, i, t);
+        $e(e, r, null, t);
+      } else r == null || r === "" || !e.firstChild ? e.appendChild(t) : e.replaceChild(t, e.firstChild);
+      r = t;
+    }
+  }
+  return r;
+}
+function st(e, t, r, i) {
+  let s = !1;
+  for (let a = 0, o = t.length; a < o; a++) {
+    let l = t[a], d = r && r[e.length], n;
+    if (!(l == null || l === !0 || l === !1)) if ((n = typeof l) == "object" && l.nodeType)
+      e.push(l);
+    else if (Array.isArray(l))
+      s = st(e, l, d) || s;
+    else if (n === "function")
+      if (i) {
+        for (; typeof l == "function"; ) l = l();
+        s = st(e, Array.isArray(l) ? l : [l], Array.isArray(d) ? d : [d]) || s;
+      } else
+        e.push(l), s = !0;
+    else {
+      const h = String(l);
+      d && d.nodeType === 3 && d.data === h ? e.push(d) : e.push(document.createTextNode(h));
+    }
+  }
+  return s;
+}
+function ir(e, t, r = null) {
+  for (let i = 0, s = t.length; i < s; i++) e.insertBefore(t[i], r);
+}
+function $e(e, t, r, i) {
+  if (r === void 0) return e.textContent = "";
+  const s = i || document.createTextNode("");
+  if (t.length) {
+    let a = !1;
+    for (let o = t.length - 1; o >= 0; o--) {
+      const l = t[o];
+      if (s !== l) {
+        const d = l.parentNode === e;
+        !a && !o ? d ? e.replaceChild(s, l) : e.insertBefore(s, r) : d && l.remove();
+      } else a = !0;
+    }
+  } else e.insertBefore(s, r);
+  return [s];
+}
+const on = "_studentHallPassesData_1eunr_1", dn = "_group_1eunr_11", un = "_groupLabel_1eunr_29", cn = "_stuRestriction_1eunr_41", gn = "_stuImage_1eunr_53", hn = "_stuName_1eunr_63", vn = "_noData_1eunr_73", mn = "_noDataMsg_1eunr_91", ue = {
+  studentHallPassesData: on,
+  group: dn,
+  groupLabel: un,
+  stuRestriction: cn,
+  stuImage: gn,
+  stuName: hn,
+  noData: vn,
+  noDataMsg: mn
+};
+var fn = /* @__PURE__ */ S("<div><span>No Restrictions"), _n = /* @__PURE__ */ S("<div>"), bn = /* @__PURE__ */ S("<div><div>"), xn = /* @__PURE__ */ S("<div><span><img width=30 height=30></span><span>");
+class dr {
+}
+class yn {
+  context;
+  ssyGU = "";
+}
+const ur = ie(new dr()), Pl = () => Ne(ur);
+function ze(e) {
+  const t = B(() => e.context || new dr());
+  return g(ur.Provider, {
+    get value() {
+      return t();
+    },
+    get children() {
+      return g(wn, e);
+    }
+  });
+}
+ze.defaultProps = new yn();
+function wn(e) {
+  const [t, r] = M();
+  return ge(() => {
+    r(void 0), e.ssyGU && Fr.LoadData(e.ssyGU).then(r);
+  }), (() => {
+    var i = _n();
+    return c(i, g(xe, {
+      get children() {
+        return [g(Y, {
+          get when() {
+            return t()?.hasData === !0;
+          },
+          get children() {
+            return g(K, {
+              get each() {
+                return t()?.groups ?? [];
+              },
+              children: (s) => g($n, {
+                group: s
+              })
+            });
+          }
+        }), g(Y, {
+          get when() {
+            return t()?.hasData === !1;
+          },
+          get children() {
+            var s = fn(), a = s.firstChild;
+            return y((o) => {
+              var l = ue.noData, d = ue.noDataMsg;
+              return l !== o.e && u(s, o.e = l), d !== o.t && u(a, o.t = d), o;
+            }, {
+              e: void 0,
+              t: void 0
+            }), s;
+          }
+        }), g(Y, {
+          get when() {
+            return e.ssyGU;
+          },
+          get children() {
+            return g(ht, {});
+          }
+        })];
+      }
+    })), y(() => u(i, ue.studentHallPassesData)), i;
+  })();
+}
+function $n(e) {
+  const t = e?.group;
+  return (() => {
+    var r = bn(), i = r.firstChild;
+    return c(i, () => t.restrictionGroupName), c(r, g(K, {
+      get each() {
+        return t.studentRestrictions ?? [];
+      },
+      children: (s) => g(Cn, {
+        stuRestriction: s
+      })
+    }), null), y((s) => {
+      var a = ue.group, o = ue.groupLabel;
+      return a !== s.e && u(r, s.e = a), o !== s.t && u(i, s.t = o), s;
+    }, {
+      e: void 0,
+      t: void 0
+    }), r;
+  })();
+}
+function Cn(e) {
+  const t = e?.stuRestriction;
+  return (() => {
+    var r = xn(), i = r.firstChild, s = i.firstChild, a = i.nextSibling;
+    return c(a, () => t.studentName), y((o) => {
+      var l = ue.stuRestriction, d = ue.stuImage, n = t.studentPhoto, h = t.studentName, v = ue.stuName;
+      return l !== o.e && u(r, o.e = l), d !== o.t && u(s, o.t = d), n !== o.a && F(s, "src", o.a = n), h !== o.o && F(s, "alt", o.o = h), v !== o.i && u(a, o.i = v), o;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0
+    }), r;
+  })();
+}
+const Sn = "_studentHallPassesData_t6br4_1", Tn = "_studentHallPass_t6br4_1", Pn = "_roomName_t6br4_35", Vn = "_totalTime_t6br4_51", kn = "_overLimitIcon_t6br4_65", Ln = "_roomIcon_t6br4_79", Dn = "_noData_t6br4_105", An = "_noDataMsg_t6br4_123", re = {
+  studentHallPassesData: Sn,
+  studentHallPass: Tn,
+  roomName: Pn,
+  totalTime: Vn,
+  overLimitIcon: kn,
+  roomIcon: Ln,
+  noData: Dn,
+  noDataMsg: An
+};
+var Ke = /* @__PURE__ */ S("<div>"), Gn = /* @__PURE__ */ S("<div><span>No Hall Passes"), In = /* @__PURE__ */ S("<span>In Progress"), On = /* @__PURE__ */ S("<span> "), Hn = /* @__PURE__ */ S("<div><span><img></span><span></span><span></span><div>");
+class cr {
+}
+class Nn {
+  context;
+  ssyGU = "";
+  overLimitFilterActive;
+  showMorePasses;
+  timeFrame;
+  svue = !1;
+}
+const gr = ie(new cr()), Vl = () => Ne(gr);
+function Ue(e) {
+  const t = B(() => e.context || new cr());
+  return g(gr.Provider, {
+    get value() {
+      return t();
+    },
+    get children() {
+      return g(Rn, e);
+    }
+  });
+}
+Ue.defaultProps = new Nn();
+function Rn(e) {
+  const [t, r] = M(), [i, s] = e.overLimitFilterActive ?? M(), [a, o] = e.showMorePasses ?? M(), [l, d] = e.timeFrame ?? M();
+  return ge(() => {
+    r(void 0), e.ssyGU && Wr.LoadData(e.ssyGU, i() ?? !1, a() ?? !1, l() ?? "", e.svue).then((n) => {
+      r(n);
+    });
+  }), (() => {
+    var n = Ke();
+    return c(n, g(xe, {
+      get children() {
+        return [g(Y, {
+          get when() {
+            return t()?.hasData === !0;
+          },
+          get children() {
+            return [(() => {
+              var h = Ke();
+              return c(h, g(K, {
+                get each() {
+                  return t()?.inProgressPasses ?? [];
+                },
+                children: (v) => g(sr, {
+                  pass: v
+                })
+              })), h;
+            })(), (() => {
+              var h = Ke();
+              return c(h, g(K, {
+                get each() {
+                  return t()?.passes ?? [];
+                },
+                children: (v) => g(sr, {
+                  pass: v
+                })
+              })), h;
+            })()];
+          }
+        }), g(Y, {
+          get when() {
+            return t()?.hasData == !1;
+          },
+          get children() {
+            var h = Gn(), v = h.firstChild;
+            return y((w) => {
+              var m = re.noData, x = re.noDataMsg;
+              return m !== w.e && u(h, w.e = m), x !== w.t && u(v, w.t = x), w;
+            }, {
+              e: void 0,
+              t: void 0
+            }), h;
+          }
+        }), g(Y, {
+          get when() {
+            return e.ssyGU;
+          },
+          get children() {
+            return g(ht, {});
+          }
+        })];
+      }
+    })), y(() => u(n, re.studentHallPassesData)), n;
+  })();
+}
+function sr(e) {
+  const t = e?.pass ?? {}, r = t.room ?? {};
+  return (() => {
+    var i = Hn(), s = i.firstChild, a = s.firstChild, o = s.nextSibling, l = o.nextSibling, d = l.nextSibling;
+    return c(o, () => r.roomName), c(l, () => t.dateTime), c(d, g(G, {
+      get when() {
+        return t.overTimeLimit;
+      },
+      get children() {
+        var n = Ke();
+        return c(n, g(Ur, {
+          src: "fa-regular fa-triangle-exclamation"
+        })), y(() => u(n, re.overLimitIcon)), n;
+      }
+    }), null), c(d, g(xe, {
+      get children() {
+        return [g(Y, {
+          get when() {
+            return t.inProgress;
+          },
+          get children() {
+            return In();
+          }
+        }), g(Y, {
+          get when() {
+            return !t.inProgress;
+          },
+          get children() {
+            var n = On();
+            return n.firstChild, c(n, () => t.totalTime, null), y(() => u(n, re.totalTimeValue)), n;
+          }
+        })];
+      }
+    }), null), y((n) => {
+      var h = re.studentHallPass, v = r.colorLight ?? "#fff", w = re.roomIcon, m = r.iconPath, x = r.roomName, C = re.roomName, b = re.totalTime, T = t.overTimeLimit ? "red" : r.color ?? "#fff";
+      return h !== n.e && u(i, n.e = h), v !== n.t && ((n.t = v) != null ? i.style.setProperty("background-color", v) : i.style.removeProperty("background-color")), w !== n.a && u(a, n.a = w), m !== n.o && F(a, "src", n.o = m), x !== n.i && F(a, "alt", n.i = x), C !== n.n && u(o, n.n = C), b !== n.s && u(d, n.s = b), T !== n.h && ((n.h = T) != null ? d.style.setProperty("background-color", T) : d.style.removeProperty("background-color")), n;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0
+    }), i;
+  })();
+}
+const qn = "_HallPassSummary_9mzvq_1", Mn = "_LeftColumn_9mzvq_9", En = "_Divider_9mzvq_23", jn = "_RightColumn_9mzvq_37", Bn = "_SummaryData_9mzvq_47", Kn = "_HeaderLabel_9mzvq_57", Z = {
+  HallPassSummary: qn,
+  LeftColumn: Mn,
+  Divider: En,
+  RightColumn: jn,
+  SummaryData: Bn,
+  HeaderLabel: Kn
+};
+var zn = /* @__PURE__ */ S("<div><br>"), Un = /* @__PURE__ */ S("<span>Restrictions"), Fn = /* @__PURE__ */ S("<div><div><span>Hall Passes</span><div></div><br><br><span>Other Information</span><br></div><div></div><div><span>Summary</span><div></div><span>Recent Passes");
+class Wn {
+  filterType;
+  setFilterType;
+  ssyGU;
+  overLimitFilter;
+  setOverLimitFilter;
+  showMorePasses;
+  setShowMorePasses;
+  passCount;
+  setPassCount;
+  svue;
+  constructor(t, r) {
+    this.ssyGU = t, this.svue = r, [this.filterType, this.setFilterType] = M("Today"), [this.overLimitFilter, this.setOverLimitFilter] = M(!1), [this.showMorePasses, this.setShowMorePasses] = M(!1), [this.passCount, this.setPassCount] = M(0);
+  }
+}
+class Yn extends Re {
+  context;
+  svue = !1;
+}
+const hr = ie(), qe = () => Ne(hr);
+function lt(e) {
+  const t = B(() => e.value ?? ""), r = B(() => e.svue ?? !1), i = B(() => e.context || new Wn(t, r));
+  return g(hr.Provider, {
+    get value() {
+      return i();
+    },
+    get children() {
+      return g(Zn, e);
+    }
+  });
+}
+lt.defaultProps = new Yn();
+function Be(e) {
+  const t = qe(), r = De(() => t.filterType() === e.filterType, (s) => {
+    s && t.setFilterType(e.filterType);
+  }), i = !t.ssyGU() || e.dataLoaded;
+  return g(Ae, {
+    get label() {
+      return e.label;
+    },
+    get value() {
+      return e.value;
+    },
+    filterActive: r,
+    size: "small",
+    showLoadingSpinner: !0,
+    dataLoaded: i
+  });
+}
+function Jn(e) {
+  const t = qe(), r = De(() => t.overLimitFilter(), (i) => {
+    t.setOverLimitFilter(i);
+  });
+  return g(Ae, {
+    label: "Over Time Limit",
+    get value() {
+      return e.value;
+    },
+    filterActive: r,
+    size: "medium",
+    showLoadingSpinner: !0,
+    get dataLoaded() {
+      return e.dataLoaded;
+    }
+  });
+}
+function Xn(e) {
+  const t = qe(), r = De(() => t.overLimitFilter(), (a) => {
+    t.setOverLimitFilter(a);
+  }), i = De(() => t.showMorePasses(), (a) => {
+    t.setShowMorePasses(a);
+  }), s = De(() => t.filterType().toString(), (a) => {
+  });
+  return (() => {
+    var a = zn(), o = a.firstChild;
+    return c(a, g(Ue, {
+      get ssyGU() {
+        return t.ssyGU();
+      },
+      overLimitFilterActive: r,
+      showMorePasses: i,
+      timeFrame: s,
+      get svue() {
+        return t.svue();
+      }
+    }), o), c(a, g(G, {
+      get when() {
+        return e.passCount > 8;
+      },
+      get children() {
+        return g(Qn, {});
+      }
+    }), null), a;
+  })();
+}
+function Qn() {
+  const e = qe();
+  return g(lr, {
+    type: "primary",
+    style: "margin-left:5px;",
+    onClick: () => e.setShowMorePasses(!e.showMorePasses()),
+    get children() {
+      return g(xe, {
+        fallback: "Show More",
+        get children() {
+          return g(Y, {
+            get when() {
+              return e.showMorePasses();
+            },
+            children: "Show Less"
+          });
+        }
+      });
+    }
+  });
+}
+function Zn(e) {
+  const [t, r] = M(), i = qe(), [s, a] = M();
+  ge(() => {
+    r(void 0), a(void 0), i.ssyGU() && (er.LoadHallPassSummaryData(i.ssyGU()).then(r), er.LoadHallPassStatsData(i.ssyGU(), i.filterType().toString()).then(a));
+  });
+  const o = B(() => {
+    if (i.overLimitFilter())
+      return parseInt(s()?.passesOverTimeLimit ?? "0");
+    switch (i.filterType()) {
+      case "Today":
+        return parseInt(t()?.countToday ?? "0");
+      case "ThisWeek":
+        return parseInt(t()?.countThisWeek ?? "0");
+      case "ThisMonth":
+        return parseInt(t()?.countThisMonth ?? "0");
+      case "ThisSchoolYear":
+        return parseInt(t()?.countThisSchoolYear ?? "0");
+    }
+  });
+  return (() => {
+    var l = Fn(), d = l.firstChild, n = d.firstChild, h = n.nextSibling, v = h.nextSibling, w = v.nextSibling, m = w.nextSibling;
+    m.nextSibling;
+    var x = d.nextSibling, C = x.nextSibling, b = C.firstChild, T = b.nextSibling, D = T.nextSibling;
+    return c(h, g(Be, {
+      label: "Today",
+      get value() {
+        return t()?.countToday ?? "";
+      },
+      filterType: "Today",
+      get dataLoaded() {
+        return t()?.dataLoaded ?? !1;
+      }
+    }), null), c(h, g(Be, {
+      label: "This Week",
+      get value() {
+        return t()?.countThisWeek ?? "";
+      },
+      filterType: "ThisWeek",
+      get dataLoaded() {
+        return t()?.dataLoaded ?? !1;
+      }
+    }), null), c(h, g(Be, {
+      label: "This Month",
+      get value() {
+        return t()?.countThisMonth ?? "";
+      },
+      filterType: "ThisMonth",
+      get dataLoaded() {
+        return t()?.dataLoaded ?? !1;
+      }
+    }), null), c(h, g(Be, {
+      label: "This Year",
+      get value() {
+        return t()?.countThisSchoolYear ?? "";
+      },
+      filterType: "ThisSchoolYear",
+      get dataLoaded() {
+        return t()?.dataLoaded ?? !1;
+      }
+    }), null), c(d, g(G, {
+      get when() {
+        return i.svue() === !1;
+      },
+      get children() {
+        return [(() => {
+          var L = Un();
+          return y(() => u(L, Z.HeaderLabel)), L;
+        })(), g(ze, {
+          get ssyGU() {
+            return i.ssyGU();
+          }
+        })];
+      }
+    }), w), c(d, g(Ae, {
+      label: "Hall Pass Status",
+      size: "medium",
+      get value() {
+        return t()?.hallPassStatus ?? "";
+      },
+      get icon() {
+        return t()?.hallPassStatusIcon;
+      },
+      get iconColor() {
+        return t()?.hallPassStatusIconColor;
+      },
+      showLoadingSpinner: !0,
+      get dataLoaded() {
+        return !i.ssyGU() || (t()?.dataLoaded ?? !1);
+      },
+      get style() {
+        return t()?.hallPassStatus === "Disabled" ? "yellow" : "";
+      }
+    }), null), c(d, g(Ae, {
+      label: "Pass Limit",
+      size: "medium",
+      get value() {
+        return t()?.passLimit ?? "";
+      },
+      get icon() {
+        return t()?.passLimitIcon;
+      },
+      get iconColor() {
+        return t()?.passLimitIconColor;
+      },
+      showLoadingSpinner: !0,
+      get dataLoaded() {
+        return !i.ssyGU() || (t()?.dataLoaded ?? !1);
+      }
+    }), null), c(T, g(Ae, {
+      label: "Total Pass Time",
+      get value() {
+        return s()?.totalPassTime ?? "";
+      },
+      size: "medium",
+      showLoadingSpinner: !0,
+      get dataLoaded() {
+        return !i.ssyGU() || (s()?.dataLoaded ?? !1);
+      }
+    }), null), c(T, g(Jn, {
+      get value() {
+        return s()?.passesOverTimeLimit ?? "";
+      },
+      get dataLoaded() {
+        return !i.ssyGU() || (s()?.dataLoaded ?? !1);
+      }
+    }), null), c(C, g(Xn, {
+      get passCount() {
+        return o();
+      }
+    }), null), y((L) => {
+      var z = Z.HallPassSummary, I = Z.LeftColumn, E = Z.HeaderLabel, f = Z.TimeFrameCards, P = Z.HeaderLabel, O = Z.Divider, V = Z.RightColumn, H = Z.HeaderLabel, q = Z.SummaryData, R = Z.HeaderLabel;
+      return z !== L.e && u(l, L.e = z), I !== L.t && u(d, L.t = I), E !== L.a && u(n, L.a = E), f !== L.o && u(h, L.o = f), P !== L.i && u(m, L.i = P), O !== L.n && u(x, L.n = O), V !== L.s && u(C, L.s = V), H !== L.h && u(b, L.h = H), q !== L.r && u(T, L.r = q), R !== L.d && u(D, L.d = R), L;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0,
+      r: void 0,
+      d: void 0
+    }), l;
+  })();
+}
+const pn = "_group_amw8o_1", ei = "_value_amw8o_9", ti = "_description_amw8o_17", ri = "_photo_amw8o_39", ni = "_label_amw8o_49", N = {
+  group: pn,
+  value: ei,
+  description: ti,
+  photo: ri,
+  label: ni
+};
+var Te = /* @__PURE__ */ S("<div>"), ii = /* @__PURE__ */ S('<div class="flexbox horizontal padded"><div class=auto></div><div>'), si = /* @__PURE__ */ S('<div><h2>Incident </h2><div class="flexbox horizontal padded"><span></span><span></span></div><i>'), li = /* @__PURE__ */ S('<div class="flexbox vertical"style=width:100%>'), vt = /* @__PURE__ */ S('<div class="flexbox horizontal"style=flex-wrap:wrap>'), ai = /* @__PURE__ */ S("<div><h2><span>Violation:"), vr = /* @__PURE__ */ S("<span>"), mr = /* @__PURE__ */ S('<div class="flexbox horizontal middle padded"><img><div class="flexbox vertical"><h3>'), oi = /* @__PURE__ */ S("<h3>Interventions"), fr = /* @__PURE__ */ S("<h3>Dispositions"), _r = /* @__PURE__ */ S("<div class=layout-table>"), br = /* @__PURE__ */ S("<hr>"), di = /* @__PURE__ */ S("<div><div></div><div>"), xr = /* @__PURE__ */ S("<div><span>Violation:</span><span>"), yr = /* @__PURE__ */ S("<span><span>Hours:</span><span>"), wr = /* @__PURE__ */ S("<span><span>Days:</span><span>"), $r = /* @__PURE__ */ S('<div class=layout-row><h4></h4><div style=padding-bottom:10px><div class="flexbox horizontal auto"><span><span>Date:</span><span></span></span></div><i>');
+class Cr {
+  summary = M();
+  loadAllViolations() {
+    const t = this.summary[0]();
+    let r = {};
+    return t && (r = t.violations.reduce((i, s) => (s.lookupValue && (i[s.lookupValue] = s), i), {})), r;
+  }
+}
+class ui {
+  context;
+  incidentGU = "";
+}
+const Sr = ie(new Cr()), Ze = () => Ne(Sr), [nt, ci] = M("student");
+function at(e) {
+  const t = B(() => e.context || new Cr());
+  return g(Sr.Provider, {
+    get value() {
+      return t();
+    },
+    get children() {
+      return g(gi, e);
+    }
+  });
+}
+function gi(e) {
+  const t = "AB3D8DA0-19AC-4487-9A89-B9B4EA214599", r = Qe(), i = Ze(), [s, a] = i.summary, o = B(() => e.incidentGU || r.identity()), l = !document.querySelector("#PrimaryView")?.classList.contains("VM_Add") && document.querySelector("#PrimaryView")?.getAttribute("data-guid") !== t && !document.body.classList.contains("OverlayWindow"), d = () => {
+    o() || o() != null ? Yr.LoadSummary(o(), r.viewId()).then((h) => {
+      a(h);
+    }) : a(void 0);
+  };
+  ge(d), Kr(function() {
+    r.events && (r.events.refresh = d);
+  });
+  function n() {
+    if (window.ST.OpenOverlay) {
+      const h = "AB3D8DA0-19AC-4487-9A89-B9B4EA214599", v = {
+        REV_RENDER: {
+          "@VIEW": h,
+          VIEW: {
+            "@GUID": h,
+            "@RENDER_VIEW": "YES",
+            REV_DATA_ROOT: {
+              "@ACTION": "CURRENT",
+              REV_DATA_REQUEST: {
+                REV_VIEW: {
+                  "@GUID": h
+                }
+              },
+              IDENTITY: {
+                REV_ELEMENT: o()
+              }
+            }
+          },
+          PASS_THROUGH: r && {
+            "@ParentViewGU": r.viewId(),
+            "@ParentViewClientID": r.primaryObjectGU()
+          }
+        }
+      };
+      window.ST.OpenOverlay(void 0, v);
+    }
+  }
+  return (() => {
+    var h = li();
+    return c(h, g(G, {
+      get when() {
+        return s()?.violations.length ?? !1;
+      },
+      get children() {
+        return [(() => {
+          var v = ii(), w = v.firstChild, m = w.nextSibling;
+          return c(v, g(G, {
+            get when() {
+              return B(() => !!(l && s()?.enableWizardViews))() && s()?.enableEditButton;
+            },
+            get children() {
+              var x = Te();
+              return c(x, g(lr, {
+                onClick: n,
+                children: "Edit"
+              })), x;
+            }
+          }), w), c(m, g(tt, {
+            name: "groupBy",
+            value: [nt, ci],
+            get children() {
+              return [g(tt.Option, {
+                value: "student",
+                label: "Group By Student"
+              }), g(tt.Option, {
+                value: "violation",
+                label: "Group By Violation"
+              })];
+            }
+          })), v;
+        })(), (() => {
+          var v = si(), w = v.firstChild;
+          w.firstChild;
+          var m = w.nextSibling, x = m.firstChild, C = x.nextSibling, b = m.nextSibling;
+          return c(w, () => s()?.incidentID, null), c(x, () => s().incidentDate), c(C, () => s().incidentTime), c(b, () => s().description), y((T) => {
+            var D = `${N.group} flexbox vertical`, L = N.description;
+            return D !== T.e && u(v, T.e = D), L !== T.t && u(b, T.t = L), T;
+          }, {
+            e: void 0,
+            t: void 0
+          }), v;
+        })(), g(xe, {
+          get children() {
+            return [g(Y, {
+              get when() {
+                return nt() == "violation";
+              },
+              get children() {
+                return g(vi, {});
+              }
+            }), g(Y, {
+              get when() {
+                return nt() == "student";
+              },
+              get children() {
+                return [g(mi, {}), g(fi, {})];
+              }
+            })];
+          }
+        })];
+      }
+    })), h;
+  })();
+}
+at.defaultProps = {
+  ...new ui(),
+  ...new Re()
+};
+class hi {
+  violation;
+  students = [];
+  constructor(t) {
+    this.violation = t;
+  }
+}
+function vi() {
+  const e = Ze(), t = B(() => {
+    const r = {}, i = e.summary[0](), s = e.loadAllViolations();
+    if (i?.students)
+      for (const a of i.students.filter((o) => o.incidentRoleCode === "1"))
+        for (const o of a.violations) {
+          const l = s[o];
+          l && (r[o] = r[o] ?? new hi(l), r[o].students.push(a));
+        }
+    return Object.values(r);
+  });
+  return (() => {
+    var r = vt();
+    return c(r, g(K, {
+      get each() {
+        return t();
+      },
+      children: (i) => (() => {
+        var s = ai(), a = s.firstChild, o = a.firstChild;
+        return c(a, () => i.violation.lookupDesc, null), c(s, g(K, {
+          get each() {
+            return i.students;
+          },
+          children: (l, d) => (() => {
+            var n = Te();
+            return c(n, g(Tr, {
+              student: l
+            }), null), c(n, g(Pr, {
+              student: l,
+              showViolations: !1,
+              get suppressDivider() {
+                return d() === i.students.length - 1;
+              }
+            }), null), y(() => u(n, N.group)), n;
+          })()
+        }), null), y((l) => {
+          var d = `${N.group} auto`, n = N.label;
+          return d !== l.e && u(s, l.e = d), n !== l.t && u(o, l.t = n), l;
+        }, {
+          e: void 0,
+          t: void 0
+        }), s;
+      })()
+    })), r;
+  })();
+}
+function mi() {
+  const e = Ze(), t = B(() => e.summary[0]()?.students.filter((i) => i.incidentRoleCode === "1") || []);
+  function r(i) {
+    const s = e.loadAllViolations();
+    return i.violations.map((a) => s[a]?.lookupDesc).filter((a) => !!a).join("; ");
+  }
+  return (() => {
+    var i = vt();
+    return c(i, g(K, {
+      get each() {
+        return t();
+      },
+      children: (s, a) => (() => {
+        var o = Te();
+        return c(o, g(Tr, {
+          student: s,
+          get violation() {
+            return r(s);
+          }
+        }), null), c(o, g(Pr, {
+          student: s,
+          showViolations: !0,
+          suppressDivider: !0
+        }), null), y(() => u(o, `${N.group} auto`)), o;
+      })()
+    })), i;
+  })();
+}
+function Tr(e) {
+  const t = e.student;
+  return (() => {
+    var r = mr(), i = r.firstChild, s = i.nextSibling, a = s.firstChild;
+    return c(a, () => t.formattedName), c(s, g(G, {
+      get when() {
+        return e.violation;
+      },
+      get children() {
+        var o = vr();
+        return c(o, () => e.violation), o;
+      }
+    }), null), y((o) => {
+      var l = N.photo, d = t.photo, n = `Photo for ${t.formattedName}`;
+      return l !== o.e && u(i, o.e = l), d !== o.t && F(i, "src", o.t = d), n !== o.a && F(i, "alt", o.a = n), o;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0
+    }), r;
+  })();
+}
+function Pr(e) {
+  const t = e.student;
+  return (() => {
+    var r = Te();
+    return c(r, g(G, {
+      get when() {
+        return t.interventions.length > 0;
+      },
+      get children() {
+        return [oi(), g(K, {
+          get each() {
+            return t.interventions;
+          },
+          children: (i) => (() => {
+            var s = di(), a = s.firstChild, o = a.nextSibling;
+            return c(a, () => i.intervention), c(o, () => i.comment), y((l) => {
+              var d = N.group, n = N.value, h = N.description;
+              return d !== l.e && u(s, l.e = d), n !== l.t && u(a, l.t = n), h !== l.a && u(o, l.a = h), l;
+            }, {
+              e: void 0,
+              t: void 0,
+              a: void 0
+            }), s;
+          })()
+        })];
+      }
+    }), null), c(r, g(G, {
+      get when() {
+        return t.dispositions.length > 0;
+      },
+      get children() {
+        return [fr(), (() => {
+          var i = _r();
+          return c(i, g(K, {
+            get each() {
+              return t.dispositions;
+            },
+            children: (s) => (() => {
+              var a = $r(), o = a.firstChild, l = o.nextSibling, d = l.firstChild, n = d.firstChild, h = n.firstChild, v = h.nextSibling, w = d.nextSibling;
+              return c(o, () => s.disposition), c(l, g(G, {
+                get when() {
+                  return e.showViolations;
+                },
+                get children() {
+                  var m = xr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.violationDesc), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), d), c(v, () => s.dispositionDate), c(d, g(G, {
+                get when() {
+                  return s.dispositionHours;
+                },
+                get children() {
+                  var m = yr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.dispositionHours), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), null), c(d, g(G, {
+                get when() {
+                  return s.dispositionDays;
+                },
+                get children() {
+                  var m = wr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.dispositionDays), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), null), c(w, () => s.dispositionComment), y((m) => {
+                var x = N.label, C = N.value;
+                return x !== m.e && u(h, m.e = x), C !== m.t && u(v, m.t = C), m;
+              }, {
+                e: void 0,
+                t: void 0
+              }), a;
+            })()
+          })), i;
+        })()];
+      }
+    }), null), c(r, g(G, {
+      get when() {
+        return !e.suppressDivider;
+      },
+      get children() {
+        return br();
+      }
+    }), null), r;
+  })();
+}
+function fi() {
+  const e = Ze(), t = B(() => e.summary[0]()?.otherPersons.filter((i) => i.incidentRoleCode === "1") || []);
+  function r(i) {
+    const s = e.loadAllViolations();
+    return i.violations.map((a) => s[a]?.lookupDesc).filter((a) => !!a).join("; ");
+  }
+  return (() => {
+    var i = vt();
+    return c(i, g(K, {
+      get each() {
+        return t();
+      },
+      children: (s, a) => (() => {
+        var o = Te();
+        return c(o, g(_i, {
+          otherPerson: s,
+          get violation() {
+            return r(s);
+          }
+        }), null), c(o, g(bi, {
+          otherPerson: s,
+          showViolations: !0,
+          suppressDivider: !0
+        }), null), y(() => u(o, `${N.group} auto`)), o;
+      })()
+    })), i;
+  })();
+}
+function _i(e) {
+  const t = e.otherPerson;
+  return (() => {
+    var r = mr(), i = r.firstChild, s = i.nextSibling, a = s.firstChild;
+    return c(a, () => t.formattedName), c(s, g(G, {
+      get when() {
+        return e.violation;
+      },
+      get children() {
+        var o = vr();
+        return c(o, () => e.violation), o;
+      }
+    }), null), y((o) => {
+      var l = N.photo, d = t.photo, n = `Photo for ${t.formattedName}`;
+      return l !== o.e && u(i, o.e = l), d !== o.t && F(i, "src", o.t = d), n !== o.a && F(i, "alt", o.a = n), o;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0
+    }), r;
+  })();
+}
+function bi(e) {
+  const t = e.otherPerson;
+  return (() => {
+    var r = Te();
+    return c(r, g(G, {
+      get when() {
+        return t.dispositions.length > 0;
+      },
+      get children() {
+        return [fr(), (() => {
+          var i = _r();
+          return c(i, g(K, {
+            get each() {
+              return t.dispositions;
+            },
+            children: (s) => (() => {
+              var a = $r(), o = a.firstChild, l = o.nextSibling, d = l.firstChild, n = d.firstChild, h = n.firstChild, v = h.nextSibling, w = d.nextSibling;
+              return c(o, () => s.disposition), c(l, g(G, {
+                get when() {
+                  return e.showViolations;
+                },
+                get children() {
+                  var m = xr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.violationDesc), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), d), c(v, () => s.dispositionDate), c(d, g(G, {
+                get when() {
+                  return s.dispositionHours;
+                },
+                get children() {
+                  var m = yr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.dispositionHours), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), null), c(d, g(G, {
+                get when() {
+                  return s.dispositionDays;
+                },
+                get children() {
+                  var m = wr(), x = m.firstChild, C = x.nextSibling;
+                  return c(C, () => s.dispositionDays), y((b) => {
+                    var T = N.label, D = N.value;
+                    return T !== b.e && u(x, b.e = T), D !== b.t && u(C, b.t = D), b;
+                  }, {
+                    e: void 0,
+                    t: void 0
+                  }), m;
+                }
+              }), null), c(w, () => s.dispositionComment), y((m) => {
+                var x = N.label, C = N.value;
+                return x !== m.e && u(h, m.e = x), C !== m.t && u(v, m.t = C), m;
+              }, {
+                e: void 0,
+                t: void 0
+              }), a;
+            })()
+          })), i;
+        })()];
+      }
+    }), null), c(r, g(G, {
+      get when() {
+        return !e.suppressDivider;
+      },
+      get children() {
+        return br();
+      }
+    }), null), r;
+  })();
+}
+class xi {
+  status;
+  constructor(t) {
+    this.status = t;
+  }
+}
+const yi = "_imgHolder_hs19u_59", wi = "_studentName_hs19u_79", $i = "_classReqHolder_hs19u_93", Ci = "_statusHolder_hs19u_105", ve = {
+  "sis-k12-grad-req-overview-detail-header": "_sis-k12-grad-req-overview-detail-header_hs19u_1",
+  "student-picker": "_student-picker_hs19u_25",
+  "student-card": "_student-card_hs19u_41",
+  imgHolder: yi,
+  studentName: wi,
+  classReqHolder: $i,
+  statusHolder: Ci,
+  "small-text": "_small-text_hs19u_123"
+};
+class Si {
+  async DeserializeData(t) {
+    return await Je.call("sis", "sis-k12-grad-req-overview-detail-header", "K12GradReqOverviewDetailHeaderApi", "DeserializeData", {
+      gradReqResultHeaderDataJson: t
+    });
+  }
+}
+const Ti = new Si();
+class Pi {
+  lowValue = 0;
+  highValue = 0;
+  lowBandLegend;
+  midBandLegend;
+  highBandLegend;
+  minValue = 0;
+  maxValue = 0;
+  step = 0;
+  enforceInteger = !1;
+  title;
+  lowBandColor;
+  midBandColor;
+  highBandColor;
+}
+class Vi {
+  title;
+  lowValue = 0;
+  highValue = 0;
+  minValue = 0;
+  maxValue = 0;
+  enforceInteger = !1;
+  step = 0;
+}
+var j = /* @__PURE__ */ ((e) => (e[e.NotMet = 0] = "NotMet", e[e.Met = 1] = "Met", e[e.OnTrack = 2] = "OnTrack", e[e.OffTrack = 3] = "OffTrack", e[e.AtRisk = 4] = "AtRisk", e[e.None = 5] = "None", e))(j || {});
+class ki {
+  orgsByGradeJson = {};
+  requiredCredits = 0;
+  completedCredits = 0;
+  inProgressCredits = 0;
+  forecastedCredits = 0;
+}
+class Li {
+  grade;
+  completedCredits = 0;
+  requestedCredits = 0;
+  gradeStatus = 0;
+  creditThresholdPeriods = [];
+  statusByTerm = {};
+}
+class Di {
+  gradReqUpdateCreditThresholdGU;
+  gradePeriod;
+  offTrack;
+  onTrack;
+  schoolYear;
+  grade;
+  gradePeriodDate = jr.Empty;
+}
+var ee = /* @__PURE__ */ ((e) => (e[e.CourseHistory = 1] = "CourseHistory", e[e.Grading = 2] = "Grading", e[e.Scheduled = 3] = "Scheduled", e[e.NYRSchedule = 4] = "NYRSchedule", e[e.Requested = 5] = "Requested", e[e.Error = 99] = "Error", e))(ee || {});
+class Ai {
+  constructor() {
+  }
+}
+const Gi = "_header_x9ggm_21", Ii = "_headerCard_x9ggm_39", Oi = "_headerGrade_x9ggm_65", Hi = "_headerGradeLabel_x9ggm_73", Ni = "_headerGradeProgress_x9ggm_89", Ri = "_headerGradeTermBreakdownContainer_x9ggm_105", qi = "_headerGradeTermBreakdown_x9ggm_105", Mi = "_headerGradeTermLabel_x9ggm_129", Ei = "_headerGradeProgressTitle_x9ggm_139", ji = "_headerGradeProgressCredits_x9ggm_149", Bi = "_subjectAreasContainer_x9ggm_157", Ki = "_headerSubjectAreaName_x9ggm_197", zi = "_headerCredits_x9ggm_213", Ui = "_breakdown_x9ggm_221", Fi = "_gradeContainer_x9ggm_231", Wi = "_grade_x9ggm_231", Yi = "_current_x9ggm_265", Ji = "_organizationLabel_x9ggm_275", Xi = "_credit_x9ggm_285", Qi = "_courseInfo_x9ggm_295", Zi = "_requestedCourse_x9ggm_321", pi = "_activeCourse_x9ggm_329", es = "_coursePartial_x9ggm_339", ts = "_courseTitle_x9ggm_347", rs = "_courseTerm_x9ggm_359", ns = "_creditInfo_x9ggm_369", is = "_spinnerHolder_x9ggm_403", ss = "_subjectAreaIconMet_x9ggm_419", ls = "_subjectAreaIconNotMet_x9ggm_419", as = "_summaryHeader_x9ggm_445", os = "_summaryContainer_x9ggm_457", ds = "_legendContainer_x9ggm_465", us = "_legendTitle_x9ggm_473", cs = "_legendEntry_x9ggm_483", gs = "_creditTotals_x9ggm_501", hs = "_creditTotalResult_x9ggm_509", vs = "_summaryIconNotMet_x9ggm_517", ms = "_summaryIconMet_x9ggm_517", fs = "_summaryIconAtRisk_x9ggm_517", _s = "_summaryIconMissing_x9ggm_517", bs = "_summaryStatus_x9ggm_559", xs = "_courseResultsContainer_x9ggm_571", ys = "_summaryTerm_x9ggm_597", ws = "_summaryTermGrade_x9ggm_605", $ = {
+  "sis-k12-gradreq-grade-layout": "_sis-k12-gradreq-grade-layout_x9ggm_1",
+  header: Gi,
+  headerCard: Ii,
+  headerGrade: Oi,
+  headerGradeLabel: Hi,
+  headerGradeProgress: Ni,
+  headerGradeTermBreakdownContainer: Ri,
+  headerGradeTermBreakdown: qi,
+  headerGradeTermLabel: Mi,
+  headerGradeProgressTitle: Ei,
+  headerGradeProgressCredits: ji,
+  subjectAreasContainer: Bi,
+  "sis-k12-gradreq-grade-layout-subjectarea": "_sis-k12-gradreq-grade-layout-subjectarea_x9ggm_169",
+  headerSubjectAreaName: Ki,
+  headerCredits: zi,
+  breakdown: Ui,
+  gradeContainer: Fi,
+  grade: Wi,
+  current: Yi,
+  organizationLabel: Ji,
+  credit: Xi,
+  courseInfo: Qi,
+  requestedCourse: Zi,
+  activeCourse: pi,
+  coursePartial: es,
+  courseTitle: ts,
+  courseTerm: rs,
+  creditInfo: ns,
+  spinnerHolder: is,
+  subjectAreaIconMet: ss,
+  subjectAreaIconNotMet: ls,
+  summaryHeader: as,
+  summaryContainer: os,
+  legendContainer: ds,
+  legendTitle: us,
+  legendEntry: cs,
+  creditTotals: gs,
+  creditTotalResult: hs,
+  summaryIconNotMet: vs,
+  summaryIconMet: ms,
+  summaryIconAtRisk: fs,
+  summaryIconMissing: _s,
+  summaryStatus: bs,
+  courseResultsContainer: xs,
+  "no-credit-course": "_no-credit-course_x9ggm_587",
+  summaryTerm: ys,
+  summaryTermGrade: ws
+};
+class $s {
+  async GetDataObject(t) {
+    return await Je.call("sis", "sis-k12-gradreq-grade-layout", "K12GradReqGradeLayoutApi", "GetDataObject", {
+      gradReqResultGU: t
+    });
+  }
+}
+const Cs = new $s();
+class Ss {
+  async DeserializeProps(t) {
+    return await Je.call("sis", "sis-two-point-slider", "SISTwoPointSliderApi", "DeserializeProps", {
+      json: t
+    });
+  }
+}
+const Ts = new Ss();
+class Ps {
+  async DeserializeProps(t) {
+    return await Je.call("sis", "sis-k12-gradreq-threshold", "K12GradReqThresholdApi", "DeserializeProps", {
+      json: t
+    });
+  }
+}
+const Vs = new Ps();
+var ks = /* @__PURE__ */ S("<div><div><span>Grade"), Ls = /* @__PURE__ */ S("<div><div>"), Ie = /* @__PURE__ */ S("<div>"), ke = /* @__PURE__ */ S("<span>"), Ds = /* @__PURE__ */ S("<span>Requested: <!> credits"), As = /* @__PURE__ */ S("<div><span></span><span>Completed: "), Gs = /* @__PURE__ */ S("<div><span></span><span>"), Is = /* @__PURE__ */ S("<div><div><div><span></span></div><div>Required Credit Total: <span></span></div><div>Subject Area Credits Needed: <span></span></div></div><div><div>Grade <!> </div><div><span></span> &lt; </div><div><span></span> <!> - </div><div><span></span> &gt;= "), Os = /* @__PURE__ */ S('<div><div><span></span><span></span><span>(<!> of <!> credits)</span></div><div><span><span class="fa fa-lock"></span> Completed: <!> credits, <span class="fa fa-file-pen"></span> In Progress: <!> credits, <span class="fa fa-person-circle-question"></span> Requested: <!> credits</span></div><div>'), Hs = /* @__PURE__ */ S("<div><span>"), Ns = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Course ID: <span style=font-weight:700>'), Rs = /* @__PURE__ */ S('<span style="margin:0px 0.2em">CTE Subject Area(s): <span style=font-weight:700>'), qs = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Taken: <span style=font-weight:700>'), Ms = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Term: <span style=font-weight:700>'), Es = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Mark: <span style=font-weight:700>'), js = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Credits Attempted: <span style=font-weight:700>'), Bs = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Requested Credits: <span style=font-weight:700>'), Ks = /* @__PURE__ */ S("<span style=margin-left:6px><span></span><span>Recieved No Credit"), zs = /* @__PURE__ */ S('<span style="margin:0px 0.2em">Credits: <span style=font-weight:700>'), Us = /* @__PURE__ */ S("<div><span></span><span></span><span></span><div><span>");
+const Vr = ie(), kl = () => Xe(Vr);
+class Fs {
+}
+function ot(e) {
+  const t = new Ai();
+  return g(Vr.Provider, {
+    value: t,
+    get children() {
+      return g(Ws, e);
+    }
+  });
+}
+function Ws(e) {
+  const [t, r] = M(void 0), i = Qe(), s = B(() => i.identity());
+  return ge(() => {
+    s() !== "" && (console.log(s()), Cs.GetDataObject(s()).then((a) => {
+      r(a), console.log(a);
+    }));
+  }), g(xe, {
+    get fallback() {
+      return (() => {
+        var a = Ie();
+        return c(a, g(ht, {})), y(() => u(a, $.spinnerHolder)), a;
+      })();
+    },
+    get children() {
+      return g(Y, {
+        get when() {
+          return B(() => t() != null)() && t()?.result != null;
+        },
+        get children() {
+          var a = Ls(), o = a.firstChild;
+          return c(o, g(Js, {
+            get status() {
+              return t()?.result.creditData.status ?? j.None;
+            },
+            get statusDesc() {
+              return t()?.requirementStatusLookups[t()?.result.creditData.status ?? j.None] ?? "";
+            },
+            get requiredCreditTotal() {
+              return t()?.result.creditData.totalRequiredCredits ?? 0;
+            },
+            get creditsNeeded() {
+              return t()?.result.creditData.totalNeededCredits ?? 0;
+            },
+            get gradeLevel() {
+              return t()?.gradeLookups[t()?.grade ?? ""] ?? "";
+            },
+            get currentTerm() {
+              return t()?.result.creditData.currentTerm ?? new Di();
+            },
+            get period() {
+              return t()?.districtGradePeriodLookups[t()?.result.creditData.currentTerm.gradePeriod ?? ""] ?? "";
+            }
+          }), null), c(o, g(G, {
+            get when() {
+              return Object.keys(t()?.result.creditData.creditDataByGrade ?? {}).length > 0;
+            },
+            get children() {
+              var l = ks(), d = l.firstChild, n = d.firstChild;
+              return c(d, g(K, {
+                get each() {
+                  return Object.entries(t()?.result.creditData.creditDataByGrade ?? {});
+                },
+                children: ([h, v]) => g(Ys, {
+                  get gradePeriods() {
+                    return t()?.districtGradePeriodLookups ?? {};
+                  },
+                  get currentGrade() {
+                    return t()?.grade == h;
+                  },
+                  get grade() {
+                    return t()?.gradeLookups[h] ?? "";
+                  },
+                  get completedCredits() {
+                    return v.completedCredits ?? 0;
+                  },
+                  get requestedCredits() {
+                    return v.requestedCredits ?? 0;
+                  },
+                  thresholds: v ?? new Li()
+                })
+              }), null), y((h) => {
+                var v = $.headerCard, w = $.headerGrade, m = $.headerGradeLabel;
+                return v !== h.e && u(l, h.e = v), w !== h.t && u(d, h.t = w), m !== h.a && u(n, h.a = m), h;
+              }, {
+                e: void 0,
+                t: void 0,
+                a: void 0
+              }), l;
+            }
+          }), null), c(a, g(K, {
+            get each() {
+              return Object.entries(t()?.result.creditData.gradesBySubjectArea ?? {});
+            },
+            children: ([l, d]) => (() => {
+              var n = Ie();
+              return c(n, g(Xs, {
+                get grades() {
+                  return Object.keys(t()?.result.creditData.creditDataByGrade ?? {});
+                },
+                subjectAreaCode: l,
+                get currentGrade() {
+                  return t()?.grade ?? "";
+                },
+                get subjectAreaLookups() {
+                  return t()?.subjectAreaLookups ?? {};
+                },
+                organizations: d ?? new ki()
+              })), y(() => u(n, $.subjectAreasContainer)), n;
+            })()
+          }), null), y((l) => {
+            var d = $["sis-k12-gradreq-grade-layout"], n = $.header;
+            return d !== l.e && u(a, l.e = d), n !== l.t && u(o, l.t = n), l;
+          }, {
+            e: void 0,
+            t: void 0
+          }), a;
+        }
+      });
+    }
+  });
+}
+function Ys(e) {
+  const t = (s) => (() => {
+    var a = ke();
+    return y(() => u(a, `fa-solid ${s.type == "grade" ? fe(e.thresholds.gradeStatus) : fe(e.thresholds.statusByTerm[s.term]?.termStatus)}`)), a;
+  })(), r = (s) => {
+    var a = "";
+    const o = e.thresholds.statusByTerm[s];
+    return o.completedCredits > 0 ? a = `Completed: ${o.completedCredits}` : o.inProgressCredits > 0 ? a = `In Progress: ${o.inProgressCredits}` : o.requestedCredits > 0 && (a = `Requested: ${o.requestedCredits}`), a;
+  }, i = () => (console.log(e.thresholds), "");
+  return (() => {
+    var s = As(), a = s.firstChild, o = a.nextSibling;
+    return o.firstChild, c(s, i, a), c(a, g(t, {
+      type: "grade"
+    }), null), c(a, () => e.grade, null), c(o, () => e.completedCredits, null), c(o, g(G, {
+      get when() {
+        return e.thresholds.creditThresholdPeriods.length > 0;
+      },
+      get children() {
+        return [" / ", B(() => e.thresholds.creditThresholdPeriods[e.thresholds.creditThresholdPeriods.length - 1].onTrack ?? 0), " credits"];
+      }
+    }), null), c(s, g(G, {
+      get when() {
+        return e.requestedCredits > 0;
+      },
+      get children() {
+        var l = Ds(), d = l.firstChild, n = d.nextSibling;
+        return n.nextSibling, c(l, () => e.requestedCredits, n), y(() => u(l, $.headerGradeProgressCredits)), l;
+      }
+    }), null), c(s, g(G, {
+      get when() {
+        return B(() => !!e.currentGrade)() && Object.entries(e.thresholds.statusByTerm).length > 0;
+      },
+      get children() {
+        var l = Ie();
+        return c(l, g(K, {
+          get each() {
+            return Object.entries(e.gradePeriods ?? {});
+          },
+          children: ([d, n]) => (() => {
+            var h = Gs(), v = h.firstChild, w = v.nextSibling;
+            return c(v, g(t, {
+              type: "term",
+              term: d
+            }), null), c(v, n, null), c(w, () => r(d)), y((m) => {
+              var x = $.headerGradeTermBreakdown, C = $.headerGradeTermLabel;
+              return x !== m.e && u(h, m.e = x), C !== m.t && u(v, m.t = C), m;
+            }, {
+              e: void 0,
+              t: void 0
+            }), h;
+          })()
+        })), y(() => u(l, $.headerGradeTermBreakdownContainer)), l;
+      }
+    }), null), y((l) => {
+      var d = $.headerGradeProgress, n = $.headerGradeProgressTitle, h = $.headerGradeProgressCredits;
+      return d !== l.e && u(s, l.e = d), n !== l.t && u(a, l.t = n), h !== l.a && u(o, l.a = h), l;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0
+    }), s;
+  })();
+}
+const fe = (e) => {
+  var t = "fa-solid ";
+  switch (e) {
+    case j.None:
+      t = "";
+      break;
+    case j.AtRisk:
+      t += `fa-triangle-exclamation ${$.summaryIconAtRisk}`;
+      break;
+    case j.Met:
+    case j.OnTrack:
+      t += `fa-circle-check ${$.summaryIconMet}`;
+      break;
+    case j.NotMet:
+    case j.OffTrack:
+      t += `fa-circle-exclamation ${$.summaryIconNotMet}`;
+      break;
+    default:
+      t += `fa-circle-question ${$.summaryIconMissing}`;
+      break;
+  }
+  return t;
+};
+function Js(e) {
+  return (() => {
+    var t = Is(), r = t.firstChild, i = r.firstChild, s = i.firstChild, a = i.nextSibling, o = a.firstChild, l = o.nextSibling, d = a.nextSibling, n = d.firstChild, h = n.nextSibling, v = r.nextSibling, w = v.firstChild, m = w.firstChild, x = m.nextSibling;
+    x.nextSibling;
+    var C = w.nextSibling, b = C.firstChild;
+    b.nextSibling;
+    var T = C.nextSibling, D = T.firstChild, L = D.nextSibling, z = L.nextSibling;
+    z.nextSibling;
+    var I = T.nextSibling, E = I.firstChild;
+    return E.nextSibling, c(i, () => e.statusDesc, null), c(l, () => e.requiredCreditTotal), c(h, () => e.creditsNeeded), c(w, () => e.gradeLevel, x), c(w, () => e.period, null), c(C, () => e.currentTerm?.offTrack ?? "0", null), c(T, () => e.currentTerm?.offTrack ?? "0", z), c(T, () => e.currentTerm?.onTrack ?? "0", null), c(I, () => e.currentTerm?.onTrack ?? "0", null), y((f) => {
+      var P = $.summaryHeader, O = $.summaryContainer, V = $.summaryStatus, H = fe(e.status), q = $.creditTotals, R = $.creditTotalResult, k = $.creditTotals, J = $.creditTotalResult, X = $.summaryTerm, W = $.summaryTermGrade, Q = $.summaryTermLegend, se = fe(j.OffTrack), le = $.summaryTermLegend, ae = fe(j.AtRisk), p = $.summaryTermLegend, he = fe(j.OnTrack);
+      return P !== f.e && u(t, f.e = P), O !== f.t && u(r, f.t = O), V !== f.a && u(i, f.a = V), H !== f.o && u(s, f.o = H), q !== f.i && u(a, f.i = q), R !== f.n && u(l, f.n = R), k !== f.s && u(d, f.s = k), J !== f.h && u(h, f.h = J), X !== f.r && u(v, f.r = X), W !== f.d && u(w, f.d = W), Q !== f.l && u(C, f.l = Q), se !== f.u && u(b, f.u = se), le !== f.c && u(T, f.c = le), ae !== f.w && u(D, f.w = ae), p !== f.m && u(I, f.m = p), he !== f.f && u(E, f.f = he), f;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0,
+      r: void 0,
+      d: void 0,
+      l: void 0,
+      u: void 0,
+      c: void 0,
+      w: void 0,
+      m: void 0,
+      f: void 0
+    }), t;
+  })();
+}
+ot.defaultProps = new Fs();
+function Xs(e) {
+  function t(i) {
+    var s = $.grade;
+    return i == e.currentGrade && (s += ` ${$.current}`), s;
+  }
+  function r() {
+    var i = "fa-solid";
+    return i += e.organizations.completedCredits >= e.organizations.requiredCredits ? ` fa-circle-check ${$.subjectAreaIconMet}` : ` fa-circle-exclamation ${$.subjectAreaIconNotMet}`, i;
+  }
+  return (() => {
+    var i = Os(), s = i.firstChild, a = s.firstChild, o = a.nextSibling, l = o.nextSibling, d = l.firstChild, n = d.nextSibling, h = n.nextSibling, v = h.nextSibling;
+    v.nextSibling;
+    var w = s.nextSibling, m = w.firstChild, x = m.firstChild, C = x.nextSibling, b = C.nextSibling, T = b.nextSibling, D = T.nextSibling, L = D.nextSibling, z = L.nextSibling, I = z.nextSibling, E = I.nextSibling, f = E.nextSibling, P = f.nextSibling;
+    P.nextSibling;
+    var O = w.nextSibling;
+    return c(o, () => e.subjectAreaLookups[e.subjectAreaCode]), c(l, () => e.organizations.completedCredits ?? 0, n), c(l, () => e.organizations.requiredCredits ?? 0, v), c(m, () => e.organizations.completedCredits ?? 0, b), c(m, () => e.organizations.inProgressCredits ?? 0, z), c(m, () => e.organizations.forecastedCredits ?? 0, P), c(O, g(K, {
+      get each() {
+        return e.grades;
+      },
+      children: (V, H) => (() => {
+        var q = Ie();
+        return c(q, g(K, {
+          get each() {
+            return Object.entries(e.organizations.orgsByGradeJson[V]?.creditResultsByOrg ?? {});
+          },
+          children: ([R, k]) => g(Qs, {
+            get organizationName() {
+              return k[0].organizationName ?? R;
+            },
+            courses: k,
+            get popoverLeft() {
+              return H() >= e.grades.length / 2;
+            },
+            get subjectAreaLookups() {
+              return e.subjectAreaLookups;
+            }
+          })
+        })), y(() => u(q, t(V))), q;
+      })()
+    })), y((V) => {
+      var H = $["sis-k12-gradreq-grade-layout-subjectarea"], q = $.subjectAreaHeader, R = r(), k = $.headerSubjectAreaName, J = $.headerCredits, X = $.breakdown, W = $.breakdownText, Q = $.gradeContainer;
+      return H !== V.e && u(i, V.e = H), q !== V.t && u(s, V.t = q), R !== V.a && u(a, V.a = R), k !== V.o && u(o, V.o = k), J !== V.i && u(l, V.i = J), X !== V.n && u(w, V.n = X), W !== V.s && u(m, V.s = W), Q !== V.h && u(O, V.h = Q), V;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0
+    }), i;
+  })();
+}
+function Qs(e) {
+  return (() => {
+    var t = Hs(), r = t.firstChild;
+    return c(r, () => e.organizationName), c(t, g(K, {
+      get each() {
+        return e.courses;
+      },
+      children: (i) => g(Zs, {
+        course: i,
+        get popoverLeft() {
+          return e.popoverLeft;
+        },
+        get subjectAreaLookups() {
+          return e.subjectAreaLookups;
+        }
+      })
+    }), null), y((i) => {
+      var s = $.organization, a = $.organizationLabel;
+      return s !== i.e && u(t, i.e = s), a !== i.t && u(r, i.t = a), i;
+    }, {
+      e: void 0,
+      t: void 0
+    }), t;
+  })();
+}
+function Zs(e) {
+  const t = (l) => {
+    var d = "", n = [];
+    return l.forEach((h) => {
+      const v = e.subjectAreaLookups[h];
+      v != null ? n = [...n, v] : n = [...n, h];
+    }), d = n.join(", "), d;
+  };
+  function r() {
+    return [g(G, {
+      get when() {
+        return e.course.courseID != "";
+      },
+      get children() {
+        var l = Ns(), d = l.firstChild, n = d.nextSibling;
+        return c(n, () => e.course.courseID), l;
+      }
+    }), g(G, {
+      get when() {
+        return e.course.cteSubjectAreas.length > 0;
+      },
+      get children() {
+        var l = Rs(), d = l.firstChild, n = d.nextSibling;
+        return c(n, () => t(e.course.cteSubjectAreas)), l;
+      }
+    }), g(G, {
+      get when() {
+        return e.course.dateTaken != "";
+      },
+      get children() {
+        var l = qs(), d = l.firstChild, n = d.nextSibling;
+        return c(n, () => e.course.dateTaken), l;
+      }
+    }), g(G, {
+      get when() {
+        return e.course.term != "";
+      },
+      get children() {
+        var l = Ms(), d = l.firstChild, n = d.nextSibling;
+        return c(n, () => e.course.term), l;
+      }
+    }), g(G, {
+      get when() {
+        return e.course.mark != "";
+      },
+      get children() {
+        var l = Es(), d = l.firstChild, n = d.nextSibling;
+        return c(n, () => e.course.mark), l;
+      }
+    }), (() => {
+      var l = js(), d = l.firstChild, n = d.nextSibling;
+      return c(n, () => e.course.creditsAttempted), l;
+    })(), g(xe, {
+      get fallback() {
+        return (() => {
+          var l = zs(), d = l.firstChild, n = d.nextSibling;
+          return c(n, () => e.course.creditsCompleted), l;
+        })();
+      },
+      get children() {
+        return g(Y, {
+          get when() {
+            return e.course.creditType == ee.Requested;
+          },
+          get children() {
+            var l = Bs(), d = l.firstChild, n = d.nextSibling;
+            return c(n, () => e.course.creditsRequested), l;
+          }
+        });
+      }
+    }), g(G, {
+      get when() {
+        return e.course.receivedNoCredit;
+      },
+      get children() {
+        var l = Ks(), d = l.firstChild;
+        return y(() => u(d, `${$["no-credit-course"]} fa-solid fa-triangle-exclamation`)), l;
+      }
+    })];
+  }
+  function i(l) {
+    const d = `PARTIAL_${e.course.partialLink}`, n = document.getElementsByClassName(d);
+    for (var h = 0; h < n.length; h++) {
+      const v = n[h];
+      l ? v.classList.add($.activeCourse) : v.classList.remove($.activeCourse);
+    }
+  }
+  function s() {
+    var l = $.courseInfo + ` PARTIAL_${e.course.partialLink}`;
+    switch (e.course.creditType) {
+      case ee.Requested:
+        l += ` ${$.requestedCourse}`;
+        break;
+    }
+    return l;
+  }
+  function a() {
+    var l = e.course.creditsCompleted;
+    switch (e.course.creditType) {
+      case ee.Requested:
+        l = e.course.creditsRequested;
+        break;
+      case ee.Scheduled:
+      case ee.Grading:
+        l = e.course.creditsInProgress;
+        break;
+    }
+    return l;
+  }
+  function o() {
+    var l = "fa-lock";
+    switch (e.course.creditType) {
+      default:
+      case ee.CourseHistory:
+        break;
+      case ee.Requested:
+        l = "fa-person-circle-question";
+        break;
+      case ee.Scheduled:
+      case ee.Grading:
+        l = "fa-file-pen";
+        break;
+    }
+    return l;
+  }
+  return g(rt, {
+    get class() {
+      return $.credit;
+    },
+    get placement() {
+      return e.popoverLeft ? "left-start" : "right-end";
+    },
+    get children() {
+      return [g(rt.Trigger, {
+        get children() {
+          var l = Us(), d = l.firstChild, n = d.nextSibling, h = n.nextSibling, v = h.nextSibling, w = v.firstChild;
+          return l.addEventListener("mouseleave", () => i(!1)), l.addEventListener("mouseenter", () => i(!0)), c(n, () => e.course.courseTitle), c(l, g(G, {
+            get when() {
+              return e.course.cteSubjectAreas.length > 0;
+            },
+            get children() {
+              var m = ke();
+              return y(() => u(m, `${$.coursePartial} fa-solid fa-gears`)), m;
+            }
+          }), h), c(l, g(G, {
+            get when() {
+              return e.course.partial;
+            },
+            get children() {
+              var m = ke();
+              return y(() => u(m, $.coursePartial + " fa-solid fa-circle-half-stroke")), m;
+            }
+          }), h), c(l, g(G, {
+            get when() {
+              return e.course.districtGradePeriod;
+            },
+            get children() {
+              var m = ke();
+              return c(m, () => e.course.districtGradePeriod), y(() => u(m, $.courseTerm)), m;
+            }
+          }), h), c(l, g(G, {
+            get when() {
+              return e.course.receivedNoCredit;
+            },
+            get children() {
+              var m = ke();
+              return y(() => u(m, `${$["no-credit-course"]} fa-solid fa-triangle-exclamation`)), m;
+            }
+          }), h), c(h, g(G, {
+            get when() {
+              return e.course.mark != null;
+            },
+            get children() {
+              return e.course.mark;
+            }
+          })), c(w, () => `(${a()})`), y((m) => {
+            var x = s(), C = `fa ${o()}`, b = $.courseTitle, T = $.courseResultsContainer;
+            return x !== m.e && u(l, m.e = x), C !== m.t && u(d, m.t = C), b !== m.a && u(n, m.a = b), T !== m.o && u(v, m.o = T), m;
+          }, {
+            e: void 0,
+            t: void 0,
+            a: void 0,
+            o: void 0
+          }), l;
+        }
+      }), g(rt.Content, {
+        get class() {
+          return $.creditInfo;
+        },
+        get children() {
+          var l = Ie();
+          return c(l, g(r, {})), l;
+        }
+      })];
+    }
+  });
+}
+var ps = /* @__PURE__ */ S("<span><span>"), el = /* @__PURE__ */ S('<div><div class=pxp-student-picker aria-label="Student Selector"role=region><div class="student-card flexbox horizontal"><div class="flexbox horizontal auto"><div style=color:#aaa><span><img width=40 height=50></span><span class=sis-number></span></div><div class="flexbox auto vertical"><span></span><span></span><span>Grade </span></div><div><span><span style=font-weight:700></span> Class of <span style=font-weight:700>'), tl = /* @__PURE__ */ S("<h1>Loading...");
+const kr = ie(), Ll = () => Xe(kr);
+class rl extends Re {
+  context;
+}
+const nl = ie(), Dl = () => Ne(nl);
+function dt(e) {
+  const t = B(() => e.value ?? ""), r = B(() => e.context || new xi(t));
+  return g(kr.Provider, {
+    get value() {
+      return r();
+    },
+    get children() {
+      return g(il, e);
+    }
+  });
+}
+function il(e) {
+  const [t, r] = M(void 0);
+  ge(() => {
+    e.value && Ti.DeserializeData(e.value).then((s) => r(s));
+  });
+  const i = (s) => {
+    var a = "";
+    switch (s) {
+      default:
+      case j.None:
+        a = "N/A";
+        break;
+      case j.AtRisk:
+        a = "At Risk";
+        break;
+      case j.Met:
+        a = "Met";
+        break;
+      case j.NotMet:
+        a = "Not Met";
+        break;
+      case j.OffTrack:
+        a = "Off Track";
+        break;
+      case j.OnTrack:
+        a = "On Track";
+        break;
+    }
+    return a;
+  };
+  return g(G, {
+    get when() {
+      return t();
+    },
+    get fallback() {
+      return tl();
+    },
+    get children() {
+      var s = el(), a = s.firstChild, o = a.firstChild, l = o.firstChild, d = l.firstChild, n = d.firstChild, h = n.firstChild, v = n.nextSibling, w = d.nextSibling, m = w.firstChild, x = m.nextSibling, C = x.nextSibling;
+      C.firstChild;
+      var b = w.nextSibling, T = b.firstChild, D = T.firstChild, L = D.nextSibling, z = L.nextSibling;
+      return c(v, () => t()?.sisNumber), c(m, () => t()?.studentName), c(x, () => t()?.organizationName), c(C, () => t()?.grade, null), c(w, g(G, {
+        get when() {
+          return t()?.status != j.None;
+        },
+        get children() {
+          var I = ps(), E = I.firstChild;
+          return c(I, () => i(t()?.status), null), y((f) => {
+            var P = ve.statusHolder, O = fe(t()?.status);
+            return P !== f.e && u(I, f.e = P), O !== f.t && u(E, f.t = O), f;
+          }, {
+            e: void 0,
+            t: void 0
+          }), I;
+        }
+      }), null), c(D, () => t()?.graduationRequirement), c(z, () => t()?.classOf), y((I) => {
+        var E = ve["sis-k12-grad-req-overview-detail-header"], f = `${ve.imgHolder} flexbox vertical middle`, P = t()?.photo, O = ve.studentName, V = ve["small-text"], H = ve["small-text"], q = `${ve.classReqHolder} flexbox auto vertical`;
+        return E !== I.e && u(s, I.e = E), f !== I.t && u(d, I.t = f), P !== I.a && F(h, "src", I.a = P), O !== I.o && u(m, I.o = O), V !== I.i && u(x, I.i = V), H !== I.n && u(C, I.n = H), q !== I.s && u(b, I.s = q), I;
+      }, {
+        e: void 0,
+        t: void 0,
+        a: void 0,
+        o: void 0,
+        i: void 0,
+        n: void 0,
+        s: void 0
+      }), s;
+    }
+  });
+}
+dt.defaultProps = new rl();
+class sl {
+  constructor() {
+  }
+}
+const ll = "_legend_1fdgs_15", U = {
+  "sis-k12-gradreq-threshold": "_sis-k12-gradreq-threshold_1fdgs_1",
+  "legend-text": "_legend-text_1fdgs_15",
+  "threshold-title": "_threshold-title_1fdgs_43",
+  "value-labels": "_value-labels_1fdgs_59",
+  legend: ll,
+  "legend-item": "_legend-item_1fdgs_95",
+  "legend-color": "_legend-color_1fdgs_105",
+  "legend-low": "_legend-low_1fdgs_125",
+  "legend-mid": "_legend-mid_1fdgs_135",
+  "legend-high": "_legend-high_1fdgs_145"
+}, ut = Symbol("store-raw"), Se = Symbol("store-node"), ne = Symbol("store-has"), Lr = Symbol("store-self");
+function Dr(e) {
+  let t = e[be];
+  if (!t && (Object.defineProperty(e, be, {
+    value: t = new Proxy(e, dl)
+  }), !Array.isArray(e))) {
+    const r = Object.keys(e), i = Object.getOwnPropertyDescriptors(e);
+    for (let s = 0, a = r.length; s < a; s++) {
+      const o = r[s];
+      i[o].get && Object.defineProperty(e, o, {
+        enumerable: i[o].enumerable,
+        get: i[o].get.bind(t)
+      });
+    }
+  }
+  return t;
+}
+function Fe(e) {
+  let t;
+  return e != null && typeof e == "object" && (e[be] || !(t = Object.getPrototypeOf(e)) || t === Object.prototype || Array.isArray(e));
+}
+function Oe(e, t = /* @__PURE__ */ new Set()) {
+  let r, i, s, a;
+  if (r = e != null && e[ut]) return r;
+  if (!Fe(e) || t.has(e)) return e;
+  if (Array.isArray(e)) {
+    Object.isFrozen(e) ? e = e.slice(0) : t.add(e);
+    for (let o = 0, l = e.length; o < l; o++)
+      s = e[o], (i = Oe(s, t)) !== s && (e[o] = i);
+  } else {
+    Object.isFrozen(e) ? e = Object.assign({}, e) : t.add(e);
+    const o = Object.keys(e), l = Object.getOwnPropertyDescriptors(e);
+    for (let d = 0, n = o.length; d < n; d++)
+      a = o[d], !l[a].get && (s = e[a], (i = Oe(s, t)) !== s && (e[a] = i));
+  }
+  return e;
+}
+function We(e, t) {
+  let r = e[t];
+  return r || Object.defineProperty(e, t, {
+    value: r = /* @__PURE__ */ Object.create(null)
+  }), r;
+}
+function He(e, t, r) {
+  if (e[t]) return e[t];
+  const [i, s] = M(r, {
+    equals: !1,
+    internal: !0
+  });
+  return i.$ = s, e[t] = i;
+}
+function al(e, t) {
+  const r = Reflect.getOwnPropertyDescriptor(e, t);
+  return !r || r.get || !r.configurable || t === be || t === Se || (delete r.value, delete r.writable, r.get = () => e[be][t]), r;
+}
+function Ar(e) {
+  it() && He(We(e, Se), Lr)();
+}
+function ol(e) {
+  return Ar(e), Reflect.ownKeys(e);
+}
+const dl = {
+  get(e, t, r) {
+    if (t === ut) return e;
+    if (t === be) return r;
+    if (t === pt)
+      return Ar(e), r;
+    const i = We(e, Se), s = i[t];
+    let a = s ? s() : e[t];
+    if (t === Se || t === ne || t === "__proto__") return a;
+    if (!s) {
+      const o = Object.getOwnPropertyDescriptor(e, t);
+      it() && (typeof a != "function" || e.hasOwnProperty(t)) && !(o && o.get) && (a = He(i, t, a)());
+    }
+    return Fe(a) ? Dr(a) : a;
+  },
+  has(e, t) {
+    return t === ut || t === be || t === pt || t === Se || t === ne || t === "__proto__" ? !0 : (it() && He(We(e, ne), t)(), t in e);
+  },
+  set() {
+    return !0;
+  },
+  deleteProperty() {
+    return !0;
+  },
+  ownKeys: ol,
+  getOwnPropertyDescriptor: al
+};
+function Ye(e, t, r, i = !1) {
+  if (!i && e[t] === r) return;
+  const s = e[t], a = e.length;
+  r === void 0 ? (delete e[t], e[ne] && e[ne][t] && s !== void 0 && e[ne][t].$()) : (e[t] = r, e[ne] && e[ne][t] && s === void 0 && e[ne][t].$());
+  let o = We(e, Se), l;
+  if ((l = He(o, t, s)) && l.$(() => r), Array.isArray(e) && e.length !== a) {
+    for (let d = e.length; d < a; d++) (l = o[d]) && l.$();
+    (l = He(o, "length", a)) && l.$(e.length);
+  }
+  (l = o[Lr]) && l.$();
+}
+function Gr(e, t) {
+  const r = Object.keys(t);
+  for (let i = 0; i < r.length; i += 1) {
+    const s = r[i];
+    Ye(e, s, t[s]);
+  }
+}
+function ul(e, t) {
+  if (typeof t == "function" && (t = t(e)), t = Oe(t), Array.isArray(t)) {
+    if (e === t) return;
+    let r = 0, i = t.length;
+    for (; r < i; r++) {
+      const s = t[r];
+      e[r] !== s && Ye(e, r, s);
+    }
+    Ye(e, "length", i);
+  } else Gr(e, t);
+}
+function Le(e, t, r = []) {
+  let i, s = e;
+  if (t.length > 1) {
+    i = t.shift();
+    const o = typeof i, l = Array.isArray(e);
+    if (Array.isArray(i)) {
+      for (let d = 0; d < i.length; d++)
+        Le(e, [i[d]].concat(t), r);
+      return;
+    } else if (l && o === "function") {
+      for (let d = 0; d < e.length; d++)
+        i(e[d], d) && Le(e, [d].concat(t), r);
+      return;
+    } else if (l && o === "object") {
+      const {
+        from: d = 0,
+        to: n = e.length - 1,
+        by: h = 1
+      } = i;
+      for (let v = d; v <= n; v += h)
+        Le(e, [v].concat(t), r);
+      return;
+    } else if (t.length > 1) {
+      Le(e[i], t, [i].concat(r));
+      return;
+    }
+    s = e[i], r = [i].concat(r);
+  }
+  let a = t[0];
+  typeof a == "function" && (a = a(s, r), a === s) || i === void 0 && a == null || (a = Oe(a), i === void 0 || Fe(s) && Fe(a) && !Array.isArray(a) ? Gr(s, a) : Ye(e, i, a));
+}
+function Ir(...[e, t]) {
+  const r = Oe(e || {}), i = Array.isArray(r), s = Dr(r);
+  function a(...o) {
+    zr(() => {
+      i && o.length === 1 ? ul(r, o[0]) : Le(r, o);
+    });
+  }
+  return [s, a];
+}
+var cl = /* @__PURE__ */ S("<div><span></span><div><div><div><div></div><span>Off Track &lt; <input type=number inputmode=decimal name=low></span></div><div><div></div><span>At Risk<input type=number inputmode=decimal name=low>-<input type=number inputmode=decimal name=high></span></div><div><div></div><span>On Track &gt;= <input type=number inputmode=decimal name=high>");
+const Or = ie(), Al = () => Xe(Or);
+class gl extends Re {
+}
+function ct(e) {
+  const t = new sl();
+  return g(Or.Provider, {
+    value: t,
+    get children() {
+      return g(hl, e);
+    }
+  });
+}
+function hl(e) {
+  const [t, r] = Ir(new Vi()), [i, s] = M(0), [a, o] = M(0), l = Qe();
+  ge(() => {
+    e.value && Vs.DeserializeProps(e.value).then((n) => {
+      n.lowValue < n.minValue && (n.lowValue = n.minValue), n.lowValue > n.maxValue && (n.lowValue = n.maxValue), n.highValue > n.maxValue && (n.highValue = n.maxValue), n.highValue < n.minValue && (n.highValue = n.minValue), r(n), s(n.lowValue), o(n.highValue);
+    });
+  });
+  const d = (n, h) => {
+    var v = t.minValue;
+    t.enforceInteger ? v = parseInt(h.target.value) : v = parseFloat(h.target.value), v < t.minValue && (v = t.minValue), v > t.maxValue && (v = t.maxValue), n == "lowValue" ? (v > a() && (v = a()), s(v)) : (v < i() && (v = i()), o(v)), r(n, v), l.events.setValue(JSON.stringify(t)), h.currentTarget.value = v.toString();
+  };
+  return (() => {
+    var n = cl(), h = n.firstChild, v = h.nextSibling, w = v.firstChild, m = w.firstChild, x = m.firstChild, C = x.nextSibling, b = C.firstChild, T = b.nextSibling, D = m.nextSibling, L = D.firstChild, z = L.nextSibling, I = z.firstChild, E = I.nextSibling, f = E.nextSibling, P = f.nextSibling, O = D.nextSibling, V = O.firstChild, H = V.nextSibling, q = H.firstChild, R = q.nextSibling;
+    return c(h, () => t.title), T.addEventListener("change", (k) => d("lowValue", k)), je(T, Ee(() => ({
+      "prop:value": i()
+    }), {
+      get min() {
+        return t.minValue;
+      },
+      get max() {
+        return a();
+      },
+      get step() {
+        return t.step;
+      }
+    }), !1), E.addEventListener("change", (k) => d("lowValue", k)), je(E, Ee(() => ({
+      "prop:value": i()
+    }), {
+      get min() {
+        return t.minValue;
+      },
+      get max() {
+        return a();
+      },
+      get step() {
+        return t.step;
+      }
+    }), !1), P.addEventListener("change", (k) => d("highValue", k)), je(P, Ee(() => ({
+      "prop:value": a()
+    }), {
+      get min() {
+        return i();
+      },
+      get max() {
+        return t.maxValue;
+      },
+      get step() {
+        return t.step;
+      }
+    }), !1), R.addEventListener("change", (k) => d("highValue", k)), je(R, Ee(() => ({
+      "prop:value": a()
+    }), {
+      get min() {
+        return i();
+      },
+      get max() {
+        return t.maxValue;
+      },
+      get step() {
+        return t.step;
+      }
+    }), !1), y((k) => {
+      var J = U["sis-k12-gradreq-threshold"], X = U["threshold-title"], W = U["value-labels"], Q = U.legend, se = U["legend-item"], le = `${U["legend-color"]} ${U["legend-low"]}`, ae = U["legend-text"], p = U["legend-item"], he = `${U["legend-color"]} ${U["legend-mid"]}`, Pe = U["legend-text"], ye = U["legend-item"], te = `${U["legend-color"]} ${U["legend-high"]}`, we = U["legend-text"];
+      return J !== k.e && u(n, k.e = J), X !== k.t && u(h, k.t = X), W !== k.a && u(v, k.a = W), Q !== k.o && u(w, k.o = Q), se !== k.i && u(m, k.i = se), le !== k.n && u(x, k.n = le), ae !== k.s && u(C, k.s = ae), p !== k.h && u(D, k.h = p), he !== k.r && u(L, k.r = he), Pe !== k.d && u(z, k.d = Pe), ye !== k.l && u(O, k.l = ye), te !== k.u && u(V, k.u = te), we !== k.c && u(H, k.c = we), k;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0,
+      r: void 0,
+      d: void 0,
+      l: void 0,
+      u: void 0,
+      c: void 0
+    }), n;
+  })();
+}
+ct.defaultProps = new gl();
+class vl {
+  constructor() {
+  }
+}
+const ml = "_container_1dcca_11", fl = "_dragging_1dcca_169", _l = "_legend_1dcca_361", bl = "_active_1dcca_447", A = {
+  "sis-two-point-slider": "_sis-two-point-slider_1dcca_1",
+  container: ml,
+  "slider-container": "_slider-container_1dcca_27",
+  "slider-title": "_slider-title_1dcca_37",
+  "slider-wrapper": "_slider-wrapper_1dcca_53",
+  "slider-track": "_slider-track_1dcca_63",
+  "slider-band": "_slider-band_1dcca_85",
+  "band-red": "_band-red_1dcca_99",
+  "band-yellow": "_band-yellow_1dcca_111",
+  "band-green": "_band-green_1dcca_119",
+  "slider-thumb": "_slider-thumb_1dcca_131",
+  dragging: fl,
+  "value-labels": "_value-labels_1dcca_181",
+  "min-label": "_min-label_1dcca_203",
+  "max-label": "_max-label_1dcca_215",
+  "thumb-tooltip": "_thumb-tooltip_1dcca_229",
+  "thumb-input": "_thumb-input_1dcca_283",
+  "values-display": "_values-display_1dcca_309",
+  "value-box": "_value-box_1dcca_323",
+  "value-label": "_value-label_1dcca_181",
+  "value-number": "_value-number_1dcca_349",
+  legend: _l,
+  "legend-item": "_legend-item_1dcca_377",
+  "legend-color": "_legend-color_1dcca_387",
+  "legend-text": "_legend-text_1dcca_399",
+  "thumb-value": "_thumb-value_1dcca_407",
+  "range-wrapper": "_range-wrapper_1dcca_425",
+  "slider-detail": "_slider-detail_1dcca_437",
+  active: bl,
+  "legend-low": "_legend-low_1dcca_463",
+  "legend-mid": "_legend-mid_1dcca_471",
+  "legend-high": "_legend-high_1dcca_479"
+};
+var xl = /* @__PURE__ */ S("<div style=width:100%;><span></span><div><div><div><div style=background-color:#ef4444;></div><span> </span></div><div><div style=background-color:#fbbf24;></div><span> <!> - </span></div><div><div style=background-color:#10b981;></div><span> </span></div></div></div><div><div><div><div></div><div></div><div></div></div><div><div><input type=text></div></div><div><div><input type=text></div></div></div><div><span></span><span>");
+const Hr = ie(), Gl = () => Xe(Hr);
+class yl extends Re {
+}
+function gt(e) {
+  const t = new vl();
+  return g(Hr.Provider, {
+    value: t,
+    get children() {
+      return g(wl, e);
+    }
+  });
+}
+function wl(e) {
+  const [t, r] = M(void 0), [i, s] = M(void 0), [a, o] = M(null), [l, d] = M(!1), [n, h] = Ir(new Pi());
+  let v;
+  const w = Qe();
+  ge(() => {
+    e.value ? Ts.DeserializeProps(e.value).then((f) => {
+      t() == null && r(f.lowValue), i() == null && s(f.highValue), f.lowValue < f.minValue && (f.lowValue = f.minValue), f.lowValue > f.maxValue && (f.lowValue = m(f.maxValue - f.step, f.step)), f.highValue > f.maxValue && (f.highValue = f.maxValue), f.highValue < f.minValue && (f.highValue = m(f.minValue + f.step, f.step)), h(f);
+    }) : (t() && h("lowValue", t()), i() && h("highValue", i()));
+  });
+  const m = (f, P) => {
+    const O = Math.round(f / P) * P, V = (P.toString().split(".")[1] || "").length;
+    return parseFloat(O.toFixed(V));
+  }, x = (f) => (f - n.minValue) / (n.maxValue - n.minValue) * 100, C = (f) => {
+    if (!v) return n.minValue;
+    const P = v.getBoundingClientRect(), O = Math.max(0, Math.min(1, (f - P.left) / P.width)), V = n.minValue + O * (n.maxValue - n.minValue);
+    return m(V, n.step);
+  }, b = (f, P) => {
+    n.enforceInteger && (f = Math.floor(f), P = Math.floor(P)), (f != n.lowValue || P != n.highValue) && (d(!0), h({
+      ...n,
+      highValue: P,
+      lowValue: f
+    }));
+  }, T = () => {
+    l() && (w.events.setValue(JSON.stringify({
+      ...n,
+      highValue: n.highValue,
+      lowValue: n.lowValue
+    })), d(!1));
+  }, D = (f) => (P) => {
+    P.preventDefault(), o(f);
+    const O = (H) => {
+      const q = C(H.clientX);
+      if (f === "low") {
+        const R = Math.max(n.minValue, Math.min(q, n.maxValue));
+        R > n.highValue ? b(n.highValue, R) : b(R, n.highValue);
+      } else {
+        const R = Math.max(n.minValue, Math.min(q, n.maxValue));
+        R < n.lowValue ? b(R, n.lowValue) : b(n.lowValue, R);
+      }
+    }, V = () => {
+      o(null), document.removeEventListener("mousemove", O), document.removeEventListener("mouseup", V), T();
+    };
+    document.addEventListener("mousemove", O), document.addEventListener("mouseup", V);
+  }, L = (f) => {
+    if (a()) return;
+    const P = C(f.clientX), O = Math.abs(P - n.lowValue), V = Math.abs(P - n.highValue);
+    O < V ? P > n.highValue ? b(n.highValue, P) : b(P, n.highValue) : P < n.lowValue ? b(P, n.lowValue) : b(n.lowValue, P), T();
+  }, z = (f) => (P) => {
+    const O = P.target, V = parseFloat(O.value);
+    if (!isNaN(V)) {
+      const H = Math.max(n.minValue, Math.min(V, n.maxValue));
+      f === "low" ? H > n.highValue ? b(n.highValue, H) : b(H, n.highValue) : H < n.lowValue ? b(H, n.lowValue) : b(n.lowValue, H), T();
+    }
+  }, I = (f) => (P) => {
+    const O = P.target;
+    O.value = (f === "low" ? n.lowValue : n.highValue).toString();
+  }, E = (f) => {
+    const P = f.target;
+    f.key === "Enter" && P.blur();
+  };
+  return (() => {
+    var f = xl(), P = f.firstChild, O = P.nextSibling, V = O.firstChild, H = V.firstChild, q = H.firstChild, R = q.nextSibling, k = R.firstChild, J = H.nextSibling, X = J.firstChild, W = X.nextSibling, Q = W.firstChild, se = Q.nextSibling;
+    se.nextSibling;
+    var le = J.nextSibling, ae = le.firstChild, p = ae.nextSibling, he = p.firstChild, Pe = O.nextSibling, ye = Pe.firstChild, te = ye.firstChild, we = te.firstChild, pe = we.nextSibling, mt = pe.nextSibling, Ve = te.nextSibling, ft = Ve.firstChild, oe = ft.firstChild, Me = Ve.nextSibling, _t = Me.firstChild, de = _t.firstChild, bt = ye.nextSibling, et = bt.firstChild, xt = et.nextSibling;
+    c(P, () => n.title), c(R, () => n.lowBandLegend, k), c(R, () => n.lowValue, null), c(W, () => n.midBandLegend, Q), c(W, () => n.lowValue, se), c(W, () => n.highValue, null), c(p, () => n.highBandLegend, he), c(p, () => n.highValue, null), te.$$mousedown = L;
+    var yt = v;
+    return typeof yt == "function" ? or(yt, te) : v = te, me(Ve, "mousedown", D("low"), !0), oe.$$mousedown = (_) => {
+      _.stopPropagation();
+    }, oe.$$keydown = E, me(oe, "blur", I("low")), me(oe, "input", z("low"), !0), me(Me, "mousedown", D("high"), !0), de.$$mousedown = (_) => {
+      _.stopPropagation();
+    }, de.$$keydown = E, me(de, "blur", I("high")), me(de, "input", z("high"), !0), c(et, () => n.minValue), c(xt, () => n.maxValue), y((_) => {
+      var wt = A["sis-two-point-slider"], $t = A["slider-title"], Ct = A["value-labels"], St = A.legend, Tt = A["legend-item"], Pt = `${A["legend-color"]} ${A["legend-low"]}`, Vt = A["legend-text"], kt = A["legend-item"], Lt = `${A["legend-color"]} ${A["legend-mid"]}`, Dt = A["legend-text"], At = A["legend-item"], Gt = `${A["legend-color"]} ${A["legend-high"]}`, It = A["legend-text"], Ot = `${A["slider-detail"]} ${a() ? A.active : ""}`, Ht = A["slider-wrapper"], Nt = A["slider-track"], Rt = `${A["slider-band"]} ${A["band-red"]}`, Nr = `width: ${x(n.lowValue)}%`, qt = `${A["slider-band"]} ${A["band-yellow"]}`, Rr = `left: ${x(n.lowValue)}%; width: ${x(n.highValue) - x(n.lowValue)}%`, Mt = `${A["slider-band"]} ${A["band-green"]}`, qr = `width: ${100 - x(n.highValue)}%`, Et = `${A["slider-thumb"]} ${a() === "low" ? A.dragging : ""}`, Mr = `left: ${x(n.lowValue)}%`, jt = A["thumb-tooltip"], Bt = A["thumb-input"], Kt = n.minValue, zt = n.highValue - 1, Ut = `${A["slider-thumb"]} ${a() === "high" ? A.dragging : ""}`, Er = `left: ${x(n.highValue)}%`, Ft = A["thumb-tooltip"], Wt = A["thumb-input"], Yt = n.lowValue + 1, Jt = n.maxValue, Xt = A["range-wrapper"], Qt = A["min-label"], Zt = A["max-label"];
+      return wt !== _.e && u(f, _.e = wt), $t !== _.t && u(P, _.t = $t), Ct !== _.a && u(O, _.a = Ct), St !== _.o && u(V, _.o = St), Tt !== _.i && u(H, _.i = Tt), Pt !== _.n && u(q, _.n = Pt), Vt !== _.s && u(R, _.s = Vt), kt !== _.h && u(J, _.h = kt), Lt !== _.r && u(X, _.r = Lt), Dt !== _.d && u(W, _.d = Dt), At !== _.l && u(le, _.l = At), Gt !== _.u && u(ae, _.u = Gt), It !== _.c && u(p, _.c = It), Ot !== _.w && u(Pe, _.w = Ot), Ht !== _.m && u(ye, _.m = Ht), Nt !== _.f && u(te, _.f = Nt), Rt !== _.y && u(we, _.y = Rt), _.g = Ce(we, Nr, _.g), qt !== _.p && u(pe, _.p = qt), _.b = Ce(pe, Rr, _.b), Mt !== _.T && u(mt, _.T = Mt), _.A = Ce(mt, qr, _.A), Et !== _.O && u(Ve, _.O = Et), _.I = Ce(Ve, Mr, _.I), jt !== _.S && u(ft, _.S = jt), Bt !== _.W && u(oe, _.W = Bt), Kt !== _.C && F(oe, "min", _.C = Kt), zt !== _.B && F(oe, "max", _.B = zt), Ut !== _.v && u(Me, _.v = Ut), _.k = Ce(Me, Er, _.k), Ft !== _.x && u(_t, _.x = Ft), Wt !== _.j && u(de, _.j = Wt), Yt !== _.q && F(de, "min", _.q = Yt), Jt !== _.z && F(de, "max", _.z = Jt), Xt !== _.P && u(bt, _.P = Xt), Qt !== _.H && u(et, _.H = Qt), Zt !== _.F && u(xt, _.F = Zt), _;
+    }, {
+      e: void 0,
+      t: void 0,
+      a: void 0,
+      o: void 0,
+      i: void 0,
+      n: void 0,
+      s: void 0,
+      h: void 0,
+      r: void 0,
+      d: void 0,
+      l: void 0,
+      u: void 0,
+      c: void 0,
+      w: void 0,
+      m: void 0,
+      f: void 0,
+      y: void 0,
+      g: void 0,
+      p: void 0,
+      b: void 0,
+      T: void 0,
+      A: void 0,
+      O: void 0,
+      I: void 0,
+      S: void 0,
+      W: void 0,
+      C: void 0,
+      B: void 0,
+      v: void 0,
+      k: void 0,
+      x: void 0,
+      j: void 0,
+      q: void 0,
+      z: void 0,
+      P: void 0,
+      H: void 0,
+      F: void 0
+    }), y(() => oe.value = n.lowValue), y(() => de.value = n.highValue), f;
+  })();
+}
+gt.defaultProps = new yl();
+ar(["mousedown", "input", "keydown"]);
+ce.register("k12-hallpass-studentrestrictions", "sis", ze.defaultProps, ze);
+ce.register("k12-hallpass-stuhallpasses", "sis", Ue.defaultProps, Ue);
+ce.register("k12-hallpass-stuhallpasssummary", "sis", lt.defaultProps, lt);
+ce.register("k12-incident-summary", "sis", at.defaultProps, at);
+ce.register("sis-k12-grad-req-overview-detail-header", "sis", dt.defaultProps, dt);
+ce.register("sis-k12-gradreq-grade-layout", "sis", ot.defaultProps, ot);
+ce.register("sis-k12-gradreq-threshold", "sis", ct.defaultProps, ct);
+ce.register("sis-two-point-slider", "sis", gt.defaultProps, gt);
+export {
+  dt as K12GradReqOverviewDetailHeader,
+  rl as K12GradReqOverviewDetailHeaderProps,
+  ot as K12GradreqGradeLayout,
+  Fs as K12GradreqGradeLayoutProps,
+  ct as K12GradreqThreshold,
+  gl as K12GradreqThresholdProps,
+  ze as K12HallpassStudentrestrictions,
+  Ue as K12HallpassStuhallpasses,
+  lt as K12HallpassStuhallpasssummary,
+  at as K12IncidentSummary,
+  gt as TwoPointSlider,
+  yl as TwoPointSliderProps,
+  fe as getIconClasses,
+  Ll as requireK12GradReqOverviewDetailHeaderContext,
+  kl as requireK12GradreqGradeLayoutContext,
+  Al as requireK12GradreqThresholdContext,
+  Gl as requireTwoPointSliderContext,
+  Dl as useK12GradReqOverviewDetailHeaderContext,
+  Pl as useK12HallpassStudentrestrictionsContext,
+  Vl as useK12HallpassStuhallpassesContext,
+  qe as useK12HallpassStuhallpasssummaryContext,
+  Ze as useK12IncidentSummaryContext
+};
+//# sourceMappingURL=sis.bundle.js.map

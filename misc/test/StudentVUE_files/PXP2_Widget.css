@@ -1,0 +1,55 @@
+﻿.pxp-widget {
+    display: inline-block;
+    border: 1px solid #cccccc;
+    border-radius: 1em;
+    margin: 5px;
+    max-width: 300px;
+    padding: 10px 15px;
+}
+
+.pxp-widget .Disabled img {
+    opacity: .5;
+}
+
+.card-container {
+    display: inline-block;
+    position: relative;
+}
+
+.card-container .card {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: absolute;
+
+    transform: perspective(800px);
+}
+
+.card-container .card > .side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    backface-visibility: hidden;
+    transition: opacity linear 0.5s, transform linear 0.5s;
+}
+
+.card-container .card > .front {
+    z-index: 2;
+    transform: perspective(800px) rotateY(0deg);
+    opacity: 1;
+}
+.card-container .card > .back {
+    transform: perspective(800px) rotateY(-180deg);
+    opacity: 0;
+}
+.card-container .card.flipped > .front {
+    opacity: 0;
+    transform: perspective(800px) rotateY(180deg);
+}
+.card-container .card.flipped > .back {
+    opacity: 1;
+    transform: perspective(800px) rotateY(0deg);
+}

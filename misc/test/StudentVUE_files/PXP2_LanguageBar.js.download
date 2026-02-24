@@ -1,0 +1,39 @@
+function handleLanguageChange(code, event) {
+    PXPCallWebMethod("ChangeLanguage", { languageCode: code })
+        .then(res => window.location.reload());
+    event.preventDefault();
+}
+
+function handleLanguageDropDownClick(event) {
+    if (event.shiftKey) {
+        console.log("Shift Click")
+        const languageList = event.target.closest('.btn-group').querySelector('.dropdown-menu').querySelector('ul');
+        if (!languageList.querySelector('#SynergyLanguageItem')) {
+            const synergyLanguageItem = document.createElement('li');
+            synergyLanguageItem.id = 'SynergyLanguageItem';
+            synergyLanguageItem.innerHTML = '<a class="dropdown-item" title="Synergy" onclick="handleLanguageChange(\'SYNERGY\', event)">Synergy</a>'
+
+            languageList.appendChild(synergyLanguageItem);
+        }
+        
+    }
+    
+}
+
+function handleLanguageChangeList(code, event) {
+    if (event.shiftKey) {
+        console.log("shift click");
+        const languageList = event.target.closest('ul');
+        if (!languageList.querySelector('#SynergyLanguageItem')) {
+            const synergyLanguageItem = document.createElement('li');
+            synergyLanguageItem.id = 'SynergyLanguageItem';
+            synergyLanguageItem.innerHTML = '<a class="dropdown-item" title="Synergy" onclick="handleLanguageChange(\'SYNERGY\', event)">Synergy</a>'
+
+            languageList.appendChild(synergyLanguageItem);
+        }
+    }
+    else {
+        console.log("normal click");
+        handleLanguageChange(code, event);
+    }
+}

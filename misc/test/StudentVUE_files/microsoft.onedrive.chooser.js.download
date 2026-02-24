@@ -1,0 +1,452 @@
+define(['knockout', 'app', 'ko-bindings', 'componentConfigs', 'https://alcdn.msauth.net/browser/2.19.0/js/msal-browser.min.js'], function (ko, app, b, cmpCfg, msal) {
+    return function (config, security, events, addDisposable, componentArgs) {
+        var self = this;
+        self.isLoading = ko.observable(true);
+        self.element;
+        self.webPortal;
+        self.pxpInterface;
+        self.showLogoutButton = ko.observable(false);
+
+        self.init = function (element) {
+            self.element = element;
+            self.webPortal = window.CURRENT_WEB_PORTAL === undefined ? window.ST?.CurrentWebPortal : window.CURRENT_WEB_PORTAL;
+            self.pxpInterface = (self.webPortal.toString().toLowerCase() == "studentvue" || self.webPortal.toString().toLowerCase() == "parentvue");
+            if (self.pxpInterface) {
+                element.style.display = "none";
+            }
+            if (!self.pxpInterface) { self.OneDriveLogin(true); }
+        };
+
+        self.SharePointDomain = ko.observable();
+
+
+
+        self.dispose = function () { };
+        self.messageChannel = "5F19886B"; //random static id
+        self.origin = window.location.protocol + '//' + window.location.host;
+        self.GraphDriveApi = "https://graph.microsoft.com/v1.0/drives/";
+        self.graphScopes = ["https://graph.microsoft.com/.default"];
+        self.publisherDomain = "";
+        self.baseSharepointUrl = "";
+        self.getPickerUrl = function () {
+            //must acquire graph token first to extract baseSharepointUrl
+            return `${self.baseSharepointUrl}/_layouts/15/FilePicker.aspx`;
+        };
+        self.getSharepointScope = function () {
+            //must acquire graph token first to extract baseSharepointUrl
+                return [`${self.baseSharepointUrl}/.default`];
+        };
+
+        self.getMsalConfig = function () {
+            return {
+                auth: {
+                    clientId: security.microsoft_CLIENT_ID,
+                    authority: "https://login.microsoftonline.com/organizations",
+                    redirectUri: self.origin
+                },
+                cache: {
+                    cacheLocation: "sessionStorage",
+                    storeAuthStateInCookie: false
+                }
+            }
+        };
+
+        self.getOneDriveParams = function () {
+            return {
+                sdk: "8.0",
+                entry: {
+                    oneDrive: {
+                        files: {},
+                    }
+                },
+                authentication: {},
+                messaging: {
+                    origin: self.origin,
+                    channelId: self.messageChannel
+                },
+                "typesAndSources": {
+                    "mode": "files",
+                    "pivots": {
+                        "oneDrive": true,
+                        "recent": true,
+                        "sharedLibraries": false
+                    }
+                },
+                "search": {
+                    "enabled": true
+                },
+                selection: {
+                    mode: "single"
+                },
+                commands: {
+                    close: {
+                        label: "Close"
+                    }
+                }
+            }
+        };
+
+        self.PoppedWin = null;
+        self.MsgPort = null;
+        self.latestAuthToken_graph = null;
+        self.latestAuthToken_sharepoint = null;
+
+        self.getRootTenantName = function () {
+            if (!self.publisherDomain || typeof self.publisherDomain !== 'string' || self.publisherDomain.length === 0) {
+                return '';
+            }
+            //extract everything before the first '.'
+            const regex = /^([a-zA-Z0-9-]+)\./;
+            const match = self.publisherDomain.match(regex);
+
+            if (match && match[1]) {
+                return match[1]; //return tenant name
+            }
+            return ''; 
+        };
+        
+        self.extractPublisherDomain = function (tokenResponse) {
+            const username = tokenResponse.account.username;
+            const domain = username.split('@')[1];
+            return domain;
+        };
+
+        self.extractGraphTokenResponseValues = function (tokenResponse) {
+            self.publisherDomain = self.extractPublisherDomain(tokenResponse);
+            self.baseSharepointUrl = self.SharePointDomain();
+
+            if (self.baseSharepointUrl == null || self.baseSharepointUrl == "") {
+                self.baseSharepointUrl = `https://${self.getRootTenantName()}-my.sharepoint.com`.toLowerCase();
+            } else {
+                self.baseSharepointUrl = self.baseSharepointUrl.toLowerCase();
+                if (!self.baseSharepointUrl.startsWith("https://")) {
+                    if (self.baseSharepointUrl.startsWith("http://")) {
+                        self.baseSharepointUrl = self.baseSharepointUrl.replace("http://", "https://");
+                    } else {
+                        self.baseSharepointUrl = `https://${self.baseSharepointUrl}`;
+                    }
+                }
+            }
+
+            self.latestAuthToken_graph = tokenResponse.accessToken;
+        };
+
+
+
+        self.getTokenAuthPopupResponse = async function (token_scopes, msalInstance) {
+            try {
+                const popupResponse = await msalInstance.acquireTokenPopup({
+                    scopes: token_scopes,
+                    prompt: "select_account"
+                });
+                msalInstance.setActiveAccount(popupResponse?.account);
+                return popupResponse;
+            } catch (popupError) {
+                console.error("Interactive sign-in failed, error:", popupError);
+                throw popupError;
+            }
+        };
+        self.getTokenAuthResponse = async function (forSharePoint, keepSilent) {
+            let response = null;
+            let token_scopes = self.graphScopes;
+            if (forSharePoint) {
+                token_scopes = self.getSharepointScope();
+            }
+            const msalInstance = new msal.PublicClientApplication(self.getMsalConfig());
+            const accounts = msalInstance.getAllAccounts();
+            if (!msalInstance.getActiveAccount()) {
+                if (accounts.length > 0) {
+                    msalInstance.setActiveAccount(accounts[0]);
+                }
+            }
+            const activeAccount = msalInstance.getActiveAccount();
+            if (activeAccount) {
+                try {
+                    response = await msalInstance.acquireTokenSilent({ scopes: token_scopes, account: activeAccount });
+                } catch (error) {
+                    console.error("Silent token acquisition failed, error:", error);
+                    if (!keepSilent) {
+                        response = await self.getTokenAuthPopupResponse(token_scopes, msalInstance);
+                    }
+                }
+            }
+            else {
+                if (!keepSilent) {
+                    response = await self.getTokenAuthPopupResponse(token_scopes, msalInstance);
+                }
+            }
+            return response;
+        };
+
+        self.acquireToken = async function (forSharePoint, keepSilent) {
+            const authResp = await self.getTokenAuthResponse(forSharePoint, keepSilent);
+            if (authResp && authResp.accessToken) {
+                if (forSharePoint) {
+                    self.latestAuthToken_sharepoint = authResp.accessToken;
+                }
+                else {
+                    self.extractGraphTokenResponseValues(authResp);
+                }
+                return true;
+            }
+            else {
+                if (!keepSilent) {
+                    throw new Error("Unable to acquire an access token");
+                }
+                return false;
+            }
+        };
+
+        self.messageListener = async function (message) {
+            const payload = message.data;
+            switch (payload.type) {
+                case "notification":
+                    console.log(payload.data);
+                    if (payload.data.error) {
+                        if (payload.data.error.code.toLowerCase().includes("failure")) {
+                            self.resetState();
+                            self.PoppedWin.close();
+                        }
+                    }
+                    break;
+
+                case "command":
+                    const command = payload.data;
+                    switch (command.command) {
+
+                        case "authenticate":
+                            self.MsgPort.postMessage({
+                                type: "result",
+                                id: payload.id,
+                                data: {
+                                    result: "token",
+                                    token: self.latestAuthToken_sharepoint
+                                }
+                            });                               
+                            break;
+
+                        case "close":
+                            self.PoppedWin.close();
+                            break;
+
+                        case "pick":
+                            if (command != null && command.items != null && command.items.length > 0) {
+                                let item = new self.linkItem(command.items[0]);
+
+                                fetch(`${self.GraphDriveApi}${item.driveId}/items/${item.fileId}`, {
+                                    headers: {
+                                        "Authorization": `Bearer ${self.latestAuthToken_graph}`
+                                    }
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        item.downloadUrl = data["@microsoft.graph.downloadUrl"];
+                                        item.fileName = data.name;
+                                        item.iconUrl = `gb_URLImage.ashx?mimetype=${data.file.mimeType}&url=${app.urlEncode(data['@microsoft.graph.downloadUrl'])}`;
+                                        return fetch(`${self.GraphDriveApi}${item.driveId}/items/${item.fileId}/createLink`, {
+                                            method: 'POST',
+                                            headers: {
+                                                "Authorization": `Bearer ${self.latestAuthToken_graph}`,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                type: "view",
+                                                scope: "anonymous",
+                                                retainInheritedPermissions: false
+                                            })
+                                        });
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        item.webUrl = data.link.webUrl;
+                                        return fetch(`${self.GraphDriveApi}${item.driveId}/items/${item.fileId}/thumbnails`, {
+                                            headers: {
+                                                "Authorization": `Bearer ${self.latestAuthToken_graph}`
+                                            }
+                                        });
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data != null && data.value != null && data.value.length > 0) {
+                                            item.thumbnailUrl = data.value[0].medium.url;
+                                            item.hasThumbnail = true;
+                                        } else {
+                                            item.hasThumbnail = false;
+                                        }
+
+                                        if (!self.pxpInterface) {
+                                            //TeacherVue:
+                                            self.popup = new app.popup('Resource Detail', 'ckeditor.microsoft.resource.detail', {
+                                                config: {
+                                                    itemData: item,
+                                                    type: config.type,
+                                                    editor: config.editor,
+                                                    closePopup: function () {
+                                                        self.popup.close();
+                                                    }
+                                                }
+                                            }, {
+                                                width: '35%',
+                                                height: '35%'
+                                            });
+                                            self.popup.open();
+                                        }
+                                        else {
+                                            //P/S-Vue:
+                                            ONEDRIVEPICKER.ReceiveFile(item.downloadUrl, item.fileName);
+                                        }
+
+                                    })
+                                    .catch(error => console.error('Error:', error));
+                            }
+                            self.MsgPort.postMessage({
+                                type: "result",
+                                id: message.data.id,
+                                data: {
+                                    result: "success",
+                                },
+                            });
+                            self.PoppedWin.close();
+                            break;
+
+                        default:
+                            console.warn(`Unsupported command: ${JSON.stringify(command)}`, 2);
+                            self.MsgPort.postMessage({
+                                result: "error",
+                                error: {
+                                    code: "unsupportedCommand",
+                                    message: command.command
+                                },
+                                isExpected: true,
+                            });
+                            break;
+                    }
+
+                    break;
+            }
+        };
+
+
+        self.linkItem = function (data) {
+            var me = this;
+            me.type = 'onedrive';
+            me.fileId = data.id;
+            me.driveId = data.parentReference.driveId;
+        };
+
+        self.MessageAttach = function (e) {
+            if (e.source && e.source === self.PoppedWin) {
+                const message = e.data;
+                if (!message.type || !message.channelId) {
+                    console.error("Invalid message format received.");
+                    return;
+                }
+                if (message.type === "initialize" && message.channelId === self.messageChannel) {
+                    try {
+                        self.MsgPort = e.ports[0];
+                        self.MsgPort.addEventListener("message", self.messageListener);
+                        self.MsgPort.start();
+                        self.MsgPort.postMessage({ type: "activate" });
+                    } catch (error) {
+                        console.error("Error setting up the message channel:", error);
+                    }
+                }
+            }
+        };
+
+        self.pickerPopupUrl = null;
+        self.pickerLoader = function () {
+            window.addEventListener("message", self.MessageAttach);
+            const tokenForm = self.PoppedWin.document.createElement("form");
+            tokenForm.setAttribute("action", self.pickerPopupUrl);
+            tokenForm.setAttribute("method", "POST");
+            self.PoppedWin.document.body.append(tokenForm);
+            tokenForm.submit();
+        };
+
+        self.launchPicker = async function (e) {
+            e.preventDefault();
+            if (self.pxpInterface) { await self.OneDriveLogin(false); }
+
+            const queryString = new URLSearchParams({
+                filePicker: JSON.stringify(self.getOneDriveParams()),
+                locale: 'en-us'
+            });
+            self.pickerPopupUrl = `${self.getPickerUrl()}?${queryString}`;
+            let popFormUrl = origin + window.applicationRoot + "txpapp/microsoft.onedrive.chooser.loading.html";
+            if (self.PoppedWin === null || self.PoppedWin.closed) {
+                self.PoppedWin = window.open(popFormUrl, "OneDriveFilePicker8", "width=1080,height=630");
+                if (self.PoppedWin != null) {
+                    self.PoppedWin.addEventListener("load", self.pickerLoader);
+                } else {
+                    console.warn("The popup was blocked by the browser. Please allow popups for this site.");
+                }
+            } else {
+                self.PoppedWin.focus();
+            }
+        };
+
+
+        self.OneDriveLogin = async function (keepSilent) {
+            const hasGraphToken = await self.acquireToken(false, keepSilent); //graph token
+            const hasSharepointToken = await self.acquireToken(true, keepSilent); //sharepoint token
+            self.showLogoutButton(hasGraphToken || hasSharepointToken);
+        };
+
+        self.launchLogout = async function () {
+            self.resetState();
+            const msalInstance = new msal.PublicClientApplication(self.getMsalConfig());
+            msalInstance.logoutPopup({
+                postLogoutRedirectUri: window.location.origin
+            }).then(() => {
+                console.log('User logged out and redirected back to the application.');
+            }).catch(error => {
+                console.error('Logout failed:', error);
+            });
+        };
+
+        self.resetState = function () {
+            self.latestAuthToken_graph = null;
+            self.latestAuthToken_sharepoint = null;
+            self.showLogoutButton(false);
+        };
+
+        self.openOneDriveLoginButtonConfig = {
+            visible: ko.computed(function () {
+                return !self.showLogoutButton();
+            }),
+            text: 'Sign into OneDrive',
+            icon: 'fa fa-sign-in',
+            onClick: function () {
+                self.OneDriveLogin(false);
+            }
+        };
+        self.openChooserButtonConfig = {
+            visible: self.showLogoutButton,
+            text: 'Choose File',
+            icon: 'resources/gblms/icon_OneDrive.png',
+            onClick: function (args) {
+                self.launchPicker(args.event);
+            }
+        };
+        self.openLogoutButtonConfig = {
+            visible: self.showLogoutButton,
+            text: 'Sign Out',
+            icon: 'fa fa-sign-out',
+            onClick: function () {
+                self.launchLogout();
+            }
+        };
+
+        app.call({
+            friendlyName: 'microsoft.onedrive.chooser',
+            method: 'get',
+            parameters: {},
+            koMapping: {},
+            koMapTo: self
+        }).done(function (data) {
+            self.isLoading(false);
+        });
+
+    };
+});
