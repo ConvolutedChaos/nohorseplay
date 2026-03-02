@@ -1,0 +1,713 @@
+/* ============================================================
+   E-Dog OS — Boot Screen & Login Screen Styles
+============================================================ */
+
+/* ---- BOOT OVERLAY ---- */
+#bootOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000000;
+    background: #050505;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', 'Courier New', monospace;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 24px 32px;
+    box-sizing: border-box;
+}
+
+.boot-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.08) 2px,
+            rgba(0, 0, 0, 0.08) 4px);
+    pointer-events: none;
+    z-index: 2;
+    animation: boot-flicker 8s infinite;
+}
+
+@keyframes boot-flicker {
+
+    0%,
+    98%,
+    100% {
+        opacity: 1;
+    }
+
+    98.5% {
+        opacity: 0.9;
+    }
+
+    99% {
+        opacity: 1;
+    }
+
+    99.5% {
+        opacity: 0.85;
+    }
+}
+
+.boot-terminal {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #a0ffa0;
+    text-shadow: 0 0 8px rgba(80, 255, 80, 0.4);
+}
+
+.boot-line {
+    display: block;
+    white-space: pre;
+}
+
+.boot-ok {
+    color: #4ade80;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+}
+
+.boot-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 16px;
+    background: #4ade80;
+    margin-left: 2px;
+    animation: boot-blink 1s step-end infinite;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+}
+
+@keyframes boot-blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ---- LOGIN OVERLAY ---- */
+#loginOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2500000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    font-family: 'Segoe UI', 'SF Pro Display', system-ui, sans-serif;
+}
+
+#loginOverlay.login-visible {
+    opacity: 1;
+}
+
+.login-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(14, 40, 80, 0.9) 0%, transparent 70%),
+        linear-gradient(160deg, #0a1628 0%, #050d1a 40%, #0d1f3a 100%);
+    z-index: 0;
+}
+
+.login-bg-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.5;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Stars */
+#loginOverlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 75%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 42% 15%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 60%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 68% 35%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 80% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 12%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 7% 55%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 48%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 90%, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Clock */
+.login-clock {
+    position: relative;
+    z-index: 1;
+    font-size: 80px;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(100, 160, 255, 0.3);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    animation: login-fadeup 0.8s ease both;
+}
+
+.login-date {
+    position: relative;
+    z-index: 1;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.05em;
+    margin-bottom: 48px;
+    animation: login-fadeup 0.8s 0.1s ease both;
+}
+
+@keyframes login-fadeup {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Login card */
+.login-card {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: login-fadeup 0.8s 0.2s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+}
+
+.login-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(50, 100, 200, 0.4), rgba(20, 60, 140, 0.6));
+    border: 2px solid rgba(100, 160, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(180, 210, 255, 0.8);
+    box-shadow:
+        0 0 0 6px rgba(60, 120, 220, 0.08),
+        0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-bottom: 16px;
+}
+
+.login-avatar svg {
+    width: 38px;
+    height: 38px;
+}
+
+.login-username {
+    font-size: 20px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+}
+
+.login-hostname {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+}
+
+.login-input-wrap {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 28px;
+    padding: 0 4px 0 18px;
+    width: 260px;
+    box-sizing: border-box;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-input-wrap:focus-within {
+    border-color: rgba(100, 160, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(60, 120, 220, 0.15), 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.login-password-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-family: inherit;
+    padding: 11px 0;
+    caret-color: rgba(100, 160, 255, 0.9);
+}
+
+.login-password-input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.login-arrow-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(60, 120, 220, 0.7);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.login-arrow-btn:hover {
+    background: rgba(80, 140, 240, 0.9);
+}
+
+.login-arrow-btn:active {
+    transform: scale(0.93);
+}
+
+.login-arrow-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.login-btn-nopw {
+    background: rgba(60, 120, 220, 0.5);
+    border: 1px solid rgba(100, 160, 255, 0.3);
+    border-radius: 28px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 10px 36px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.15s, transform 0.1s;
+}
+
+.login-btn-nopw:hover {
+    background: rgba(80, 140, 240, 0.7);
+}
+
+.login-btn-nopw:active {
+    transform: scale(0.97);
+}
+
+.login-error {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #f87171;
+    opacity: 0;
+    transition: opacity 0.2s;
+    height: 16px;
+    text-align: center;
+}
+
+.login-error.visible {
+    opacity: 1;
+}
+
+/* Shake animation for wrong password */
+@keyframes login-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-6px);
+    }
+
+    80% {
+        transform: translateX(6px);
+    }
+}
+
+.login-password-input.shake {
+    animation: login-shake 0.45s ease;
+}
+
+.login-footer {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.login-power-btn,
+.login-reboot-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.15s;
+}
+
+.login-power-btn:hover {
+    background: rgba(240, 80, 80, 0.2);
+    border-color: rgba(240, 80, 80, 0.3);
+    color: rgba(255, 160, 160, 0.9);
+}
+
+.login-reboot-btn:hover {
+    background: rgba(80, 140, 240, 0.2);
+    border-color: rgba(80, 140, 240, 0.3);
+    color: rgba(160, 200, 255, 0.9);
+}
+
+.login-power-btn svg,
+.login-reboot-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.login-session-label {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.06em;
+    font-family: 'Cascadia Code', monospace;
+    animation: login-fadeup 1s 0.5s ease both;
+    opacity: 0;
+    animation-fill-mode: both;
+}
+
+/* ---- Setup password step additions ---- */
+.setup-pw-strength {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.setup-pw-bar {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: #2a2a2a;
+    transition: background 0.3s;
+}
+
+.setup-pw-bar.weak {
+    background: #ef4444;
+}
+
+.setup-pw-bar.medium {
+    background: #f59e0b;
+}
+
+.setup-pw-bar.strong {
+    background: #4ade80;
+}
+
+.setup-pw-label {
+    font-size: 11px;
+    color: #555;
+    margin-top: 4px;
+    min-height: 14px;
+    transition: color 0.2s;
+}
+
+.setup-pw-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.setup-pw-toggle:hover {
+    color: #aaa;
+}
+
+.setup-input-wrap {
+    position: relative;
+}
+
+/* Mint-style centered card */
+.mint-center-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+    /* allow internal elements to enable pointer-events explicitly */
+}
+
+.mint-login-card {
+    pointer-events: auto;
+    width: 420px;
+    background: #d7d7d7;
+    /* light grey card like Mint */
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25), 0 12px 30px rgba(0, 0, 0, 0.45);
+    padding: 18px 22px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    border-radius: 2px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* top computer icon */
+.mint-top-icon {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6b6b6b;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+/* hostname centered under icon */
+.mint-hostname {
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* user row (avatar + username box) */
+.mint-user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 10px 12px;
+    border-radius: 2px;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.mint-avatar-small {
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    /* border-radius: 50%; */
+    /* border: 1px solid rgba(0, 0, 0, 0.06); */
+    /* background: linear-gradient(#f0f0f0, #e4e4e4); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9b9b9b;
+}
+
+.mint-avatar-small img {
+    width: 36px;
+    height: 36px;
+}
+
+.mint-username {
+    font-size: 15px;
+    color: #222;
+    font-weight: 500;
+}
+
+/* password label and row */
+.mint-pass-label {
+    font-size: 13px;
+    color: #222;
+    margin-top: 6px;
+}
+
+.mint-pass-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+/* password field styled like Mint: pale background, thin green border on focus */
+.mint-password-input {
+    flex: 1;
+    height: 30px;
+    padding: 4px 8px;
+    border: 2px solid transparent;
+    background: #fff;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.03);
+    border-radius: 2px;
+    font-size: 13px;
+    color: #111;
+    outline: none;
+    transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.mint-password-input:focus {
+    border-color: #8fc84b;
+    /* pale mint-green */
+    box-shadow: 0 0 0 3px rgba(143, 200, 75, 0.12);
+}
+
+/* green highlight for empty input to echo screenshot style */
+.mint-password-input:focus::placeholder {
+    color: transparent;
+}
+
+/* login button looks like Mint: small, icon + text */
+.mint-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: linear-gradient(#f3f3f3, #e9e9e9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-size: 13px;
+    color: #222;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.mint-login-btn svg {
+    color: #333;
+}
+
+.mint-login-btn:hover {
+    filter: brightness(0.98);
+    transform: translateY(-1px);
+}
+
+/* cancel button */
+.mint-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+
+.mint-cancel-btn {
+    padding: 6px 12px;
+    border-radius: 3px;
+    background: linear-gradient(#ffffff, #efefef);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-size: 13px;
+    color: #222;
+}
+
+/* bottom status bar */
+.mint-bottom-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: #222;
+    pointer-events: auto;
+}
+
+.mint-bottom-left,
+.mint-bottom-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mint-bottom-item {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 8px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #222;
+}
+
+/* small power button icon box */
+.mint-power-btn-bottom {
+    width: 34px;
+    height: 24px;
+    background: linear-gradient(#ffefef, #f6dcdc);
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+}
+
+/* make big wallpaper feel closer to Mint screenshot */
+.mint-wallpaper-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04), transparent 8%),
+        linear-gradient(160deg, rgba(6, 60, 10, 0.35), rgba(0, 0, 0, 0.35));
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
+/* small adjustments for accessibility and stacking */
+.login-session-label {
+    bottom: 10px;
+    right: 12px;
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 11px;
+}
