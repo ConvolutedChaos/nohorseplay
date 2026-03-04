@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.0.4";
+const VERSION = "E-Dog OS 3.0.5";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 let dbPromise;
@@ -812,7 +812,6 @@ function _buildEditorBody(body, item, windowId) {
         item.content = ta.value;
         item.updatedAt = Date.now();
         await idbPut(item);
-        await renderAllWindows();
         statusSpan.textContent = '✓ Saved';
         setTimeout(() => statusSpan.textContent = item.name, 2000);
     };
