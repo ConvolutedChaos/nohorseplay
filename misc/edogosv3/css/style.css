@@ -3142,3 +3142,12 @@ body {
     border-radius: 50%;
     z-index: 999999999999;
 }
+
+#taskbar-tray {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding-right: 8px;
+    flex-shrink: 0;
+}

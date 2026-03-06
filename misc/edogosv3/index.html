@@ -18,13 +18,6 @@
     <!-- Start Menu -->
     <div id="startMenu">
         <div class="start-header">
-            <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                stroke-linejoin="round" style="width:14px;height:14px;color:#aaa;flex-shrink:0;">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-            </svg> -->
             <span class="start-title">Applications</span>
         </div>
         <div class="start-search">
@@ -34,47 +27,27 @@
         <div class="start-apps" id="startAppList">
             <div class="start-app-tile" onclick="startMenuAction('newWindow')">
                 <span class="app-icon">
-                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
-                    </svg> -->
                     <img class="place-icon" src="icons/16/folder.svg">
                 </span>
                 File Explorer
             </div>
             <div class="start-app-tile" onclick="startMenuAction('openBacon')">
                 <span class="app-icon">
-                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" />
-                    </svg> -->
                     <img class="place-icon" src="icons/16/browser.png">
                 </span>
                 Bacon Explorer
             </div>
             <div class="start-app-tile" onclick="startMenuAction('openTerminal')">
                 <span class="app-icon">
-                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="4 17 10 11 4 5" />
-                        <line x1="12" y1="19" x2="20" y2="19" />
-                    </svg> -->
                     <img class="place-icon" src="icons/16/terminal.png">
                 </span>
                 Terminal
             </div>
-            <div class="start-app-tile" onclick="startMenuAction('about')">
+            <div class="start-app-tile" onclick="spawnSettings()">
                 <span class="app-icon">
-                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="16" x2="12" y2="12" />
-                        <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg> -->
-                    <img class="place-icon" src="icons/16/info.png">
+                    <img class="place-icon" src="icons/16/settings.png">
                 </span>
-                About
+                Settings
             </div>
         </div>
         <div class="start-section-label">Places</div>
@@ -108,13 +81,13 @@
             </div>
         </div>
         <div class="start-footer">
-            <button class="theme-picker-btn" onclick="toggleThemePicker(event)">🎨 Theme</button>
+            <!-- <button class="theme-picker-btn" onclick="spawnSettings('appearance')">Settings</button> -->
             <button onclick="startMenuAction('reboot')" style="color:#f87171;">Reboot</button>
             <button onclick="startMenuAction('shutdown')" style="color:#f87171;">Shutdown</button>
         </div>
     </div>
 
-    <!-- Theme Picker Panel -->
+    <!-- Theme Picker Panel (now managed by Settings app — kept for compatibility) -->
     <div id="themePicker">
         <div class="theme-picker-header">🎨 Choose Your Theme</div>
         <div class="theme-cards">
@@ -163,18 +136,17 @@
 
     <div id="taskbar">
         <button id="startBtn" onclick="toggleStartMenu(event)">Menu</button>
-        <!-- <button class="new-window-btn" onclick="spawnWindow()">
-            <img src="icons/16/folder.svg">
-        </button> -->
-        <span id="date-time">
-            6:38 PM
-        </span>
+        <div id="taskbar-tray">
+            <img id="wifi-icon" src="icons/tray/network-100.png" title="Internet Access">
+            <span id="date-time">6:38 PM</span>
+        </div>
     </div>
 
     <script src="setup/setup.js"></script>
     <script src="js/boot.js"></script>
     <script src="js/script.js"></script>
     <script src="js/helpers.js"></script>
+    <script src="js/settings.js"></script>
 </body>
 
 </html>

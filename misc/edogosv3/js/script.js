@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.0.6";
+const VERSION = "E-Dog OS 3.0.7";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
@@ -9,7 +9,6 @@ let dbPromise;
 
 let driveLight = document.getElementById("driveLight");
 let useDriveLight = false;
-let useDriveLightSound = false;
 
 let _driveSoundTimer = null;
 
@@ -96,19 +95,10 @@ function sleep(ms) {
 
 function turnOnDriveLight() {
     driveLight.style.backgroundColor = "#00ff00"
-    if (useDriveLightSound) {
-        playDriveSound();
-    }
 }
 
 function turnOffDriveLight() {
     driveLight.style.backgroundColor = "#000000"
-}
-
-function playDriveSound() {
-    if (_driveSoundTimer) return; // already scheduled/playing
-    playAudio('./sounds/click.ogg');
-    _driveSoundTimer = setTimeout(() => { _driveSoundTimer = null; }, 50);
 }
 
 async function insertCD(cdName) {
@@ -219,7 +209,8 @@ const iconMap = {
         'xml': ['text-x-generic.svg', 'text-x-generic.png'],
         'log': ['text-x-generic.svg', 'text-x-generic.png'],
         'svg': ['image-x-generic.svg', 'image-x-generic.png'],
-        'avif': ['image-x-generic.svg', 'image-x-generic.png']
+        'avif': ['image-x-generic.svg', 'image-x-generic.png'],
+        'app': ['application-x-executable.svg', 'application-x-executable.svg']
     }
 };
 
@@ -539,7 +530,7 @@ function spawnWindow(initialFolderId = null) {
         buildMenu(ev.clientX, ev.clientY, [{ label: "Close", icon: "close", action: () => closeWindow(windowId) }]);
     };
     const taskbar = document.getElementById('taskbar');
-    taskbar.insertBefore(tbBtn, taskbar.querySelector('#date-time'));
+    taskbar.insertBefore(tbBtn, taskbar.querySelector('#taskbar-tray'));
 
     windows[windowId].taskbarBtn = tbBtn;
 
@@ -1011,7 +1002,7 @@ function spawnApp(type, item) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -1204,6 +1195,87 @@ function _buildGameBody(body, gameName) {
     frame.style.width = "100%";
     frame.style.height = "100%";
     body.appendChild(frame);
+}
+
+function spawnCustomApp(item) {
+    // Parse the .app JSON
+    let config;
+    try {
+        const text = item.content instanceof ArrayBuffer
+            ? new TextDecoder().decode(item.content)
+            : String(item.content || '');
+        config = JSON.parse(text);
+    } catch (e) {
+        spawnError('.app parse error: ' + e.message);
+        return;
+    }
+
+    const {
+        name = item.name.replace(/\.app$/i, ''),
+        icon = '📦',
+        width = 800,
+        height = 600,
+        html = '<p style="color:white;font-family:sans-serif;padding:20px">No HTML provided.</p>',
+    } = config;
+
+    const windowId = 'win_' + (++winCount);
+    const offset = (winCount - 1) * 30;
+    const left = Math.min(60 + offset, window.innerWidth - width - 20);
+    const top = Math.min(60 + offset, window.innerHeight - height - 60);
+
+    const win = document.createElement('div');
+    win.className = 'app-window';
+    win.id = windowId;
+    win.style.left = left + 'px';
+    win.style.top = top + 'px';
+    win.style.width = width + 'px';
+    win.style.height = height + 'px';
+    win.addEventListener('mousedown', () => focusWindow(windowId));
+
+    win.innerHTML = `
+        <div class="title-bar">
+            <button class="window-close-button" title="Close">✕</button>
+            <button class="window-minimize-button" title="Minimize">—</button>
+            <span class="title-bar-text">${icon} ${name}</span>
+        </div>
+        <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
+    `;
+
+    document.getElementById('windowContainer').appendChild(win);
+    windows[windowId] = { el: win, state: { type: 'customapp', item } };
+
+    win.querySelector('.title-bar').addEventListener('mousedown', e => {
+        if (e.target.closest('button')) return;
+        startDrag(e, win);
+    });
+    win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
+    win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+
+    // Render content in a sandboxed iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-modals');
+    iframe.srcdoc = html;
+    win.querySelector('.app-body').appendChild(iframe);
+
+    // Taskbar button
+    const tbBtn = document.createElement('button');
+    tbBtn.className = 'win-btn';
+    tbBtn.dataset.winid = windowId;
+    tbBtn.textContent = `${icon} ${name}`;
+    tbBtn.onclick = () => {
+        if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
+        else focusWindow(windowId);
+    };
+    tbBtn.oncontextmenu = (ev) => {
+        ev.preventDefault();
+        buildMenu(ev.clientX, ev.clientY, [{ label: 'Close', icon: 'close', action: () => closeWindow(windowId) }]);
+    };
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
+    windows[windowId].taskbarBtn = tbBtn;
+
+    focusWindow(windowId);
+    return windowId;
 }
 
 /* ---- ZIP Viewer ---- */
@@ -1999,7 +2071,7 @@ function navigateTab(tab, url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, st
     tab.iframe.src = url;
 }
 
-function renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl, statusBar, statusIndicator, statusUrl, zoomBadge, bookmarkBar) {
+async function renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl, statusBar, statusIndicator, statusUrl, zoomBadge, bookmarkBar) {
     const old = tab.iframe.parentElement?.querySelector('.bacon-newtab');
     if (old) old.remove();
 
@@ -2008,11 +2080,22 @@ function renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl,
 
     const hero = document.createElement('div');
     hero.className = 'bacon-newtab-hero';
-    hero.innerHTML = `
-                <div class="bacon-newtab-logo">🥓</div>
-                <div class="bacon-newtab-title">Bacon Browser</div>
-                <div class="bacon-newtab-sub">Your E-Dog OS browser</div>
-            `;
+
+    const logoDiv = document.createElement('div');
+    logoDiv.className = 'bacon-newtab-logo';
+    try {
+        const img = await imgFromFS('/usr/share/baconexplorer/browser.svg');
+        logoDiv.appendChild(img);
+    } catch {
+        logoDiv.textContent = '🥓';
+    }
+
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'bacon-newtab-title';
+    titleDiv.textContent = 'Bacon Explorer';
+
+    hero.appendChild(logoDiv);
+    hero.appendChild(titleDiv);
     page.appendChild(hero);
 
     const searchBox = document.createElement('div');
@@ -2041,16 +2124,7 @@ function renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl,
     searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
     searchGoBtn.onclick = doSearch;
 
-    const speedDials = [
-        { label: 'Wikipedia', url: 'https://en.wikipedia.org', emoji: '📚' },
-        { label: 'GitHub', url: 'https://github.com', emoji: '🐙' },
-        { label: 'YouTube', url: 'https://youtube.com', emoji: '▶️' },
-        { label: 'Reddit', url: 'https://reddit.com', emoji: '🤖' },
-        { label: 'DuckDuckGo', url: 'https://duckduckgo.com', emoji: '🦆' },
-        { label: 'Hacker News', url: 'https://news.ycombinator.com', emoji: '🗞️' },
-        { label: 'MDN Web', url: 'https://developer.mozilla.org', emoji: '🔧' },
-        { label: 'Claude.ai', url: 'https://claude.ai', emoji: '🤖' },
-    ];
+    const speedDials = [];
 
     const grid = document.createElement('div');
     grid.className = 'bacon-newtab-grid';
@@ -2433,6 +2507,8 @@ function openFile(item) {
         spawnApp('zip', item);
     } else if (HTML_EXTS.has(ext)) {
         spawnApp('bacon', item);
+    } else if (ext === 'app') {
+        spawnCustomApp(item);
     } else {
         spawnApp('editor', item);
     }
@@ -2586,7 +2662,7 @@ function spawnBaconBrowser(url) {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
-                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Browser</span>
+                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Explorer</span>
                 </div>
                 <div class="app-body" style="height:calc(100% - 42px);overflow:hidden;display:flex;flex-direction:column;"></div>
             `;
@@ -2604,12 +2680,12 @@ function spawnBaconBrowser(url) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Browser`;
+    tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Explorer`;
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -2671,7 +2747,7 @@ function spawnTerminal(startPath) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
         buildMenu(ev.clientX, ev.clientY, [{ label: "Close", icon: "close", action: () => closeWindow(windowId) }]);
@@ -3249,7 +3325,7 @@ function _makePropsShell(title, w, h) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -3648,7 +3724,7 @@ function spawnAbout() {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -3706,7 +3782,7 @@ function spawnError(error) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -3770,7 +3846,7 @@ function spawnGame(gameName) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.querySelector('#taskbar #date-time'));
+    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -3791,6 +3867,7 @@ function spawnGame(gameName) {
    Start menu
 ============================================================ */
 let startMenuIconsInited = false;
+
 function initStartMenuIcons() {
     if (startMenuIconsInited) return;
     startMenuIconsInited = true;
@@ -3920,13 +3997,31 @@ async function startOpenFolder(path) {
 }
 
 /* ============================================================
+   Taskbar
+============================================================ */
+
+const taskbarTray = document.getElementById("taskbar-tray");
+const dateTime = document.getElementById("date-time");
+
+async function initWiFiIcon() {
+    if (navigator.onLine) {
+        document.getElementById("wifi-icon").remove();
+        let newIcon = await imgFromFS("/usr/share/icons/tray/network-100.png");
+        newIcon.title = "Internet Access";
+        dateTime.parentNode.insertBefore(newIcon, dateTime);
+    } else {
+        document.getElementById("wifi-icon").remove();
+        let newIcon = await imgFromFS("/usr/share/icons/tray/network-offline.png");
+        newIcon.title = "Network Disconnected";
+        dateTime.parentNode.insertBefore(newIcon, dateTime);
+    }
+}
+
+/* ============================================================
    Boot
 ============================================================ */
 (async function init() {
     dbPromise = await openDB();
-    await Promise.all([
-        preloadAudio('./sounds/click.ogg')
-    ]);
     applyTheme(currentTheme);
 
     async function bootIntoOS() {
@@ -3936,7 +4031,8 @@ async function startOpenFolder(path) {
             // const username = setupResult.username || getUsername();
             // const wid = spawnWindow();
             // setTimeout(() => navigateToPath(wid, `/home/${username}`), 80);
-            renderDesktop()
+            renderDesktop();
+            initWiFiIcon();
         } else {
             await ensureDefaultFolders();
             // const wid = spawnWindow();
@@ -3944,6 +4040,7 @@ async function startOpenFolder(path) {
             //     navigateToPath(wid, `/home/${getUsername()}`);
             // }, 80);
             renderDesktop()
+            initWiFiIcon();
         }
     }
 
@@ -4081,7 +4178,7 @@ function updateDateTime() {
 
     const formatted = `${dayName} ${monthName} ${date}, ${hours}:${minutes} ${ampm}`;
 
-    document.getElementById("date-time").textContent = formatted;
+    dateTime.textContent = formatted;
 }
 
 updateDateTime();
@@ -4114,14 +4211,27 @@ if (useDriveLight) {
     driveLight.style.display = "none";
 }
 
-// Catch synchronous errors
+// error handling
 window.onerror = function (message, source, lineno, colno, error) {
     console.error("Global Error:", message, source, lineno, colno, error);
     spawnError(message);
 };
 
-// Catch async errors (Promises)
 window.onunhandledrejection = function (event) {
     console.error("Unhandled Promise Rejection:", event.reason);
     spawnError(event.reason);
 };
+
+window.addEventListener("offline", async (e) => {
+    document.getElementById("wifi-icon").remove();
+    let newIcon = await imgFromFS("/usr/share/icons/tray/network-offline.png");
+    newIcon.title = "Network Disconnected";
+    dateTime.parentNode.insertBefore(newIcon, dateTime);
+});
+
+window.addEventListener("online", async (e) => {
+    document.getElementById("wifi-icon").remove();
+    let newIcon = await imgFromFS("/usr/share/icons/tray/network-100.png");
+    newIcon.title = "Internet Access";
+    dateTime.parentNode.insertBefore(newIcon, dateTime);
+});

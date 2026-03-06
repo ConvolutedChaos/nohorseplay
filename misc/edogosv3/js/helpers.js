@@ -2,7 +2,6 @@
 let debugLog = true;
 
 const iconBlobCache = new Map();
-const _audioPlayers = new Map();
 
 /**
  * Resolve an absolute path string to its node, or null if not found.
@@ -285,21 +284,4 @@ async function loadIconImg(fsPath, webPath, sizeCss = 'width:100%;height:100%;ob
     img.style.cssText = sizeCss;
     img.src = webPath;
     return img;
-}
-
-async function preloadAudio(path) {
-    if (_audioPlayers.has(path)) return;
-    const response = await fetch(path);
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    audio.preload = 'auto';
-    _audioPlayers.set(path, audio);
-}
-
-function playAudio(path) {
-    const audio = _audioPlayers.get(path);
-    if (!audio) { console.warn('Audio not preloaded:', path); return; }
-    audio.currentTime = 0;
-    audio.play().catch(() => { });
 }
