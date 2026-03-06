@@ -521,6 +521,27 @@ async function extractZipToIDB(zip, username, onProgress) {
         pathToId[n.name] = n.id;
     }
 
+    // NEW: ensures every segment of a path exists in pathToId,
+    // creating missing intermediate folders along the way.
+    // This handles zips that omit explicit directory entries.
+    async function ensurePath(parts) {
+        for (let i = 1; i <= parts.length; i++) {
+            const currentPath = parts.slice(0, i).join('/');
+            if (pathToId[currentPath] !== undefined) continue;
+
+            const parentPath = parts.slice(0, i - 1).join('/');
+            const parentId = pathToId[parentPath] ?? 'root';
+            const name = parts[i - 1];
+
+            const id = crypto.randomUUID();
+            await idbPutLocal({
+                id, name, type: 'folder',
+                parentId, createdAt: Date.now(), updatedAt: Date.now(),
+            });
+            pathToId[currentPath] = id;
+        }
+    }
+
     const allEntries = Object.values(zip.files);
     allEntries.sort((a, b) => {
         const aD = a.name.split('/').length + (a.dir ? 0 : 100);
@@ -534,15 +555,17 @@ async function extractZipToIDB(zip, username, onProgress) {
         const entry = allEntries[i];
 
         let rawPath = entry.name.replace(new RegExp(PLACEHOLDER, 'g'), username);
-
         if (rawPath.endsWith('/')) rawPath = rawPath.slice(0, -1);
         if (!rawPath) continue;
 
         const parts = rawPath.split('/');
         const entryName = parts[parts.length - 1];
-        const parentRawPath = parts.slice(0, -1).join('/');
-        const parentId = pathToId[parentRawPath] ?? 'root';
 
+        // Guarantee all parent directories exist before we use them
+        await ensurePath(parts.slice(0, -1));
+
+        const parentPath = parts.slice(0, -1).join('/');
+        const parentId = pathToId[parentPath] ?? 'root';
         const id = crypto.randomUUID();
         const now = Date.now();
 
@@ -564,14 +587,12 @@ async function extractZipToIDB(zip, username, onProgress) {
         }
 
         if (i % 5 === 0 && onProgress) {
-            onProgress((i / total) * 100,
-                `Installing… (${i + 1} / ${total})`);
+            onProgress((i / total) * 100, `Installing… (${i + 1} / ${total})`);
         }
     }
 
     db.close();
 }
-
 
 /* ============================================================
    Fallback: create default folders without the ZIP

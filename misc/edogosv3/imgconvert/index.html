@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Offline Image Converter</title>
+
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #app {
+            background: #1c1c1c;
+            padding: 30px;
+            border-radius: 12px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        #drop {
+            border: 2px dashed #555;
+            padding: 40px;
+            margin: 20px 0;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #drop.hover {
+            border-color: #00c3ff;
+        }
+
+        select,
+        button {
+            padding: 8px;
+            margin: 6px;
+            border-radius: 6px;
+            border: none;
+        }
+
+        button {
+            background: #00c3ff;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="app">
+        <h1>Offline Image Converter</h1>
+
+        <div id="drop">Drop image here or click</div>
+
+        <select id="format">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="webp">WEBP</option>
+            <option value="gif">GIF</option>
+        </select>
+
+        <br>
+
+        <button id="convert" disabled>Convert</button>
+
+        <p id="status"></p>
+    </div>
+
+    <script type="module">
+        import { initializeImageMagick, ImageMagick, MagickFormat } from "./index.js";
+
+        const drop = document.getElementById("drop");
+        const convertBtn = document.getElementById("convert");
+        const formatSelect = document.getElementById("format");
+        const status = document.getElementById("status");
+
+        status.textContent = "Loading ImageMagick...";
+
+        await initializeImageMagick();
+
+        status.textContent = "Ready";
+
+        let file;
+
+        drop.onclick = () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = () => {
+                file = input.files[0];
+                status.textContent = file.name;
+                convertBtn.disabled = false;
+            };
+            input.click();
+        };
+
+        drop.ondragover = e => {
+            e.preventDefault();
+            drop.classList.add("hover");
+        };
+
+        drop.ondragleave = () => {
+            drop.classList.remove("hover");
+        };
+
+        drop.ondrop = e => {
+            e.preventDefault();
+            drop.classList.remove("hover");
+
+            file = e.dataTransfer.files[0];
+            status.textContent = file.name;
+            convertBtn.disabled = false;
+        };
+
+        convertBtn.onclick = async () => {
+
+            status.textContent = "Converting...";
+
+            const bytes = new Uint8Array(await file.arrayBuffer());
+
+            const formatMap = {
+                png: MagickFormat.Png,
+                jpg: MagickFormat.Jpeg,
+                webp: MagickFormat.WebP,
+                gif: MagickFormat.Gif
+            };
+
+            const format = formatMap[formatSelect.value];
+
+            ImageMagick.read(bytes, img => {
+
+                img.write(data => {
+
+                    const blob = new Blob([data]);
+
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "converted." + formatSelect.value;
+                    a.click();
+
+                    status.textContent = "Done!";
+
+                }, format);
+
+            });
+
+        };
+    </script>
+
+</body>
+
+</html>
