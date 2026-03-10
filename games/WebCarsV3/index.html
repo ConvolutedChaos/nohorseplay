@@ -22,21 +22,6 @@
 		<div id="unity-warning"> </div>
 	</div>
 	<script>
-		let w = ["V", "m", "0", "w", "d", "2", "Q", "y", "V", "k", "Z", "O", "V", "W", "h", "T", "Y", "m", "x", "K", "W", "F", "l", "U", "R", "n", "d", "U", "M", "V", "p", "z", "W", "k", "c", "5", "V", "1", "J", "s", "b", "D", "N", "X", "a", "2", "M", "1", "V", "j", "A", "x", "W", "G", "V", "E", "Q", "l", "p", "N", "M", "0", "J", "I", "V", "j", "B", "a", "Y", "W", "R", "H", "V", "k", "V", "R", "b", "U", "Z", "T", "V", "j", "F", "K", "S", "V", "Z", "t", "c", "E", "d", "T", "M", "k", "1", "5", "V", "G", "t", "s", "a", "V", "J", "t", "U", "n", "B", "V", "b", "X", "R", "3", "U", "1", "Z", "a", "d", "E", "1", "U", "U", "l", "R", "N", "a", "z", "E", "1", "V", "k", "d", "0", "V", "1", "V", "t", "S", "l", "Z", "X", "b", "F", "J", "X", "Y", "W", "t", "a", "T", "F", "U", "x", "W", "m", "F", "k", "R", "1", "J", "I", "U", "m", "x", "S", "T", "m", "F", "6", "R", "T", "B", "W", "M", "n", "R", "v", "V", "D", "J", "G", "R", "1", "N", "u", "T", "m", "p", "T", "R", "U", "p", "X", "W", "W", "x", "o", "U", "0", "0", "x", "U", "n", "R", "l", "R", "0", "Z", "q", "T", "V", "d", "S", "M", "F", "V", "t", "e", "G", "t", "U", "b", "F", "p", "1", "U", "W", "x", "o", "V", "1", "J", "s", "c", "F", "h", "W", "a", "k", "p", "H", "U", "0", "Z", "a", "d", "V", "J", "s", "S", "l", "d", "S", "M", "0", "0", "1"];
-		function d(p, l = 1) { let u = p.join(""); for (let i = 0; i < l; i++) { u = atob(u); } return u; } const t = prompt("Enter password:"); const rw = d(w, 10);
-
-		if (t !== rw) {
-			document.body.innerHTML = `
-				<h1 style="text-align:center;margin-top:20vh;">
-					403 Forbidden
-				</h1>
-			`;
-			throw new Error("Unauthorized");
-		}
-
-		console.log("Access granted");
-	</script>
-	<script>
 		window.addEventListener("load", function () {
 			if ("serviceWorker" in navigator) {
 				navigator.serviceWorker.register("ServiceWorker.js");
@@ -83,7 +68,7 @@
 			streamingAssetsUrl: "StreamingAssets",
 			companyName: "Nohorseplay",
 			productName: "WebCarsV3",
-			productVersion: "0.4",
+			productVersion: "0.5",
 			showBanner: unityShowBanner,
 			// errorHandler: function(err, url, line) {
 			//    alert("error " + err + " occurred at line " + line);
