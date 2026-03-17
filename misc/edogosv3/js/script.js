@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.0.7";
+const VERSION = "E-Dog OS 3.0.8";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
@@ -382,40 +382,42 @@ function spawnWindow(initialFolderId = null) {
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     win.innerHTML = `
-            <div class="title-bar" data-winid="${windowId}">
-                <button class="window-close-button" title="Close">✕</button>
-                <button class="window-minimize-button" title="Minimize">—</button>
-                <span class="title-bar-text">File Explorer</span>
-            </div>
+        <div class="title-bar" data-winid="${windowId}">
+            <button class="window-close-button" title="Close">✕</button>
+            <button class="window-minimize-button" title="Minimize">—</button>
+            <span class="title-bar-text">File Explorer</span>
+        </div>
 
-            <div class="toolbar">
-                <button class="btn-back" title="Back">⬅</button>
-                <button class="btn-forward" title="Forward">➡</button>
-                <button class="btn-up" title="Up">⬆</button>
-                <div class="address">/ </div>
-                <button class="small-btn btn-new-folder">+ Folder</button>
-                <button class="small-btn btn-new-file">+ File</button>
-                <button class="small-btn btn-upload">Upload</button>
-                <input type="file" class="file-input" style="display:none" multiple>
-            </div>
+        <div class="toolbar">
+            <button class="btn-back" title="Back">⬅</button>
+            <button class="btn-forward" title="Forward">➡</button>
+            <button class="btn-up" title="Up">⬆</button>
+            <div class="address">/ </div>
+            <button class="small-btn btn-new-folder">+ Folder</button>
+            <button class="small-btn btn-new-file">+ File</button>
+            <button class="small-btn btn-upload">Upload Files</button>
+            <button class="small-btn btn-upload-folder">Upload Folder</button>
+            <input type="file" class="file-input" style="display:none" multiple>
+            <input type="file" class="file-input-folder" style="display:none">
+        </div>
 
-            <div class="content">
-                <div class="sidebar">
-                    <div class="sidebar-section">Places</div>
-                    <ul class="favorites-list" id="sb-places-${windowId}"></ul>
-                    <div class="sidebar-section">System</div>
-                    <ul class="favorites-list" id="sb-system-${windowId}"></ul>
-                    <div class="sidebar-section" id="sb-media-header-${windowId}">Media</div>
-                    <ul class="favorites-list" id="sb-media-${windowId}"></ul>
-                </div>
-                <div class="main-panel"></div>
+        <div class="content">
+            <div class="sidebar">
+                <div class="sidebar-section">Places</div>
+                <ul class="favorites-list" id="sb-places-${windowId}"></ul>
+                <div class="sidebar-section">System</div>
+                <ul class="favorites-list" id="sb-system-${windowId}"></ul>
+                <div class="sidebar-section" id="sb-media-header-${windowId}">Media</div>
+                <ul class="favorites-list" id="sb-media-${windowId}"></ul>
             </div>
+            <div class="main-panel"></div>
+        </div>
 
-            <div class="bottom-toolbar">
-                <input type="range" min="60" max="160" value="100" class="zoom-slider">
-                <span class="file-count">0 items</span>, <span class="free-space">Free space: …</span>
-            </div>
-            `;
+        <div class="bottom-toolbar">
+            <input type="range" min="60" max="160" value="100" class="zoom-slider">
+            <span class="file-count">0 items</span>, <span class="free-space">Free space: …</span>
+        </div>
+    `;
 
     document.getElementById('windowContainer').appendChild(win);
 
@@ -506,6 +508,77 @@ function spawnWindow(initialFolderId = null) {
             });
         }
         await renderWindow(windowId);
+    };
+
+    const uploadFolderBtn = win.querySelector('.btn-upload-folder');
+    const folderInput = win.querySelector('.file-input-folder');
+    folderInput.webkitdirectory = true;
+
+    uploadFolderBtn.onclick = () => { folderInput.value = ''; folderInput.click(); };
+
+    folderInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+
+        uploadFolderBtn.textContent = 'Uploading…';
+        uploadFolderBtn.disabled = true;
+
+        try {
+            const folderCache = {};
+
+            for (const file of files) {
+                const parts = file.webkitRelativePath.split('/');
+
+                let parentId = state.currentFolderId;
+                for (let i = 0; i < parts.length - 1; i++) {
+                    const pathKey = parts.slice(0, i + 1).join('/');
+
+                    if (folderCache[pathKey] !== undefined) {
+                        parentId = folderCache[pathKey];
+                    } else {
+                        const siblings = await idbGetAllByIndex('parentId', parentId);
+                        const existing = siblings.find(
+                            n => n.name === parts[i] && n.type === 'folder'
+                        );
+
+                        if (existing) {
+                            folderCache[pathKey] = existing.id;
+                            parentId = existing.id;
+                        } else {
+                            const id = crypto.randomUUID();
+                            await idbAdd({
+                                id,
+                                name: parts[i],
+                                type: 'folder',
+                                parentId,
+                                createdAt: Date.now(),
+                                updatedAt: Date.now(),
+                            });
+                            folderCache[pathKey] = id;
+                            parentId = id;
+                        }
+                    }
+                }
+
+                const content = await file.arrayBuffer();
+                await idbAdd({
+                    id: crypto.randomUUID(),
+                    name: parts[parts.length - 1],
+                    type: 'file',
+                    parentId,
+                    content,
+                    size: file.size,
+                    mime: file.type || '',
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                });
+            }
+
+            await renderAllWindows();
+        } finally {
+            uploadFolderBtn.textContent = 'Upload Folder';
+            uploadFolderBtn.disabled = false;
+        }
     };
 
     const zoomSlider = win.querySelector('.zoom-slider');
@@ -1055,18 +1128,42 @@ function _buildEditorBody(body, item, windowId) {
 }
 
 function _buildImageBody(body, item) {
-    body.style.background = '#0a0a0a';
-    body.style.alignItems = 'center';
-    body.style.justifyContent = 'center';
-    body.style.overflow = 'auto';
+    body.style.cssText = 'background:#0a0a0a;display:flex;flex-direction:column;height:100%;overflow:hidden;';
+
+    // Toolbar
+    const toolbar = document.createElement('div');
+    toolbar.style.cssText = 'display:flex;align-items:center;gap:6px;padding:5px 8px;background:#141414;border-bottom:1px solid #000;flex-shrink:0;';
+
+    const filenameSpan = document.createElement('span');
+    filenameSpan.style.cssText = 'color:#888;font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    filenameSpan.textContent = item.name || '';
+    toolbar.appendChild(filenameSpan);
+
+    const exifBtn = document.createElement('button');
+    exifBtn.className = 'small-btn';
+    exifBtn.textContent = 'ℹ EXIF';
+    toolbar.appendChild(exifBtn);
+    body.appendChild(toolbar);
+
+    // Content row
+    const contentRow = document.createElement('div');
+    contentRow.style.cssText = 'flex:1;display:flex;overflow:hidden;';
+    body.appendChild(contentRow);
+
+    // Image area
+    const imgArea = document.createElement('div');
+    imgArea.style.cssText = 'flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;';
+    contentRow.appendChild(imgArea);
 
     const img = document.createElement('img');
     img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;';
 
+    let imgBlob = null;
+
     if (item.content) {
         const mimeType = item.mime || ('image/' + getExt(item.name));
-        const blob = new Blob([item.content], { type: mimeType });
-        const src = URL.createObjectURL(blob);
+        imgBlob = new Blob([item.content], { type: mimeType });
+        const src = URL.createObjectURL(imgBlob);
         img.src = src;
         img._blobUrl = src;
         const observer = new MutationObserver(() => {
@@ -1077,7 +1174,28 @@ function _buildImageBody(body, item) {
         });
         observer.observe(document.getElementById('windowContainer'), { childList: true, subtree: true });
     }
-    body.appendChild(img);
+    imgArea.appendChild(img);
+
+    // EXIF panel (hidden by default)
+    const exifPanel = document.createElement('div');
+    exifPanel.style.cssText = 'width:240px;min-width:240px;background:#111;border-left:1px solid #1a1a1a;overflow-y:auto;display:none;flex-direction:column;';
+    contentRow.appendChild(exifPanel);
+
+    let exifLoaded = false;
+    let panelOpen = false;
+
+    exifBtn.onclick = async () => {
+        panelOpen = !panelOpen;
+        exifPanel.style.display = panelOpen ? 'flex' : 'none';
+        exifBtn.style.borderColor = panelOpen ? '#3b82f6' : '';
+        exifBtn.style.color = panelOpen ? '#60a5fa' : '';
+
+        if (panelOpen && !exifLoaded) {
+            exifLoaded = true;
+            exifPanel.innerHTML = '<div style="padding:16px;color:#555;font-size:12px;text-align:center;">Parsing EXIF…</div>';
+            await _renderExifPanel(exifPanel, imgBlob, item);
+        }
+    };
 }
 
 function _buildVideoBody(body, item, windowId) {
@@ -1276,6 +1394,188 @@ function spawnCustomApp(item) {
 
     focusWindow(windowId);
     return windowId;
+}
+
+// Image Viewer
+
+async function _loadExifr() {
+    if (window.exifr) return true;
+    return new Promise(resolve => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js';
+        s.onload = () => resolve(true);
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
+    });
+}
+
+async function _renderExifPanel(panel, blob, item) {
+    const ok = await _loadExifr();
+    if (!ok) {
+        panel.innerHTML = '<div style="padding:16px;color:#f87171;font-size:12px;">Could not load EXIF library.</div>';
+        return;
+    }
+
+    let data;
+    try {
+        data = await window.exifr.parse(blob, {
+            tiff: true, exif: true, gps: true,
+            interop: false, thumbnail: false,
+        });
+    } catch (e) {
+        panel.innerHTML = `<div style="padding:16px;color:#f87171;font-size:12px;">Parse error: ${e.message}</div>`;
+        return;
+    }
+
+    panel.innerHTML = '';
+
+    // Always show file info
+    _exifSection(panel, 'File', [
+        ['Name',  item.name],
+        ['Type',  item.mime || getExt(item.name).toUpperCase() || 'Image'],
+        ['Size',  formatBytes(item.size || item.content?.byteLength || 0)],
+    ].filter(([, v]) => v));
+
+    if (!data) {
+        const msg = document.createElement('div');
+        msg.style.cssText = 'padding:12px 14px;color:#555;font-size:11px;';
+        msg.textContent = 'No EXIF metadata found.';
+        panel.appendChild(msg);
+        return;
+    }
+
+    // Camera
+    const cameraRows = [
+        ['Make',   data.Make],
+        ['Model',  data.Model],
+        ['Lens',   data.LensModel],
+        ['Software', data.Software],
+    ].filter(([, v]) => v);
+    if (cameraRows.length) _exifSection(panel, 'Camera', cameraRows);
+
+    // Exposure
+    const fmtExp  = v => v ? (v < 1 ? `1/${Math.round(1 / v)}s` : `${v}s`) : null;
+    const fmtAp   = v => v ? `f/${v}` : null;
+    const fmtFoc  = v => v ? `${v}mm` : null;
+    const fmtBias = v => v != null ? `${v > 0 ? '+' : ''}${v} EV` : null;
+
+    const exposureRows = [
+        ['Exposure',       fmtExp(data.ExposureTime)],
+        ['Aperture',       fmtAp(data.FNumber)],
+        ['ISO',            data.ISO ?? data.ISOSpeedRatings],
+        ['Focal Length',   fmtFoc(data.FocalLength)],
+        ['Exposure Bias',  fmtBias(data.ExposureBiasValue)],
+        ['Flash',          _exifFmtFlash(data.Flash)],
+        ['White Balance',  _exifFmtWB(data.WhiteBalance)],
+        ['Exposure Mode',  _exifFmtExpMode(data.ExposureMode)],
+        ['Metering',       _exifFmtMetering(data.MeteringMode)],
+    ].filter(([, v]) => v != null && v !== '');
+    if (exposureRows.length) _exifSection(panel, 'Exposure', exposureRows);
+
+    // Dates
+    const dateRows = [
+        ['Taken',     _exifFmtDate(data.DateTimeOriginal)],
+        ['Modified',  _exifFmtDate(data.DateTime)],
+        ['Digitized', _exifFmtDate(data.DateTimeDigitized)],
+    ].filter(([, v]) => v);
+    if (dateRows.length) _exifSection(panel, 'Date & Time', dateRows);
+
+    // Image details
+    const dimW = data.ImageWidth  ?? data.ExifImageWidth;
+    const dimH = data.ImageHeight ?? data.ExifImageHeight;
+    const imageRows = [
+        ['Width',       dimW ? `${dimW}px` : null],
+        ['Height',      dimH ? `${dimH}px` : null],
+        ['Orientation', _exifFmtOrientation(data.Orientation)],
+        ['Color Space', data.ColorSpace === 1 ? 'sRGB' : data.ColorSpace ? String(data.ColorSpace) : null],
+        ['Artist',      data.Artist],
+        ['Copyright',   data.Copyright],
+    ].filter(([, v]) => v);
+    if (imageRows.length) _exifSection(panel, 'Image', imageRows);
+
+    // GPS
+    if (data.latitude != null && data.longitude != null) {
+        const lat = data.latitude.toFixed(6);
+        const lon = data.longitude.toFixed(6);
+        _exifSection(panel, 'Location', [
+            ['Latitude',  lat],
+            ['Longitude', lon],
+            ['Altitude',  data.GPSAltitude != null ? `${data.GPSAltitude.toFixed(1)}m` : null],
+        ].filter(([, v]) => v));
+
+        const mapLink = document.createElement('a');
+        mapLink.href = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`;
+        mapLink.target = '_blank';
+        mapLink.style.cssText = 'display:block;margin:8px 12px 12px;padding:6px 10px;background:#0c74df;color:#fff;border-radius:5px;text-align:center;font-size:12px;text-decoration:none;';
+        mapLink.textContent = '🗺 View on Map';
+        panel.appendChild(mapLink);
+    }
+}
+
+function _exifSection(panel, title, rows) {
+    const section = document.createElement('div');
+    section.style.cssText = 'border-bottom:1px solid #1a1a1a;padding-bottom:6px;';
+
+    const header = document.createElement('div');
+    header.style.cssText = 'padding:10px 12px 4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555;';
+    header.textContent = title;
+    section.appendChild(header);
+
+    for (const [key, val] of rows) {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;padding:3px 12px;gap:8px;';
+
+        const k = document.createElement('span');
+        k.style.cssText = 'width:90px;flex-shrink:0;color:#666;font-size:11px;line-height:1.5;';
+        k.textContent = key;
+
+        const v = document.createElement('span');
+        v.style.cssText = 'flex:1;color:#bbb;font-size:11px;line-height:1.5;word-break:break-word;font-family:monospace;';
+        v.textContent = String(val);
+
+        row.appendChild(k);
+        row.appendChild(v);
+        section.appendChild(row);
+    }
+
+    panel.appendChild(section);
+}
+
+function _exifFmtDate(val) {
+    if (!val) return null;
+    if (val instanceof Date) return val.toLocaleString();
+    if (typeof val === 'string') {
+        const d = new Date(val.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3'));
+        return isNaN(d) ? val : d.toLocaleString();
+    }
+    return null;
+}
+
+function _exifFmtFlash(val) {
+    if (val == null) return null;
+    return (val & 1) ? 'Fired' : 'Did not fire';
+}
+
+function _exifFmtWB(val) {
+    if (val == null) return null;
+    return val === 0 ? 'Auto' : 'Manual';
+}
+
+function _exifFmtExpMode(val) {
+    if (val == null) return null;
+    return ['Auto', 'Manual', 'Auto bracket'][val] ?? String(val);
+}
+
+function _exifFmtMetering(val) {
+    if (val == null) return null;
+    return [null, 'Average', 'Center-weighted', 'Spot', 'Multi-spot', 'Multi-segment', 'Partial'][val] ?? String(val);
+}
+
+function _exifFmtOrientation(val) {
+    if (val == null) return null;
+    const m = { 1:'Normal', 2:'Flipped H', 3:'Rotated 180°', 4:'Flipped V',
+                5:'90° CW + Flip', 6:'90° CW', 7:'90° CCW + Flip', 8:'90° CCW' };
+    return m[val] ?? String(val);
 }
 
 /* ---- ZIP Viewer ---- */
