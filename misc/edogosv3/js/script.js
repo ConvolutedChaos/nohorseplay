@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.0.8";
+const VERSION = "E-Dog OS 3.0.9";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
@@ -1431,9 +1431,9 @@ async function _renderExifPanel(panel, blob, item) {
 
     // Always show file info
     _exifSection(panel, 'File', [
-        ['Name',  item.name],
-        ['Type',  item.mime || getExt(item.name).toUpperCase() || 'Image'],
-        ['Size',  formatBytes(item.size || item.content?.byteLength || 0)],
+        ['Name', item.name],
+        ['Type', item.mime || getExt(item.name).toUpperCase() || 'Image'],
+        ['Size', formatBytes(item.size || item.content?.byteLength || 0)],
     ].filter(([, v]) => v));
 
     if (!data) {
@@ -1446,50 +1446,50 @@ async function _renderExifPanel(panel, blob, item) {
 
     // Camera
     const cameraRows = [
-        ['Make',   data.Make],
-        ['Model',  data.Model],
-        ['Lens',   data.LensModel],
+        ['Make', data.Make],
+        ['Model', data.Model],
+        ['Lens', data.LensModel],
         ['Software', data.Software],
     ].filter(([, v]) => v);
     if (cameraRows.length) _exifSection(panel, 'Camera', cameraRows);
 
     // Exposure
-    const fmtExp  = v => v ? (v < 1 ? `1/${Math.round(1 / v)}s` : `${v}s`) : null;
-    const fmtAp   = v => v ? `f/${v}` : null;
-    const fmtFoc  = v => v ? `${v}mm` : null;
+    const fmtExp = v => v ? (v < 1 ? `1/${Math.round(1 / v)}s` : `${v}s`) : null;
+    const fmtAp = v => v ? `f/${v}` : null;
+    const fmtFoc = v => v ? `${v}mm` : null;
     const fmtBias = v => v != null ? `${v > 0 ? '+' : ''}${v} EV` : null;
 
     const exposureRows = [
-        ['Exposure',       fmtExp(data.ExposureTime)],
-        ['Aperture',       fmtAp(data.FNumber)],
-        ['ISO',            data.ISO ?? data.ISOSpeedRatings],
-        ['Focal Length',   fmtFoc(data.FocalLength)],
-        ['Exposure Bias',  fmtBias(data.ExposureBiasValue)],
-        ['Flash',          _exifFmtFlash(data.Flash)],
-        ['White Balance',  _exifFmtWB(data.WhiteBalance)],
-        ['Exposure Mode',  _exifFmtExpMode(data.ExposureMode)],
-        ['Metering',       _exifFmtMetering(data.MeteringMode)],
+        ['Exposure', fmtExp(data.ExposureTime)],
+        ['Aperture', fmtAp(data.FNumber)],
+        ['ISO', data.ISO ?? data.ISOSpeedRatings],
+        ['Focal Length', fmtFoc(data.FocalLength)],
+        ['Exposure Bias', fmtBias(data.ExposureBiasValue)],
+        ['Flash', _exifFmtFlash(data.Flash)],
+        ['White Balance', _exifFmtWB(data.WhiteBalance)],
+        ['Exposure Mode', _exifFmtExpMode(data.ExposureMode)],
+        ['Metering', _exifFmtMetering(data.MeteringMode)],
     ].filter(([, v]) => v != null && v !== '');
     if (exposureRows.length) _exifSection(panel, 'Exposure', exposureRows);
 
     // Dates
     const dateRows = [
-        ['Taken',     _exifFmtDate(data.DateTimeOriginal)],
-        ['Modified',  _exifFmtDate(data.DateTime)],
+        ['Taken', _exifFmtDate(data.DateTimeOriginal)],
+        ['Modified', _exifFmtDate(data.DateTime)],
         ['Digitized', _exifFmtDate(data.DateTimeDigitized)],
     ].filter(([, v]) => v);
     if (dateRows.length) _exifSection(panel, 'Date & Time', dateRows);
 
     // Image details
-    const dimW = data.ImageWidth  ?? data.ExifImageWidth;
+    const dimW = data.ImageWidth ?? data.ExifImageWidth;
     const dimH = data.ImageHeight ?? data.ExifImageHeight;
     const imageRows = [
-        ['Width',       dimW ? `${dimW}px` : null],
-        ['Height',      dimH ? `${dimH}px` : null],
+        ['Width', dimW ? `${dimW}px` : null],
+        ['Height', dimH ? `${dimH}px` : null],
         ['Orientation', _exifFmtOrientation(data.Orientation)],
         ['Color Space', data.ColorSpace === 1 ? 'sRGB' : data.ColorSpace ? String(data.ColorSpace) : null],
-        ['Artist',      data.Artist],
-        ['Copyright',   data.Copyright],
+        ['Artist', data.Artist],
+        ['Copyright', data.Copyright],
     ].filter(([, v]) => v);
     if (imageRows.length) _exifSection(panel, 'Image', imageRows);
 
@@ -1498,9 +1498,9 @@ async function _renderExifPanel(panel, blob, item) {
         const lat = data.latitude.toFixed(6);
         const lon = data.longitude.toFixed(6);
         _exifSection(panel, 'Location', [
-            ['Latitude',  lat],
+            ['Latitude', lat],
             ['Longitude', lon],
-            ['Altitude',  data.GPSAltitude != null ? `${data.GPSAltitude.toFixed(1)}m` : null],
+            ['Altitude', data.GPSAltitude != null ? `${data.GPSAltitude.toFixed(1)}m` : null],
         ].filter(([, v]) => v));
 
         const mapLink = document.createElement('a');
@@ -1573,8 +1573,10 @@ function _exifFmtMetering(val) {
 
 function _exifFmtOrientation(val) {
     if (val == null) return null;
-    const m = { 1:'Normal', 2:'Flipped H', 3:'Rotated 180°', 4:'Flipped V',
-                5:'90° CW + Flip', 6:'90° CW', 7:'90° CCW + Flip', 8:'90° CCW' };
+    const m = {
+        1: 'Normal', 2: 'Flipped H', 3: 'Rotated 180°', 4: 'Flipped V',
+        5: '90° CW + Flip', 6: '90° CW', 7: '90° CCW + Flip', 8: '90° CCW'
+    };
     return m[val] ?? String(val);
 }
 
@@ -2875,6 +2877,9 @@ function showContextMenu(x, y, item, windowId) {
         item.type === 'folder'
             ? { label: 'Open', icon: 'open', action: () => navigate(windowId, item.id) }
             : { label: 'Open', icon: 'open', action: () => openFile(item) },
+        item.type === 'file'
+            ? { label: 'Open With…', icon: 'open', action: () => showOpenWithMenu(x, y, item) }
+            : null,
         null,
         { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, windowId) },
         { label: 'Delete', icon: 'delete', danger: true, action: () => deleteItem(item.id, windowId) },
@@ -2884,6 +2889,38 @@ function showContextMenu(x, y, item, windowId) {
         null,
         { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) },
     ].filter(e => e !== null || true));
+}
+
+function showOpenWithMenu(x, y, item) {
+    const ext = getExt(item.name);
+    const isImage = IMAGE_EXTS.has(ext) || item.mime?.startsWith('image/');
+    const isHtml  = HTML_EXTS.has(ext);
+    const isAudio = AUDIO_EXTS.has(ext) || item.mime?.startsWith('audio/');
+    const isVideo = VIDEO_EXTS.has(ext) || item.mime?.startsWith('video/');
+    const isZip   = ZIP_EXTS.has(ext)   || item.mime === 'application/zip';
+
+    const entries = [
+        { label: 'Text Editor',   icon: 'open', action: () => spawnApp('editor', item) },
+    ];
+
+    if (isImage) {
+        entries.push({ label: 'Image Viewer', icon: 'open', action: () => spawnApp('image', item) });
+        entries.push({ label: 'Paint',        icon: 'open', action: () => spawnPaint(item) });
+    }
+    if (isHtml) {
+        entries.push({ label: 'Bacon Browser', icon: 'open', action: () => spawnApp('bacon', item) });
+    }
+    if (isAudio) {
+        entries.push({ label: 'Audio Player', icon: 'open', action: () => spawnApp('audio', item) });
+    }
+    if (isVideo) {
+        entries.push({ label: 'Video Player', icon: 'open', action: () => spawnApp('video', item) });
+    }
+    if (isZip) {
+        entries.push({ label: 'Archive Viewer', icon: 'open', action: () => spawnApp('zip', item) });
+    }
+
+    buildMenu(x, y, entries);
 }
 
 function showFolderBgContextMenu(x, y, windowId) {
@@ -2908,6 +2945,9 @@ function showDesktopContextMenu(x, y, item) {
         item.type === 'folder'
             ? { label: 'Open', icon: 'open', action: () => spawnWindow(item.id) }
             : { label: 'Open', icon: 'open', action: () => openFile(item) },
+        item.type === 'file'
+            ? { label: 'Open With…', icon: 'open', action: () => showOpenWithMenu(x, y, item) }
+            : null,
         null,
         { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, null) },
         { label: 'Delete', icon: 'delete', danger: true, action: () => deleteItem(item.id, null) },
@@ -3687,7 +3727,8 @@ async function _spawnPropsWindow(item) {
         table.innerHTML = _propsRow('Name', item.name) + _propsRow('Type', 'Folder') + _propsRow('Created', fmt(item.createdAt)) + _propsRow('Modified', fmt(item.updatedAt)) + _propsRow('Contents', '<span style="color:#888">Calculating…</span>');
         body.appendChild(table);
         const stats = await getFolderStats(item.id);
-        const contentsEl = table.querySelector('.pv:last-child');
+        const pvEls = table.querySelectorAll('.pv');
+        const contentsEl = pvEls[pvEls.length - 1];
         if (contentsEl) contentsEl.innerHTML = `${stats.count} item${stats.count !== 1 ? 's' : ''}, ${formatBytes(stats.size)}`;
     } else {
         const size = item.size || (item.content ? (typeof item.content === 'string' ? new Blob([item.content]).size : item.content.byteLength) : 0);

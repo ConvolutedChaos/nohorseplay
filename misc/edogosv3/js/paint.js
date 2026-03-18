@@ -1101,7 +1101,8 @@ function _buildPaintBody(body, fileItem, windowId, winEl) {
                         });
                     }
                     await renderAllWindows();
-                    winEl.querySelector('.title-bar-text').innerHTML =
+                    const titleEl = winEl?.querySelector('.title-bar-text');
+                    if (titleEl) titleEl.innerHTML =
                         `<img class="app-icon-title-bar" src="icons/16/paint.png" onerror="this.style.display='none'"> Paint — ${filename}`;
                 }, 'image/png');
             },
