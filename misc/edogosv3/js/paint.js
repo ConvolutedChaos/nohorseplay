@@ -1068,7 +1068,8 @@ function _buildPaintBody(body, fileItem, windowId, winEl) {
             ctx.drawImage(img, 0, 0);
             URL.revokeObjectURL(url);
             statusSize.textContent = `${canvas.width} × ${canvas.height} px`;
-            winEl.querySelector('.title-bar-text').innerHTML =
+            const titleEl = winEl?.querySelector('.title-bar-text');
+            if (titleEl) titleEl.innerHTML =
                 `<img class="app-icon-title-bar" src="icons/16/paint.png" onerror="this.style.display='none'"> Paint — ${file.name}`;
         };
         img.src = url;
