@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ZipXplorer</title>
     <script src="js/jszip.min.js"></script>
-    <script>if (typeof JSZip === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>'); }</script>
     <style>
         /* ════════════════════════════════════════════════════
-   DESIGN TOKENS  —  macOS El Capitan / Sierra palette
-   ════════════════════════════════════════════════════ */
+        DESIGN TOKENS  —  macOS El Capitan / Sierra palette
+        ════════════════════════════════════════════════════ */
         :root {
             --accent: #1a73e8;
             --accent-dark: #1558b0;
@@ -68,6 +67,8 @@
             --btn-b: #c0c0c0;
             --btn-txt: #1a1a1a;
             --thumb-bg: rgba(0, 0, 0, .06);
+            --fi-sz: 88px;
+            /* controlled by size slider */
         }
 
         [data-theme="dark"] {
@@ -122,6 +123,7 @@
             --btn-b: #333337;
             --btn-txt: #e8e8e8;
             --thumb-bg: rgba(255, 255, 255, .06);
+            --fi-sz: 88px;
         }
 
         /* ─── Reset & base ─── */
@@ -145,283 +147,844 @@
             -webkit-font-smoothing: antialiased
         }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px }
-        ::-webkit-scrollbar-track { background: transparent }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent
+        }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(128, 128, 128, .32);
             border-radius: 4px;
             border: 2px solid transparent;
             background-clip: content-box
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(128, 128, 128, .52);
             background-clip: content-box
         }
 
         /* ─── Traffic lights ─── */
-        .tlg { display: flex; align-items: center; gap: 7px; flex-shrink: 0 }
-        .tl {
-            width: 12px; height: 12px; border-radius: 50%; cursor: pointer;
-            position: relative; flex-shrink: 0;
-            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .18); transition: filter .1s
+        .tlg {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0
         }
-        .tl-r { background: var(--tl-red) }
-        .tl-y { background: var(--tl-yellow) }
-        .tl-g { background: var(--tl-green) }
-        .tl:hover { filter: brightness(.88) }
+
+        .tl {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .18);
+            transition: filter .1s
+        }
+
+        .tl-r {
+            background: var(--tl-red)
+        }
+
+        .tl-y {
+            background: var(--tl-yellow)
+        }
+
+        .tl-g {
+            background: var(--tl-green)
+        }
+
+        .tl:hover {
+            filter: brightness(.88)
+        }
+
         .tl::after {
-            content: ''; position: absolute; inset: 2px; border-radius: 50%;
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 50%;
             background: linear-gradient(to bottom, rgba(255, 255, 255, .35), transparent)
         }
+
         .tlg:hover .tl::before {
-            position: absolute; inset: 0; display: flex; align-items: center;
-            justify-content: center; font-size: 7px; font-weight: 900; line-height: 1; z-index: 1
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            font-weight: 900;
+            line-height: 1;
+            z-index: 1
         }
-        .tlg:hover .tl-r::before { content: '✕'; color: rgba(90, 0, 0, .5) }
-        .tlg:hover .tl-y::before { content: '−'; color: rgba(80, 50, 0, .5) }
-        .tlg:hover .tl-g::before { content: '+'; color: rgba(0, 60, 0, .5) }
+
+        .tlg:hover .tl-r::before {
+            content: '✕';
+            color: rgba(90, 0, 0, .5)
+        }
+
+        .tlg:hover .tl-y::before {
+            content: '−';
+            color: rgba(80, 50, 0, .5)
+        }
+
+        .tlg:hover .tl-g::before {
+            content: '+';
+            color: rgba(0, 60, 0, .5)
+        }
 
         /* ─── Buttons ─── */
         .mbtn {
-            height: 22px; padding: 0 12px; font-size: 12px; font-family: inherit;
-            font-weight: 500; cursor: pointer; border-radius: 4px; border: 1px solid;
-            transition: filter .1s; letter-spacing: -.01em; white-space: nowrap;
-            display: inline-flex; align-items: center; gap: 5px
+            height: 22px;
+            padding: 0 12px;
+            font-size: 12px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid;
+            transition: filter .1s;
+            letter-spacing: -.01em;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px
         }
-        .mbtn.pri { background: var(--accent); border-color: var(--accent-dark); color: #fff }
-        .mbtn.pri:hover { filter: brightness(1.08) }
-        .mbtn.sec { background: var(--btn-bg); border-color: var(--btn-b); color: var(--btn-txt) }
-        .mbtn.sec:hover { filter: brightness(.96) }
-        .mbtn:active { filter: brightness(.90) !important }
+
+        .mbtn.pri {
+            background: var(--accent);
+            border-color: var(--accent-dark);
+            color: #fff
+        }
+
+        .mbtn.pri:hover {
+            filter: brightness(1.08)
+        }
+
+        .mbtn.sec {
+            background: var(--btn-bg);
+            border-color: var(--btn-b);
+            color: var(--btn-txt)
+        }
+
+        .mbtn.sec:hover {
+            filter: brightness(.96)
+        }
+
+        .mbtn:active {
+            filter: brightness(.90) !important
+        }
 
         .tbtn {
-            width: 28px; height: 28px; border-radius: 6px; border: 1px solid transparent;
-            background: transparent; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; color: var(--text2); font-size: 13px;
-            transition: background .12s, border-color .12s; flex-shrink: 0
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text2);
+            font-size: 13px;
+            transition: background .12s, border-color .12s;
+            flex-shrink: 0
         }
-        .tbtn:hover { background: rgba(128, 128, 128, .14); border-color: var(--div); color: var(--text) }
-        .tbtn:active { background: rgba(128, 128, 128, .24) }
-        .tbtn svg { width: 14px; height: 14px; pointer-events: none }
-        .tbtn img { width: 16px; height: 16px; object-fit: contain; filter: var(--ic-filter) }
+
+        .tbtn:hover {
+            background: rgba(128, 128, 128, .14);
+            border-color: var(--div);
+            color: var(--text)
+        }
+
+        .tbtn:active {
+            background: rgba(128, 128, 128, .24)
+        }
+
+        .tbtn svg {
+            width: 14px;
+            height: 14px;
+            pointer-events: none
+        }
+
+        .tbtn img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            filter: var(--ic-filter)
+        }
+
         /* Active/pressed state for toggle buttons */
         .tbtn.active {
             background: var(--accent);
             border-color: var(--accent-dark);
             color: #fff;
         }
-        .tbtn.active:hover { background: var(--accent-dark); }
+
+        .tbtn.active:hover {
+            background: var(--accent-dark);
+        }
 
         .thbtn {
-            width: 26px; height: 20px; border-radius: 4px; border: none;
-            background: transparent; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; font-size: 13px; color: var(--text2); transition: background .12s
+            width: 26px;
+            height: 20px;
+            border-radius: 4px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text2);
+            transition: background .12s
         }
-        .thbtn:hover { background: rgba(128, 128, 128, .14) }
 
-        .sep { width: 1px; height: 16px; background: var(--div); margin: 0 2px; flex-shrink: 0 }
+        .thbtn:hover {
+            background: rgba(128, 128, 128, .14)
+        }
+
+        .sep {
+            width: 1px;
+            height: 16px;
+            background: var(--div);
+            margin: 0 2px;
+            flex-shrink: 0
+        }
 
         /* ─── Titlebar shared ─── */
         .tbar {
-            height: 38px; display: flex; align-items: center; padding: 0 10px; gap: 8px;
-            flex-shrink: 0; user-select: none; position: relative;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 8px;
+            flex-shrink: 0;
+            user-select: none;
+            position: relative;
             background: linear-gradient(to bottom, var(--tb-start), var(--tb-end));
             border-bottom: 1px solid var(--tb-border)
         }
+
         .tbar-c {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            font-size: 13px; font-weight: 600; color: var(--tb-text); pointer-events: none;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--tb-text);
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 40%
         }
-        .tbar-r { margin-left: auto; display: flex; align-items: center; gap: 5px }
+
+        .tbar-r {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
 
         /* ══════════════ LOAD SCREEN ══════════════ */
         #ld {
-            position: fixed; inset: 0; display: flex; align-items: center;
-            justify-content: center; background: var(--win-bg); z-index: 200; padding: 16px
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--win-bg);
+            z-index: 200;
+            padding: 16px
         }
+
         .ld-win {
-            width: 100%; max-width: 490px; background: var(--content-bg);
-            border-radius: 10px; overflow: hidden;
+            width: 100%;
+            max-width: 490px;
+            background: var(--content-bg);
+            border-radius: 10px;
+            overflow: hidden;
             box-shadow: var(--sh-lg), 0 0 0 1px rgba(0, 0, 0, .10)
         }
-        .ld-body { padding: 24px; display: flex; flex-direction: column; gap: 16px }
-        .ld-logo { text-align: center; padding: 4px 0 8px }
-        .ld-logo-ico { width: 64px; height: 64px; margin: 0 auto 10px; position: relative; display: block }
-        .ld-logo-ico img { width: 64px; height: 64px; object-fit: contain }
-        .ld-logo-fb {
-            width: 64px; height: 64px; border-radius: 14px; display: none;
-            align-items: center; justify-content: center; font-size: 30px;
-            background: linear-gradient(145deg, #2a7ae2, #1558b0); box-shadow: var(--sh-md)
+
+        .ld-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
         }
-        .ld-logo h1 { font-size: 19px; font-weight: 600; letter-spacing: -.02em; color: var(--text) }
-        .ld-logo p { font-size: 11px; color: var(--textd); margin-top: 2px }
-        .sl { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px }
+
+        .ld-logo {
+            text-align: center;
+            padding: 4px 0 8px
+        }
+
+        .ld-logo-ico {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+            position: relative;
+            display: block
+        }
+
+        .ld-logo-ico img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain
+        }
+
+        .ld-logo-fb {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: linear-gradient(145deg, #2a7ae2, #1558b0);
+            box-shadow: var(--sh-md)
+        }
+
+        .ld-logo h1 {
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            color: var(--text)
+        }
+
+        .ld-logo p {
+            font-size: 11px;
+            color: var(--textd);
+            margin-top: 2px
+        }
+
+        .sl {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 5px
+        }
+
         .dz {
-            border: 2px dashed var(--drop-b); background: var(--drop-bg); border-radius: 8px;
-            padding: 20px 16px; text-align: center; cursor: pointer; position: relative;
+            border: 2px dashed var(--drop-b);
+            background: var(--drop-bg);
+            border-radius: 8px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
             transition: border-color .14s, background .14s
         }
-        .dz:hover, .dz.over { border-color: var(--accent); background: rgba(26, 115, 232, .06) }
-        [data-theme="dark"] .dz:hover, [data-theme="dark"] .dz.over { background: rgba(77, 161, 255, .07) }
-        .dz input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100% }
-        .dz-ico { font-size: 24px; margin-bottom: 6px }
-        .dz-hint { font-size: 12px; color: var(--text2) }
-        .dz-name { font-size: 12px; color: var(--accent); margin-top: 4px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-        .or { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--textd) }
-        .or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--div) }
+
+        .dz:hover,
+        .dz.over {
+            border-color: var(--accent);
+            background: rgba(26, 115, 232, .06)
+        }
+
+        [data-theme="dark"] .dz:hover,
+        [data-theme="dark"] .dz.over {
+            background: rgba(77, 161, 255, .07)
+        }
+
+        .dz input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%
+        }
+
+        .dz-ico {
+            font-size: 24px;
+            margin-bottom: 6px
+        }
+
+        .dz-hint {
+            font-size: 12px;
+            color: var(--text2)
+        }
+
+        .dz-name {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 4px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .or {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--textd)
+        }
+
+        .or::before,
+        .or::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--div)
+        }
+
         .b64 {
-            width: 100%; height: 72px; background: var(--in-bg); border: 1px solid var(--in-b);
-            border-radius: 6px; color: var(--text);
+            width: 100%;
+            height: 72px;
+            background: var(--in-bg);
+            border: 1px solid var(--in-b);
+            border-radius: 6px;
+            color: var(--text);
             font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
-            font-size: 11px; padding: 8px 10px; resize: vertical; outline: none;
+            font-size: 11px;
+            padding: 8px 10px;
+            resize: vertical;
+            outline: none;
             transition: border-color .15s, box-shadow .15s
         }
-        .b64:focus { border-color: var(--in-bf); box-shadow: 0 0 0 3px var(--in-bs) }
-        .b64::placeholder { color: var(--textd) }
-        .ldf { display: flex; justify-content: flex-end; gap: 8px; align-items: center; padding-top: 2px }
-        .errtxt { flex: 1; font-size: 11px; color: #c0392b }
-        [data-theme="dark"] .errtxt { color: #fc8181 }
+
+        .b64:focus {
+            border-color: var(--in-bf);
+            box-shadow: 0 0 0 3px var(--in-bs)
+        }
+
+        .b64::placeholder {
+            color: var(--textd)
+        }
+
+        .ldf {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            align-items: center;
+            padding-top: 2px
+        }
+
+        .errtxt {
+            flex: 1;
+            font-size: 11px;
+            color: #c0392b
+        }
+
+        [data-theme="dark"] .errtxt {
+            color: #fc8181
+        }
 
         /* ══════════════ PROGRESS ══════════════ */
         .prog-ov {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, .3); display: none;
-            align-items: center; justify-content: center; z-index: 300;
-            -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px)
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .3);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px)
         }
-        .prog-ov.on { display: flex }
+
+        .prog-ov.on {
+            display: flex
+        }
+
         .prog-box {
-            background: var(--prog-bg); border-radius: 12px; width: 280px;
-            box-shadow: var(--sh-lg), 0 0 0 1px rgba(0, 0, 0, .10); overflow: hidden
+            background: var(--prog-bg);
+            border-radius: 12px;
+            width: 280px;
+            box-shadow: var(--sh-lg), 0 0 0 1px rgba(0, 0, 0, .10);
+            overflow: hidden
         }
-        .prog-bd { padding: 16px; display: flex; flex-direction: column; gap: 10px }
-        .prog-lbl { font-size: 12px; color: var(--text2) }
-        .prog-tr { height: 4px; background: var(--div); border-radius: 2px; overflow: hidden }
-        .prog-fl { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width .15s ease }
+
+        .prog-bd {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .prog-lbl {
+            font-size: 12px;
+            color: var(--text2)
+        }
+
+        .prog-tr {
+            height: 4px;
+            background: var(--div);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .prog-fl {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width .15s ease
+        }
 
         /* ══════════════ APP ══════════════ */
-        #app { display: none; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden; background: var(--win-bg) }
-        #app.on { display: flex; animation: fadein .18s ease }
-        @keyframes fadein { from { opacity: 0 } to { opacity: 1 } }
+        #app {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: var(--win-bg)
+        }
+
+        #app.on {
+            display: flex;
+            animation: fadein .18s ease
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
 
         /* Path bar */
         .pb {
-            background: var(--pb-bg); border-bottom: 1px solid var(--pb-border);
-            height: 28px; display: flex; align-items: center; padding: 0 12px;
-            flex-shrink: 0; overflow-x: auto
+            background: var(--pb-bg);
+            border-bottom: 1px solid var(--pb-border);
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            flex-shrink: 0;
+            overflow-x: auto
         }
-        .pb::-webkit-scrollbar { height: 0 }
+
+        .pb::-webkit-scrollbar {
+            height: 0
+        }
+
         .pc {
-            font-size: 11px; color: var(--accent); cursor: pointer; padding: 2px 4px;
-            border-radius: 3px; white-space: nowrap; flex-shrink: 0; transition: background .1s
+            font-size: 11px;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background .1s
         }
-        .pc:hover { background: var(--item-sel) }
-        .pc.cur { color: var(--text2); cursor: default }
-        .pc.cur:hover { background: none }
-        .ps { font-size: 11px; color: var(--textd); margin: 0 1px; flex-shrink: 0; pointer-events: none }
+
+        .pc:hover {
+            background: var(--item-sel)
+        }
+
+        .pc.cur {
+            color: var(--text2);
+            cursor: default
+        }
+
+        .pc.cur:hover {
+            background: none
+        }
+
+        .ps {
+            font-size: 11px;
+            color: var(--textd);
+            margin: 0 1px;
+            flex-shrink: 0;
+            pointer-events: none
+        }
 
         /* Body */
-        .app-body { flex: 1; display: flex; overflow: hidden; min-height: 0 }
+        .app-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            min-height: 0
+        }
 
         /* ══════════════ SIDEBAR ══════════════ */
         .sb {
-            width: 220px; min-width: 0; background: var(--sb-bg);
-            -webkit-backdrop-filter: var(--sb-blur); backdrop-filter: var(--sb-blur);
-            border-right: 1px solid var(--sb-border); display: flex; flex-direction: column;
-            overflow: hidden; flex-shrink: 0; transition: width .22s cubic-bezier(.4, 0, .2, 1)
+            width: 220px;
+            min-width: 0;
+            background: var(--sb-bg);
+            -webkit-backdrop-filter: var(--sb-blur);
+            backdrop-filter: var(--sb-blur);
+            border-right: 1px solid var(--sb-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: width .22s cubic-bezier(.4, 0, .2, 1)
         }
-        .sb.col { width: 0 !important; border-color: transparent }
-        .sb-hd { height: 26px; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid var(--div); flex-shrink: 0 }
-        .sb-lbl { font-size: 10px; font-weight: 700; color: var(--sb-dim); text-transform: uppercase; letter-spacing: .08em }
-        #sbt { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 4px 0 8px }
+
+        .sb.col {
+            width: 0 !important;
+            border-color: transparent
+        }
+
+        .sb-hd {
+            height: 26px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-bottom: 1px solid var(--div);
+            flex-shrink: 0
+        }
+
+        .sb-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--sb-dim);
+            text-transform: uppercase;
+            letter-spacing: .08em
+        }
+
+        #sbt {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 4px 0 8px
+        }
 
         /* Tree nodes */
         .tn {
-            display: flex; align-items: center; height: 24px; padding: 0 8px 0 4px;
-            cursor: pointer; user-select: none; border-radius: 5px; margin: 1px 4px; gap: 2px;
-            color: var(--sb-text); font-size: 12px; overflow: hidden; white-space: nowrap; transition: background .1s
+            display: flex;
+            align-items: center;
+            height: 24px;
+            padding: 0 8px 0 4px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 5px;
+            margin: 1px 4px;
+            gap: 2px;
+            color: var(--sb-text);
+            font-size: 12px;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: background .1s
         }
-        .tn:hover { background: var(--sb-sel-bg) }
-        .tn.sel { background: var(--sb-sel-bg); color: var(--sb-sel-txt); font-weight: 500 }
-        .ntog { width: 14px; height: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--sb-dim); transition: transform .14s }
-        .ntog.open { transform: rotate(90deg) }
-        .ntog.e { visibility: hidden }
-        .nico { width: 16px; height: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-right: 4px }
-        .nico img { width: 16px; height: 16px; object-fit: contain; filter: var(--ic-filter) }
-        .nico .fb { font-size: 13px; line-height: 1 }
-        .nlbl { flex: 1; overflow: hidden; text-overflow: ellipsis }
-        .nkids { display: none }
-        .nkids.open { display: block }
+
+        .tn:hover {
+            background: var(--sb-sel-bg)
+        }
+
+        .tn.sel {
+            background: var(--sb-sel-bg);
+            color: var(--sb-sel-txt);
+            font-weight: 500
+        }
+
+        .ntog {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--sb-dim);
+            transition: transform .14s
+        }
+
+        .ntog.open {
+            transform: rotate(90deg)
+        }
+
+        .ntog.e {
+            visibility: hidden
+        }
+
+        .nico {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 4px
+        }
+
+        .nico img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            filter: var(--ic-filter)
+        }
+
+        .nico .fb {
+            font-size: 13px;
+            line-height: 1
+        }
+
+        .nlbl {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .nkids {
+            display: none
+        }
+
+        .nkids.open {
+            display: block
+        }
 
         /* Resize handle */
-        .sb-rz { width: 4px; flex-shrink: 0; background: var(--rz-bg); cursor: col-resize; transition: background .14s; position: relative; z-index: 2 }
-        .sb-rz:hover { background: var(--rz-hov) }
+        .sb-rz {
+            width: 4px;
+            flex-shrink: 0;
+            background: var(--rz-bg);
+            cursor: col-resize;
+            transition: background .14s;
+            position: relative;
+            z-index: 2
+        }
+
+        .sb-rz:hover {
+            background: var(--rz-hov)
+        }
 
         /* ══════════════ CONTENT ══════════════ */
-        .cp { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; background: var(--grid-bg) }
+        .cp {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+            background: var(--grid-bg)
+        }
 
         /* File grid */
         #grid {
-            flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-wrap: wrap;
-            align-content: flex-start; gap: 4px; min-height: 0; background: var(--grid-bg)
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 4px;
+            min-height: 0;
+            background: var(--grid-bg)
         }
 
         /* Standard icon item */
         .fi {
-            width: 88px; display: flex; flex-direction: column; align-items: center;
-            padding: 8px 4px 6px; border-radius: 6px; cursor: pointer;
-            border: 1px solid transparent; user-select: none; gap: 5px;
+            width: var(--fi-sz);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            user-select: none;
+            gap: 5px;
             transition: background .1s, border-color .1s
         }
-        .fi:hover { background: var(--item-hov); border-color: var(--div) }
-        .fi.sel { background: var(--item-sel); border-color: var(--item-sel-b) }
-        .fi-ic { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0 }
-        .fi-ic img { width: 48px; height: 48px; object-fit: contain; filter: var(--ic-filter) }
-        .fi-ic .fb { font-size: 36px; line-height: 1 }
+
+        .fi:hover {
+            background: var(--item-hov);
+            border-color: var(--div)
+        }
+
+        .fi.sel {
+            background: var(--item-sel);
+            border-color: var(--item-sel-b)
+        }
+
+        .fi-ic {
+            width: calc(var(--fi-sz) * 0.545);
+            height: calc(var(--fi-sz) * 0.545);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .fi-ic img:not(.fi-thumb) {
+            width: calc(var(--fi-sz) * 0.545);
+            height: calc(var(--fi-sz) * 0.545);
+            object-fit: contain;
+            filter: var(--ic-filter)
+        }
+
+        .fi-ic .fb {
+            font-size: calc(var(--fi-sz) * 0.41);
+            line-height: 1
+        }
+
         .fi-lbl {
-            font-size: 11px; color: var(--text); text-align: center; word-break: break-word;
-            max-width: 80px; display: -webkit-box; -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3
+            font-size: 11px;
+            color: var(--text);
+            text-align: center;
+            word-break: break-word;
+            max-width: calc(var(--fi-sz) - 8px);
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3
         }
 
         /* ── Preview mode items ── */
         /* When preview mode is active, previewable items grow their icon area */
         #grid.preview-mode .fi.previewable {
-            width: 96px;
+            width: calc(var(--fi-sz) * 1.09);
             padding: 6px 4px 6px;
         }
+
         #grid.preview-mode .fi.previewable .fi-ic {
-            width: 80px;
-            height: 80px;
+            width: calc(var(--fi-sz) * 0.91);
+            height: calc(var(--fi-sz) * 0.91);
             border-radius: 6px;
             overflow: hidden;
             background: var(--thumb-bg);
             position: relative;
         }
+
         /* Placeholder shimmer while loading */
         #grid.preview-mode .fi.previewable .fi-ic.loading {
-            background: linear-gradient(
-                90deg,
-                var(--thumb-bg) 0%,
-                rgba(128,128,128,.12) 50%,
-                var(--thumb-bg) 100%
-            );
+            background: linear-gradient(90deg,
+                    var(--thumb-bg) 0%,
+                    rgba(128, 128, 128, .12) 50%,
+                    var(--thumb-bg) 100%);
             background-size: 200% 100%;
             animation: shimmer 1.4s ease infinite;
         }
+
         @keyframes shimmer {
-            0%   { background-position: 200% center }
-            100% { background-position: -200% center }
+            0% {
+                background-position: 200% center
+            }
+
+            100% {
+                background-position: -200% center
+            }
         }
+
         /* The actual thumbnail image */
         .fi-thumb {
-            width: 80px;
-            height: 80px;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             display: block;
-            border-radius: 5px;
-            /* no filter — these are content images, not UI icons */
         }
+
         /* Small video badge overlay */
         .fi-vid-badge {
             position: absolute;
@@ -430,83 +993,618 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: rgba(0,0,0,.55);
+            background: rgba(0, 0, 0, .55);
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: none;
         }
-        .fi-vid-badge svg { width: 9px; height: 9px; fill: #fff; }
+
+        .fi-vid-badge svg {
+            width: 9px;
+            height: 9px;
+            fill: #fff;
+        }
 
         /* ══════════════ VIEWER ══════════════ */
-        #vw { flex: 1; display: none; flex-direction: column; overflow: hidden; min-height: 0 }
-        #vw.on { display: flex }
-        #vw.on ~ #grid { display: none }
-        .vbar { height: 34px; background: var(--pb-bg); border-bottom: 1px solid var(--pb-border); display: flex; align-items: center; padding: 0 10px; gap: 8px; flex-shrink: 0 }
-        .vname { flex: 1; font-size: 12px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
-        .vbd { flex: 1; overflow: auto; background: var(--view-bg); display: flex; align-items: flex-start; justify-content: flex-start; min-height: 0 }
+        #vw {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0
+        }
+
+        #vw.on {
+            display: flex
+        }
+
+        #vw.on~#grid {
+            display: none
+        }
+
+        .vbar {
+            height: 34px;
+            background: var(--pb-bg);
+            border-bottom: 1px solid var(--pb-border);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 8px;
+            flex-shrink: 0
+        }
+
+        .vname {
+            flex: 1;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .vbd {
+            flex: 1;
+            overflow: auto;
+            background: var(--view-bg);
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 0;
+            position: relative;
+        }
+
+        /* ── Viewer prev/next arrows ── */
+        .vw-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--ctx-b);
+            background: var(--ctx-bg);
+            -webkit-backdrop-filter: blur(12px) saturate(1.6);
+            backdrop-filter: blur(12px) saturate(1.6);
+            box-shadow: var(--sh-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            opacity: 0;
+            transition: opacity .18s, background .12s, transform .12s;
+            pointer-events: none;
+        }
+
+        .vw-arrow svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        .vbd:hover .vw-arrow {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .vw-arrow:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent-dark);
+        }
+
+        .vw-arrow:active {
+            transform: translateY(-50%) scale(.92);
+        }
+
+        .vw-arrow.disabled {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        #vwPrev {
+            left: 10px;
+        }
+
+        #vwNext {
+            right: 10px;
+        }
 
         #txtv {
-            width: 100%; height: 100%; min-height: 100%;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
             font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
-            font-size: 12px; line-height: 1.6; color: var(--text); background: var(--content-bg);
-            border: none; outline: none; padding: 16px 20px; resize: none; white-space: pre; tab-size: 4; overflow: auto
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--content-bg);
+            border: none;
+            outline: none;
+            padding: 16px 20px;
+            resize: none;
+            white-space: pre;
+            tab-size: 4;
+            overflow: auto
         }
-        #imgv { width: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--view-bg) }
-        #imgv img { max-width: 100%; max-height: 70vh; border-radius: 4px; box-shadow: var(--sh-md); cursor: zoom-in; transition: box-shadow .18s }
-        #imgv img.z { max-width: none; max-height: none; cursor: zoom-out; transform-origin: top left }
-        #vidv { width: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; background: #000 }
-        #vidv video { max-width: 100%; max-height: 70vh; border-radius: 4px; box-shadow: var(--sh-lg) }
-        #hexv { font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace; font-size: 11px; line-height: 1.7; padding: 16px 20px; white-space: pre; color: var(--text2); background: var(--content-bg); width: 100% }
-        .ho { color: var(--textd) }
-        .hb { color: var(--accent); margin: 0 14px 0 8px }
-        .ha { opacity: .65 }
+
+        #imgv {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--view-bg)
+        }
+
+        #imgv img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 4px;
+            box-shadow: var(--sh-md);
+            cursor: zoom-in;
+            transition: box-shadow .18s
+        }
+
+        #imgv img.z {
+            max-width: none;
+            max-height: none;
+            cursor: zoom-out;
+            transform-origin: top left
+        }
+
+        #vidv {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #000
+        }
+
+        #vidv video {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 4px;
+            box-shadow: var(--sh-lg)
+        }
+
+        #hexv {
+            font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+            font-size: 11px;
+            line-height: 1.7;
+            padding: 16px 20px;
+            white-space: pre;
+            color: var(--text2);
+            background: var(--content-bg);
+            width: 100%
+        }
+
+        .ho {
+            color: var(--textd)
+        }
+
+        .hb {
+            color: var(--accent);
+            margin: 0 14px 0 8px
+        }
+
+        .ha {
+            opacity: .65
+        }
 
         /* Status bar */
-        .stbar { background: linear-gradient(to bottom, var(--st-start), var(--st-end)); border-top: 1px solid var(--st-border); height: 22px; display: flex; align-items: center; padding: 0 12px; flex-shrink: 0; font-size: 11px; color: var(--st-txt) }
-        .ss { padding: 0 10px; border-right: 1px solid var(--div); white-space: nowrap }
-        .ss:first-child { padding-left: 0 }
-        .ss:last-child { border: none; flex: 1 }
-        .ss b { color: var(--text2); font-weight: 600 }
+        .stbar {
+            background: linear-gradient(to bottom, var(--st-start), var(--st-end));
+            border-top: 1px solid var(--st-border);
+            height: 22px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            flex-shrink: 0;
+            font-size: 11px;
+            color: var(--st-txt)
+        }
+
+        .ss {
+            padding: 0 10px;
+            border-right: 1px solid var(--div);
+            white-space: nowrap
+        }
+
+        .ss:first-child {
+            padding-left: 0
+        }
+
+        .ss:last-child {
+            border: none;
+            flex: 1
+        }
+
+        .ss b {
+            color: var(--text2);
+            font-weight: 600
+        }
 
         /* Context menu */
-        .ctx { position: fixed; background: var(--ctx-bg); -webkit-backdrop-filter: blur(18px) saturate(1.8); backdrop-filter: blur(18px) saturate(1.8); border: 1px solid var(--ctx-b); border-radius: 8px; box-shadow: var(--ctx-sh); min-width: 158px; padding: 4px; z-index: 1000; display: none }
-        .ctx.on { display: block; animation: ctxin .1s ease }
-        @keyframes ctxin { from { opacity: 0; transform: scale(.96) translateY(-4px) } to { opacity: 1; transform: none } }
-        .ci { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 13px; color: var(--text); user-select: none }
-        .ci:hover { background: var(--sel-strong); color: #fff }
-        .cico { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0 }
-        .csep { height: 1px; background: var(--div); margin: 3px 0 }
+        .ctx {
+            position: fixed;
+            background: var(--ctx-bg);
+            -webkit-backdrop-filter: blur(18px) saturate(1.8);
+            backdrop-filter: blur(18px) saturate(1.8);
+            border: 1px solid var(--ctx-b);
+            border-radius: 8px;
+            box-shadow: var(--ctx-sh);
+            min-width: 158px;
+            padding: 4px;
+            z-index: 1000;
+            display: none
+        }
+
+        .ctx.on {
+            display: block;
+            animation: ctxin .1s ease
+        }
+
+        @keyframes ctxin {
+            from {
+                opacity: 0;
+                transform: scale(.96) translateY(-4px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .ci {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text);
+            user-select: none
+        }
+
+        .ci:hover {
+            background: var(--sel-strong);
+            color: #fff
+        }
+
+        .cico {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0
+        }
+
+        .csep {
+            height: 1px;
+            background: var(--div);
+            margin: 3px 0
+        }
 
         /* Mobile */
         @media(max-width:640px) {
-            .sb { position: absolute; height: calc(100% - 66px); top: 66px; z-index: 40; width: 0 !important }
-            .sb.mob { width: 240px !important; box-shadow: var(--sh-lg) }
-            .sb-rz { display: none }
-            .tbar-c { max-width: 50% }
-            #grid { padding: 8px; gap: 3px }
-            .fi { width: 76px }
-            #grid.preview-mode .fi.previewable { width: 84px }
-            #grid.preview-mode .fi.previewable .fi-ic { width: 72px; height: 72px }
-            .fi-thumb { width: 72px; height: 72px }
+
+            /* ── Sidebar overlay ── */
+            .sb {
+                position: absolute;
+                height: calc(100% - 72px);
+                top: 72px;
+                z-index: 40;
+                width: 0 !important
+            }
+
+            .sb.mob {
+                width: 240px !important;
+                box-shadow: var(--sh-lg)
+            }
+
+            .sb-rz {
+                display: none
+            }
+
+            /* ── Toolbar: strip down to essentials ── */
+            #upBtn,
+            #sepNav,
+            #sepPrev {
+                display: none
+            }
+
+            .sz-slider-wrap {
+                display: none
+            }
+
+            .tbar-c {
+                max-width: 40%;
+                display: none
+            }
+
+            /* ── Set a touch-friendly default icon size ── */
+            :root {
+                --fi-sz: 72px
+            }
+
+            /* ── Grid: CSS grid so rows fill evenly, no orphan gaps ── */
+            #grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(var(--fi-sz), 1fr));
+                align-content: start;
+                padding: 8px;
+                gap: 4px;
+            }
+
+            /* Items fill their cell; icon stays centred, label gets full cell width */
+            .fi {
+                width: auto
+            }
+
+            .fi-lbl {
+                max-width: 100%
+            }
+
+            /* Preview mode: thumbnail items also fill their cell */
+            #grid.preview-mode .fi.previewable {
+                width: auto
+            }
+
+            /* ── Path bar: bigger tap targets ── */
+            .pb {
+                height: 34px;
+                padding: 0 10px
+            }
+
+            .pc {
+                font-size: 12px;
+                padding: 4px 6px
+            }
+
+            .ps {
+                font-size: 12px
+            }
+
+            /* ── Status bar: only show item count ── */
+            #sselw,
+            #sszw {
+                display: none !important
+            }
+
+            .stbar {
+                padding: 0 10px
+            }
+
+            /* ── Viewer toolbar: taller for touch ── */
+            .vbar {
+                height: 44px;
+                padding: 0 10px
+            }
+
+            .vname {
+                font-size: 13px
+            }
+
+            /* ── Viewer arrows: always visible and finger-sized on touch ── */
+            .vw-arrow {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                width: 44px;
+                height: 44px;
+            }
+
+            .vw-arrow.disabled {
+                opacity: 0 !important;
+                pointer-events: none !important
+            }
+
+            #vwPrev {
+                left: 6px
+            }
+
+            #vwNext {
+                right: 6px
+            }
+
+            /* ── Load screen ── */
+            .ld-win {
+                border-radius: 12px
+            }
+
+            .ld-body {
+                padding: 16px;
+                gap: 12px
+            }
+
+            /* ── General tap target minimum ── */
+            .tbtn {
+                width: 36px;
+                height: 36px
+            }
+
+            .tl {
+                width: 13px;
+                height: 13px
+            }
         }
 
-        .h { display: none !important }
+        .h {
+            display: none !important
+        }
+
+        /* ── Size slider ── */
+        .sz-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            padding: 0 2px;
+        }
+
+        .sz-slider-wrap svg {
+            width: 11px;
+            height: 11px;
+            color: var(--text2);
+            flex-shrink: 0;
+        }
+
+        .sz-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 68px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--div);
+            outline: none;
+            cursor: pointer;
+            /* filled track via background gradient set by JS */
+        }
+
+        .sz-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--content-bg);
+            border: 1px solid rgba(0, 0, 0, .22);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .22);
+            cursor: pointer;
+            transition: transform .1s, box-shadow .1s;
+        }
+
+        .sz-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, .30);
+        }
+
+        .sz-slider::-webkit-slider-thumb:active {
+            transform: scale(1.05);
+        }
+
+        .sz-slider::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--content-bg);
+            border: 1px solid rgba(0, 0, 0, .22);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .22);
+            cursor: pointer;
+        }
 
         /* ══════════ PRELOADER ══════════ */
-        #preloader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--win-bg); z-index: 500; padding: 16px; transition: opacity .25s ease }
-        #preloader.out { opacity: 0; pointer-events: none }
-        .pl-win { width: 100%; max-width: 300px; background: var(--content-bg); border-radius: 10px; overflow: hidden; box-shadow: var(--sh-lg), 0 0 0 1px rgba(0, 0, 0, .10) }
-        .pl-body { padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 12px }
-        .pl-row { display: flex; align-items: center; gap: 12px }
-        .pl-icon { width: 40px; height: 40px; border-radius: 9px; background: linear-gradient(145deg, #2a7ae2, #1558b0); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: var(--sh-sm) }
-        .pl-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.01em }
-        .pl-sub { font-size: 11px; color: var(--textd); margin-top: 1px }
-        .pl-stat { font-size: 11px; color: var(--text2); display: flex; justify-content: space-between }
-        .pl-pct { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 600 }
-        .pl-track { height: 4px; background: var(--div); border-radius: 2px; overflow: hidden }
-        .pl-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width .12s ease }
-        .pl-detail { font-size: 10px; color: var(--textd); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 13px }
+        #preloader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--win-bg);
+            z-index: 500;
+            padding: 16px;
+            transition: opacity .25s ease
+        }
+
+        #preloader.out {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .pl-win {
+            width: 100%;
+            max-width: 300px;
+            background: var(--content-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--sh-lg), 0 0 0 1px rgba(0, 0, 0, .10)
+        }
+
+        .pl-body {
+            padding: 20px 20px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .pl-row {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .pl-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            background: linear-gradient(145deg, #2a7ae2, #1558b0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: var(--sh-sm)
+        }
+
+        .pl-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -.01em
+        }
+
+        .pl-sub {
+            font-size: 11px;
+            color: var(--textd);
+            margin-top: 1px
+        }
+
+        .pl-stat {
+            font-size: 11px;
+            color: var(--text2);
+            display: flex;
+            justify-content: space-between
+        }
+
+        .pl-pct {
+            font-variant-numeric: tabular-nums;
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        .pl-track {
+            height: 4px;
+            background: var(--div);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .pl-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width .12s ease
+        }
+
+        .pl-detail {
+            font-size: 10px;
+            color: var(--textd);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 13px
+        }
     </style>
 </head>
 
@@ -531,8 +1629,11 @@
                         <div class="pl-sub">Loading resources…</div>
                     </div>
                 </div>
-                <div class="pl-stat"><span id="plLabel">Preloading icons…</span><span class="pl-pct" id="plPct">0%</span></div>
-                <div class="pl-track"><div class="pl-fill" id="plFill"></div></div>
+                <div class="pl-stat"><span id="plLabel">Preloading icons…</span><span class="pl-pct"
+                        id="plPct">0%</span></div>
+                <div class="pl-track">
+                    <div class="pl-fill" id="plFill"></div>
+                </div>
                 <div class="pl-detail" id="plDetail">&nbsp;</div>
             </div>
         </div>
@@ -553,7 +1654,8 @@
             <div class="ld-body">
                 <div class="ld-logo">
                     <div class="ld-logo-ico">
-                        <img src="icons/archive.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <img src="icons/archive.png"
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                         <div class="ld-logo-fb">🗜️</div>
                     </div>
                     <h1>ZipXplorer</h1>
@@ -597,7 +1699,9 @@
             </div>
             <div class="prog-bd">
                 <div class="prog-lbl" id="pgtxt">Reading…</div>
-                <div class="prog-tr"><div class="prog-fl" id="pgfl"></div></div>
+                <div class="prog-tr">
+                    <div class="prog-fl" id="pgfl"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -620,41 +1724,55 @@
                 <div class="tl tl-y" id="tlY" title="Collapse sidebar"></div>
                 <div class="tl tl-g" id="tlG" title="Toggle appearance"></div>
             </div>
-            <div class="sep"></div>
+            <div class="sep" id="sepNav"></div>
             <button class="tbtn" id="bakBtn" title="Back">
                 <svg viewBox="0 0 14 14" fill="none">
-                    <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
             </button>
             <button class="tbtn" id="upBtn" title="Enclosing Folder">
                 <svg viewBox="0 0 14 14" fill="none">
-                    <path d="M7 11V3.5M3.5 7 7 3.5 10.5 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 11V3.5M3.5 7 7 3.5 10.5 7" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
-            <div class="sep"></div>
+            <div class="sep" id="sepSb"></div>
             <button class="tbtn" id="sbTog" title="Toggle Sidebar">
                 <svg viewBox="0 0 14 14" fill="none">
-                    <rect x="1.5" y="2.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-                    <line x1="4.5" y1="2.5" x2="4.5" y2="11.5" stroke="currentColor" stroke-width="1.3"/>
+                    <rect x="1.5" y="2.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                    <line x1="4.5" y1="2.5" x2="4.5" y2="11.5" stroke="currentColor" stroke-width="1.3" />
                 </svg>
             </button>
-            <div class="sep"></div>
+            <div class="sep" id="sepPrev"></div>
             <!-- Preview mode toggle -->
             <button class="tbtn" id="prevBtn" title="Toggle Preview Thumbnails">
                 <svg viewBox="0 0 14 14" fill="none">
-                    <rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25"/>
-                    <rect x="8"   y="1.5" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25"/>
-                    <rect x="1.5" y="8"   width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25"/>
-                    <rect x="8"   y="8"   width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25"/>
+                    <rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
+                    <rect x="8" y="1.5" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
+                    <rect x="1.5" y="8" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
+                    <rect x="8" y="8" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
                 </svg>
             </button>
+            <!-- Size slider -->
+            <div class="sz-slider-wrap" id="szWrap">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                    <rect x="2" y="2" width="3.5" height="3.5" rx=".6" />
+                </svg>
+                <input type="range" class="sz-slider" id="szSlider" min="56" max="256" value="88" step="4">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+                    <rect x="1" y="1" width="10" height="10" rx="1.2" />
+                </svg>
+            </div>
             <div class="tbar-c" id="tbtitle">ZipXplorer</div>
             <div class="tbar-r">
                 <button class="thbtn" id="appTh">☀︎</button>
                 <div class="sep"></div>
                 <button class="tbtn" id="opnNewBtn" title="Open Another Archive…">
                     <svg viewBox="0 0 14 14" fill="none">
-                        <path d="M2 5.5V11.5c0 .28.22.5.5.5h9c.28 0 .5-.22.5-.5V5.5c0-.28-.22-.5-.5-.5H8L7 3H2.5c-.28 0-.5.22-.5.5v2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                        <path
+                            d="M2 5.5V11.5c0 .28.22.5.5.5h9c.28 0 .5-.22.5-.5V5.5c0-.28-.22-.5-.5-.5H8L7 3H2.5c-.28 0-.5.22-.5.5v2z"
+                            stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
@@ -673,13 +1791,26 @@
                     <div class="vbar">
                         <button class="tbtn" id="vbak">
                             <svg viewBox="0 0 14 14" fill="none">
-                                <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                         <span class="vname" id="vname"></span>
                         <button class="mbtn sec" id="vsave" style="height:22px;font-size:11px">Save As…</button>
                     </div>
                     <div class="vbd">
+                        <button class="vw-arrow" id="vwPrev" title="Previous (←)">
+                            <svg viewBox="0 0 14 14" fill="none">
+                                <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button class="vw-arrow" id="vwNext" title="Next (→)">
+                            <svg viewBox="0 0 14 14" fill="none">
+                                <path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
                         <textarea id="txtv" readonly spellcheck="false"></textarea>
                         <div id="imgv" class="h"><img id="vimg" alt=""></div>
                         <div id="vidv" class="h"><video id="vvid" controls></video></div>
@@ -699,616 +1830,675 @@
     </div>
 
     <script>
-    /* ═══════════════════════════════════════════════════════
-       ICON PRELOADER
-       ═══════════════════════════════════════════════════════ */
-    (function preloadIcons() {
-        window.__plDone = false;
-        window.__startPreload = function(iconPaths) {
-            const paths = [...new Set(iconPaths.filter(Boolean))];
-            const total = paths.length;
-            if (total === 0) { finishPreload(); return; }
-            const $fill  = document.getElementById('plFill');
-            const $pct   = document.getElementById('plPct');
-            const $det   = document.getElementById('plDetail');
-            let done = 0;
-            function onDone(src) {
-                done++;
-                const p = Math.round((done / total) * 100);
-                $fill.style.width = p + '%';
-                $pct.textContent  = p + '%';
-                $det.textContent  = src.split('/').pop();
-                if (done >= total) finishPreload();
-            }
-            paths.forEach(src => {
-                const img = new Image();
-                img.onload  = () => onDone(src);
-                img.onerror = () => onDone(src);
-                img.src = src;
-            });
-        };
-        function finishPreload() {
-            if (window.__plDone) return;
-            window.__plDone = true;
-            document.getElementById('plLabel').textContent  = 'Ready';
-            document.getElementById('plFill').style.width   = '100%';
-            document.getElementById('plPct').textContent    = '100%';
-            document.getElementById('plDetail').textContent = 'All icons loaded';
-            const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                preloader.classList.add('out');
-                preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
-                document.getElementById('ld').style.display = '';
-            }, 280);
-        }
-        setTimeout(() => { if (!window.__plDone) finishPreload(); }, 8000);
-    })();
-
-    /* ═══════════════════════════════════════════════════════
-       ICON CONFIG
-       ═══════════════════════════════════════════════════════ */
-    const IC = {
-        L: {
-            folder: 'icons/folder.png', folderOpen: 'icons/folder-open.png', file: 'icons/file.png',
-            image: 'icons/image.png', video: 'icons/video.png', audio: 'icons/audio.png',
-            archive: 'icons/archive.png', text: 'icons/text.png', code: 'icons/code.png',
-            executable: 'icons/executable.png', pdf: 'icons/pdf.png'
-        },
-        S: {
-            folder: 'icons/16/folder.png', folderOpen: 'icons/16/folder-open.png', file: 'icons/16/file.png',
-            image: 'icons/16/image.png', video: 'icons/16/video.png', audio: 'icons/16/audio.png',
-            archive: 'icons/16/archive.png', text: 'icons/16/text.png', code: 'icons/16/code.png',
-            executable: 'icons/16/executable.png', pdf: 'icons/16/pdf.png'
-        },
-        F: {
-            folder: '📁', folderOpen: '📂', file: '📄', image: '🖼', video: '🎬', audio: '🎵',
-            archive: '🗜', text: '📝', code: '📋', executable: '⚙️', pdf: '📑'
-        }
-    };
-    window.__startPreload([...Object.values(IC.L), ...Object.values(IC.S)]);
-
-    function icBig(type, open) {
-        const k = (type === 'folder' && open) ? 'folderOpen' : type;
-        const s = IC.L[k] || IC.L.file, f = IC.F[k] || IC.F.file;
-        if (!s) return `<div class="fi-ic"><span class="fb">${f}</span></div>`;
-        return `<div class="fi-ic"><img src="${s}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="fb" style="display:none">${f}</span></div>`;
-    }
-    function icSm(type, open) {
-        const k = (type === 'folder' && open) ? 'folderOpen' : type;
-        const s = IC.S[k] || IC.S.file, f = IC.F[k] || IC.F.file;
-        if (!s) return `<div class="nico"><span class="fb">${f}</span></div>`;
-        return `<div class="nico"><img src="${s}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="fb" style="display:none">${f}</span></div>`;
-    }
-
-    /* File type detection */
-    const EXTS = {
-        image: ['png','jpg','jpeg','gif','bmp','webp','svg','ico','avif','tiff'],
-        video: ['mp4','webm','ogv','mov','avi','mkv','m4v','flv'],
-        audio: ['mp3','wav','ogg','flac','aac','m4a','opus'],
-        archive: ['zip','rar','7z','tar','gz','bz2','xz','iso'],
-        pdf: ['pdf'],
-        text: ['txt','md','rst','log','csv','tsv','cfg','ini','env','gitignore','editorconfig'],
-        code: ['js','ts','jsx','tsx','html','htm','css','scss','less','json','xml','yaml','yml','toml',
-               'py','rb','java','c','cpp','h','cs','go','rs','php','sh','bash','bat','ps1','sql',
-               'vue','svelte','kt','swift','dart','r','lua'],
-        executable: ['exe','msi','apk','dmg','deb','rpm','bin']
-    };
-    function ftype(n) {
-        const e = n.split('.').pop().toLowerCase();
-        for (const [t, es] of Object.entries(EXTS)) if (es.includes(e)) return t;
-        return 'file';
-    }
-    const PREVIEWABLE_TYPES = new Set(['image', 'video']);
-
-    /* ─── Theme ─── */
-    const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
-    function setTheme(t) {
-        document.documentElement.setAttribute('data-theme', t);
-        localStorage.setItem('zx-th', t);
-        document.querySelectorAll('.thbtn').forEach(b => b.textContent = t === 'dark' ? '☾' : '☀︎');
-    }
-    setTheme(localStorage.getItem('zx-th') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
-    document.getElementById('ldTh').addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
-    document.getElementById('appTh').addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
-    document.getElementById('tlG').addEventListener('click',  () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
-
-    /* ─── State ─── */
-    let zip = null, tree = {}, curPath = '', archName = '';
-    let selItem = null, ctxTgt = null, objURLs = [];
-
-    /* ─── Preview state ─── */
-    let previewMode = false;
-    // Cache: zipEntryPath → data URL (image) or canvas data URL (video first frame)
-    const thumbCache = new Map();
-    // Active IntersectionObserver for the current grid view
-    let thumbObserver = null;
-
-    const $prevBtn = document.getElementById('prevBtn');
-    $prevBtn.addEventListener('click', () => {
-        previewMode = !previewMode;
-        $prevBtn.classList.toggle('active', previewMode);
-        $prevBtn.title = previewMode ? 'Switch to Icon View' : 'Toggle Preview Thumbnails';
-        renderGrid(curPath); // re-render with new mode
-    });
-
-    /* ── Capture first video frame via hidden <video> + <canvas> ── */
-    function captureVideoFrame(blob) {
-        return new Promise(resolve => {
-            const url    = URL.createObjectURL(blob);
-            const video  = document.createElement('video');
-            video.muted  = true;
-            video.preload = 'metadata';
-            const THUMB  = 80;
-
-            const cleanup = () => URL.revokeObjectURL(url);
-
-            video.addEventListener('error', () => { cleanup(); resolve(null); }, { once: true });
-
-            video.addEventListener('loadedmetadata', () => {
-                // Seek just past 0 to get a real frame (not black on some codecs)
-                video.currentTime = Math.min(0.1, video.duration * 0.05 || 0.1);
-            }, { once: true });
-
-            video.addEventListener('seeked', () => {
-                try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = canvas.height = THUMB;
-                    const ctx = canvas.getContext('2d');
-                    // Letterbox / pillarbox to fill square
-                    const vw = video.videoWidth  || THUMB;
-                    const vh = video.videoHeight || THUMB;
-                    const scale = Math.max(THUMB / vw, THUMB / vh);
-                    const dw = vw * scale, dh = vh * scale;
-                    ctx.drawImage(video, (THUMB - dw) / 2, (THUMB - dh) / 2, dw, dh);
-                    cleanup();
-                    resolve(canvas.toDataURL('image/jpeg', 0.75));
-                } catch { cleanup(); resolve(null); }
-            }, { once: true });
-
-            // Timeout — some video formats stall seeked
-            setTimeout(() => { cleanup(); resolve(null); }, 6000);
-
-            video.src = url;
-            video.load();
-        });
-    }
-
-    /* ── Load a thumbnail for one grid item ── */
-    async function loadThumb(entry, type, icEl) {
-        const cacheKey = entry.name; // unique within zip
-        icEl.classList.remove('loading');
-
-        if (thumbCache.has(cacheKey)) {
-            applyThumb(icEl, thumbCache.get(cacheKey), type);
-            return;
-        }
-
-        try {
-            const blob = await entry.async('blob');
-            let dataURL;
-
-            if (type === 'image') {
-                dataURL = await new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload  = e => resolve(e.target.result);
-                    reader.onerror = () => resolve(null);
-                    reader.readAsDataURL(blob);
+        /* ═══════════════════════════════════════════════════════
+           ICON PRELOADER
+           ═══════════════════════════════════════════════════════ */
+        (function preloadIcons() {
+            window.__plDone = false;
+            window.__startPreload = function (iconPaths) {
+                const paths = [...new Set(iconPaths.filter(Boolean))];
+                const total = paths.length;
+                if (total === 0) { finishPreload(); return; }
+                const $fill = document.getElementById('plFill');
+                const $pct = document.getElementById('plPct');
+                const $det = document.getElementById('plDetail');
+                let done = 0;
+                function onDone(src) {
+                    done++;
+                    const p = Math.round((done / total) * 100);
+                    $fill.style.width = p + '%';
+                    $pct.textContent = p + '%';
+                    $det.textContent = src.split('/').pop();
+                    if (done >= total) finishPreload();
+                }
+                paths.forEach(src => {
+                    const img = new Image();
+                    img.onload = () => onDone(src);
+                    img.onerror = () => onDone(src);
+                    img.src = src;
                 });
-            } else if (type === 'video') {
-                dataURL = await captureVideoFrame(blob);
+            };
+            function finishPreload() {
+                if (window.__plDone) return;
+                window.__plDone = true;
+                document.getElementById('plLabel').textContent = 'Ready';
+                document.getElementById('plFill').style.width = '100%';
+                document.getElementById('plPct').textContent = '100%';
+                document.getElementById('plDetail').textContent = 'All icons loaded';
+                const preloader = document.getElementById('preloader');
+                setTimeout(() => {
+                    preloader.classList.add('out');
+                    preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+                    document.getElementById('ld').style.display = '';
+                }, 280);
             }
+            setTimeout(() => { if (!window.__plDone) finishPreload(); }, 8000);
+        })();
 
-            thumbCache.set(cacheKey, dataURL);
-            applyThumb(icEl, dataURL, type);
-        } catch {
-            // On failure, just leave the shimmer gone (no crash)
+        /* ═══════════════════════════════════════════════════════
+           ICON CONFIG
+           ═══════════════════════════════════════════════════════ */
+        const IC = {
+            L: {
+                folder: 'icons/folder.png', folderOpen: 'icons/folder-open.png', file: 'icons/file.png',
+                image: 'icons/image.png', video: 'icons/video.png', audio: 'icons/audio.png',
+                archive: 'icons/archive.png', text: 'icons/text.png', code: 'icons/code.png',
+                executable: 'icons/executable.png', pdf: 'icons/pdf.png'
+            },
+            S: {
+                folder: 'icons/16/folder.png', folderOpen: 'icons/16/folder-open.png', file: 'icons/16/file.png',
+                image: 'icons/16/image.png', video: 'icons/16/video.png', audio: 'icons/16/audio.png',
+                archive: 'icons/16/archive.png', text: 'icons/16/text.png', code: 'icons/16/code.png',
+                executable: 'icons/16/executable.png', pdf: 'icons/16/pdf.png'
+            },
+            F: {
+                folder: '📁', folderOpen: '📂', file: '📄', image: '🖼', video: '🎬', audio: '🎵',
+                archive: '🗜', text: '📝', code: '📋', executable: '⚙️', pdf: '📑'
+            }
+        };
+        window.__startPreload([...Object.values(IC.L), ...Object.values(IC.S)]);
+
+        function icBig(type, open) {
+            const k = (type === 'folder' && open) ? 'folderOpen' : type;
+            const s = IC.L[k] || IC.L.file, f = IC.F[k] || IC.F.file;
+            if (!s) return `<div class="fi-ic"><span class="fb">${f}</span></div>`;
+            return `<div class="fi-ic"><img src="${s}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="fb" style="display:none">${f}</span></div>`;
         }
-    }
-
-    function applyThumb(icEl, dataURL, type) {
-        if (!dataURL) return; // stay as shimmer placeholder
-
-        icEl.innerHTML = ''; // clear loading state
-
-        const img = document.createElement('img');
-        img.className = 'fi-thumb';
-        img.src = dataURL;
-        icEl.appendChild(img);
-
-        // Add play-triangle badge for videos
-        if (type === 'video') {
-            const badge = document.createElement('div');
-            badge.className = 'fi-vid-badge';
-            badge.innerHTML = `<svg viewBox="0 0 10 10"><path d="M3 2l5 3-5 3V2z"/></svg>`;
-            icEl.appendChild(badge);
+        function icSm(type, open) {
+            const k = (type === 'folder' && open) ? 'folderOpen' : type;
+            const s = IC.S[k] || IC.S.file, f = IC.F[k] || IC.F.file;
+            if (!s) return `<div class="nico"><span class="fb">${f}</span></div>`;
+            return `<div class="nico"><img src="${s}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="fb" style="display:none">${f}</span></div>`;
         }
-    }
 
-    /* ── Set up IntersectionObserver to lazy-load thumbs as items scroll in ── */
-    function setupThumbObserver() {
-        if (thumbObserver) thumbObserver.disconnect();
+        /* File type detection */
+        const EXTS = {
+            image: ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'ico', 'avif', 'tiff'],
+            video: ['mp4', 'webm', 'ogv', 'mov', 'avi', 'mkv', 'm4v', 'flv'],
+            audio: ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'opus'],
+            archive: ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'iso'],
+            pdf: ['pdf'],
+            text: ['txt', 'md', 'rst', 'log', 'csv', 'tsv', 'cfg', 'ini', 'env', 'gitignore', 'editorconfig'],
+            code: ['js', 'ts', 'jsx', 'tsx', 'html', 'htm', 'css', 'scss', 'less', 'json', 'xml', 'yaml', 'yml', 'toml',
+                'py', 'rb', 'java', 'c', 'cpp', 'h', 'cs', 'go', 'rs', 'php', 'sh', 'bash', 'bat', 'ps1', 'sql',
+                'vue', 'svelte', 'kt', 'swift', 'dart', 'r', 'lua'],
+            executable: ['exe', 'msi', 'apk', 'dmg', 'deb', 'rpm', 'bin']
+        };
+        function ftype(n) {
+            const e = n.split('.').pop().toLowerCase();
+            for (const [t, es] of Object.entries(EXTS)) if (es.includes(e)) return t;
+            return 'file';
+        }
+        const PREVIEWABLE_TYPES = new Set(['image', 'video']);
 
-        thumbObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                const el = entry.target;
-                thumbObserver.unobserve(el); // load once
-                const zipPath = el.dataset.zipPath;
-                const type    = el.dataset.thumbType;
-                const icEl    = el.querySelector('.fi-ic');
-                if (!icEl || !zipPath || !type) return;
-                const zipEntry = zip.file(zipPath);
-                if (zipEntry) loadThumb(zipEntry, type, icEl);
+        /* ─── Size slider ─── */
+        const $szSlider = document.getElementById('szSlider');
+
+        function updateSliderTrack(slider) {
+            const min = +slider.min, max = +slider.max, val = +slider.value;
+            const pct = ((val - min) / (max - min)) * 100;
+            slider.style.background =
+                `linear-gradient(to right, var(--accent) 0%, var(--accent) ${pct}%, var(--div) ${pct}%, var(--div) 100%)`;
+        }
+
+        function applySize(px) {
+            document.documentElement.style.setProperty('--fi-sz', px + 'px');
+            updateSliderTrack($szSlider);
+            // Re-set up the intersection observer so newly sized items get loaded
+            if (previewMode && thumbObserver) setupThumbObserver();
+        }
+
+        $szSlider.addEventListener('input', () => applySize(+$szSlider.value));
+        // Init track fill
+        updateSliderTrack($szSlider);
+
+        /* ─── Theme ─── */
+        const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem('zx-th', t);
+            document.querySelectorAll('.thbtn').forEach(b => b.textContent = t === 'dark' ? '☾' : '☀︎');
+            // Recompute track fill since --accent changes
+            updateSliderTrack($szSlider);
+        }
+        setTheme(localStorage.getItem('zx-th') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
+        document.getElementById('ldTh').addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
+        document.getElementById('appTh').addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
+        document.getElementById('tlG').addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark'));
+
+        /* ─── State ─── */
+        let zip = null, tree = {}, curPath = '', archName = '';
+        let selItem = null, ctxTgt = null, objURLs = [];
+
+        /* ─── Preview state ─── */
+        let previewMode = false;
+        // Cache: zipEntryPath → data URL (image) or canvas data URL (video first frame)
+        const thumbCache = new Map();
+        // Active IntersectionObserver for the current grid view
+        let thumbObserver = null;
+
+        const $prevBtn = document.getElementById('prevBtn');
+        $prevBtn.addEventListener('click', () => {
+            previewMode = !previewMode;
+            $prevBtn.classList.toggle('active', previewMode);
+            $prevBtn.title = previewMode ? 'Switch to Icon View' : 'Toggle Preview Thumbnails';
+            renderGrid(curPath); // re-render with new mode
+        });
+
+        /* ── Capture first video frame via hidden <video> + <canvas> ── */
+        function captureVideoFrame(blob) {
+            return new Promise(resolve => {
+                const url = URL.createObjectURL(blob);
+                const video = document.createElement('video');
+                video.muted = true;
+                video.preload = 'metadata';
+                const THUMB = 80;
+
+                const cleanup = () => URL.revokeObjectURL(url);
+
+                video.addEventListener('error', () => { cleanup(); resolve(null); }, { once: true });
+
+                video.addEventListener('loadedmetadata', () => {
+                    // Seek just past 0 to get a real frame (not black on some codecs)
+                    video.currentTime = Math.min(0.1, video.duration * 0.05 || 0.1);
+                }, { once: true });
+
+                video.addEventListener('seeked', () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = canvas.height = THUMB;
+                        const ctx = canvas.getContext('2d');
+                        // Letterbox / pillarbox to fill square
+                        const vw = video.videoWidth || THUMB;
+                        const vh = video.videoHeight || THUMB;
+                        const scale = Math.max(THUMB / vw, THUMB / vh);
+                        const dw = vw * scale, dh = vh * scale;
+                        ctx.drawImage(video, (THUMB - dw) / 2, (THUMB - dh) / 2, dw, dh);
+                        cleanup();
+                        resolve(canvas.toDataURL('image/jpeg', 0.75));
+                    } catch { cleanup(); resolve(null); }
+                }, { once: true });
+
+                // Timeout — some video formats stall seeked
+                setTimeout(() => { cleanup(); resolve(null); }, 6000);
+
+                video.src = url;
+                video.load();
             });
-        }, {
-            root: document.getElementById('grid'),
-            rootMargin: '120px', // start loading a little before they're visible
-            threshold: 0
-        });
+        }
 
-        // Observe all pending items
-        document.querySelectorAll('#grid .fi[data-zip-path]').forEach(el => thumbObserver.observe(el));
-    }
+        /* ── Load a thumbnail for one grid item ── */
+        async function loadThumb(entry, type, icEl) {
+            const cacheKey = entry.name; // unique within zip
+            icEl.classList.remove('loading');
 
-    /* ─── Load screen ─── */
-    const $fi  = document.getElementById('fi');
-    const $dz  = document.getElementById('dz');
-    const $b64 = document.getElementById('b64in');
-    const $dn  = document.getElementById('dname');
-    const $er  = document.getElementById('errtxt');
-    let chosenFile = null;
-
-    $fi.addEventListener('change', () => { if ($fi.files[0]) { chosenFile = $fi.files[0]; $dn.textContent = '✓ ' + chosenFile.name; $b64.value = ''; $er.textContent = '' } });
-    $dz.addEventListener('dragover',  e => { e.preventDefault(); $dz.classList.add('over') });
-    $dz.addEventListener('dragleave', () => $dz.classList.remove('over'));
-    $dz.addEventListener('drop', e => {
-        e.preventDefault(); $dz.classList.remove('over');
-        const f = e.dataTransfer.files[0];
-        if (f) { chosenFile = f; $dn.textContent = '✓ ' + f.name; $b64.value = ''; $er.textContent = '' }
-    });
-    $b64.addEventListener('input', () => { if ($b64.value.trim()) { chosenFile = null; $dn.textContent = '' } });
-    document.getElementById('clrBtn').addEventListener('click', () => {
-        chosenFile = null; $fi.value = ''; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
-    });
-    document.getElementById('opnBtn').addEventListener('click', doLoad);
-
-    async function doLoad() {
-        $er.textContent = ''; let ab = null, name = 'archive.zip';
-        if (chosenFile) {
-            name = chosenFile.name; ab = await chosenFile.arrayBuffer();
-        } else if ($b64.value.trim()) {
-            try {
-                const b = atob($b64.value.trim().replace(/\s/g, ''));
-                ab = new ArrayBuffer(b.length);
-                const v = new Uint8Array(ab);
-                for (let i = 0; i < b.length; i++) v[i] = b.charCodeAt(i);
-            } catch { $er.textContent = 'Invalid Base64.'; return; }
-        } else { $er.textContent = 'Please choose a file or paste Base64.'; return; }
-
-        archName = name; setpg('Reading archive…', 20);
-        try {
-            await tick(); setpg('Parsing ZIP…', 55); zip = await JSZip.loadAsync(ab);
-            setpg('Building tree…', 85); await tick(); tree = buildTree(zip);
-            setpg('Done', 100); await new Promise(r => setTimeout(r, 200));
-            hidepg(); launch();
-        } catch (e) { hidepg(); $er.textContent = 'Error: ' + e.message; }
-    }
-    function setpg(t, p) { document.getElementById('pg').classList.add('on'); document.getElementById('pgtxt').textContent = t; document.getElementById('pgfl').style.width = p + '%'; }
-    function hidepg() { document.getElementById('pg').classList.remove('on'); }
-    function tick()   { return new Promise(r => setTimeout(r, 16)); }
-
-    /* ─── Build tree ─── */
-    function buildTree(z) {
-        const root = { __isDir: true, __children: {}, __path: '' };
-        z.forEach((rp, en) => {
-            const pts = rp.split('/').filter(Boolean); let n = root;
-            for (let i = 0; i < pts.length; i++) {
-                const p = pts[i], last = i === pts.length - 1;
-                if (!n.__children[p]) n.__children[p] = {
-                    __isDir: !last || en.dir, __children: {},
-                    __path: pts.slice(0, i + 1).join('/') + ((!last || en.dir) ? '/' : ''),
-                    __entry: (!last || en.dir) ? null : en, __name: p
-                };
-                n = n.__children[p];
+            if (thumbCache.has(cacheKey)) {
+                applyThumb(icEl, thumbCache.get(cacheKey), type);
+                return;
             }
+
+            try {
+                const blob = await entry.async('blob');
+                let dataURL;
+
+                if (type === 'image') {
+                    dataURL = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.onerror = () => resolve(null);
+                        reader.readAsDataURL(blob);
+                    });
+                } else if (type === 'video') {
+                    dataURL = await captureVideoFrame(blob);
+                }
+
+                thumbCache.set(cacheKey, dataURL);
+                applyThumb(icEl, dataURL, type);
+            } catch {
+                // On failure, just leave the shimmer gone (no crash)
+            }
+        }
+
+        function applyThumb(icEl, dataURL, type) {
+            if (!dataURL) return; // stay as shimmer placeholder
+
+            icEl.innerHTML = ''; // clear loading state
+
+            const img = document.createElement('img');
+            img.className = 'fi-thumb';
+            img.src = dataURL;
+            icEl.appendChild(img);
+
+            // Add play-triangle badge for videos
+            if (type === 'video') {
+                const badge = document.createElement('div');
+                badge.className = 'fi-vid-badge';
+                badge.innerHTML = `<svg viewBox="0 0 10 10"><path d="M3 2l5 3-5 3V2z"/></svg>`;
+                icEl.appendChild(badge);
+            }
+        }
+
+        /* ── Set up IntersectionObserver to lazy-load thumbs as items scroll in ── */
+        function setupThumbObserver() {
+            if (thumbObserver) thumbObserver.disconnect();
+
+            thumbObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const el = entry.target;
+                    thumbObserver.unobserve(el); // load once
+                    const zipPath = el.dataset.zipPath;
+                    const type = el.dataset.thumbType;
+                    const icEl = el.querySelector('.fi-ic');
+                    if (!icEl || !zipPath || !type) return;
+                    const zipEntry = zip.file(zipPath);
+                    if (zipEntry) loadThumb(zipEntry, type, icEl);
+                });
+            }, {
+                root: document.getElementById('grid'),
+                rootMargin: '120px', // start loading a little before they're visible
+                threshold: 0
+            });
+
+            // Observe all pending items
+            document.querySelectorAll('#grid .fi[data-zip-path]').forEach(el => thumbObserver.observe(el));
+        }
+
+        /* ─── Load screen ─── */
+        const $fi = document.getElementById('fi');
+        const $dz = document.getElementById('dz');
+        const $b64 = document.getElementById('b64in');
+        const $dn = document.getElementById('dname');
+        const $er = document.getElementById('errtxt');
+        let chosenFile = null;
+
+        $fi.addEventListener('change', () => { if ($fi.files[0]) { chosenFile = $fi.files[0]; $dn.textContent = '✓ ' + chosenFile.name; $b64.value = ''; $er.textContent = '' } });
+        $dz.addEventListener('dragover', e => { e.preventDefault(); $dz.classList.add('over') });
+        $dz.addEventListener('dragleave', () => $dz.classList.remove('over'));
+        $dz.addEventListener('drop', e => {
+            e.preventDefault(); $dz.classList.remove('over');
+            const f = e.dataTransfer.files[0];
+            if (f) { chosenFile = f; $dn.textContent = '✓ ' + f.name; $b64.value = ''; $er.textContent = '' }
         });
-        return root;
-    }
+        $b64.addEventListener('input', () => { if ($b64.value.trim()) { chosenFile = null; $dn.textContent = '' } });
+        document.getElementById('clrBtn').addEventListener('click', () => {
+            chosenFile = null; $fi.value = ''; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
+        });
+        document.getElementById('opnBtn').addEventListener('click', doLoad);
 
-    /* ─── Launch ─── */
-    function launch() {
-        document.getElementById('ld').style.display = 'none';
-        document.getElementById('app').classList.add('on');
-        document.getElementById('tbtitle').textContent = archName;
-        document.getElementById('sarch').textContent   = archName;
-        renderSidebar(); navTo('');
-    }
+        async function doLoad() {
+            $er.textContent = ''; let ab = null, name = 'archive.zip';
+            if (chosenFile) {
+                name = chosenFile.name; ab = await chosenFile.arrayBuffer();
+            } else if ($b64.value.trim()) {
+                try {
+                    const b = atob($b64.value.trim().replace(/\s/g, ''));
+                    ab = new ArrayBuffer(b.length);
+                    const v = new Uint8Array(ab);
+                    for (let i = 0; i < b.length; i++) v[i] = b.charCodeAt(i);
+                } catch { $er.textContent = 'Invalid Base64.'; return; }
+            } else { $er.textContent = 'Please choose a file or paste Base64.'; return; }
 
-    /* ─── Sidebar ─── */
-    function renderSidebar() {
-        const t = document.getElementById('sbt'); t.innerHTML = '';
-        const r = document.createElement('div'); r.className = 'tn sel'; r.dataset.path = '';
-        r.innerHTML = `<span class="ntog e">▶</span>${icSm('archive')}<span class="nlbl">${esc(archName)}</span>`;
-        r.addEventListener('click', () => { navTo(''); selSb(r) }); t.appendChild(r);
-        sbLevel(tree, t, 1);
-    }
-    function sbLevel(node, cont, depth) {
-        const dirs = Object.entries(node.__children || {})
-            .filter(([, v]) => v.__isDir)
-            .sort((a, b) => a[0].localeCompare(b[0]));
-        dirs.forEach(([name, child]) => {
-            const hasSub = Object.values(child.__children).some(c => c.__isDir);
-            const wrap = document.createElement('div');
-            const row  = document.createElement('div'); row.className = 'tn'; row.dataset.path = child.__path;
-            row.style.paddingLeft = (8 + depth * 14) + 'px';
-            const tog = document.createElement('span'); tog.className = 'ntog' + (hasSub ? '' : ' e'); tog.textContent = '▶';
-            const ico = document.createElement('span'); ico.innerHTML = icSm('folder');
-            const lbl = document.createElement('span'); lbl.className = 'nlbl'; lbl.textContent = name;
-            row.appendChild(tog); row.appendChild(ico); row.appendChild(lbl);
-            const kids = document.createElement('div'); kids.className = 'nkids';
-            let open = false;
-            row.addEventListener('click', e => {
-                e.stopPropagation(); navTo(child.__path); selSb(row);
-                if (hasSub) {
-                    open = !open; tog.classList.toggle('open', open); kids.classList.toggle('open', open);
-                    ico.innerHTML = icSm('folder', open);
-                    if (open && kids.childElementCount === 0) sbLevel(child, kids, depth + 1);
+            archName = name; setpg('Reading archive…', 20);
+            try {
+                await tick(); setpg('Parsing ZIP…', 55); zip = await JSZip.loadAsync(ab);
+                setpg('Building tree…', 85); await tick(); tree = buildTree(zip);
+                setpg('Done', 100); await new Promise(r => setTimeout(r, 200));
+                hidepg(); launch();
+            } catch (e) { hidepg(); $er.textContent = 'Error: ' + e.message; }
+        }
+        function setpg(t, p) { document.getElementById('pg').classList.add('on'); document.getElementById('pgtxt').textContent = t; document.getElementById('pgfl').style.width = p + '%'; }
+        function hidepg() { document.getElementById('pg').classList.remove('on'); }
+        function tick() { return new Promise(r => setTimeout(r, 16)); }
+
+        /* ─── Build tree ─── */
+        function buildTree(z) {
+            const root = { __isDir: true, __children: {}, __path: '' };
+            z.forEach((rp, en) => {
+                const pts = rp.split('/').filter(Boolean); let n = root;
+                for (let i = 0; i < pts.length; i++) {
+                    const p = pts[i], last = i === pts.length - 1;
+                    if (!n.__children[p]) n.__children[p] = {
+                        __isDir: !last || en.dir, __children: {},
+                        __path: pts.slice(0, i + 1).join('/') + ((!last || en.dir) ? '/' : ''),
+                        __entry: (!last || en.dir) ? null : en, __name: p
+                    };
+                    n = n.__children[p];
                 }
             });
-            wrap.appendChild(row); wrap.appendChild(kids); cont.appendChild(wrap);
-        });
-    }
-    function selSb(el) {
-        document.querySelectorAll('#sbt .tn.sel').forEach(n => n.classList.remove('sel'));
-        el.classList.add('sel');
-    }
+            return root;
+        }
 
-    /* ─── Navigation ─── */
-    function navTo(path) {
-        curPath = path; hideVw(); renderGrid(path); renderPb(path); selItem = null;
-        document.getElementById('sselw').classList.add('h');
-        document.getElementById('sszw').classList.add('h');
-    }
-    function renderPb(path) {
-        const b = document.getElementById('pbar'); b.innerHTML = '';
-        const crumb = (lbl, p, cur) => {
-            if (b.childElementCount) {
-                const s = document.createElement('span'); s.className = 'ps'; s.textContent = '›'; b.appendChild(s);
-            }
-            const c = document.createElement('span'); c.className = 'pc' + (cur ? ' cur' : ''); c.textContent = lbl;
-            if (!cur) c.addEventListener('click', () => navTo(p));
-            b.appendChild(c);
-        };
-        const pts = path ? path.split('/').filter(Boolean) : [];
-        crumb(archName, '', !pts.length); let built = '';
-        pts.forEach((p, i) => { built += p + '/'; crumb(p, built, i === pts.length - 1); });
-    }
-    function getNode(path) {
-        if (!path) return tree;
-        let n = tree;
-        for (const p of path.split('/').filter(Boolean)) { n = n.__children[p]; if (!n) return null; }
-        return n;
-    }
+        /* ─── Launch ─── */
+        function launch() {
+            document.getElementById('ld').style.display = 'none';
+            document.getElementById('app').classList.add('on');
+            document.getElementById('tbtitle').textContent = archName;
+            document.getElementById('sarch').textContent = archName;
+            renderSidebar(); navTo('');
+        }
 
-    function renderGrid(path) {
-        // Disconnect any previous observer before clearing DOM
-        if (thumbObserver) { thumbObserver.disconnect(); thumbObserver = null; }
-
-        const g    = document.getElementById('grid'); g.innerHTML = '';
-        const node = getNode(path); if (!node) return;
-
-        // Apply / remove preview-mode class on the grid container
-        g.classList.toggle('preview-mode', previewMode);
-
-        const items = Object.entries(node.__children || {}).sort((a, b) => {
-            const ad = a[1].__isDir ? 0 : 1, bd = b[1].__isDir ? 0 : 1;
-            return ad !== bd ? ad - bd : a[0].localeCompare(b[0]);
-        });
-
-        items.forEach(([name, child]) => {
-            const t  = child.__isDir ? 'folder' : ftype(name);
-            const el = document.createElement('div'); el.className = 'fi';
-
-            const usePreview = previewMode && PREVIEWABLE_TYPES.has(t) && child.__entry;
-
-            if (usePreview) {
-                // Mark the item for lazy thumbnail loading
-                el.classList.add('previewable');
-                el.dataset.zipPath  = child.__entry.name;
-                el.dataset.thumbType = t;
-
-                // Render a shimmer placeholder icon area + label
-                el.innerHTML = `<div class="fi-ic loading"></div><span class="fi-lbl">${esc(name)}</span>`;
-            } else {
-                el.innerHTML = icBig(t) + `<span class="fi-lbl">${esc(name)}</span>`;
-            }
-
-            el.addEventListener('click',        () => clickFi(el, child, name));
-            el.addEventListener('dblclick',     () => dblFi(child, name));
-            el.addEventListener('contextmenu',  e  => showCtx(e, el, child, name));
-            g.appendChild(el);
-        });
-
-        document.getElementById('sitems').textContent = items.length;
-
-        // Kick off the IntersectionObserver for lazy thumbnail loading
-        if (previewMode) setupThumbObserver();
-    }
-
-    function clickFi(el, node, name) {
-        document.querySelectorAll('.fi.sel').forEach(i => i.classList.remove('sel'));
-        el.classList.add('sel'); selItem = { el, node, name };
-        document.getElementById('sselw').classList.remove('h');
-        document.getElementById('ssel').textContent = name;
-        if (!node.__isDir && node.__entry) {
-            node.__entry.async('uint8array').then(d => {
-                document.getElementById('sszw').classList.remove('h');
-                document.getElementById('ssz').textContent = fmtSz(d.byteLength);
+        /* ─── Sidebar ─── */
+        function renderSidebar() {
+            const t = document.getElementById('sbt'); t.innerHTML = '';
+            const r = document.createElement('div'); r.className = 'tn sel'; r.dataset.path = '';
+            r.innerHTML = `<span class="ntog e">▶</span>${icSm('archive')}<span class="nlbl">${esc(archName)}</span>`;
+            r.addEventListener('click', () => { navTo(''); selSb(r) }); t.appendChild(r);
+            sbLevel(tree, t, 1);
+        }
+        function sbLevel(node, cont, depth) {
+            const dirs = Object.entries(node.__children || {})
+                .filter(([, v]) => v.__isDir)
+                .sort((a, b) => a[0].localeCompare(b[0]));
+            dirs.forEach(([name, child]) => {
+                const hasSub = Object.values(child.__children).some(c => c.__isDir);
+                const wrap = document.createElement('div');
+                const row = document.createElement('div'); row.className = 'tn'; row.dataset.path = child.__path;
+                row.style.paddingLeft = (8 + depth * 14) + 'px';
+                const tog = document.createElement('span'); tog.className = 'ntog' + (hasSub ? '' : ' e'); tog.textContent = '▶';
+                const ico = document.createElement('span'); ico.innerHTML = icSm('folder');
+                const lbl = document.createElement('span'); lbl.className = 'nlbl'; lbl.textContent = name;
+                row.appendChild(tog); row.appendChild(ico); row.appendChild(lbl);
+                const kids = document.createElement('div'); kids.className = 'nkids';
+                let open = false;
+                row.addEventListener('click', e => {
+                    e.stopPropagation(); navTo(child.__path); selSb(row);
+                    if (hasSub) {
+                        open = !open; tog.classList.toggle('open', open); kids.classList.toggle('open', open);
+                        ico.innerHTML = icSm('folder', open);
+                        if (open && kids.childElementCount === 0) sbLevel(child, kids, depth + 1);
+                    }
+                });
+                wrap.appendChild(row); wrap.appendChild(kids); cont.appendChild(wrap);
             });
         }
-    }
-    function dblFi(node, name) { if (node.__isDir) navTo(node.__path); else openFile(node, name); }
-
-    /* ─── Viewer ─── */
-    async function openFile(node, name) {
-        const entry = node.__entry || (zip && zip.file(node.__path.replace(/\/$/, '')));
-        if (!entry) return;
-        document.getElementById('vname').textContent = name; showVw();
-        ['txtv', 'imgv', 'vidv', 'hexv'].forEach(id => document.getElementById(id).classList.add('h'));
-        const t = ftype(name);
-        if (t === 'image') {
-            const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
-            const img = document.getElementById('vimg'); img.src = url; img.classList.remove('z');
-            img.onclick = () => img.classList.toggle('z');
-            document.getElementById('imgv').classList.remove('h');
-        } else if (t === 'video') {
-            const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
-            document.getElementById('vvid').src = url;
-            document.getElementById('vidv').classList.remove('h');
-        } else if (t === 'text' || t === 'code') {
-            let tx; try { tx = await entry.async('string'); } catch { tx = '(Could not decode as text)'; }
-            document.getElementById('txtv').value = tx;
-            document.getElementById('txtv').classList.remove('h');
-        } else {
-            document.getElementById('hexv').innerHTML = buildHex(await entry.async('uint8array'));
-            document.getElementById('hexv').classList.remove('h');
+        function selSb(el) {
+            document.querySelectorAll('#sbt .tn.sel').forEach(n => n.classList.remove('sel'));
+            el.classList.add('sel');
         }
-        document.getElementById('vsave').onclick = () => dlFile(entry, name);
-    }
 
-    function buildHex(data) {
-        const rows = [], max = Math.min(data.length, 8192);
-        for (let i = 0; i < max; i += 16) {
-            const ch  = data.slice(i, i + 16);
-            const off = i.toString(16).padStart(8, '0').toUpperCase();
-            const hx  = Array.from(ch).map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ').padEnd(47, ' ');
-            const ac  = Array.from(ch).map(b => (b >= 32 && b < 127) ? String.fromCharCode(b) : '.').join('');
-            rows.push(`<span class="ho">${off}</span><span class="hb">  ${hx}  </span><span class="ha">${esc(ac)}</span>`);
+        /* ─── Navigation ─── */
+        function navTo(path) {
+            curPath = path; hideVw(); renderGrid(path); renderPb(path); selItem = null;
+            document.getElementById('sselw').classList.add('h');
+            document.getElementById('sszw').classList.add('h');
         }
-        if (data.length > max) rows.push(`\n… showing first 8 KB of ${fmtSz(data.length)}`);
-        return rows.join('\n');
-    }
-
-    async function dlFile(entry, name) {
-        const url = URL.createObjectURL(await entry.async('blob'));
-        const a = Object.assign(document.createElement('a'), { href: url, download: name });
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-    }
-    function showVw() { document.getElementById('vw').classList.add('on'); }
-    function hideVw() {
-        document.getElementById('vw').classList.remove('on');
-        const v = document.getElementById('vvid'); v.pause(); v.src = '';
-    }
-
-    /* ─── Toolbar ─── */
-    document.getElementById('bakBtn').addEventListener('click', () => {
-        if (document.getElementById('vw').classList.contains('on')) hideVw();
-    });
-    document.getElementById('vbak').addEventListener('click', hideVw);
-    document.getElementById('upBtn').addEventListener('click', () => {
-        const ps = curPath.split('/').filter(Boolean);
-        if (ps.length) { ps.pop(); navTo(ps.length ? ps.join('/') + '/' : ''); }
-    });
-    document.getElementById('opnNewBtn').addEventListener('click', resetApp);
-    document.getElementById('tlR').addEventListener('click', resetApp);
-    document.getElementById('tlY').addEventListener('click', () => {
-        sbVis = !sbVis; $sb.classList.toggle('col', !sbVis); if (sbVis) $sb.style.width = sbW + 'px';
-    });
-
-    function resetApp() {
-        objURLs.forEach(u => URL.revokeObjectURL(u)); objURLs = [];
-        thumbCache.clear();
-        if (thumbObserver) { thumbObserver.disconnect(); thumbObserver = null; }
-        zip = null; tree = {}; selItem = null;
-        document.getElementById('app').classList.remove('on');
-        document.getElementById('ld').style.display = '';
-        $fi.value = ''; chosenFile = null; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
-    }
-
-    /* ─── Sidebar resize/collapse ─── */
-    const $sb   = document.getElementById('sb');
-    const $sbrz = document.getElementById('sbrz');
-    let sbW = 220, sbVis = true, sbDrag = false, sbDx = 0, sbDw = 0;
-
-    document.getElementById('sbTog').addEventListener('click', () => {
-        if (window.innerWidth <= 640) { $sb.classList.toggle('mob'); }
-        else { sbVis = !sbVis; $sb.classList.toggle('col', !sbVis); if (sbVis) $sb.style.width = sbW + 'px'; }
-    });
-    $sbrz.addEventListener('mousedown', e => {
-        if ($sb.classList.contains('col')) { sbVis = true; $sb.classList.remove('col'); $sb.style.width = '40px'; }
-        sbDrag = true; sbDx = e.clientX; sbDw = $sb.offsetWidth;
-        document.body.style.cssText = 'cursor:col-resize;user-select:none'; e.preventDefault();
-    });
-    window.addEventListener('mousemove', e => {
-        if (!sbDrag) return;
-        const w = Math.max(80, Math.min(480, sbDw + (e.clientX - sbDx)));
-        sbW = w; $sb.style.width = w + 'px'; $sb.style.transition = 'none';
-    });
-    window.addEventListener('mouseup', () => {
-        if (!sbDrag) return; sbDrag = false; document.body.style.cssText = ''; $sb.style.transition = '';
-        if (sbW < 80) { sbVis = false; $sb.classList.add('col'); }
-    });
-    $sbrz.addEventListener('touchstart', e => {
-        if (window.innerWidth > 640) { sbDrag = true; sbDx = e.touches[0].clientX; sbDw = $sb.offsetWidth; }
-    }, { passive: true });
-    window.addEventListener('touchmove', e => {
-        if (!sbDrag) return;
-        const w = Math.max(80, Math.min(360, sbDw + (e.touches[0].clientX - sbDx)));
-        sbW = w; $sb.style.width = w + 'px'; $sb.style.transition = 'none';
-    }, { passive: true });
-    window.addEventListener('touchend', () => {
-        if (!sbDrag) return; sbDrag = false; $sb.style.transition = '';
-        if (sbW < 80) { sbVis = false; $sb.classList.add('col'); }
-    });
-
-    /* ─── Context menu ─── */
-    function showCtx(e, el, node, name) {
-        e.preventDefault(); ctxTgt = { el, node, name };
-        const m = document.getElementById('ctx');
-        m.style.left = Math.min(e.clientX, window.innerWidth - 170) + 'px';
-        m.style.top  = Math.min(e.clientY, window.innerHeight - 130) + 'px';
-        m.classList.add('on');
-        document.getElementById('cOpen').style.display = node.__isDir ? '' : 'none';
-        document.getElementById('cView').style.display = !node.__isDir ? '' : 'none';
-        document.getElementById('cSave').style.display = !node.__isDir ? '' : 'none';
-    }
-    document.addEventListener('click', () => document.getElementById('ctx').classList.remove('on'));
-    document.getElementById('cOpen').addEventListener('click', () => { if (ctxTgt?.node?.__isDir) navTo(ctxTgt.node.__path); });
-    document.getElementById('cView').addEventListener('click', () => { if (ctxTgt && !ctxTgt.node.__isDir) openFile(ctxTgt.node, ctxTgt.name); });
-    document.getElementById('cSave').addEventListener('click', () => {
-        if (ctxTgt && !ctxTgt.node.__isDir) {
-            const e = ctxTgt.node.__entry || (zip && zip.file(ctxTgt.node.__path.replace(/\/$/, '')));
-            if (e) dlFile(e, ctxTgt.name);
+        function renderPb(path) {
+            const b = document.getElementById('pbar'); b.innerHTML = '';
+            const crumb = (lbl, p, cur) => {
+                if (b.childElementCount) {
+                    const s = document.createElement('span'); s.className = 'ps'; s.textContent = '›'; b.appendChild(s);
+                }
+                const c = document.createElement('span'); c.className = 'pc' + (cur ? ' cur' : ''); c.textContent = lbl;
+                if (!cur) c.addEventListener('click', () => navTo(p));
+                b.appendChild(c);
+            };
+            const pts = path ? path.split('/').filter(Boolean) : [];
+            crumb(archName, '', !pts.length); let built = '';
+            pts.forEach((p, i) => { built += p + '/'; crumb(p, built, i === pts.length - 1); });
         }
-    });
-    document.getElementById('cInfo').addEventListener('click', () => {
-        if (!ctxTgt) return;
-        const n = ctxTgt.node;
-        alert(`Name: ${ctxTgt.name}\nType: ${n.__isDir ? 'Folder' : 'File'}\nPath: ${n.__path}`);
-    });
+        function getNode(path) {
+            if (!path) return tree;
+            let n = tree;
+            for (const p of path.split('/').filter(Boolean)) { n = n.__children[p]; if (!n) return null; }
+            return n;
+        }
 
-    /* ─── Keyboard ─── */
-    document.addEventListener('keydown', e => {
-        const inp = document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT';
-        if (e.key === 'Escape') { hideVw(); document.getElementById('ctx').classList.remove('on'); }
-        if (e.key === 'Backspace' && !inp && document.getElementById('app').classList.contains('on') && !document.getElementById('vw').classList.contains('on')) {
+        function renderGrid(path) {
+            // Disconnect any previous observer before clearing DOM
+            if (thumbObserver) { thumbObserver.disconnect(); thumbObserver = null; }
+
+            const g = document.getElementById('grid'); g.innerHTML = '';
+            const node = getNode(path); if (!node) return;
+
+            // Apply / remove preview-mode class on the grid container
+            g.classList.toggle('preview-mode', previewMode);
+
+            const items = Object.entries(node.__children || {}).sort((a, b) => {
+                const ad = a[1].__isDir ? 0 : 1, bd = b[1].__isDir ? 0 : 1;
+                return ad !== bd ? ad - bd : a[0].localeCompare(b[0]);
+            });
+
+            items.forEach(([name, child]) => {
+                const t = child.__isDir ? 'folder' : ftype(name);
+                const el = document.createElement('div'); el.className = 'fi';
+
+                const usePreview = previewMode && PREVIEWABLE_TYPES.has(t) && child.__entry;
+
+                if (usePreview) {
+                    // Mark the item for lazy thumbnail loading
+                    el.classList.add('previewable');
+                    el.dataset.zipPath = child.__entry.name;
+                    el.dataset.thumbType = t;
+
+                    // Render a shimmer placeholder icon area + label
+                    el.innerHTML = `<div class="fi-ic loading"></div><span class="fi-lbl">${esc(name)}</span>`;
+                } else {
+                    el.innerHTML = icBig(t) + `<span class="fi-lbl">${esc(name)}</span>`;
+                }
+
+                el.addEventListener('click', () => clickFi(el, child, name));
+                el.addEventListener('dblclick', () => dblFi(child, name));
+                el.addEventListener('contextmenu', e => showCtx(e, el, child, name));
+                g.appendChild(el);
+            });
+
+            document.getElementById('sitems').textContent = items.length;
+
+            // Build the ordered file list used by the viewer prev/next arrows
+            viewerFiles = items
+                .filter(([, child]) => !child.__isDir && child.__entry)
+                .map(([name, child]) => ({ node: child, name }));
+
+            // Kick off the IntersectionObserver for lazy thumbnail loading
+            if (previewMode) setupThumbObserver();
+        }
+
+        function clickFi(el, node, name) {
+            document.querySelectorAll('.fi.sel').forEach(i => i.classList.remove('sel'));
+            el.classList.add('sel'); selItem = { el, node, name };
+            document.getElementById('sselw').classList.remove('h');
+            document.getElementById('ssel').textContent = name;
+            if (!node.__isDir && node.__entry) {
+                node.__entry.async('uint8array').then(d => {
+                    document.getElementById('sszw').classList.remove('h');
+                    document.getElementById('ssz').textContent = fmtSz(d.byteLength);
+                });
+            }
+        }
+        function dblFi(node, name) { if (node.__isDir) navTo(node.__path); else openFile(node, name); }
+
+        /* ─── Viewer navigation ─── */
+        // Flat ordered list of files in the current folder, updated when grid renders
+        let viewerFiles = []; // [{node, name}, …]
+        let viewerIdx = -1;
+
+        function updateArrows() {
+            document.getElementById('vwPrev').classList.toggle('disabled', viewerIdx <= 0);
+            document.getElementById('vwNext').classList.toggle('disabled', viewerIdx >= viewerFiles.length - 1);
+        }
+
+        document.getElementById('vwPrev').addEventListener('click', () => {
+            if (viewerIdx > 0) { viewerIdx--; const f = viewerFiles[viewerIdx]; openFile(f.node, f.name); }
+        });
+        document.getElementById('vwNext').addEventListener('click', () => {
+            if (viewerIdx < viewerFiles.length - 1) { viewerIdx++; const f = viewerFiles[viewerIdx]; openFile(f.node, f.name); }
+        });
+
+        /* ─── Viewer ─── */
+        async function openFile(node, name) {
+            const entry = node.__entry || (zip && zip.file(node.__path.replace(/\/$/, '')));
+            if (!entry) return;
+
+            // Update nav index
+            viewerIdx = viewerFiles.findIndex(f => f.name === name && f.node === node);
+            updateArrows();
+            document.getElementById('vname').textContent = name; showVw();
+            ['txtv', 'imgv', 'vidv', 'hexv'].forEach(id => document.getElementById(id).classList.add('h'));
+            const t = ftype(name);
+            if (t === 'image') {
+                const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
+                const img = document.getElementById('vimg'); img.src = url; img.classList.remove('z');
+                img.onclick = () => img.classList.toggle('z');
+                document.getElementById('imgv').classList.remove('h');
+            } else if (t === 'video') {
+                const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
+                document.getElementById('vvid').src = url;
+                document.getElementById('vidv').classList.remove('h');
+            } else if (t === 'text' || t === 'code') {
+                let tx; try { tx = await entry.async('string'); } catch { tx = '(Could not decode as text)'; }
+                document.getElementById('txtv').value = tx;
+                document.getElementById('txtv').classList.remove('h');
+            } else {
+                document.getElementById('hexv').innerHTML = buildHex(await entry.async('uint8array'));
+                document.getElementById('hexv').classList.remove('h');
+            }
+            document.getElementById('vsave').onclick = () => dlFile(entry, name);
+        }
+
+        function buildHex(data) {
+            const rows = [], max = Math.min(data.length, 8192);
+            for (let i = 0; i < max; i += 16) {
+                const ch = data.slice(i, i + 16);
+                const off = i.toString(16).padStart(8, '0').toUpperCase();
+                const hx = Array.from(ch).map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ').padEnd(47, ' ');
+                const ac = Array.from(ch).map(b => (b >= 32 && b < 127) ? String.fromCharCode(b) : '.').join('');
+                rows.push(`<span class="ho">${off}</span><span class="hb">  ${hx}  </span><span class="ha">${esc(ac)}</span>`);
+            }
+            if (data.length > max) rows.push(`\n… showing first 8 KB of ${fmtSz(data.length)}`);
+            return rows.join('\n');
+        }
+
+        async function dlFile(entry, name) {
+            const url = URL.createObjectURL(await entry.async('blob'));
+            const a = Object.assign(document.createElement('a'), { href: url, download: name });
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+        function showVw() { document.getElementById('vw').classList.add('on'); }
+        function hideVw() {
+            document.getElementById('vw').classList.remove('on');
+            const v = document.getElementById('vvid'); v.pause(); v.src = '';
+        }
+
+        /* ─── Toolbar ─── */
+        document.getElementById('bakBtn').addEventListener('click', () => {
+            if (document.getElementById('vw').classList.contains('on')) hideVw();
+        });
+        document.getElementById('vbak').addEventListener('click', hideVw);
+        document.getElementById('upBtn').addEventListener('click', () => {
             const ps = curPath.split('/').filter(Boolean);
             if (ps.length) { ps.pop(); navTo(ps.length ? ps.join('/') + '/' : ''); }
-        }
-        if (e.key === 'Enter' && selItem && document.getElementById('app').classList.contains('on')) dblFi(selItem.node, selItem.name);
-    });
+        });
+        document.getElementById('opnNewBtn').addEventListener('click', resetApp);
+        document.getElementById('tlR').addEventListener('click', resetApp);
+        document.getElementById('tlY').addEventListener('click', () => {
+            sbVis = !sbVis; $sb.classList.toggle('col', !sbVis); if (sbVis) $sb.style.width = sbW + 'px';
+        });
 
-    /* ─── Helpers ─── */
-    function fmtSz(b) {
-        if (b < 1024) return b + ' B';
-        if (b < 1 << 20) return (b / 1024).toFixed(1) + ' KB';
-        if (b < 1 << 30) return (b / 1048576).toFixed(2) + ' MB';
-        return (b / 1073741824).toFixed(2) + ' GB';
-    }
-    function esc(s) {
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
+        function resetApp() {
+            objURLs.forEach(u => URL.revokeObjectURL(u)); objURLs = [];
+            thumbCache.clear();
+            if (thumbObserver) { thumbObserver.disconnect(); thumbObserver = null; }
+            zip = null; tree = {}; selItem = null;
+            document.getElementById('app').classList.remove('on');
+            document.getElementById('ld').style.display = '';
+            $fi.value = ''; chosenFile = null; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
+        }
+
+        /* ─── Sidebar resize/collapse ─── */
+        const $sb = document.getElementById('sb');
+        const $sbrz = document.getElementById('sbrz');
+        let sbW = 220, sbVis = true, sbDrag = false, sbDx = 0, sbDw = 0;
+
+        document.getElementById('sbTog').addEventListener('click', () => {
+            if (window.innerWidth <= 640) { $sb.classList.toggle('mob'); }
+            else { sbVis = !sbVis; $sb.classList.toggle('col', !sbVis); if (sbVis) $sb.style.width = sbW + 'px'; }
+        });
+        $sbrz.addEventListener('mousedown', e => {
+            if ($sb.classList.contains('col')) { sbVis = true; $sb.classList.remove('col'); $sb.style.width = '40px'; }
+            sbDrag = true; sbDx = e.clientX; sbDw = $sb.offsetWidth;
+            document.body.style.cssText = 'cursor:col-resize;user-select:none'; e.preventDefault();
+        });
+        window.addEventListener('mousemove', e => {
+            if (!sbDrag) return;
+            const w = Math.max(80, Math.min(480, sbDw + (e.clientX - sbDx)));
+            sbW = w; $sb.style.width = w + 'px'; $sb.style.transition = 'none';
+        });
+        window.addEventListener('mouseup', () => {
+            if (!sbDrag) return; sbDrag = false; document.body.style.cssText = ''; $sb.style.transition = '';
+            if (sbW < 80) { sbVis = false; $sb.classList.add('col'); }
+        });
+        $sbrz.addEventListener('touchstart', e => {
+            if (window.innerWidth > 640) { sbDrag = true; sbDx = e.touches[0].clientX; sbDw = $sb.offsetWidth; }
+        }, { passive: true });
+        window.addEventListener('touchmove', e => {
+            if (!sbDrag) return;
+            const w = Math.max(80, Math.min(360, sbDw + (e.touches[0].clientX - sbDx)));
+            sbW = w; $sb.style.width = w + 'px'; $sb.style.transition = 'none';
+        }, { passive: true });
+        window.addEventListener('touchend', () => {
+            if (!sbDrag) return; sbDrag = false; $sb.style.transition = '';
+            if (sbW < 80) { sbVis = false; $sb.classList.add('col'); }
+        });
+
+        /* ─── Context menu ─── */
+        function showCtx(e, el, node, name) {
+            e.preventDefault(); ctxTgt = { el, node, name };
+            const m = document.getElementById('ctx');
+            m.style.left = Math.min(e.clientX, window.innerWidth - 170) + 'px';
+            m.style.top = Math.min(e.clientY, window.innerHeight - 130) + 'px';
+            m.classList.add('on');
+            document.getElementById('cOpen').style.display = node.__isDir ? '' : 'none';
+            document.getElementById('cView').style.display = !node.__isDir ? '' : 'none';
+            document.getElementById('cSave').style.display = !node.__isDir ? '' : 'none';
+        }
+        document.addEventListener('click', () => document.getElementById('ctx').classList.remove('on'));
+        document.getElementById('cOpen').addEventListener('click', () => { if (ctxTgt?.node?.__isDir) navTo(ctxTgt.node.__path); });
+        document.getElementById('cView').addEventListener('click', () => { if (ctxTgt && !ctxTgt.node.__isDir) openFile(ctxTgt.node, ctxTgt.name); });
+        document.getElementById('cSave').addEventListener('click', () => {
+            if (ctxTgt && !ctxTgt.node.__isDir) {
+                const e = ctxTgt.node.__entry || (zip && zip.file(ctxTgt.node.__path.replace(/\/$/, '')));
+                if (e) dlFile(e, ctxTgt.name);
+            }
+        });
+        document.getElementById('cInfo').addEventListener('click', () => {
+            if (!ctxTgt) return;
+            const n = ctxTgt.node;
+            alert(`Name: ${ctxTgt.name}\nType: ${n.__isDir ? 'Folder' : 'File'}\nPath: ${n.__path}`);
+        });
+
+        /* ─── Keyboard ─── */
+        document.addEventListener('keydown', e => {
+            const inp = document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT';
+            const vwOn = document.getElementById('vw').classList.contains('on');
+            if (e.key === 'Escape') { hideVw(); document.getElementById('ctx').classList.remove('on'); }
+            if (e.key === 'ArrowLeft' && vwOn && !inp) {
+                e.preventDefault();
+                if (viewerIdx > 0) { viewerIdx--; const f = viewerFiles[viewerIdx]; openFile(f.node, f.name); }
+            }
+            if (e.key === 'ArrowRight' && vwOn && !inp) {
+                e.preventDefault();
+                if (viewerIdx < viewerFiles.length - 1) { viewerIdx++; const f = viewerFiles[viewerIdx]; openFile(f.node, f.name); }
+            }
+            if (e.key === 'Backspace' && !inp && document.getElementById('app').classList.contains('on') && !vwOn) {
+                const ps = curPath.split('/').filter(Boolean);
+                if (ps.length) { ps.pop(); navTo(ps.length ? ps.join('/') + '/' : ''); }
+            }
+            if (e.key === 'Enter' && selItem && document.getElementById('app').classList.contains('on')) dblFi(selItem.node, selItem.name);
+        });
+
+        /* ─── Helpers ─── */
+        function fmtSz(b) {
+            if (b < 1024) return b + ' B';
+            if (b < 1 << 20) return (b / 1024).toFixed(1) + ' KB';
+            if (b < 1 << 30) return (b / 1048576).toFixed(2) + ' MB';
+            return (b / 1073741824).toFixed(2) + ' GB';
+        }
+        function esc(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
     </script>
 </body>
+
 </html>

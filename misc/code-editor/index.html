@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TryIt — HTML Previewer</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!--
+      Why this importmap has exactly 2 entries:
+
+      Two things must be true singletons shared across every bundle:
+        1. @codemirror/state  — EditorState/Transaction are checked with instanceof
+        2. @lezer/highlight   — tag IDs must match between the parser and HighlightStyle
+
+      Everything else (view, language, lang-html, autocomplete, etc.) can each
+      bundle their own copy without causing problems, as long as those two are shared.
+
+      All esm.sh bundle URLs below declare ?external=@codemirror/state,@lezer/highlight
+      so they emit bare specifier imports for those two, which resolve through this map.
+    -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@codemirror/state":    "https://esm.sh/@codemirror/state@6.4.1?bundle",
+        "@lezer/highlight":     "https://esm.sh/@lezer/highlight@1.2.1?bundle"
+      }
+    }
+    </script>
+</head>
+<body>
+
+    <div id="header">
+        <div id="logo">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <rect x="1" y="1" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/>
+                <polyline points="5,6 2.5,9 5,12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="13,6 15.5,9 13,12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="10.5" y1="4.5" x2="7.5" y2="13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="sep"></div>
+        <div id="toolbar">
+            <button class="btn" id="run-btn">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><polygon points="2,1 9,5 2,9"/></svg>
+                Run
+            </button>
+            <label id="auto-run-wrap">
+                <input type="checkbox" id="auto-run" checked> Auto-run
+            </label>
+            <div class="sep"></div>
+            <button class="btn" id="clear-btn">Clear</button>
+            <button class="btn" id="copy-btn">Copy HTML</button>
+            <button class="btn" id="wrap-btn">Wrap Lines</button>
+            <div class="spacer"></div>
+            <button id="theme-btn" title="Toggle theme">🌙</button>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="editor-pane" style="width:50%">
+            <div class="pane-label"><span class="dot"></span>HTML EDITOR</div>
+            <div id="cm-wrap"></div>
+        </div>
+        <div id="divider">
+            <button id="collapse-btn" title="Collapse editor">
+                <svg id="collapse-icon" width="8" height="10" viewBox="0 0 8 10" fill="currentColor">
+                    <polygon points="6,1 1,5 6,9"/>
+                </svg>
+            </button>
+        </div>
+        <div id="preview-pane">
+            <div class="pane-label"><span class="dot" style="background:var(--accent2)"></span>PREVIEW</div>
+            <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+
+    <div id="status-bar">
+        <span id="status-indicator">
+            <span id="status-dot" style="background:var(--text-dim);width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px"></span>
+            <span id="status-msg">Ready</span>
+        </span>
+        <span id="cursor-pos">Ln 1, Col 1</span>
+        <span id="char-count">0 chars</span>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
