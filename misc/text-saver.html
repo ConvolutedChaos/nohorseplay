@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Saver</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --border: #2e2e2e;
+            --text: #e8e4dc;
+            --muted: #666;
+            --accent: #c8f060;
+            --accent-dim: rgba(200, 240, 96, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 20px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 640px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 24px 64px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            padding: 20px 24px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dot-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .title {
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .filename-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            transition: border-color 0.2s;
+        }
+
+        .filename-row:focus-within {
+            border-color: var(--accent);
+        }
+
+        .filename-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        #filename {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            width: 100%;
+            caret-color: var(--accent);
+        }
+
+        .ext {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 280px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+            caret-color: var(--accent);
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea::placeholder {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .char-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .char-count span {
+            color: var(--text);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #0f0f0f;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 22px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.12s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            opacity: 0.88;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--accent);
+            color: #0f0f0f;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 99px;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            .footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="dot-row">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <span class="title">Text Saver</span>
+        </div>
+
+        <div class="body">
+            <div class="filename-row">
+                <span class="filename-label">file /</span>
+                <input id="filename" type="text" value="document" spellcheck="false" autocomplete="off" />
+                <span class="ext">.txt</span>
+            </div>
+
+            <textarea id="textInput" placeholder="Paste or type your text here…" spellcheck="false"></textarea>
+
+            <div class="footer">
+                <div class="char-count">
+                    <span id="charNum">0</span> chars &nbsp;·&nbsp; <span id="lineNum">0</span> lines
+                </div>
+                <button class="btn" id="downloadBtn" onclick="downloadFile()" disabled>
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2v8M5 7l3 3 3-3M3 12h10" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">File downloaded ✓</div>
+
+    <script>
+        const ta = document.getElementById('textInput');
+        const btn = document.getElementById('downloadBtn');
+        const charNum = document.getElementById('charNum');
+        const lineNum = document.getElementById('lineNum');
+
+        ta.addEventListener('input', () => {
+            const val = ta.value;
+            charNum.textContent = val.length.toLocaleString();
+            lineNum.textContent = val === '' ? 0 : val.split('\n').length.toLocaleString();
+            btn.disabled = val.trim() === '';
+        });
+
+        function downloadFile() {
+            const text = ta.value;
+            if (!text.trim()) return;
+
+            let name = document.getElementById('filename').value.trim() || 'document';
+            name = name.replace(/\.txt$/i, '');
+
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2200);
+        }
+    </script>
+</body>
+
+</html>
