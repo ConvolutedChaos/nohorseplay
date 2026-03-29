@@ -1,0 +1,354 @@
+/* ============================================================
+   START MENU — Unity-style Dash Redesign
+   Drop this into css/startmenu.css and link it in index.html,
+   OR paste it at the end of css/style.css.
+   
+   This REPLACES all existing #startMenu styles.
+============================================================ */
+
+/* ── Reset any old start menu rules ─────────────────────── */
+#startMenu {
+    position: fixed;
+    bottom: 48px;
+    left: 4px;
+    width: 540px;
+    max-height: calc(100vh - 60px);  /* never clip off screen */
+    min-height: 320px;
+
+    background: rgba(28, 28, 30, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    box-shadow: 0 16px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3);
+
+    display: none;          /* toggled via .open */
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10000;
+
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #d4d4d4;
+    font-size: 13px;
+}
+
+#startMenu.open {
+    display: flex;
+}
+
+/* ── Search bar ─────────────────────────────────────────── */
+.sm-search {
+    padding: 12px 14px 8px;
+    flex-shrink: 0;
+}
+.sm-search input {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 8px 12px 8px 34px;
+    color: #e0e0e0;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 14px;
+}
+.sm-search input:focus {
+    border-color: rgba(59, 130, 246, 0.5);
+    background-color: rgba(255,255,255,0.1);
+}
+.sm-search input::placeholder {
+    color: #666;
+}
+
+/* ── Main body: categories left + apps right ────────────── */
+.sm-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;          /* critical for flex overflow */
+    overflow: hidden;
+}
+
+/* ── Category sidebar ───────────────────────────────────── */
+.sm-categories {
+    width: 160px;
+    min-width: 160px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,0.06);
+
+    /* thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.sm-categories::-webkit-scrollbar { width: 4px; }
+.sm-categories::-webkit-scrollbar-track { background: transparent; }
+.sm-categories::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.sm-cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: none;
+    background: transparent;
+    color: #bbb;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    border-radius: 0;
+    transition: background 0.1s, color 0.1s;
+    flex-shrink: 0;
+}
+.sm-cat-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+}
+.sm-cat-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    font-weight: 600;
+}
+.sm-cat-btn .sm-cat-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sm-cat-btn .sm-cat-icon img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+.sm-cat-btn .sm-cat-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.sm-cat-sep {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 4px 12px;
+    flex-shrink: 0;
+}
+
+/* ── App grid (right side) ──────────────────────────────── */
+.sm-apps-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 10px;
+    min-height: 0;
+
+    /* thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.sm-apps-area::-webkit-scrollbar { width: 5px; }
+.sm-apps-area::-webkit-scrollbar-track { background: transparent; }
+.sm-apps-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+/* Section headers inside the app area */
+.sm-section-header {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #555;
+    padding: 8px 6px 4px;
+    margin-top: 4px;
+}
+.sm-section-header:first-child { margin-top: 0; }
+
+/* App grid container */
+.sm-app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 2px;
+}
+
+/* Individual app tile */
+.sm-app-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s;
+    text-align: center;
+    min-width: 0;
+}
+.sm-app-tile:hover {
+    background: rgba(255,255,255,0.08);
+}
+.sm-app-tile:active {
+    background: rgba(255,255,255,0.12);
+    transform: scale(0.97);
+}
+.sm-app-tile .sm-app-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sm-app-tile .sm-app-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+.sm-app-tile .sm-app-icon .sm-emoji-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+.sm-app-tile .sm-app-name {
+    font-size: 11px;
+    color: #ccc;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-width: 100%;
+    word-break: break-word;
+}
+.sm-app-tile:hover .sm-app-name { color: #fff; }
+
+/* Place item (list style, used in Places category) */
+.sm-place-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s;
+    color: #bbb;
+    font-size: 12px;
+}
+.sm-place-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+}
+.sm-place-item .sm-place-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sm-place-item .sm-place-icon img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+.sm-place-item .sm-place-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.sm-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 8px 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.15);
+}
+.sm-footer button {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #999;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+.sm-footer button:hover {
+    background: rgba(255,255,255,0.06);
+    color: #ccc;
+    border-color: rgba(255,255,255,0.15);
+}
+.sm-footer .sm-btn-danger:hover {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.25);
+}
+.sm-footer .sm-version {
+    color: #444;
+    font-size: 10px;
+    margin-right: auto;
+}
+
+/* ── "No results" state ─────────────────────────────────── */
+.sm-no-results {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: #555;
+    font-size: 13px;
+    text-align: center;
+}
+.sm-no-results.visible { display: flex; }
+.sm-no-results svg { width: 32px; height: 32px; opacity: 0.3; }
+
+/* ── Hide old start menu elements if they still exist ──── */
+.start-header,
+.start-search,
+.start-section-label,
+.start-apps,
+.start-places,
+.start-footer,
+.start-app-tile,
+.start-place-btn {
+    display: none !important;
+}
+
+/* ── Responsive: narrower on small screens ──────────────── */
+@media (max-width: 600px) {
+    #startMenu {
+        width: calc(100vw - 8px);
+        left: 4px;
+        right: 4px;
+    }
+    .sm-categories {
+        width: 48px;
+        min-width: 48px;
+    }
+    .sm-cat-btn span:not(.sm-cat-icon) {
+        display: none;
+    }
+    .sm-cat-btn {
+        justify-content: center;
+        padding: 8px 4px;
+    }
+}
+
+@media (max-height: 500px) {
+    #startMenu {
+        max-height: calc(100vh - 52px);
+        min-height: 200px;
+    }
+}

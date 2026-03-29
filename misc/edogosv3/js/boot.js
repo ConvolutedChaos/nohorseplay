@@ -131,15 +131,16 @@ function showLoginScreen(onLogin) {
         <div class="mint-center-wrap">
             <div class="mint-login-card" role="dialog" aria-label="Login">
                 <div class="mint-top-icon">
-                    <!-- computer icon -->
-                    <img src="icons/128/computer.svg" alt="Computer Icon" width="56" height="56">
+                    <!-- wrapper for computer icon -->
+                    <div id="computerIconWrapper" style="width:56px;height:56px;"></div>
                 </div>
 
                 <div class="mint-hostname">${computername}</div>
 
                 <div class="mint-user-row">
                     <div class="mint-avatar-small">
-                        <img src="icons/avatar.svg" alt="Avatar Icon">
+                        <!-- wrapper for avatar icon -->
+                        <div id="avatarIconWrapper"></div>
                     </div>
 
                     <div class="mint-username">${username}</div>
@@ -181,6 +182,24 @@ function showLoginScreen(onLogin) {
     `;
 
     document.body.appendChild(overlay);
+
+    imgFromFS('/usr/share/icons/128/computer.svg').then(img => {
+        const wrapper = overlay.querySelector('#computerIconWrapper');
+        img.width = "56";
+        img.height = "56";
+        if (wrapper) wrapper.appendChild(img);
+    }).catch(() => {
+        spawnError("An error occured while loading an icon.");
+    });
+
+    imgFromFS('/usr/share/icons/avatar.svg').then(img => {
+        const wrapper = overlay.querySelector('#avatarIconWrapper');
+        img.width = "36";
+        img.height = "36";
+        if (wrapper) wrapper.appendChild(img);
+    }).catch(() => {
+        spawnError("An error occured while loading an icon.");
+    });
 
     const cancelBtn = overlay.querySelector('#loginCancelBtn');
     if (cancelBtn) {

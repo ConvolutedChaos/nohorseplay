@@ -474,7 +474,7 @@ function buildSetupUI(onComplete) {
         launchBtn.textContent = `Launch E-Dog OS`;
         launchBtn.onclick = () => {
             onComplete({ username: uname, freshInstall: true });
-            reboot();
+            location.reload();
         };
         stepEls[3].appendChild(launchBtn);
     }

@@ -7,6 +7,7 @@
     <title>E-Dog OS</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boot.css">
+    <link rel="stylesheet" href="css/startmenu.css">
     <script src="js/jszip.min.js"></script>
 </head>
 
@@ -25,7 +26,7 @@
         </div>
         <div class="start-section-label">Apps</div>
         <div class="start-apps" id="startAppList">
-            <div class="start-app-tile" onclick="startMenuAction('newWindow')">
+            <!-- <div class="start-app-tile" onclick="startMenuAction('newWindow')">
                 <span class="app-icon">
                     <img class="place-icon" src="icons/16/folder.svg">
                 </span>
@@ -55,10 +56,12 @@
                 </span>
                 Paint
             </div>
-            <div class="start-app-tile" onclick="spawnGameEngine()">
-                <span class="app-icon"><img class="place-icon" src="icons/16/applications-games.png"></span>
-                E-Dog Engine
-            </div>
+            <div class="start-app-tile" onclick="spawnWriter()">
+                <span class="app-icon">
+                    <img class="place-icon" src="icons/16/text-editor.png">
+                </span>
+                Writer
+            </div> -->
         </div>
         <div class="start-section-label">Places</div>
         <div class="start-places" id="startPlaceList">
@@ -147,7 +150,7 @@
     <div id="taskbar">
         <button id="startBtn" onclick="toggleStartMenu(event)">Menu</button>
         <div id="taskbar-tray">
-            <img id="wifi-icon" src="icons/tray/network-100.png" title="Internet Access">
+            <img id="wifi-icon" title="Internet Access">
             <span id="date-time">6:38 PM</span>
         </div>
     </div>
@@ -159,7 +162,8 @@
     <script src="js/script.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/paint.js"></script>
-    <script src="js/engine.js"></script>
+    <script src="js/writer.js"></script>
+    <script src="js/startmenu.js"></script>
 </body>
 
 </html>

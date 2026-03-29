@@ -285,3 +285,41 @@ async function loadIconImg(fsPath, webPath, sizeCss = 'width:100%;height:100%;ob
     img.src = webPath;
     return img;
 }
+
+/**
+ * Open a .app file from an absolute virtual filesystem path.
+ *
+ * Resolves the path, reads the file content, and passes it to
+ * spawnCustomApp().  Falls back to spawnError() on failure.
+ *
+ * @param {string} path - Absolute path, e.g. "/usr/bin/calc.app"
+ * @returns {Promise<string|undefined>} The window ID, or undefined on error
+ *
+ * @example
+ *   await openCustomAppFromPath("/usr/bin/calc.app");
+ */
+async function openCustomAppFromPath(path) {
+    try {
+        const file = await accessFile(path);
+
+        // Reconstruct the item object that spawnCustomApp expects
+        const item = {
+            id:        file.id,
+            name:      file.name,
+            type:      file.type,
+            parentId:  file.parentId,
+            mime:      file.mime,
+            size:      file.size,
+            createdAt: file.createdAt,
+            updatedAt: file.updatedAt,
+            content:   file.contentType === 'text'
+                           ? file.text
+                           : file.buffer,
+        };
+
+        return spawnCustomApp(item);
+    } catch (err) {
+        console.error(`openCustomAppFromPath: failed to open "${path}":`, err);
+        spawnError(`Cannot open ${path}: ${err.message}`);
+    }
+}

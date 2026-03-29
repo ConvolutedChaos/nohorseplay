@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.0.9";
+const VERSION = "E-Dog OS 3.1.0";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
@@ -11,6 +11,10 @@ let driveLight = document.getElementById("driveLight");
 let useDriveLight = false;
 
 let _driveSoundTimer = null;
+
+let _pendingOps = 0;          // count of in-flight IDB transactions
+let _shuttingDown = false;    // true once shutdown/reboot begins
+let _idleResolvers = [];      // callbacks waiting for _pendingOps === 0
 
 function openDB() {
     return new Promise((resolve, reject) => {
@@ -26,53 +30,53 @@ function openDB() {
     });
 }
 function idbGet(key) {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const req = dbPromise.transaction(STORE, 'readonly').objectStore(STORE).get(key);
-        req.onsuccess = e => { turnOffDriveLight(); res(e.target.result); };
-        req.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        req.onsuccess = e => { _opEnd(); res(e.target.result); };
+        req.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 function idbGetAll() {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const req = dbPromise.transaction(STORE, 'readonly').objectStore(STORE).getAll();
-        req.onsuccess = e => { turnOffDriveLight(); res(e.target.result); };
-        req.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        req.onsuccess = e => { _opEnd(); res(e.target.result); };
+        req.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 function idbGetAllByIndex(indexName, value) {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const store = dbPromise.transaction(STORE, 'readonly').objectStore(STORE);
         const idx = store.index(indexName);
         const r = idx.getAll(value);
-        r.onsuccess = e => { turnOffDriveLight(); res(e.target.result); };
-        r.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        r.onsuccess = e => { _opEnd(); res(e.target.result); };
+        r.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 function idbAdd(obj) {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const req = dbPromise.transaction(STORE, 'readwrite').objectStore(STORE).add(obj);
-        req.onsuccess = () => { turnOffDriveLight(); res(); };
-        req.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        req.onsuccess = () => { _opEnd(); res(); };
+        req.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 function idbPut(obj) {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const req = dbPromise.transaction(STORE, 'readwrite').objectStore(STORE).put(obj);
-        req.onsuccess = () => { turnOffDriveLight(); res(); };
-        req.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        req.onsuccess = () => { _opEnd(); res(); };
+        req.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 function idbDelete(key) {
-    turnOnDriveLight();
+    _opStart();
     return new Promise((res, rej) => {
         const req = dbPromise.transaction(STORE, 'readwrite').objectStore(STORE).delete(key);
-        req.onsuccess = () => { turnOffDriveLight(); res(); };
-        req.onerror = e => { turnOffDriveLight(); rej(e.target.error); };
+        req.onsuccess = () => { _opEnd(); res(); };
+        req.onerror = e => { _opEnd(); rej(e.target.error); };
     });
 }
 
@@ -80,17 +84,140 @@ function idbDelete(key) {
    System helpers
 ============================================================ */
 
-function reboot() {
+async function shutdown() {
+    if (_shuttingDown) return;
+    _shuttingDown = true;
+
+    // Phase 1: Show "Shutting down" overlay (keeps existing DOM underneath
+    // so in-flight renders can still complete without errors)
+    const overlay = document.createElement('div');
+    overlay.id = 'shutdown-overlay';
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 999999;
+        background: #000; color: #ccc;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 15px; gap: 16px;
+    `;
+    overlay.innerHTML = `
+        <div style="font-size: 22px; font-weight: 500; color: #fff;">Shutting down…</div>
+        <div id="shutdown-status" style="color: #888; font-size: 13px;">Saving files…</div>
+    `;
+    document.body.appendChild(overlay);
+
+    const statusEl = document.getElementById('shutdown-status');
+
+    // Phase 2: Wait for all pending IDB operations to drain
+    if (_pendingOps > 0) {
+        statusEl.textContent = `Waiting for ${_pendingOps} pending operation${_pendingOps > 1 ? 's' : ''}…`;
+        await waitForIdle(8000);
+    }
+
+    // Phase 3: Close the database connection cleanly
+    statusEl.textContent = 'Closing database…';
+    try {
+        if (dbPromise) {
+            dbPromise.close();
+            dbPromise = null;
+        }
+    } catch (e) {
+        console.warn('shutdown: DB close error:', e);
+    }
+
+    // Phase 4: Brief pause so the user sees the sequence
+    await new Promise(r => setTimeout(r, 400));
+
+    // Phase 5: Final screen
+    document.body.innerHTML = '';
+    document.body.style.cssText = `
+        background: #000; color: #888; margin: 0;
+        display: flex; align-items: center; justify-content: center;
+        height: 100vh;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    `;
+    document.body.innerHTML = `
+        <div style="text-align: center;">
+            <div style="font-size: 20px; color: #ccc; margin-bottom: 8px;">
+                It is now safe to close the tab.
+            </div>
+            <div style="font-size: 12px; color: #555;">
+                All data has been saved.
+            </div>
+        </div>
+    `;
+}
+
+async function reboot() {
+    if (_shuttingDown) return;
+    _shuttingDown = true;
+
+    // Show overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 999999;
+        background: #000; color: #ccc;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 15px; gap: 16px;
+    `;
+    overlay.innerHTML = `
+        <div style="font-size: 22px; font-weight: 500; color: #fff;">Restarting…</div>
+        <div id="reboot-status" style="color: #888; font-size: 13px;">Saving files…</div>
+    `;
+    document.body.appendChild(overlay);
+
+    const statusEl = document.getElementById('reboot-status');
+
+    // Wait for pending ops
+    if (_pendingOps > 0) {
+        statusEl.textContent = `Waiting for ${_pendingOps} pending operation${_pendingOps > 1 ? 's' : ''}…`;
+        await waitForIdle(8000);
+    }
+
+    // Close DB
+    statusEl.textContent = 'Closing database…';
+    try {
+        if (dbPromise) {
+            dbPromise.close();
+            dbPromise = null;
+        }
+    } catch (e) {
+        console.warn('reboot: DB close error:', e);
+    }
+
+    // Brief pause then reload
+    statusEl.textContent = 'Restarting…';
+    await new Promise(r => setTimeout(r, 300));
     location.reload();
 }
 
-function shutdown() {
-    document.body.innerHTML = `<h1 style="text-align:center;">It is now safe to close the tab.</h1>`;
-    document.body.style.backgroundColor = "#000000";
+function _opStart() {
+    _pendingOps++;
+    turnOnDriveLight();
+}
+
+function _opEnd() {
+    turnOffDriveLight();
+    _pendingOps = Math.max(0, _pendingOps - 1);
+    if (_pendingOps === 0) {
+        // Wake up anything waiting for idle
+        for (const resolve of _idleResolvers) resolve();
+        _idleResolvers = [];
+    }
 }
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForIdle(timeoutMs = 5000) {
+    if (_pendingOps === 0) return Promise.resolve();
+    return new Promise(resolve => {
+        _idleResolvers.push(resolve);
+        setTimeout(resolve, timeoutMs); // safety net
+    });
 }
 
 function turnOnDriveLight() {
@@ -210,7 +337,8 @@ const iconMap = {
         'log': ['text-x-generic.svg', 'text-x-generic.png'],
         'svg': ['image-x-generic.svg', 'image-x-generic.png'],
         'avif': ['image-x-generic.svg', 'image-x-generic.png'],
-        'app': ['application-x-executable.svg', 'application-x-executable.svg']
+        'app': ['application-x-executable.svg', 'application-x-executable.svg'],
+        'edoc': ['text-richtext.svg', 'text-richtext.png'],
     }
 };
 
@@ -1021,7 +1149,7 @@ const AUDIO_EXTS = new Set(['mp3', 'wav', 'ogg']);
 const HTML_EXTS = new Set(['html', 'htm']);
 const ZIP_EXTS = new Set(['zip', 'jar', 'war', 'apk', 'epub', 'cbz']);
 const GAMES = new Set(['BasketballSimulator', 'ESU10', 'HighwayCam', 'OnEdge', 'PhysicsFun', 'PhysicsFunV2', 'PoliceSimulator', 'TornadoSimulator', 'WebCars', 'WebCarsV2', 'WebCarsV3']);
-
+const WRITER_EXTS = new Set(['edoc']);
 
 function getExt(name) {
     return (name.split('.').pop() || '').toLowerCase();
@@ -2050,8 +2178,8 @@ function _buildErrorBody(body, error) {
                 justify-content: center;
                 width: 64px;
                 height: 64px;
-            ">
-                <img src="icons/dialog-error.svg" style="width: 64px; height: 64px;">
+            " id="iconWrapper_725">
+
             </div>
 
             <div style="
@@ -2063,6 +2191,13 @@ function _buildErrorBody(body, error) {
             </div>
         </div>
     `;
+
+    imgFromFS('/usr/share/icons/dialog-error.svg').then(img => {
+        const wrapper = body.querySelector('#iconWrapper_725');
+        img.width = "64";
+        img.height = "64";
+        if (wrapper) wrapper.appendChild(img);
+    })
 }
 
 function _buildGameBody(body, gameName) {
@@ -2089,6 +2224,7 @@ function spawnCustomApp(item) {
 
     const {
         name = item.name.replace(/\.app$/i, ''),
+        customIcon = 'box',
         icon = '📦',
         width = 800,
         height = 600,
@@ -2109,14 +2245,25 @@ function spawnCustomApp(item) {
     win.style.height = height + 'px';
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
-    win.innerHTML = `
+    if (customIcon) {
+        win.innerHTML = `
+        <div class="title-bar">
+            <button class="window-close-button" title="Close">✕</button>
+            <button class="window-minimize-button" title="Minimize">—</button>
+            <span class="title-bar-text"><img class="app-icon-title-bar" alt="${customIcon} icon" src="../../../icons/even_more_icons/${customIcon}.png"> ${name}</span>
+        </div>
+        <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
+        `;
+    } else {
+        win.innerHTML = `
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
             <span class="title-bar-text">${icon} ${name}</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
-    `;
+        `;
+    }
 
     document.getElementById('windowContainer').appendChild(win);
     windows[windowId] = { el: win, state: { type: 'customapp', item } };
@@ -2139,7 +2286,12 @@ function spawnCustomApp(item) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.textContent = `${icon} ${name}`;
+    if (customIcon) {
+        tbBtn.innerHTML = `<img class="app-icon-title-bar" alt="${customIcon} icon" src="../../../icons/even_more_icons/${customIcon}.png"> ${name}`;
+    } else {
+        tbBtn.textContent = `${icon} ${name}`;
+    }
+
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -3570,6 +3722,8 @@ function openFile(item) {
         spawnApp('bacon', item);
     } else if (ext === 'app') {
         spawnCustomApp(item);
+    } else if (ext === 'edoc') {
+        spawnWriter(item);
     } else {
         spawnApp('editor', item);
     }
@@ -3657,6 +3811,7 @@ function showOpenWithMenu(x, y, item) {
     const isAudio = AUDIO_EXTS.has(ext) || item.mime?.startsWith('audio/');
     const isVideo = VIDEO_EXTS.has(ext) || item.mime?.startsWith('video/');
     const isZip = ZIP_EXTS.has(ext) || item.mime === 'application/zip';
+    const isWriterDoc = WRITER_EXTS.has(ext);
 
     const entries = [
         { label: 'Text Editor', icon: 'open', action: () => spawnApp('editor', item) },
@@ -3677,6 +3832,9 @@ function showOpenWithMenu(x, y, item) {
     }
     if (isZip) {
         entries.push({ label: 'Archive Viewer', icon: 'open', action: () => spawnApp('zip', item) });
+    }
+    if (isWriterDoc) {
+        entries.push({ label: 'Writer', icon: 'open', action: () => spawnWriter(item) });
     }
 
     buildMenu(x, y, entries);
@@ -4202,6 +4360,10 @@ async function _buildTerminalBody(body, windowId, winEl, startPath) {
                 break;
             }
 
+            case 'persist':
+                navigator.storage.persist();
+                break;
+
             case 'echo':
                 print(args.join(' '));
                 break;
@@ -4246,6 +4408,7 @@ async function _buildTerminalBody(body, windowId, winEl, startPath) {
                     ['rmdir <dir>', 'Remove empty directory'],
                     ['format', 'Format disk'],
                     ['createfile <file>', 'Create empty file'],
+                    ['persist', 'Will ask the browser to not delete the OS randomly. It does do that.'],
                     ['echo <text>', 'Print text'],
                     ['clear', 'Clear terminal output'],
                     ['history', 'Show command history'],
@@ -4858,14 +5021,22 @@ function spawnError(error) {
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     win.innerHTML = `
-                <div class="title-bar">
-                    <button class="window-close-button" title="Close">✕</button>
-                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/dialog-error.png"> ${error.length > 30 ? error.slice(0, 30).trimEnd() + '...' : error}</span>
-                </div>
-                <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
-            `;
+        <div class="title-bar">
+            <button class="window-close-button" title="Close">✕</button>
+            <span class="title-bar-text"><span id="image_wrapper-53461"></span> ${error.length > 30 ? error.slice(0, 30).trimEnd() + '...' : error}</span>
+        </div>
+        <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
+    `;
 
     document.getElementById('windowContainer').appendChild(win);
+    // <img class="app-icon-title-bar" src="icons/16/dialog-error.png">
+    imgFromFS('/usr/share/icons/16/dialog-error.png').then(img => {
+        const wrapper = win.querySelector('#image_wrapper-53461');
+        img.className = "app-icon-title-bar";
+        //img.width = "16";
+        //img.height = "16";
+        if (wrapper) wrapper.appendChild(img);
+    })
     windows[windowId] = { el: win, state: { type: 'about' } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -4877,12 +5048,20 @@ function spawnError(error) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = '<img class="app-icon-title-bar" src="icons/16/dialog-error.png"> Error';
+    tbBtn.innerHTML = '<span id="btn-icon-87362456342"></span> Error';
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
     document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
+
+    imgFromFS('/usr/share/icons/16/dialog-error.png').then(img => {
+        const wrapper = tbBtn.querySelector('#btn-icon-87362456342');
+        img.className = "app-icon-title-bar";
+        //img.width = "16";
+        //img.height = "16";
+        if (wrapper) wrapper.appendChild(img);
+    })
 
     tbBtn.oncontextmenu = (ev) => {
         ev.preventDefault();
@@ -5314,12 +5493,12 @@ if (useDriveLight) {
 // error handling
 window.onerror = function (message, source, lineno, colno, error) {
     console.error("Global Error:", message, source, lineno, colno, error);
-    spawnError(message);
+    if (!_shuttingDown) spawnError(message);
 };
 
 window.onunhandledrejection = function (event) {
     console.error("Unhandled Promise Rejection:", event.reason);
-    spawnError(event.reason);
+    if (!_shuttingDown) spawnError(event.reason);
 };
 
 window.addEventListener("offline", async (e) => {
@@ -5335,3 +5514,5 @@ window.addEventListener("online", async (e) => {
     newIcon.title = "Internet Access";
     dateTime.parentNode.insertBefore(newIcon, dateTime);
 });
+
+window.waitForIdle = waitForIdle;

