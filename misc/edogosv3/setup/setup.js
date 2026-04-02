@@ -454,6 +454,9 @@ function buildSetupUI(onComplete) {
         } else {
             localStorage.removeItem('edog_password');
         }
+        if (window.__setupVersion !== undefined) {
+            localStorage.setItem('edog_setup_version', window.__setupVersion);
+        }
         setProgress(100, 'Almost there…');
         await sleep(300);
 

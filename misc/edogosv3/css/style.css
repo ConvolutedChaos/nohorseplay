@@ -471,6 +471,19 @@ body {
     background: rgba(255, 255, 255, 0.03);
 }
 
+.item.cut-pending {
+    opacity: 0.4;
+}
+
+.item.drag-source {
+    opacity: 0.35;
+}
+
+.item.drag-over {
+    outline: 2px dashed #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.12) !important;
+}
+
 :root.theme-aero2010 .item.selected {
     outline: 2px solid #3a88d0;
     background: rgba(58, 136, 208, 0.12);

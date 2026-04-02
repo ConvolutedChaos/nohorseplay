@@ -1,9 +1,9 @@
-const cacheName = "Nohorseplay-Tornado Simulator-0.1";
+const cacheName = "Nohorseplay-TornadoSimulator-0.1";
 const contentToCache = [
     "Build/TornadoSimulator.loader.js",
-    "Build/TornadoSimulator.framework.js",
-    "Build/TornadoSimulator.data",
-    "Build/TornadoSimulator.wasm",
+    "Build/TornadoSimulator.framework.js.unityweb",
+    "Build/TornadoSimulator.data.unityweb",
+    "Build/TornadoSimulator.wasm.unityweb",
     "TemplateData/style.css"
 
 ];

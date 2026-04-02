@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.0";
+const VERSION = "E-Dog OS 3.1.1";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
@@ -277,6 +277,110 @@ let zCounter = 20;
 let focusedWindowId = null;
 const windows = {};
 
+/* ============================================================
+   Clipboard (cut/copy/paste for files)
+============================================================ */
+let fsClipboard = { mode: null, ids: [] }; // mode: 'copy' | 'cut'
+
+function _copyItems(ids) {
+    // Remove cut styling from previous cut
+    document.querySelectorAll('.item.cut-pending').forEach(el => el.classList.remove('cut-pending'));
+    fsClipboard = { mode: 'copy', ids: [...ids] };
+}
+
+function _cutItems(ids) {
+    document.querySelectorAll('.item.cut-pending').forEach(el => el.classList.remove('cut-pending'));
+    fsClipboard = { mode: 'cut', ids: [...ids] };
+    // Dim cut items
+    ids.forEach(id => {
+        document.querySelectorAll(`.item[data-id="${id}"]`).forEach(el => el.classList.add('cut-pending'));
+    });
+}
+
+async function _deepCopyChildren(srcId, dstId) {
+    const children = await idbGetAllByIndex('parentId', srcId);
+    for (const child of children) {
+        const newChild = { ...child, id: crypto.randomUUID(), parentId: dstId, createdAt: Date.now(), updatedAt: Date.now() };
+        await idbAdd(newChild);
+        if (child.type === 'folder') await _deepCopyChildren(child.id, newChild.id);
+    }
+}
+
+async function _pasteItems(targetFolderId) {
+    if (!fsClipboard.mode || !fsClipboard.ids.length) return;
+    const siblings = await idbGetAllByIndex('parentId', targetFolderId);
+    const siblingNames = new Set(siblings.map(n => n.name));
+
+    function uniqueName(name) {
+        if (!siblingNames.has(name)) { siblingNames.add(name); return name; }
+        const dot = name.lastIndexOf('.');
+        const base = dot > 0 ? name.slice(0, dot) : name;
+        const ext = dot > 0 ? name.slice(dot) : '';
+        let n = 2, candidate;
+        do { candidate = `${base} (${n++})${ext}`; } while (siblingNames.has(candidate));
+        siblingNames.add(candidate);
+        return candidate;
+    }
+
+    for (const id of fsClipboard.ids) {
+        const node = await idbGet(id);
+        if (!node) continue;
+        if (fsClipboard.mode === 'cut') {
+            if (node.parentId === targetFolderId) continue;
+            if (node.type === 'folder' && await _isDescendant(node.id, targetFolderId)) continue;
+            node.name = uniqueName(node.name);
+            node.parentId = targetFolderId;
+            node.updatedAt = Date.now();
+            await idbPut(node);
+        } else {
+            const newNode = { ...node, id: crypto.randomUUID(), name: uniqueName(node.name), parentId: targetFolderId, createdAt: Date.now(), updatedAt: Date.now() };
+            await idbAdd(newNode);
+            if (node.type === 'folder') await _deepCopyChildren(node.id, newNode.id);
+        }
+    }
+
+    if (fsClipboard.mode === 'cut') {
+        document.querySelectorAll('.item.cut-pending').forEach(el => el.classList.remove('cut-pending'));
+        fsClipboard = { mode: null, ids: [] };
+    }
+    await renderAllWindows();
+}
+
+async function _moveItems(ids, targetFolderId) {
+    for (const id of ids) {
+        const node = await idbGet(id);
+        if (!node || node.parentId === targetFolderId) continue;
+        if (node.type === 'folder' && await _isDescendant(node.id, targetFolderId)) continue;
+        node.parentId = targetFolderId;
+        node.updatedAt = Date.now();
+        await idbPut(node);
+    }
+    await renderAllWindows();
+}
+
+async function _isDescendant(ancestorId, nodeId) {
+    // Returns true if nodeId is inside ancestorId (i.e. ancestor is parent-of-parent-of... nodeId)
+    let current = nodeId;
+    while (current) {
+        if (current === ancestorId) return true;
+        const node = await idbGet(current);
+        if (!node) return false;
+        current = node.parentId;
+    }
+    return false;
+}
+
+async function _deleteItems(ids) {
+    if (!confirm(`Delete ${ids.length} items?`)) return;
+    for (const id of ids) {
+        const node = await idbGet(id);
+        if (!node) continue;
+        if (node.type === 'folder') await recursiveDelete(node.id);
+        else await idbDelete(node.id);
+    }
+    await renderAllWindows();
+}
+
 function focusWindow(windowId) {
     if (focusedWindowId === windowId) return;
     document.querySelectorAll('.app-window').forEach(w => w.classList.remove('focused'));
@@ -498,6 +602,8 @@ function spawnWindow(initialFolderId = null) {
         historyStack: [],
         historyPos: -1,
         selectedItemId: null,
+        selectedIds: new Set(),
+        anchorId: null,
     };
     windows[windowId] = { el: null, state };
 
@@ -898,6 +1004,8 @@ async function renderWindow(windowId) {
     if (titleBarText) titleBarText.textContent = 'File Explorer — ' + pathStr;
 
     state.selectedItemId = null;
+    state.selectedIds = new Set();
+    state.anchorId = null;
 
     const list = await idbGetAllByIndex('parentId', state.currentFolderId);
     const mainPanel = el.querySelector('.main-panel');
@@ -914,6 +1022,7 @@ async function renderWindow(windowId) {
             tile.className = 'item';
             tile.dataset.id = item.id;
             tile.title = item.name;
+            if (fsClipboard.mode === 'cut' && fsClipboard.ids.includes(item.id)) tile.classList.add('cut-pending');
 
             const iconPlaceholder = document.createElement('div');
             iconPlaceholder.style.cssText = 'height:calc(var(--img-size));display:flex;align-items:center;justify-content:center;color:#444;font-size:28px;';
@@ -926,12 +1035,38 @@ async function renderWindow(windowId) {
             tile.appendChild(nameDiv);
 
             tile.onmousedown = (ev) => {
-                if (ev.button === 0) {
-                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
-                    tile.classList.add('selected');
+                if (ev.button !== 0) return;
+                if (ev.ctrlKey) {
+                    if (state.selectedIds.has(item.id)) {
+                        state.selectedIds.delete(item.id);
+                        tile.classList.remove('selected');
+                    } else {
+                        state.selectedIds.add(item.id);
+                        tile.classList.add('selected');
+                        state.selectedItemId = item.id;
+                        state.anchorId = item.id;
+                    }
+                } else if (ev.shiftKey && state.anchorId) {
+                    const allTiles = [...mainPanel.querySelectorAll('.item')];
+                    const anchorIdx = allTiles.findIndex(t => t.dataset.id === state.anchorId);
+                    const thisIdx = allTiles.findIndex(t => t.dataset.id === item.id);
+                    const [start, end] = anchorIdx <= thisIdx ? [anchorIdx, thisIdx] : [thisIdx, anchorIdx];
+                    allTiles.forEach(t => t.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    for (let i = start; i <= end; i++) {
+                        allTiles[i].classList.add('selected');
+                        state.selectedIds.add(allTiles[i].dataset.id);
+                    }
                     state.selectedItemId = item.id;
-                    mainPanel.focus({ preventScroll: true });
+                } else {
+                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    tile.classList.add('selected');
+                    state.selectedIds.add(item.id);
+                    state.selectedItemId = item.id;
+                    state.anchorId = item.id;
                 }
+                mainPanel.focus({ preventScroll: true });
             };
             tile.ondblclick = async () => {
                 if (item.type === 'folder') await navigate(windowId, item.id);
@@ -941,6 +1076,43 @@ async function renderWindow(windowId) {
                 ev.preventDefault();
                 showContextMenu(ev.clientX, ev.clientY, item, windowId);
             };
+
+            // Drag source
+            tile.draggable = true;
+            tile.ondragstart = (ev) => {
+                if (!state.selectedIds.has(item.id)) {
+                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    state.selectedIds.add(item.id);
+                    state.selectedItemId = item.id;
+                    state.anchorId = item.id;
+                    tile.classList.add('selected');
+                }
+                ev.dataTransfer.setData('application/edogos-items', JSON.stringify([...state.selectedIds]));
+                ev.dataTransfer.effectAllowed = 'move';
+                requestAnimationFrame(() => {
+                    state.selectedIds.forEach(id => {
+                        document.querySelectorAll(`.item[data-id="${id}"]`).forEach(el => el.classList.add('drag-source'));
+                    });
+                });
+            };
+            tile.ondragend = () => {
+                document.querySelectorAll('.item.drag-source').forEach(e => e.classList.remove('drag-source'));
+                document.querySelectorAll('.item.drag-over').forEach(e => e.classList.remove('drag-over'));
+            };
+
+            // Folder drop target
+            if (item.type === 'folder') {
+                tile.ondragover = (ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; tile.classList.add('drag-over'); };
+                tile.ondragleave = () => tile.classList.remove('drag-over');
+                tile.ondrop = async (ev) => {
+                    ev.preventDefault();
+                    tile.classList.remove('drag-over');
+                    const raw = ev.dataTransfer.getData('application/edogos-items');
+                    if (raw) await _moveItems(JSON.parse(raw), item.id);
+                };
+            }
+
             mainPanel.appendChild(tile);
 
             buildFileIconWrapper(item).then(iconWrapper => {
@@ -960,7 +1132,18 @@ async function renderWindow(windowId) {
         if (ev.target === mainPanel) {
             mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
             state.selectedItemId = null;
+            state.selectedIds.clear();
+            state.anchorId = null;
         }
+    };
+
+    // Panel as drop target (drop into current folder)
+    mainPanel.ondragover = (ev) => { if (ev.target === mainPanel) { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; } };
+    mainPanel.ondrop = async (ev) => {
+        if (ev.target !== mainPanel) return;
+        ev.preventDefault();
+        const raw = ev.dataTransfer.getData('application/edogos-items');
+        if (raw) await _moveItems(JSON.parse(raw), state.currentFolderId);
     };
 
     mainPanel.setAttribute('tabindex', '-1');
@@ -969,6 +1152,18 @@ async function renderWindow(windowId) {
             ev.preventDefault();
             renameItem(state.selectedItemId, windowId);
         }
+        if (ev.key === 'Delete' && state.selectedIds.size > 0) {
+            ev.preventDefault();
+            if (state.selectedIds.size === 1) deleteItem([...state.selectedIds][0], windowId);
+            else _deleteItems([...state.selectedIds]);
+        }
+        if (ev.ctrlKey && ev.key === 'a') {
+            ev.preventDefault();
+            mainPanel.querySelectorAll('.item').forEach(t => { t.classList.add('selected'); state.selectedIds.add(t.dataset.id); });
+        }
+        if (ev.ctrlKey && ev.key === 'c') { ev.preventDefault(); if (state.selectedIds.size > 0) _copyItems([...state.selectedIds]); }
+        if (ev.ctrlKey && ev.key === 'x') { ev.preventDefault(); if (state.selectedIds.size > 0) _cutItems([...state.selectedIds]); }
+        if (ev.ctrlKey && ev.key === 'v') { ev.preventDefault(); _pasteItems(state.currentFolderId); }
     });
 
     updateStorageInfo(el, list.length, state.currentFolderId);
@@ -1040,11 +1235,39 @@ function renderVirtualGrid(mainPanel, list, windowId, state) {
             nameDiv.textContent = item.name;
             tile.appendChild(nameDiv);
 
+            if (fsClipboard.mode === 'cut' && fsClipboard.ids.includes(item.id)) tile.classList.add('cut-pending');
+
             tile.onmousedown = (ev) => {
-                if (ev.button === 0) {
-                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
-                    tile.classList.add('selected');
+                if (ev.button !== 0) return;
+                if (ev.ctrlKey) {
+                    if (state.selectedIds.has(item.id)) {
+                        state.selectedIds.delete(item.id);
+                        tile.classList.remove('selected');
+                    } else {
+                        state.selectedIds.add(item.id);
+                        tile.classList.add('selected');
+                        state.selectedItemId = item.id;
+                        state.anchorId = item.id;
+                    }
+                } else if (ev.shiftKey && state.anchorId) {
+                    const allTiles = [...mainPanel.querySelectorAll('.item')];
+                    const anchorIdx = allTiles.findIndex(t => t.dataset.id === state.anchorId);
+                    const thisIdx = allTiles.findIndex(t => t.dataset.id === item.id);
+                    const [start, end] = anchorIdx <= thisIdx ? [anchorIdx, thisIdx] : [thisIdx, anchorIdx];
+                    allTiles.forEach(t => t.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    for (let j = start; j <= end; j++) {
+                        allTiles[j].classList.add('selected');
+                        state.selectedIds.add(allTiles[j].dataset.id);
+                    }
                     state.selectedItemId = item.id;
+                } else {
+                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    tile.classList.add('selected');
+                    state.selectedIds.add(item.id);
+                    state.selectedItemId = item.id;
+                    state.anchorId = item.id;
                 }
             };
             tile.ondblclick = async () => {
@@ -1055,6 +1278,40 @@ function renderVirtualGrid(mainPanel, list, windowId, state) {
                 ev.preventDefault();
                 showContextMenu(ev.clientX, ev.clientY, item, windowId);
             };
+
+            tile.draggable = true;
+            tile.ondragstart = (ev) => {
+                if (!state.selectedIds.has(item.id)) {
+                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    state.selectedIds.add(item.id);
+                    state.selectedItemId = item.id;
+                    state.anchorId = item.id;
+                    tile.classList.add('selected');
+                }
+                ev.dataTransfer.setData('application/edogos-items', JSON.stringify([...state.selectedIds]));
+                ev.dataTransfer.effectAllowed = 'move';
+                requestAnimationFrame(() => {
+                    state.selectedIds.forEach(id => {
+                        document.querySelectorAll(`.item[data-id="${id}"]`).forEach(el => el.classList.add('drag-source'));
+                    });
+                });
+            };
+            tile.ondragend = () => {
+                document.querySelectorAll('.item.drag-source').forEach(e => e.classList.remove('drag-source'));
+                document.querySelectorAll('.item.drag-over').forEach(e => e.classList.remove('drag-over'));
+            };
+
+            if (item.type === 'folder') {
+                tile.ondragover = (ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; tile.classList.add('drag-over'); };
+                tile.ondragleave = () => tile.classList.remove('drag-over');
+                tile.ondrop = async (ev) => {
+                    ev.preventDefault();
+                    tile.classList.remove('drag-over');
+                    const raw = ev.dataTransfer.getData('application/edogos-items');
+                    if (raw) await _moveItems(JSON.parse(raw), item.id);
+                };
+            }
 
             mainPanel.appendChild(tile);
             rendered.set(i, tile);
@@ -1148,7 +1405,7 @@ const VIDEO_EXTS = new Set(['mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv']);
 const AUDIO_EXTS = new Set(['mp3', 'wav', 'ogg']);
 const HTML_EXTS = new Set(['html', 'htm']);
 const ZIP_EXTS = new Set(['zip', 'jar', 'war', 'apk', 'epub', 'cbz']);
-const GAMES = new Set(['BasketballSimulator', 'ESU10', 'HighwayCam', 'OnEdge', 'PhysicsFun', 'PhysicsFunV2', 'PoliceSimulator', 'TornadoSimulator', 'WebCars', 'WebCarsV2', 'WebCarsV3']);
+const GAMES = new Set(['BasketballSimulator', 'ESU10', 'HighwayCam', 'OnEdge', 'PhysicsFun', 'PhysicsFunV2', 'PoliceSimulator', 'TornadoSimulator', 'WebCars', 'WebCarsV2', 'WebCarsV3', 'StoreSimulator']);
 const WRITER_EXTS = new Set(['edoc']);
 
 function getExt(name) {
@@ -3753,6 +4010,9 @@ const CTX_ICONS = {
     goBack: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
     newWindow: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>`,
     drive: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`,
+    copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`,
+    cut: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="20" r="2"/><circle cx="6" cy="4" r="2"/><line x1="6" y1="6" x2="6" y2="18"/><line x1="21" y1="4" x2="6" y2="18"/><line x1="21" y1="20" x2="6" y2="6"/></svg>`,
+    paste: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>`,
 };
 
 function buildMenu(x, y, entries) {
@@ -3786,22 +4046,39 @@ function buildMenu(x, y, entries) {
 }
 
 function showContextMenu(x, y, item, windowId) {
+    const state = windows[windowId]?.state;
+    // If right-clicked item isn't in the current selection, make it the only selection
+    if (state && !state.selectedIds.has(item.id)) {
+        document.querySelectorAll(`#${windowId} .item`).forEach(e => e.classList.remove('selected'));
+        state.selectedIds = new Set([item.id]);
+        state.selectedItemId = item.id;
+        document.querySelector(`#${windowId} .item[data-id="${item.id}"]`)?.classList.add('selected');
+    }
+    const ids = state ? [...state.selectedIds] : [item.id];
+    const multi = ids.length > 1;
+
     buildMenu(x, y, [
-        item.type === 'folder'
+        !multi ? (item.type === 'folder'
             ? { label: 'Open', icon: 'open', action: () => navigate(windowId, item.id) }
-            : { label: 'Open', icon: 'open', action: () => openFile(item) },
-        item.type === 'file'
+            : { label: 'Open', icon: 'open', action: () => openFile(item) }) : null,
+        !multi && item.type === 'file'
             ? { label: 'Open With…', icon: 'open', action: () => showOpenWithMenu(x, y, item) }
             : null,
         null,
-        { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, windowId) },
-        { label: 'Delete', icon: 'delete', danger: true, action: () => deleteItem(item.id, windowId) },
-        item.type === 'file'
+        { label: multi ? `Copy ${ids.length} items` : 'Copy', icon: 'copy', action: () => _copyItems(ids) },
+        { label: multi ? `Cut ${ids.length} items` : 'Cut', icon: 'cut', action: () => _cutItems(ids) },
+        null,
+        !multi ? { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, windowId) } : null,
+        {
+            label: multi ? `Delete ${ids.length} items` : 'Delete', icon: 'delete', danger: true,
+            action: () => multi ? _deleteItems(ids) : deleteItem(item.id, windowId)
+        },
+        !multi && item.type === 'file'
             ? { label: 'Download', icon: 'download', action: () => downloadItem(item.id) }
             : null,
         null,
-        { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) },
-    ].filter(e => e !== null || true));
+        !multi ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) } : null,
+    ]);
 }
 
 function showOpenWithMenu(x, y, item) {
@@ -3843,9 +4120,12 @@ function showOpenWithMenu(x, y, item) {
 function showFolderBgContextMenu(x, y, windowId) {
     const state = windows[windowId]?.state;
     const isAtRoot = state?.currentFolderId === 'root';
+    const hasPaste = fsClipboard.mode && fsClipboard.ids.length > 0;
     const entries = [
         { label: 'New Folder', icon: 'newFolder', action: () => _winNewFolder(windowId) },
         { label: 'New File', icon: 'newFile', action: () => _winNewFile(windowId) },
+        null,
+        hasPaste ? { label: `Paste${fsClipboard.ids.length > 1 ? ` (${fsClipboard.ids.length})` : ''}`, icon: 'paste', action: () => _pasteItems(state.currentFolderId) } : null,
         null,
         { label: 'Go Up', icon: 'goUp', action: () => goUp(windowId) },
         { label: 'Go Back', icon: 'goBack', action: () => goBack(windowId) },
@@ -3857,26 +4137,36 @@ function showFolderBgContextMenu(x, y, windowId) {
     buildMenu(x, y, entries);
 }
 
-function showDesktopContextMenu(x, y, item) {
+function showDesktopContextMenu(x, y, item, deskState) {
+    const ids = deskState ? [...deskState.selectedIds] : [item.id];
+    const multi = ids.length > 1;
+
     buildMenu(x, y, [
-        item.type === 'folder'
+        !multi ? (item.type === 'folder'
             ? { label: 'Open', icon: 'open', action: () => spawnWindow(item.id) }
-            : { label: 'Open', icon: 'open', action: () => openFile(item) },
-        item.type === 'file'
+            : { label: 'Open', icon: 'open', action: () => openFile(item) }) : null,
+        !multi && item.type === 'file'
             ? { label: 'Open With…', icon: 'open', action: () => showOpenWithMenu(x, y, item) }
             : null,
         null,
-        { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, null) },
-        { label: 'Delete', icon: 'delete', danger: true, action: () => deleteItem(item.id, null) },
-        item.type === 'file'
+        { label: multi ? `Copy ${ids.length} items` : 'Copy', icon: 'copy', action: () => _copyItems(ids) },
+        { label: multi ? `Cut ${ids.length} items` : 'Cut', icon: 'cut', action: () => _cutItems(ids) },
+        null,
+        !multi ? { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, null) } : null,
+        {
+            label: multi ? `Delete ${ids.length} items` : 'Delete', icon: 'delete', danger: true,
+            action: () => multi ? _deleteItems(ids) : deleteItem(item.id, null)
+        },
+        !multi && item.type === 'file'
             ? { label: 'Download', icon: 'download', action: () => downloadItem(item.id) }
             : null,
         null,
-        { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) },
+        !multi ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) } : null,
     ]);
 }
 
 function showDesktopBlankContextMenu(x, y) {
+    const hasPaste = fsClipboard.mode && fsClipboard.ids.length > 0;
     buildMenu(x, y, [
         { label: 'New File Explorer', icon: 'newWindow', action: () => spawnWindow() },
         { label: 'Open Bacon Browser', icon: 'open', action: () => spawnBaconBrowser() },
@@ -3894,6 +4184,11 @@ function showDesktopBlankContextMenu(x, y) {
                 await createItemInline('file', desktopNode.id, null);
             }
         },
+        null,
+        hasPaste ? {
+            label: `Paste${fsClipboard.ids.length > 1 ? ` (${fsClipboard.ids.length})` : ''}`, icon: 'paste',
+            action: async () => { const dn = await getDesktopNode(); if (dn) await _pasteItems(dn.id); }
+        } : null,
         null,
         { label: 'Drive Properties', icon: 'drive', action: () => spawnDriveProperties() },
     ]);
@@ -4861,11 +5156,15 @@ async function renderDesktop() {
     const desktopEl = document.getElementById('virtualDesktop');
     desktopEl.innerHTML = '';
 
+    // Desktop multi-select state
+    const deskState = { selectedIds: new Set(), anchorId: null };
+
     for (const item of items) {
         const tile = document.createElement('div');
         tile.className = 'item';
         tile.dataset.id = item.id;
         tile.title = item.name;
+        if (fsClipboard.mode === 'cut' && fsClipboard.ids.includes(item.id)) tile.classList.add('cut-pending');
 
         const iconWrapper = await buildFileIconWrapper(item);
         tile.appendChild(iconWrapper);
@@ -4877,24 +5176,85 @@ async function renderDesktop() {
 
         tile.onmousedown = (ev) => {
             if (ev.button !== 0) return;
-            desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
-            tile.classList.add('selected');
+            if (ev.ctrlKey) {
+                if (deskState.selectedIds.has(item.id)) {
+                    deskState.selectedIds.delete(item.id);
+                    tile.classList.remove('selected');
+                } else {
+                    deskState.selectedIds.add(item.id);
+                    tile.classList.add('selected');
+                    deskState.anchorId = item.id;
+                }
+            } else if (ev.shiftKey && deskState.anchorId) {
+                const allTiles = [...desktopEl.querySelectorAll('.item')];
+                const anchorIdx = allTiles.findIndex(t => t.dataset.id === deskState.anchorId);
+                const thisIdx = allTiles.findIndex(t => t.dataset.id === item.id);
+                const [start, end] = anchorIdx <= thisIdx ? [anchorIdx, thisIdx] : [thisIdx, anchorIdx];
+                allTiles.forEach(t => t.classList.remove('selected'));
+                deskState.selectedIds.clear();
+                for (let i = start; i <= end; i++) {
+                    allTiles[i].classList.add('selected');
+                    deskState.selectedIds.add(allTiles[i].dataset.id);
+                }
+            } else {
+                desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+                deskState.selectedIds.clear();
+                tile.classList.add('selected');
+                deskState.selectedIds.add(item.id);
+                deskState.anchorId = item.id;
+            }
         };
 
         tile.ondblclick = async () => {
-            if (item.type === 'folder') {
-                spawnWindow(item.id);
-            } else {
-                openFile(item);
-            }
+            if (item.type === 'folder') spawnWindow(item.id);
+            else openFile(item);
         };
 
         tile.oncontextmenu = (ev) => {
             ev.preventDefault();
-            desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
-            tile.classList.add('selected');
-            showDesktopContextMenu(ev.clientX, ev.clientY, item);
+            if (!deskState.selectedIds.has(item.id)) {
+                desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+                deskState.selectedIds.clear();
+                tile.classList.add('selected');
+                deskState.selectedIds.add(item.id);
+                deskState.anchorId = item.id;
+            }
+            showDesktopContextMenu(ev.clientX, ev.clientY, item, deskState);
         };
+
+        // Drag source
+        tile.draggable = true;
+        tile.ondragstart = (ev) => {
+            if (!deskState.selectedIds.has(item.id)) {
+                desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+                deskState.selectedIds.clear();
+                deskState.selectedIds.add(item.id);
+                deskState.anchorId = item.id;
+                tile.classList.add('selected');
+            }
+            ev.dataTransfer.setData('application/edogos-items', JSON.stringify([...deskState.selectedIds]));
+            ev.dataTransfer.effectAllowed = 'move';
+            requestAnimationFrame(() => {
+                deskState.selectedIds.forEach(id => {
+                    document.querySelectorAll(`.item[data-id="${id}"]`).forEach(el => el.classList.add('drag-source'));
+                });
+            });
+        };
+        tile.ondragend = () => {
+            document.querySelectorAll('.item.drag-source').forEach(e => e.classList.remove('drag-source'));
+            document.querySelectorAll('.item.drag-over').forEach(e => e.classList.remove('drag-over'));
+        };
+
+        if (item.type === 'folder') {
+            tile.ondragover = (ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; tile.classList.add('drag-over'); };
+            tile.ondragleave = () => tile.classList.remove('drag-over');
+            tile.ondrop = async (ev) => {
+                ev.preventDefault();
+                tile.classList.remove('drag-over');
+                const raw = ev.dataTransfer.getData('application/edogos-items');
+                if (raw) await _moveItems(JSON.parse(raw), item.id);
+            };
+        }
 
         desktopEl.appendChild(tile);
     }
@@ -4909,7 +5269,18 @@ async function renderDesktop() {
     desktopEl.onmousedown = (ev) => {
         if (ev.target === desktopEl) {
             desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+            deskState.selectedIds.clear();
+            deskState.anchorId = null;
         }
+    };
+
+    // Desktop as drop target (drop onto desktop = move to Desktop folder)
+    desktopEl.ondragover = (ev) => { if (ev.target === desktopEl) { ev.preventDefault(); ev.dataTransfer.dropEffect = 'move'; } };
+    desktopEl.ondrop = async (ev) => {
+        if (ev.target !== desktopEl) return;
+        ev.preventDefault();
+        const raw = ev.dataTransfer.getData('application/edogos-items');
+        if (raw) await _moveItems(JSON.parse(raw), desktopNode.id);
     };
 }
 
@@ -5305,6 +5676,10 @@ async function initWiFiIcon() {
 
     async function bootIntoOS() {
         const setupResult = await (window.__setupComplete ?? Promise.resolve({ freshInstall: false }));
+
+        // Run system update check for returning users (no-op on fresh installs)
+        await (window.__updateComplete ?? Promise.resolve());
+
         if (setupResult && setupResult.freshInstall) {
             // Fresh install already completed via setup — just open home
             // const username = setupResult.username || getUsername();
