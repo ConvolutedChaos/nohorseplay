@@ -12,8 +12,29 @@
    User files are never touched.
 ============================================================ */
 
-const SETUP_VERSION = 2;
+const SETUP_VERSION = 10;
 window.__setupVersion = SETUP_VERSION;
+
+// window.__updateComplete = (async function () {
+
+//     // Only run updates for users who completed a real installation.
+//     // Without this, clearing cookies triggers the updater during a
+//     // live session, silently populating VirtualFS_v2 behind the scenes.
+//     if (!localStorage.getItem('edog_setup_done')) return;
+
+//     // Check if already up-to-date
+//     const stored = localStorage.getItem('edog_setup_version');
+//     if (stored !== null && Number(stored) === SETUP_VERSION) return;
+
+//     // Wait for setup wizard (if running). If this was a fresh install,
+//     // setup.js already populated the DB — skip the update.
+//     const setupResult = await (window.__setupComplete ?? Promise.resolve({ freshInstall: false }));
+//     if (setupResult && setupResult.freshInstall) return;
+
+//     // Old or outdated install — run the update.
+//     await _runUpdate();
+
+// })();
 
 window.__updateComplete = (async function () {
 

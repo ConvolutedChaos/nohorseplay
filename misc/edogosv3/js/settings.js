@@ -184,11 +184,28 @@
         transition: border-color .15s;
     }
     .settings-form-input:focus { border-color: #3b82f6; }
+    .settings-form-select {
+        background: #0f0f0f;
+        border: 1px solid #2e2e2e;
+        border-radius: 6px;
+        color: #e0e0e0;
+        padding: 7px 8px;
+        font-size: 13px;
+        outline: none;
+        font-family: monospace;
+        cursor: pointer;
+        transition: border-color .15s;
+    }
+    .settings-form-select:focus { border-color: #3b82f6; }
+    :root.theme-aero2010 .settings-form-select { background: #fff; border-color: #a8c0d8; color: #1a3050; }
     .settings-form-hint {
         font-size: 11px; color: #4a4a4a;
         margin-top: 6px; padding-left: 140px;
     }
     .settings-danger-row {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .settings-devices-row {
         display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     }
     .settings-danger-btn {
@@ -379,6 +396,7 @@ function spawnSettings(initialSection = 'appearance') {
 const _SETTINGS_SECTIONS = [
     { id: 'appearance', label: 'Appearance', icon: '<img style="margin-top: 5px;" src="icons/16/settings-backgrounds.png">' },
     { id: 'system', label: 'System', icon: '<img style="margin-top: 5px;" src="icons/16/settings.png">' },
+    { id: 'experimental', label: 'Experimental', icon: '<img style="margin-top: 5px;" src="icons/16/terminal.png">' },
     { id: 'about', label: 'About', icon: '<img style="margin-top: 5px;" src="icons/16/settings-about.png">' },
 ];
 
@@ -406,7 +424,19 @@ function _renderSettingsSection(id, el) {
     el.innerHTML = '';
     if (id === 'appearance') _buildAppearanceSection(el);
     else if (id === 'system') _buildSystemSection(el);
+    else if (id === 'experimental') _buildExperimentalSection(el);
     else if (id === 'about') _buildAboutSection(el);
+}
+
+function _buildExperimentalSection(el) {
+    if (typeof window._mmBuildSettingsSection === 'function') {
+        window._mmBuildSettingsSection(el);
+    } else {
+        el.innerHTML = `
+            <div class="settings-section-title">Experimental</div>
+            <div style="color:#555; font-size:13px;">No experimental features are currently loaded.</div>
+        `;
+    }
 }
 
 /* ============================================================
@@ -696,6 +726,27 @@ function _buildSystemSection(el) {
             <button class="settings-danger-btn" id="sf-wipe">Wipe All Files &amp; Folders</button>
             <span class="settings-danger-hint">Permanently deletes the virtual filesystem. This cannot be undone.</span>
         </div>
+        <div class="settings-group-label" style="margin-top:26px;">Devices</div>
+        <div class="settings-form-hint" style="margin-bottom:10px;">Insert a virtual USB drive into the system.</div>
+        <div class="settings-form-row">
+            <label class="settings-form-label">Name</label>
+            <input class="settings-form-input" id="usb-name" value="USB" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="settings-form-row" style="margin-top:8px;">
+            <label class="settings-form-label">Size</label>
+            <input class="settings-form-input" id="usb-size" type="number" min="1" value="8" style="width:80px;" autocomplete="off">
+            <select class="settings-form-select" id="usb-unit">
+                <option value="KB">KB</option>
+                <option value="MB">MB</option>
+                <option value="GB" selected>GB</option>
+                <option value="TB">TB</option>
+            </select>
+        </div>
+        <div class="settings-form-row" style="margin-top:10px;gap:8px;">
+            <button class="small-btn" id="sf-usb-insert">Insert USB</button>
+            <button class="small-btn" id="sf-usb-eject">Eject USB</button>
+        </div>
+        <div class="settings-form-hint" id="sf-usb-status" style="margin-top:6px;min-height:1em;"></div>
     `;
 
     el.querySelector('#sf-uname-save').onclick = () => {
@@ -715,11 +766,41 @@ function _buildSystemSection(el) {
         _flashSave(el.querySelector('#sf-cname-save'));
     };
 
+    const _usbStatus = (msg, color = '') => {
+        const s = el.querySelector('#sf-usb-status');
+        if (s) { s.textContent = msg; s.style.color = color; }
+    };
+
+    el.querySelector('#sf-usb-insert').onclick = async () => {
+        const label = el.querySelector('#usb-name').value.trim();
+        if (!label) { _usbStatus('Enter a USB name.', '#f87171'); return; }
+        const sizeVal = parseFloat(el.querySelector('#usb-size').value);
+        if (!sizeVal || sizeVal <= 0) { _usbStatus('Enter a valid size.', '#f87171'); return; }
+        const unit = el.querySelector('#usb-unit').value;
+        const multipliers = { KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3, TB: 1024 ** 4 };
+        const capacityBytes = Math.round(sizeVal * multipliers[unit]);
+        if (typeof insertUSB !== 'function') { _usbStatus('insertUSB not available.', '#f87171'); return; }
+        const entry = await insertUSB(label, [], capacityBytes);
+        if (entry) {
+            _usbStatus(`"${label}" inserted (${sizeVal} ${unit}).`, '#4ade80');
+        }
+    };
+
+    el.querySelector('#sf-usb-eject').onclick = async () => {
+        const label = el.querySelector('#usb-name').value.trim();
+        if (!label) { _usbStatus('Enter the USB name to eject.', '#f87171'); return; }
+        if (typeof removeUSB !== 'function') { _usbStatus('removeUSB not available.', '#f87171'); return; }
+        await removeUSB(label);
+        _usbStatus(`"${label}" ejected.`, '#4ade80');
+    };
+
     el.querySelector('#sf-wipe').onclick = () => {
         if (!confirm('Permanently wipe ALL files and folders?\n\nThis cannot be undone.')) return;
         try {
             if (typeof dbPromise !== 'undefined' && dbPromise?.close) dbPromise.close();
         } catch (e) { }
+        if (typeof _tmpFolderId !== 'undefined') _tmpFolderId = null;
+        localStorage.removeItem('edog_mounts');
         const r = indexedDB.deleteDatabase('VirtualFS_v2');
         r.onsuccess = () => location.reload();
         r.onerror = () => alert('Failed to wipe storage.');

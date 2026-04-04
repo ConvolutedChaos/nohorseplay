@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Changelog</title>
+	<link
+		href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap"
+		rel="stylesheet">
+	<style>
+		:root {
+			--bg: #FAF9F7;
+			--text: #1a1a1a;
+			--muted: #7a756e;
+			--line: #e2ded8;
+			--accent: #c44d2b;
+			--tag-new: #2d7a4f;
+			--tag-new-bg: #e6f4ec;
+			--tag-fix: #b08520;
+			--tag-fix-bg: #fdf6e3;
+			--tag-improve: #3b6bb5;
+			--tag-improve-bg: #e8f0fb;
+			--tag-break: #c44d2b;
+			--tag-break-bg: #fdeee9;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'DM Sans', sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			line-height: 1.6;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		.page {
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 80px 24px 120px;
+		}
+
+		header {
+			margin-bottom: 64px;
+		}
+
+		header h1 {
+			font-family: 'DM Serif Display', serif;
+			font-size: 2.8rem;
+			font-weight: 400;
+			letter-spacing: -0.02em;
+			margin-bottom: 8px;
+		}
+
+		header p {
+			color: var(--muted);
+			font-size: 1.05rem;
+		}
+
+		.timeline {
+			position: relative;
+			padding-left: 32px;
+		}
+
+		.timeline::before {
+			content: '';
+			position: absolute;
+			left: 5px;
+			top: 8px;
+			bottom: 0;
+			width: 1px;
+			background: var(--line);
+		}
+
+		.release {
+			position: relative;
+			margin-bottom: 56px;
+			opacity: 0;
+			transform: translateY(16px);
+			animation: fadeUp 0.5s ease forwards;
+		}
+
+		.release:nth-child(1) {
+			animation-delay: 0.05s;
+		}
+
+		.release:nth-child(2) {
+			animation-delay: 0.12s;
+		}
+
+		.release:nth-child(3) {
+			animation-delay: 0.19s;
+		}
+
+		.release:nth-child(4) {
+			animation-delay: 0.26s;
+		}
+
+		.release:nth-child(5) {
+			animation-delay: 0.33s;
+		}
+
+		@keyframes fadeUp {
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.release::before {
+			content: '';
+			position: absolute;
+			left: -32px;
+			top: 8px;
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			background: var(--bg);
+			border: 2px solid var(--accent);
+		}
+
+		.release:first-child::before {
+			background: var(--accent);
+			box-shadow: 0 0 0 4px rgba(196, 77, 43, 0.12);
+		}
+
+		.release-header {
+			display: flex;
+			align-items: baseline;
+			gap: 14px;
+			margin-bottom: 16px;
+			flex-wrap: wrap;
+		}
+
+		.version {
+			font-family: 'DM Serif Display', serif;
+			font-size: 1.5rem;
+			font-weight: 400;
+			letter-spacing: -0.01em;
+		}
+
+		.date {
+			font-size: 0.85rem;
+			color: var(--muted);
+			letter-spacing: 0.02em;
+		}
+
+		.changes {
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.changes li {
+			display: flex;
+			align-items: flex-start;
+			gap: 10px;
+			font-size: 0.95rem;
+			line-height: 1.55;
+			color: #3a3733;
+		}
+
+		.changes code {
+			font-family: 'DM Mono', monospace;
+			font-size: 0.82em;
+			background: #eae6e0;
+			padding: 2px 7px;
+			border-radius: 4px;
+			word-break: break-word;
+		}
+
+		.tag {
+			flex-shrink: 0;
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			padding: 2px 8px;
+			border-radius: 4px;
+			margin-top: 2px;
+		}
+
+		.tag.new {
+			color: var(--tag-new);
+			background: var(--tag-new-bg);
+		}
+
+		.tag.fix {
+			color: var(--tag-fix);
+			background: var(--tag-fix-bg);
+		}
+
+		.tag.improved {
+			color: var(--tag-improve);
+			background: var(--tag-improve-bg);
+		}
+
+		.tag.breaking {
+			color: var(--tag-break);
+			background: var(--tag-break-bg);
+		}
+
+		@media (max-width: 520px) {
+			header h1 {
+				font-size: 2rem;
+			}
+
+			.page {
+				padding: 48px 18px 80px;
+			}
+
+			.version {
+				font-size: 1.25rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="page">
+		<header>
+			<h1>E-Dog OS Changelog</h1>
+			<p>New updates and improvements.</p>
+		</header>
+
+		<div class="timeline">
+
+			<div class="release">
+				<div class="release-header">
+					<span class="version">v3.1.2</span>
+					<span class="date">April 4, 2026</span>
+				</div>
+				<ul class="changes">
+					<li><span class="tag new">New</span> Added all-purpose <code title="This command can be used to remove a file or folder.">rm</code> command in the terminal</li>
+					<li><span class="tag new">New</span> Added USB support (Go to Settings)</li>
+					<li><span class="tag new">New</span> Added multiple monitor support</li>
+					<li><span class="tag new">New</span> Added recycle bin support</li>
+					<li><span class="tag improved">Improved</span> Improved custom app support</li>
+					<li><span class="tag improved">Improved</span> Improved zip file opening, will now open as a new volume in the file manager</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

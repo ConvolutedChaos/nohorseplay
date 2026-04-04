@@ -1,931 +1,765 @@
 /* ============================================================
-   E-Dog OS — BIOS Setup Utility  (js/bios.js)
-   IMPORTANT: Load AFTER boot.js but BEFORE script.js
-   in index.html.
+   bios.js — Updated BIOS with install media detection
+   Replace your existing bios.js with this
 ============================================================ */
-let hdSpace;
-const BIOS_KEY = 'edog_bios_settings';
 
-async function findHdSpace() {
-    if (!navigator.storage?.estimate) {
-        hdSpace = '50';
-        return;
-    }
-    const { quota = 0 } = await navigator.storage.estimate();
-    hdSpace = formatTheBytes(quota, false);
+const BIOS_VERSION = 'BIOS 1.1';
+const INSTALLED_DB = 'VirtualFS_v2';
+const LIVE_DB = 'VirtualFS_LIVE';
+
+/* ---- Check if OS is installed ---- */
+function checkInstalled() {
+    return new Promise((resolve) => {
+        const req = indexedDB.open(INSTALLED_DB, 1);
+        let existed = true;
+
+        req.onupgradeneeded = (e) => {
+            // DB didn't exist or had no store — means no install
+            existed = false;
+            // Don't create anything — just close and delete
+            e.target.transaction.abort();
+        };
+
+        req.onsuccess = async () => {
+            const db = req.result;
+            if (!existed) {
+                db.close();
+                indexedDB.deleteDatabase(INSTALLED_DB);
+                resolve(false);
+                return;
+            }
+
+            // DB exists — check if it has more than just the root node
+            try {
+                const tx = db.transaction('nodes', 'readonly');
+                const store = tx.objectStore('nodes');
+                const countReq = store.count();
+                countReq.onsuccess = () => {
+                    db.close();
+                    // A fresh/empty DB has just 1 node (root).
+                    // An installed OS has many more (folders, icons, etc.)
+                    resolve(countReq.result > 5);
+                };
+                countReq.onerror = () => {
+                    db.close();
+                    resolve(false);
+                };
+            } catch {
+                db.close();
+                resolve(false);
+            }
+        };
+
+        req.onerror = () => resolve(false);
+    });
 }
 
-function formatTheBytes(bytes, useExtension) {
-    if (bytes === 0) return '0 bytes';
-    const sizes = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    if (useExtension) {
-        return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
-    } else {
-        return (bytes / Math.pow(1024, i));
-    }
-}
-
-findHdSpace();
-
-(function injectStyles() {
-    if (document.getElementById('bios-styles')) return;
-    const s = document.createElement('style');
-    s.id = 'bios-styles';
-    s.textContent = `
-        @font-face {
-            font-family: 'VGA';
-            src: url('biosfont.woff2') format('woff2'),
-                 url('biosfont.woff')  format('woff');
-            font-weight: normal;
-            font-style:  normal;
-            font-display: block;
-        }
-
-        /* ── POST Screen ─────────────────────────────────── */
-        #postScreen {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            color: #aaaaaa;
-            font-family: 'VGA', 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 1.45;
-            padding: 14px 22px;
-            z-index: 6000000;
-            box-sizing: border-box;
-            overflow: hidden;
-            white-space: pre;
-        }
-        #postScreen .pw  { color: #ffffff; }
-        #postScreen .pg  { color: #55ff55; }
-        #postScreen .py  { color: #ffff55; }
-        #postScreen .pc  { color: #55ffff; }
-        #postScreen .pr  { color: #ff5555; }
-
-        .post-bottom {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            color: #ffffff;
-            font-family: 'VGA', 'Courier New', monospace;
-            font-size: 16px;
-            padding: 3px 0;
-            text-align: center;
-        }
-        // .post-enter-msg {
-        //     animation: bios-cursor-blink 1s step-end infinite;
-        // }
-        // @keyframes bios-cursor-blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-
-        /* ── BIOS Screen ─────────────────────────────────── */
-        #biosScreen {
-            position: fixed;
-            inset: 0;
-            background: #aaaaaa;
-            font-family: 'VGA', 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 1.3;
-            z-index: 6000001;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            outline: none;
-        }
-
-        /* header */
-        .bios-header {
-            background: #0000aa;
-            color: #ffffff;
-            text-align: center;
-            padding: 4px 0 3px;
-            font-size: 17px;
-            letter-spacing: 3px;
-            flex-shrink: 0;
-            border-bottom: 2px solid #000055;
-        }
-
-        /* tab bar */
-        .bios-tabbar {
-            display: flex;
-            background: #0000aa;
-            padding: 4px 6px 0;
-            gap: 1px;
-            flex-shrink: 0;
-        }
-        .bios-tab {
-            padding: 3px 18px 4px;
-            font-family: 'VGA', 'Courier New', monospace;
-            font-size: 15px;
-            color: #aaaaaa;
-            cursor: pointer;
-            user-select: none;
-            border: 1px solid transparent;
-            border-bottom: none;
-            white-space: nowrap;
-        }
-        .bios-tab:hover:not(.bios-tab-active) { color: #ffffff; }
-        .bios-tab.bios-tab-active {
-            background: #aaaaaa;
-            color: #000000;
-            border-color: #888888;
-            border-bottom-color: #aaaaaa;
-            margin-bottom: -1px;
-            padding-bottom: 5px;
-        }
-
-        /* body */
-        .bios-body {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-            border-top: 1px solid #888888;
-        }
-
-        /* left panel */
-        .bios-left {
-            flex: 1;
-            padding: 6px 10px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        .bios-left::-webkit-scrollbar { width: 14px; }
-        .bios-left::-webkit-scrollbar-track { background: #888888; }
-        .bios-left::-webkit-scrollbar-thumb {
-            background: #0000aa;
-            border: 2px solid #888888;
-        }
-        .bios-left::-webkit-scrollbar-button {
-            background: #0000aa;
-            height: 14px;
-            color: #ffffff;
-        }
-
-        /* right panel */
-        .bios-right {
-            width: 300px;
-            min-width: 300px;
-            flex-shrink: 0;
-            background: #0000aa;
-            color: #aaaaaa;
-            padding: 8px 12px 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-left: 2px solid #000055;
-            overflow: hidden;
-        }
-
-        .bios-help-box {
-            border: 1px solid #aaaaaa;
-            padding: 6px 8px;
-            min-height: 80px;
-        }
-        .bios-help-title {
-            color: #ffffff;
-            text-align: center;
-            border-bottom: 1px solid #aaaaaa;
-            padding-bottom: 3px;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        .bios-help-body {
-            color: #aaaaaa;
-            font-size: 13px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .bios-nav-box {
-            border: 1px solid #aaaaaa;
-            padding: 6px 8px;
-            margin-top: auto;
-        }
-        .bios-nav-title {
-            color: #ffffff;
-            text-align: center;
-            border-bottom: 1px solid #aaaaaa;
-            padding-bottom: 3px;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        .bios-nav-row {
-            display: flex;
-            gap: 0;
-            font-size: 13px;
-            line-height: 1.65;
-            color: #aaaaaa;
-        }
-        .bios-nav-key {
-            color: #ffffff;
-            min-width: 52px;
-        }
-
-        /* items */
-        .bios-section-hdr {
-            background: #555555;
-            color: #ffffff;
-            padding: 1px 6px;
-            margin: 5px 0 2px;
-            font-size: 14px;
-        }
-        .bios-sep { height: 7px; }
-        .bios-item {
-            display: flex;
-            align-items: baseline;
-            padding: 1px 6px;
-            cursor: default;
-            min-height: 21px;
-            white-space: nowrap;
-        }
-        .bios-item-info   { color: #555555; }
-        .bios-item-select { color: #00aaaa; cursor: pointer; }
-        .bios-item-action { color: #00aaaa; cursor: pointer; }
-        .bios-item-focused {
-            background: #0000aa !important;
-            color: #ffffff    !important;
-        }
-        .bios-item-focused .bios-val { color: #ffffff !important; }
-
-        .bios-lbl {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .bios-val {
-            min-width: 190px;
-            color: #00aaaa;
-            padding-left: 6px;
-            text-align: left;
-        }
-        .bios-item-info   .bios-val { color: #555555; }
-
-        /* footer */
-        .bios-footer {
-            background: #0000aa;
-            color: #aaaaaa;
-            font-size: 13px;
-            padding: 3px 10px;
-            display: flex;
-            gap: 0 18px;
-            flex-wrap: nowrap;
-            flex-shrink: 0;
-            border-top: 2px solid #000055;
-            overflow: hidden;
-        }
-        .bios-fkey { color: #ffffff; }
-
-        /* popup */
-        .bios-popup-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 6000010;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bios-popup {
-            background: #aaaaaa;
-            border: 2px solid #000000;
-            min-width: 230px;
-            box-shadow: 6px 6px 0 #333;
-            font-family: 'VGA', 'Courier New', monospace;
-            font-size: 16px;
-            overflow: hidden;
-        }
-        .bios-popup-hdr {
-            background: #0000aa;
-            color: #ffffff;
-            text-align: center;
-            padding: 3px 10px;
-            font-size: 15px;
-        }
-        .bios-popup-opt {
-            padding: 2px 20px;
-            color: #000000;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .bios-popup-opt:hover { background: #888888; }
-        .bios-popup-opt.bios-popup-focused {
-            background: #0000aa;
-            color: #ffffff;
-        }
-        .bios-popup-ftr {
-            background: #555555;
-            color: #ffffff;
-            text-align: center;
-            padding: 2px 10px;
-            font-size: 13px;
-        }
+/* ---- BIOS POST screen ---- */
+function showBiosPost(onComplete) {
+    const overlay = document.createElement('div');
+    overlay.id = 'biosOverlay';
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 999999;
+        background: #000; color: #aaa;
+        font-family: 'Courier New', monospace;
+        font-size: 13px; padding: 24px;
+        display: flex; flex-direction: column;
     `;
-    document.head.appendChild(s);
-})();
 
+    const lines = document.createElement('div');
+    lines.style.cssText = 'flex:1;overflow:hidden;';
+    overlay.appendChild(lines);
 
+    document.body.appendChild(overlay);
 
-const DEFAULTS = {
-    virtualization: 'Enabled',
-    hyperthreading: 'Enabled',
-    executeDisable: 'Enabled',
-    c1eSupport: 'Enabled',
-    hwPrefetcher: 'Enabled',
-    adjCachePrefetch: 'Enabled',
-    maxCpuid: 'Disabled',
-    cpuTmFunction: 'Enabled',
-    sataController: 'Enabled',
-    sataMode: 'AHCI',
-    usbController: 'Enabled',
-    usb20Controller: 'Enabled',
-    legacyUsb: 'Enabled',
-    boot1st: 'VirtualFS_v2',
-    boot2nd: 'Disabled',
-    boot3rd: 'Disabled',
-    quickBoot: 'Enabled',
-    fullScreenLogo: 'Disabled',
-    waitF1Error: 'Enabled',
-    delMessage: 'Enabled',
-    pwdCheck: 'Setup',
-};
+    function addLine(text, color = '#aaa', bold = false) {
+        const el = document.createElement('div');
+        el.style.color = color;
+        if (bold) el.style.fontWeight = '700';
+        el.textContent = text;
+        lines.appendChild(el);
+    }
 
-function loadBiosSettings() {
-    try {
-        const raw = localStorage.getItem(BIOS_KEY);
-        return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : { ...DEFAULTS };
-    } catch { return { ...DEFAULTS }; }
+    addLine(BIOS_VERSION, '#fff', true);
+
+    setTimeout(() => onComplete(overlay, addLine), 1200);
 }
 
-function saveBiosSettings(s) {
-    try { localStorage.setItem(BIOS_KEY, JSON.stringify(s)); } catch { }
+/* ---- "No OS" screen — insert boot media ---- */
+function showNoBootDevice(overlay, addLine) {
+    addLine('');
+    addLine('No bootable device found.', '#f87171', true);
+    addLine('');
+    addLine('Insert boot media or restart.', '#888');
+    addLine('');
+
+    const prompt = document.createElement('div');
+    prompt.style.cssText = `
+        position: absolute; bottom: 60px; left: 50%;
+        transform: translateX(-50%);
+        display: flex; flex-direction: column;
+        align-items: center; gap: 16px;
+    `;
+    prompt.innerHTML = `
+        <div style="
+            border: 1px solid #333; border-radius: 8px;
+            padding: 20px 32px; background: #0a0a0a;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 12px;
+        ">
+            <!--
+            <div style="color:#888;font-size:12px;font-family:'Courier New',monospace;">
+                No operating system found on disk.
+            </div>
+            -->
+            <button id="insertLiveCdBtn" style="
+                background: #1a3a5c; color: #7dd3fc;
+                border: 1px solid #2a5a8c; border-radius: 4px;
+                padding: 10px 28px; font-size: 13px;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+                cursor: pointer; transition: background 0.15s;
+            ">
+                Insert E-Dog OS Installation CD
+            </button>
+            <!--
+            <div style="color:#555;font-size:11px;font-family:'Courier New',monospace;">
+                Press to insert installation media
+            </div>
+            -->
+        </div>
+    `;
+    overlay.appendChild(prompt);
+
+    document.getElementById('insertLiveCdBtn').onclick = () => {
+        prompt.remove();
+        addLine('Booting from CDROM...', '#fff', true);
+        addLine('');
+
+        setTimeout(() => {
+            overlay.style.transition = 'opacity 0.5s';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.remove();
+                bootLiveSession();
+            }, 500);
+        }, 800);
+    };
 }
 
-function showPost(onDone) {
-    let triggered = false;
+/* ---- Live session boot ---- */
+async function bootLiveSession() {
+    // Delete any leftover live DB
+    await new Promise(r => {
+        const req = indexedDB.deleteDatabase(LIVE_DB);
+        req.onsuccess = r;
+        req.onerror = r;
+        req.onblocked = r;
+    });
 
-    const screen = document.createElement('div');
-    screen.id = 'postScreen';
-    document.body.appendChild(screen);
+    // Tell the main script to use the live database
+    window.__isLiveSession = true;
+    window.__liveDbName = LIVE_DB;
 
-    /* POST content lines */
-    const POST_LINES = [
-        // { t: 'E-Dog System BIOS v2.4.1  (C)Copyright 1985-2009, E-Dog Corp.', cls: 'pw', d: 0 },
-        // { t: '', cls: '', d: 80 },
-        // { t: 'BIOS Date: 01/15/09  09:44:23  Ver: 08.00.15', cls: '', d: 100 },
-        // { t: '', cls: '', d: 180 },
-        // { t: 'CPU: E-Dog VirtualCPU x86_64 @ 3.20GHz', cls: '', d: 200 },
-        // { t: 'CPU Microcode Update: Revision 0x1a', cls: '', d: 280 },
-        // { t: '', cls: '', d: 340 },
-        // { t: 'Testing Memory...', cls: '', d: 360 },
-        // { t: '', cls: '', d: 700 },
-        // { t: 'Auto-Detecting Pri Master  ... VirtualFS_v2  10.0 GB', cls: 'pg', d: 720 },
-        // { t: 'Auto-Detecting Pri Slave   ... None', cls: '', d: 800 },
-        // { t: 'Auto-Detecting Sec Master  ... None', cls: '', d: 860 },
-        // { t: 'Auto-Detecting Sec Slave   ... None', cls: '', d: 920 },
-        // { t: '', cls: '', d: 980 },
-        // { t: 'USB Controller       : Enabled', cls: '', d: 1000 },
-        // { t: 'USB 2.0 Controller   : Enabled', cls: '', d: 1040 },
-        // { t: 'Legacy USB Support   : Enabled', cls: '', d: 1080 },
-        // { t: '', cls: '', d: 1120 },
-        // { t: 'PCI device listing ...', cls: '', d: 1140 },
-        // { t: '  Bus 00, Dev 00, Func 00: Host Bridge              8086/2A40', cls: 'pc', d: 1200 },
-        // { t: '  Bus 00, Dev 1F, Func 02: SATA Controller (AHCI)   8086/2929', cls: 'pc', d: 1240 },
-        // { t: '  Bus 00, Dev 1D, Func 07: USB2 EHCI Controller     8086/293C', cls: 'pc', d: 1280 },
+    // Override the DB_NAME before the main script opens it
+    // We do this by setting a global that script.js checks
+    window.__bootMode = 'live';
+
+    // Now initialize the OS with the live DB
+    await initLiveOS();
+}
+
+async function initLiveOS() {
+    // Open the temporary live database
+    const liveDb = await new Promise((resolve, reject) => {
+        const r = indexedDB.open(LIVE_DB, 1);
+        r.onupgradeneeded = e => {
+            const db = e.target.result;
+            const store = db.createObjectStore('nodes', { keyPath: 'id' });
+            store.createIndex('parentId', 'parentId', { unique: false });
+            store.add({
+                id: 'root', name: 'root', type: 'folder',
+                parentId: null, createdAt: Date.now(), updatedAt: Date.now()
+            });
+        };
+        r.onsuccess = () => resolve(r.result);
+        r.onerror = () => reject(r.error);
+    });
+
+    // Swap the global dbPromise to the live DB
+    if (typeof dbPromise !== 'undefined' && dbPromise) {
+        try { dbPromise.close(); } catch { }
+    }
+    dbPromise = liveDb;
+
+    // Set up default folder structure for the live session
+    await ensureDefaultFolders();
+
+    // Populate the live environment with system files
+    // (icons, wallpapers, etc. from the web server)
+    await populateLiveMedia();
+
+    // Create the "Install E-Dog OS" shortcut on the desktop
+    await createInstallerShortcut();
+
+    // Show a "Live Session" indicator
+    showLiveBanner();
+    applyTheme('dark');
+
+    // Signal that the OS is ready
+    if (window.__onOsReady) {
+        window.__onOsReady();
+        window.__onOsReady = null;
+    }
+
+    // Boot into desktop
+    renderDesktop();
+    initWiFiIcon();
+}
+
+async function populateLiveMedia() {
+    // Copy essential system files into the live FS
+    // Icons, wallpapers, etc. are fetched from the web server
+    // and written into the live IndexedDB
+
+    const essentialFiles = [
+        // Add paths to your icon files, wallpapers, etc.
+        // These get fetched from the web server and stored in the live FS
+        { webPath: 'icons/128/folder.svg', fsPath: '/usr/share/icons/128/folder.svg' },
+        { webPath: 'icons/128/folder-home.svg', fsPath: '/usr/share/icons/128/folder-home.svg' },
+        { webPath: 'icons/128/folder-desktop.svg', fsPath: '/usr/share/icons/128/folder-desktop.svg' },
+        { webPath: 'icons/128/folder-documents.svg', fsPath: '/usr/share/icons/128/folder-documents.svg' },
+        { webPath: 'icons/128/folder-downloads.svg', fsPath: '/usr/share/icons/128/folder-downloads.svg' },
+        { webPath: 'icons/128/folder-pictures.svg', fsPath: '/usr/share/icons/128/folder-pictures.svg' },
+        { webPath: 'icons/128/folder-music.svg', fsPath: '/usr/share/icons/128/folder-music.svg' },
+        { webPath: 'icons/128/folder-videos.svg', fsPath: '/usr/share/icons/128/folder-videos.svg' },
+        { webPath: 'icons/128/computer.svg', fsPath: '/usr/share/icons/128/computer.svg' },
+        { webPath: 'icons/avatar.svg', fsPath: '/usr/share/icons/avatar.svg' },
+        { webPath: 'icons/16/dialog-error.png', fsPath: '/usr/share/icons/16/dialog-error.png' },
+        { webPath: 'icons/dialog-error.svg', fsPath: '/usr/share/icons/dialog-error.svg' },
+        { webPath: 'icons/tray/network-100.png', fsPath: '/usr/share/icons/tray/network-100.png' },
+        { webPath: 'icons/tray/network-offline.png', fsPath: '/usr/share/icons/tray/network-offline.png' },
+        // Wallpapers
+        { webPath: 'backgrounds/default-wallpaper.jpg', fsPath: '/usr/share/backgrounds/default-wallpaper.jpg' },
+        { webPath: 'backgrounds/wallpaper-2.jpg', fsPath: '/usr/share/backgrounds/wallpaper-2.jpg' },
     ];
 
-    const lineEls = {};
-
-    POST_LINES.forEach(({ t, cls, d }) => {
-        setTimeout(() => {
-            const el = document.createElement('div');
-            el.textContent = t;
-            if (cls) el.className = cls;
-            screen.appendChild(el);
-        }, d);
-    });
-
-    /* Memory test counter */
-    let memVal = 0;
-    const MEM_TARGET = 8192;
-    const memEl = document.createElement('div');
-    screen.appendChild(memEl);
-
-    // Insert mem line timing
-    setTimeout(() => {
-        screen.appendChild(memEl);
-    }, 360);
-
-    const memTick = setInterval(() => {
-        memVal = Math.min(memVal + 512, MEM_TARGET);
-        if (memVal < MEM_TARGET) {
-            //memEl.innerHTML = `Testing Memory... <span class="py">${memVal}MB</span>`;
-        } else {
-            //memEl.innerHTML = `Testing Memory... <span class="py">${MEM_TARGET}MB</span>  <span class="pg">OK</span>`;
-            clearInterval(memTick);
+    // Batch fetch with error tolerance
+    await Promise.allSettled(essentialFiles.map(async ({ webPath, fsPath }) => {
+        try {
+            const resp = await fetch(webPath);
+            if (!resp.ok) return;
+            const buf = await resp.arrayBuffer();
+            await createFile(fsPath, buf);
+        } catch {
+            // Non-critical — icons will fallback to SVG inline
         }
-    }, 30);
-
-    /* Bottom bar */
-    const bot = document.createElement('div');
-    bot.className = 'post-bottom';
-    bot.innerHTML = `<span class="post-enter-msg">Press  DEL  or  BACKSPACE  to enter SETUP</span>`;
-    screen.appendChild(bot);
-
-    /* Key listener */
-    function onKey(e) {
-        if (e.key === 'Delete' || e.key === 'Backspace' || e.key === 'F2') {
-            e.preventDefault();
-            go(true);
-        }
-    }
-    document.addEventListener('keydown', onKey);
-
-    /* Auto-proceed after 2 s */
-    const autoTimer = setTimeout(() => go(false), 2000);
-
-    function go(enterBios) {
-        if (triggered) return;
-        triggered = true;
-        clearInterval(memTick);
-        clearTimeout(autoTimer);
-        document.removeEventListener('keydown', onKey);
-        screen.remove();
-        if (enterBios) showBios(onDone);
-        else onDone();
-    }
+    }));
 }
 
-function showBios(onDone) {
-    const settings = loadBiosSettings();
-    const snapSettings = JSON.stringify(settings);  // for discard
+async function createInstallerShortcut() {
+    const username = getUsername();
+    const desktopPath = `/home/${username}/Desktop`;
 
-    const EN_DIS = ['Enabled', 'Disabled'];
-    const DIS_EN = ['Disabled', 'Enabled'];
-
-    let activeTab = 0;
-    let selIdx = 0;   // index within current tab's selectables[]
-    let popupOpen = false;
-    let keyHandler = null;
-
-    /* ── build chrome ─────────────────────────────────────── */
-    const screen = document.createElement('div');
-    screen.id = 'biosScreen';
-    screen.tabIndex = -1;
-    document.body.appendChild(screen);
-
-    /* header */
-    const hdr = el('div', 'bios-header', 'BIOS  SETUP  UTILITY');
-    screen.appendChild(hdr);
-
-    /* tab bar */
-    const TABS = ['Main', 'Advanced', 'Boot', 'Security', 'Exit'];
-    const tabBar = el('div', 'bios-tabbar');
-    const tabEls = TABS.map((name, i) => {
-        const t = el('div', 'bios-tab' + (i === 0 ? ' bios-tab-active' : ''), name);
-        t.onclick = () => gotoTab(i);
-        tabBar.appendChild(t);
-        return t;
+    // Create the installer .app file
+    const installerConfig = JSON.stringify({
+        name: 'Install E-Dog OS',
+        customIcon: 'install', // or use a system icon
+        icon: '💿',
+        width: 640,
+        height: 520,
+        html: '<!-- placeholder - installer spawns its own window -->'
     });
-    screen.appendChild(tabBar);
 
-    /* body */
-    const body = el('div', 'bios-body');
-    screen.appendChild(body);
+    // Instead of a .app, we'll create a special marker file
+    // that openFile() recognizes
+    await createFile(`${desktopPath}/Install E-Dog OS.installer`, installerConfig);
 
-    const leftPanel = el('div', 'bios-left');
-    const rightPanel = el('div', 'bios-right');
-    body.appendChild(leftPanel);
-    body.appendChild(rightPanel);
+    // Also add a README
+    await createFile(`${desktopPath}/README.txt`,
+        'Welcome to E-Dog OS Live!\n\n' +
+        'You are running a live session. Nothing you do here will be saved.\n\n' +
+        'To install E-Dog OS to your hard drive, double-click\n' +
+        '"Install E-Dog OS" on the desktop.\n\n' +
+        'You can explore the system, try out applications, and\n' +
+        'test everything before installing.'
+    );
+}
 
-    /* right: help box */
-    const helpBox = el('div', 'bios-help-box');
-    const helpTitle = el('div', 'bios-help-title', 'Item Specific Help');
-    const helpBody = el('div', 'bios-help-body', '');
-    helpBox.appendChild(helpTitle);
-    helpBox.appendChild(helpBody);
-    rightPanel.appendChild(helpBox);
+function showLiveBanner() {
+    const banner = document.createElement('div');
+    banner.id = 'live-session-banner';
+    banner.style.cssText = `
+        position: fixed; top: 0; left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #92400e, #b45309);
+        color: #fef3c7; padding: 4px 20px;
+        font-size: 11px; font-weight: 600;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        border-radius: 0 0 8px 8px;
+        z-index: 99999; cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        transition: opacity 0.3s;
+        letter-spacing: 0.3px;
+    `;
+    banner.textContent = 'Install E-Dog OS';
+    banner.title = 'Click to install E-Dog OS';
+    banner.onclick = () => spawnInstaller();
+    document.body.appendChild(banner);
+}
 
-    /* right: nav hints */
-    const navBox = el('div', 'bios-nav-box');
-    const navTitle = el('div', 'bios-nav-title', 'Keys');
-    navBox.appendChild(navTitle);
-    [
-        ['→ ←', 'Select Screen'],
-        ['↑ ↓', 'Select Item'],
-        ['Enter', 'Change Option'],
-        ['F9', 'Setup Defaults'],
-        ['F10', 'Save and Exit'],
-        ['ESC', 'Exit'],
-    ].forEach(([k, v]) => {
-        const row = el('div', 'bios-nav-row');
-        row.innerHTML = `<span class="bios-nav-key">${k}</span><span>${v}</span>`;
-        navBox.appendChild(row);
+/* ---- Live session shutdown (wipes temp DB) ---- */
+async function liveShutdown() {
+    try {
+        if (dbPromise) { dbPromise.close(); dbPromise = null; }
+    } catch { }
+
+    await new Promise(r => {
+        const req = indexedDB.deleteDatabase(LIVE_DB);
+        req.onsuccess = r;
+        req.onerror = r;
+        req.onblocked = r;
     });
-    rightPanel.appendChild(navBox);
+}
 
-    /* footer */
-    const footer = el('div', 'bios-footer');
-    footer.innerHTML = [
-        ['→←', 'Screen'], ['↑↓', 'Item'], ['Enter', 'Change'],
-        ['F9', 'Defaults'], ['F10', 'Save+Exit'], ['ESC', 'Exit'],
-    ].map(([k, v]) => `<span><span class="bios-fkey">${k}</span> ${v}</span>`).join('');
-    screen.appendChild(footer);
+/* ---- Installer ---- */
+function spawnInstaller() {
+    const windowId = 'win_' + (++winCount);
+    const left = Math.round((window.innerWidth - 600) / 2);
+    const top = Math.round((window.innerHeight - 500) / 2);
 
-    /* ── tab data definitions ─────────────────────────────── */
-    function tabData(i) {
-        switch (i) {
-            case 0: return mainTab();
-            case 1: return advancedTab();
-            case 2: return bootTab();
-            case 3: return securityTab();
-            case 4: return exitTab();
-        }
-    }
+    const win = document.createElement('div');
+    win.className = 'app-window';
+    win.id = windowId;
+    win.style.cssText = `left:${left}px;top:${top}px;width:600px;height:500px;`;
+    win.addEventListener('mousedown', () => focusWindow(windowId));
 
-    function mainTab() {
-        const d = new Date();
-        const pad2 = n => String(n).padStart(2, '0');
-        const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return [
-            S('System Overview'),
-            I('BIOS Version', '1.0.0'),
-            I('Build Date', '03/16/2026'),
-            I('EC Firmware Rev', '0x0E'),
-            _(),
-            S('Processor'),
-            I('Manufacturer', 'Intel'),
-            I('Brand String', 'Intel Xeon E5620'),
-            I('Frequency', '2.60GHz'),
-            I('BCLK Speed', '133MHz'),
-            I('Cache L1', '256 KB'),
-            I('Cache L2', '1024 KB'),
-            I('Cache L3', '8192 KB'),
-            I('CPUID', 'E5620'),
-            _(),
-            S('System Memory'),
-            I('Total Installed', '32768 MB'),
-            I('Slot A', '8192 MB DDR3-1333'),
-            I('Slot B', '8192 MB DDR3-1333'),
-            I('Slot C', '8192 MB DDR3-1333'),
-            I('Slot D', '8192 MB DDR3-1333'),
-            _(),
-            S('System Settings'),
-            T('System Time', 'systemTime',
-                `[${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}]`,
-                'Set the System Time.'),
-            T('System Date', 'systemDate',
-                `[${DAYS[d.getDay()]} ${MONS[d.getMonth()]}/${pad2(d.getDate())}/${d.getFullYear()}]`,
-                'Set the System Date.'),
-            O('Language', 'language', settings.language ?? 'English',
-                'Select display language.', ['English', 'Francais', 'Deutsch', 'Espanol']),
-        ];
-    }
+    win.innerHTML = `
+        <div class="title-bar">
+            <button class="window-close-button" title="Close">✕</button>
+            <span class="title-bar-text">💿 Install E-Dog OS</span>
+        </div>
+        <div class="app-body" id="installer-body-${windowId}"
+             style="height:calc(100% - var(--titlebar-height));
+                    overflow:hidden;display:flex;flex-direction:column;">
+        </div>
+    `;
 
-    function advancedTab() {
-        return [
-            S('CPU Configuration'),
-            I('CPU Ratio Status', 'Unlocked (Min:09, Max:22)'),
-            I('CPU Ratio Actual', '22'),
-            O('Intel(R) Virtualization Tech', 'virtualization', settings.virtualization,
-                'When enabled, a VMM can utilize additional hardware capabilities provided by Vanderpool Technology.', EN_DIS),
-            O('Hyper-Threading Technology', 'hyperthreading', settings.hyperthreading,
-                'Enables Hyper-Threading on supported Intel processors. Each physical core appears as two logical cores.', EN_DIS),
-            O('Execute-Disable Bit Capability', 'executeDisable', settings.executeDisable,
-                'When disabled, forces the XD feature flag to always return 0.', EN_DIS),
-            O('C1E Support', 'c1eSupport', settings.c1eSupport,
-                'Enable Enhanced Halt State. CPU runs at lowest power when idle.', EN_DIS),
-            O('Hardware Prefetcher', 'hwPrefetcher', settings.hwPrefetcher,
-                'Enable the hardware prefetcher to fetch data into the L2 cache.', EN_DIS),
-            O('Adjacent Cache Line Prefetch', 'adjCachePrefetch', settings.adjCachePrefetch,
-                'Fetches adjacent cache line data, reducing memory access latency.', EN_DIS),
-            O('Max CPUID Value Limit', 'maxCpuid', settings.maxCpuid,
-                'Limit CPUID maximum value. Enable for legacy OS compatibility.', DIS_EN),
-            O('CPU TM Function', 'cpuTmFunction', settings.cpuTmFunction,
-                'Enable CPU Thermal Monitor function (TM1/TM2) to throttle overheating CPUs.', EN_DIS),
-            _(),
-            S('SATA Configuration'),
-            O('SATA Controller', 'sataController', settings.sataController,
-                'Enable or disable the on-board SATA controller.', EN_DIS),
-            O('SATA Mode Selection', 'sataMode', settings.sataMode,
-                'IDE: legacy compatibility mode.\nAHCI: native SATA with NCQ and hot-plug.\nRAID: SATA RAID arrays.', ['AHCI', 'IDE', 'RAID']),
-            _(),
-            S('USB Configuration'),
-            O('USB Controller', 'usbController', settings.usbController,
-                'Enable or disable the USB 1.1/2.0 controller.', EN_DIS),
-            O('USB 2.0 (EHCI) Controller', 'usb20Controller', settings.usb20Controller,
-                'Enable or disable the USB 2.0 Enhanced Host Controller.', EN_DIS),
-            O('Legacy USB Support', 'legacyUsb', settings.legacyUsb,
-                'Enables USB keyboard/mouse in DOS and pre-OS environments.', ['Enabled', 'Disabled', 'Auto']),
-        ];
-    }
+    document.getElementById('windowContainer').appendChild(win);
+    windows[windowId] = { el: win, state: { type: 'installer' } };
 
-    function bootTab() {
-        const BOOT_DEVICES = [`${hdSpace}GB HARDDISK`, 'Disabled'];
-        return [
-            S('Boot Device Priority'),
-            O('1st Boot Device', 'boot1st', settings.boot1st,
-                'Select the device to boot from first.', BOOT_DEVICES),
-            O('2nd Boot Device', 'boot2nd', settings.boot2nd,
-                'Select the device to boot from second.', BOOT_DEVICES),
-            O('3rd Boot Device', 'boot3rd', settings.boot3rd,
-                'Select the device to boot from third.', BOOT_DEVICES),
-            _(),
-            S('Boot Settings Configuration'),
-            O('Quick Boot', 'quickBoot', settings.quickBoot,
-                'Skips certain POST tests to speed up boot time.', EN_DIS),
-            O('Full Screen Logo', 'fullScreenLogo', settings.fullScreenLogo,
-                'Show or hide the full-screen boot logo during POST.', ['Disabled', 'Enabled']),
-            O('Wait For F1 If Error', 'waitF1Error', settings.waitF1Error,
-                'System waits for F1 key when a POST error is detected.', EN_DIS),
-            O('Hit DEL Message Display', 'delMessage', settings.delMessage,
-                'Show or hide the "Press DEL to enter SETUP" message.', EN_DIS),
-        ];
-    }
+    win.querySelector('.title-bar').addEventListener('mousedown', e => {
+        if (e.target.closest('button')) return;
+        startDrag(e, win);
+    });
+    win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
 
-    function securityTab() {
-        const hasSup = !!localStorage.getItem('edog_supervisor_pw');
-        const hasUsr = !!localStorage.getItem('edog_user_pw');
-        return [
-            S('Password Status'),
-            I('Supervisor Password', hasSup ? 'Installed' : 'Not Installed'),
-            I('User Password', hasUsr ? 'Installed' : 'Not Installed'),
-            _(),
-            S('Change Passwords'),
-            A('Change Supervisor Password', 'changeSuperPw',
-                'Set, change, or clear the Supervisor password.\nSupervisor has full BIOS access.'),
-            A('Change User Password', 'changeUserPw',
-                'Set, change, or clear the User password.\nUser has limited BIOS access.'),
-            _(),
-            S('Password Options'),
-            O('Password Check', 'pwdCheck', settings.pwdCheck,
-                'Setup: prompts password only when entering BIOS.\nAlways: prompts password at every boot.', ['Setup', 'Always']),
-        ];
-    }
-
-    function exitTab() {
-        return [
-            S('Exit Options'),
-            A('Exit & Save Changes', 'exitSave',
-                'Exit BIOS Setup and save all changes to CMOS.'),
-            A('Exit & Discard Changes', 'exitDiscard',
-                'Exit BIOS Setup without saving. All changes will be lost.'),
-            _(),
-            A('Discard Changes', 'discardOnly',
-                'Restore all settings to the values they had when you entered BIOS Setup.'),
-            A('Load Setup Defaults', 'loadDefaults',
-                'Load the factory default values for all BIOS settings.'),
-        ];
-    }
-
-    /* ── item builder helpers ─────────────────────────────── */
-    function S(label) { return { type: 'section', label }; }
-    function I(label, value) { return { type: 'info', label, value }; }
-    function _() { return { type: 'sep' }; }
-    function T(label, key, value, help) { return { type: 'text', label, key, value, help }; }
-    function O(label, key, value, help, options) {
-        return { type: 'opt', label, key, value, help, options };
-    }
-    function A(label, key, help) { return { type: 'action', label, key, help }; }
-
-    /* ── render ───────────────────────────────────────────── */
-    let items = [];   // flat list of rendered items
-    let selectables = [];  // indices into items[] that are focusable
-
-    function renderTab(tabIdx) {
-        leftPanel.innerHTML = '';
-        items = tabData(tabIdx);
-        selectables = [];
-
-        items.forEach((item, idx) => {
-            let domEl;
-            if (item.type === 'section') {
-                domEl = el('div', 'bios-section-hdr', item.label);
-            } else if (item.type === 'sep') {
-                domEl = el('div', 'bios-sep');
-            } else if (item.type === 'info') {
-                domEl = el('div', 'bios-item bios-item-info');
-                domEl.innerHTML = `<span class="bios-lbl">${item.label}</span>`
-                    + `<span class="bios-val">${item.value}</span>`;
-            } else if (item.type === 'opt' || item.type === 'text') {
-                selectables.push(idx);
-                domEl = el('div', 'bios-item bios-item-select');
-                domEl.dataset.idx = String(idx);
-                const valStr = item.type === 'opt' ? `[${settings[item.key] ?? item.value}]` : item.value;
-                domEl.innerHTML = `<span class="bios-lbl">${item.label}</span>`
-                    + `<span class="bios-val">${valStr}</span>`;
-                domEl.onclick = () => clickItem(idx);
-            } else if (item.type === 'action') {
-                selectables.push(idx);
-                domEl = el('div', 'bios-item bios-item-action');
-                domEl.dataset.idx = String(idx);
-                domEl.innerHTML = `<span class="bios-lbl">${item.label}</span>`;
-                domEl.onclick = () => clickItem(idx);
-            }
-            if (domEl) leftPanel.appendChild(domEl);
-        });
-
-        /* clamp selection */
-        if (selIdx >= selectables.length) selIdx = 0;
-        updateFocus();
-    }
-
-    function updateFocus() {
-        leftPanel.querySelectorAll('.bios-item').forEach(e => e.classList.remove('bios-item-focused'));
-        if (!selectables.length) { helpBody.textContent = ''; return; }
-        const idx = selectables[selIdx];
-        const item = items[idx];
-        const domEl = leftPanel.querySelector(`[data-idx="${idx}"]`);
-        if (domEl) { domEl.classList.add('bios-item-focused'); domEl.scrollIntoView({ block: 'nearest' }); }
-        helpBody.textContent = item?.help ?? '';
-    }
-
-    function clickItem(itemIdx) {
-        const si = selectables.indexOf(itemIdx);
-        if (si < 0) return;
-        selIdx = si;
-        updateFocus();
-        activateItem();
-    }
-
-    function activateItem() {
-        if (popupOpen) return;
-        const idx = selectables[selIdx];
-        const item = items[idx];
-        if (!item) return;
-
-        if (item.type === 'action') {
-            doAction(item.key);
-        } else if (item.type === 'opt' && item.options) {
-            openPopup(item, idx);
-        } else if (item.type === 'text') {
-            /* time/date — just show a brief note; real editing is complex */
-            helpBody.textContent = (item.help ?? '') + '\n\n[Editing not supported in this version]';
-        }
-    }
-
-    function doAction(key) {
-        switch (key) {
-            case 'exitSave':
-                saveBiosSettings(settings);
-                exitBios();
-                break;
-            case 'exitDiscard':
-                exitBios();
-                break;
-            case 'discardOnly':
-                Object.assign(settings, JSON.parse(snapSettings));
-                renderTab(activeTab);
-                break;
-            case 'loadDefaults':
-                Object.assign(settings, { ...DEFAULTS });
-                renderTab(activeTab);
-                helpBody.textContent = 'Setup defaults loaded.';
-                break;
-            case 'changeSuperPw':
-            case 'changeUserPw': {
-                const isSup = key === 'changeSuperPw';
-                const lsKey = isSup ? 'edog_supervisor_pw' : 'edog_user_pw';
-                const pw = prompt(`New ${isSup ? 'Supervisor' : 'User'} Password (blank to remove):`);
-                if (pw === null) return;
-                if (pw === '') localStorage.removeItem(lsKey);
-                else localStorage.setItem(lsKey, pw);
-                renderTab(activeTab);
-                break;
-            }
-        }
-    }
-
-    /* ── popup ────────────────────────────────────────────── */
-    function openPopup(item, itemIdx) {
-        popupOpen = true;
-
-        const curVal = settings[item.key] ?? item.value;
-        let popSel = item.options.indexOf(curVal);
-        if (popSel < 0) popSel = 0;
-
-        const bg = el('div', 'bios-popup-bg');
-        const box = el('div', 'bios-popup');
-        box.appendChild(el('div', 'bios-popup-hdr', item.label));
-
-        const optEls = item.options.map((opt, i) => {
-            const o = el('div', 'bios-popup-opt' + (i === popSel ? ' bios-popup-focused' : ''), opt);
-            o.onclick = () => { popSel = i; commit(); };
-            box.appendChild(o);
-            return o;
-        });
-
-        box.appendChild(el('div', 'bios-popup-ftr', '↑↓ Select    Enter Confirm    ESC Cancel'));
-        bg.appendChild(box);
-        screen.appendChild(bg);
-
-        function refreshPop() {
-            optEls.forEach((o, i) => o.classList.toggle('bios-popup-focused', i === popSel));
-        }
-        function commit() {
-            settings[item.key] = item.options[popSel];
-            bg.remove();
-            popupOpen = false;
-            document.removeEventListener('keydown', popKey, true);
-            renderTab(activeTab);
-        }
-        function popKey(e) {
-            e.preventDefault(); e.stopPropagation();
-            if (e.key === 'ArrowDown') { popSel = (popSel + 1) % item.options.length; refreshPop(); }
-            else if (e.key === 'ArrowUp') { popSel = (popSel - 1 + item.options.length) % item.options.length; refreshPop(); }
-            else if (e.key === 'Enter') commit();
-            else if (e.key === 'Escape') {
-                bg.remove(); popupOpen = false;
-                document.removeEventListener('keydown', popKey, true);
-            }
-        }
-        document.addEventListener('keydown', popKey, true);
-    }
-
-    /* ── tab switch ───────────────────────────────────────── */
-    function gotoTab(i) {
-        activeTab = i;
-        selIdx = 0;
-        tabEls.forEach((t, j) => t.classList.toggle('bios-tab-active', j === i));
-        renderTab(i);
-    }
-
-    /* ── exit ─────────────────────────────────────────────── */
-    function exitBios() {
-        document.removeEventListener('keydown', keyHandler);
-        screen.style.transition = 'opacity .2s';
-        screen.style.opacity = '0';
-        setTimeout(() => { screen.remove(); onDone(); }, 200);
-    }
-
-    /* ── keyboard ─────────────────────────────────────────── */
-    keyHandler = function (e) {
-        if (popupOpen) return;
-        switch (e.key) {
-            case 'ArrowLeft':
-                e.preventDefault();
-                gotoTab((activeTab - 1 + TABS.length) % TABS.length);
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                gotoTab((activeTab + 1) % TABS.length);
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                if (selectables.length) {
-                    selIdx = (selIdx - 1 + selectables.length) % selectables.length;
-                    updateFocus();
-                }
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                if (selectables.length) {
-                    selIdx = (selIdx + 1) % selectables.length;
-                    updateFocus();
-                }
-                break;
-            case 'Enter':
-                e.preventDefault();
-                activateItem();
-                break;
-            case 'F10':
-                e.preventDefault();
-                saveBiosSettings(settings);
-                exitBios();
-                break;
-            case 'F9':
-                e.preventDefault();
-                Object.assign(settings, { ...DEFAULTS });
-                renderTab(activeTab);
-                helpBody.textContent = 'Setup defaults loaded.';
-                break;
-            case 'Escape':
-                e.preventDefault();
-                gotoTab(4);   // jump to Exit tab
-                break;
-        }
+    const tbBtn = document.createElement('button');
+    tbBtn.className = 'win-btn';
+    tbBtn.dataset.winid = windowId;
+    tbBtn.textContent = '💿 Install E-Dog OS';
+    tbBtn.onclick = () => {
+        if (win.style.display === 'none') { win.style.display = 'block'; }
+        focusWindow(windowId);
     };
-    document.addEventListener('keydown', keyHandler);
+    document.getElementById('taskbar').insertBefore(
+        tbBtn, document.getElementById('taskbar-tray')
+    );
+    windows[windowId].taskbarBtn = tbBtn;
+    focusWindow(windowId);
 
-    /* ── kick off ─────────────────────────────────────────── */
-    gotoTab(0);
-    screen.focus();
+    const body = win.querySelector(`#installer-body-${windowId}`);
+    runInstallerWizard(body, windowId);
 }
 
-function el(tag, cls, text) {
-    const e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (text !== undefined) e.textContent = text;
-    return e;
+async function runInstallerWizard(body, windowId) {
+    let step = 0;
+    let config = {
+        username: 'user',
+        computername: 'edog-pc',
+        password: '',
+        theme: 'dark',
+    };
+
+    function render() {
+        body.innerHTML = '';
+
+        const container = document.createElement('div');
+        container.style.cssText = `
+            flex:1; display:flex; flex-direction:column;
+            font-family:'Segoe UI',system-ui,sans-serif;
+            background:#1a1a1a; color:#ddd;
+        `;
+
+        // Header
+        const header = document.createElement('div');
+        header.style.cssText = `
+            padding:20px 28px 16px; border-bottom:1px solid #333;
+            display:flex; align-items:center; gap:14px;
+        `;
+        header.innerHTML = `
+            <div style="font-size:28px;">💿</div>
+            <div>
+                <div style="font-size:16px;font-weight:600;color:#fff;">
+                    Install E-Dog OS
+                </div>
+                <div style="font-size:12px;color:#888;">
+                    Step ${step + 1} of 4
+                </div>
+            </div>
+        `;
+        container.appendChild(header);
+
+        // Step progress
+        const progress = document.createElement('div');
+        progress.style.cssText = `
+            display:flex; gap:0; padding:0 28px; background:#141414;
+            border-bottom:1px solid #333;
+        `;
+        const steps = ['Welcome', 'User Setup', 'Options', 'Install'];
+        steps.forEach((s, i) => {
+            const stepEl = document.createElement('div');
+            stepEl.style.cssText = `
+                flex:1; padding:8px 0; text-align:center;
+                font-size:11px; font-weight:600; letter-spacing:0.3px;
+                border-bottom:2px solid ${i === step ? '#3b82f6' : 'transparent'};
+                color:${i === step ? '#60a5fa' : i < step ? '#4ade80' : '#555'};
+                transition: all 0.2s;
+            `;
+            stepEl.textContent = (i < step ? '✓ ' : '') + s;
+            progress.appendChild(stepEl);
+        });
+        container.appendChild(progress);
+
+        // Content area
+        const content = document.createElement('div');
+        content.style.cssText = 'flex:1;padding:24px 28px;overflow-y:auto;';
+        container.appendChild(content);
+
+        // Footer with nav buttons
+        const footer = document.createElement('div');
+        footer.style.cssText = `
+            padding:14px 28px; border-top:1px solid #333;
+            display:flex; justify-content:space-between;
+            background:#141414;
+        `;
+        container.appendChild(footer);
+
+        // Render current step
+        if (step === 0) renderWelcome(content, footer);
+        else if (step === 1) renderUserSetup(content, footer);
+        else if (step === 2) renderOptions(content, footer);
+        else if (step === 3) renderInstall(content, footer);
+
+        body.appendChild(container);
+    }
+
+    function makeBtn(text, primary, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = text;
+        btn.style.cssText = `
+            padding:8px 24px; border-radius:5px; font-size:13px;
+            cursor:pointer; font-weight:500; border:1px solid;
+            font-family:'Segoe UI',system-ui,sans-serif;
+            ${primary
+                ? 'background:#2563eb;color:#fff;border-color:#3b82f6;'
+                : 'background:#2a2a2a;color:#ccc;border-color:#444;'}
+        `;
+        btn.onmouseover = () => btn.style.opacity = '0.85';
+        btn.onmouseout = () => btn.style.opacity = '1';
+        btn.onclick = onClick;
+        return btn;
+    }
+
+    function renderWelcome(content, footer) {
+        content.innerHTML = `
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:22px;font-weight:600;color:#fff;margin-bottom:8px;">
+                    Welcome to E-Dog OS
+                </div>
+                <div style="color:#888;font-size:13px;line-height:1.6;max-width:400px;margin:0 auto;">
+                    This wizard will install E-Dog OS on your virtual hard drive.
+                    <br><br>
+                    Your current live session will not be affected until
+                    installation is complete and you reboot.
+                    <br><br>
+                    <span style="color:#666;font-size:12px;">
+                        Estimated install time: ~10 seconds
+                    </span>
+                </div>
+            </div>
+        `;
+        footer.innerHTML = '';
+        footer.appendChild(makeBtn('Cancel', false, () => closeWindow(windowId)));
+        footer.appendChild(makeBtn('Begin Installation →', true, () => { step = 1; render(); }));
+    }
+
+    function renderUserSetup(content, footer) {
+        content.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:18px;">
+                <div style="font-size:15px;font-weight:600;color:#fff;">
+                    Create Your Account
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <label style="font-size:12px;color:#888;">Username</label>
+                    <input id="inst-username" type="text" value="${config.username}"
+                        style="background:#111;border:1px solid #333;border-radius:4px;
+                               padding:8px 12px;color:#fff;font-size:13px;outline:none;"
+                        placeholder="e.g. user">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <label style="font-size:12px;color:#888;">Computer Name</label>
+                    <input id="inst-hostname" type="text" value="${config.computername}"
+                        style="background:#111;border:1px solid #333;border-radius:4px;
+                               padding:8px 12px;color:#fff;font-size:13px;outline:none;"
+                        placeholder="e.g. my-pc">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <label style="font-size:12px;color:#888;">Password (optional)</label>
+                    <input id="inst-password" type="password" value="${config.password}"
+                        style="background:#111;border:1px solid #333;border-radius:4px;
+                               padding:8px 12px;color:#fff;font-size:13px;outline:none;"
+                        placeholder="Leave blank for no password">
+                </div>
+            </div>
+        `;
+
+        footer.innerHTML = '';
+        footer.appendChild(makeBtn('← Back', false, () => { step = 0; render(); }));
+        footer.appendChild(makeBtn('Next →', true, () => {
+            config.username = document.getElementById('inst-username').value.trim() || 'user';
+            config.computername = document.getElementById('inst-hostname').value.trim() || 'edog-pc';
+            config.password = document.getElementById('inst-password').value;
+            step = 2;
+            render();
+        }));
+    }
+
+    function renderOptions(content, footer) {
+        content.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:18px;">
+                <div style="font-size:15px;font-weight:600;color:#fff;">
+                    Choose Your Theme
+                </div>
+                <div style="display:flex;gap:16px;">
+                    <div class="inst-theme-card" data-theme="dark" style="
+                        flex:1;padding:16px;border-radius:8px;cursor:pointer;
+                        border:2px solid ${config.theme === 'dark' ? '#3b82f6' : '#333'};
+                        background:#0a0a0a;text-align:center;transition:border 0.15s;
+                    ">
+                        <div style="font-size:28px;margin-bottom:8px;">🌙</div>
+                        <div style="font-size:13px;font-weight:600;color:#fff;">Dark</div>
+                        <div style="font-size:11px;color:#888;">Sleek dark interface</div>
+                    </div>
+                    <div class="inst-theme-card" data-theme="aero2010" style="
+                        flex:1;padding:16px;border-radius:8px;cursor:pointer;
+                        border:2px solid ${config.theme === 'aero2010' ? '#3b82f6' : '#333'};
+                        background:#0a0a0a;text-align:center;transition:border 0.15s;
+                    ">
+                        <div style="font-size:28px;margin-bottom:8px;">✨</div>
+                        <div style="font-size:13px;font-weight:600;color:#fff;">Aero 2010</div>
+                        <div style="font-size:11px;color:#888;">Glossy glass effects</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;padding:16px;background:#111;border-radius:8px;
+                            border:1px solid #222;">
+                    <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:8px;">
+                        Installation Summary
+                    </div>
+                    <div style="font-size:12px;color:#888;line-height:1.8;">
+                        User: <span style="color:#ccc;">${config.username}</span><br>
+                        Computer: <span style="color:#ccc;">${config.computername}</span><br>
+                        Password: <span style="color:#ccc;">${config.password ? '••••••' : 'None'}</span><br>
+                        Target: <span style="color:#ccc;">VirtualFS (IndexedDB) — 10 GB</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        content.querySelectorAll('.inst-theme-card').forEach(card => {
+            card.onclick = () => {
+                config.theme = card.dataset.theme;
+                content.querySelectorAll('.inst-theme-card').forEach(c =>
+                    c.style.borderColor = c.dataset.theme === config.theme ? '#3b82f6' : '#333'
+                );
+            };
+        });
+
+        footer.innerHTML = '';
+        footer.appendChild(makeBtn('← Back', false, () => { step = 1; render(); }));
+        footer.appendChild(makeBtn('Install Now', true, () => { step = 3; render(); }));
+    }
+
+    async function renderInstall(content, footer) {
+        footer.innerHTML = '';
+        const cancelBtn = makeBtn('Cancel', false, () => closeWindow(windowId));
+        cancelBtn.id = 'inst-cancel';
+        footer.appendChild(cancelBtn);
+
+        content.innerHTML = `
+            <div style="text-align:center;padding:10px 0;">
+                <div id="inst-spinner" style="
+                    width:40px;height:40px;margin:0 auto 16px;
+                    border:3px solid rgba(255,255,255,0.1);
+                    border-top-color:#3b82f6;border-radius:50%;
+                    animation:_sdSpin 0.8s linear infinite;
+                "></div>
+                <div id="inst-heading" style="font-size:16px;font-weight:600;color:#fff;margin-bottom:6px;">
+                    Installing E-Dog OS...
+                </div>
+                <div id="inst-status" style="font-size:12px;color:#888;margin-bottom:20px;">
+                    Preparing disk...
+                </div>
+                <div style="width:100%;max-width:400px;margin:0 auto;height:6px;
+                            background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">
+                    <div id="inst-progress" style="
+                        width:0%;height:100%;background:#3b82f6;
+                        border-radius:3px;transition:width 0.3s ease;
+                    "></div>
+                </div>
+                <div id="inst-detail" style="font-size:11px;color:#555;margin-top:8px;"></div>
+            </div>
+            <div id="inst-log" style="
+                margin-top:20px; background:#0a0a0a;
+                border:1px solid #222; border-radius:6px;
+                padding:10px 12px; font-family:'Courier New',monospace;
+                font-size:11px; color:#4ade80;
+                max-height:150px; overflow-y:auto;
+            "></div>
+        `;
+
+        const progress = document.getElementById('inst-progress');
+        const status = document.getElementById('inst-status');
+        const detail = document.getElementById('inst-detail');
+        const log = document.getElementById('inst-log');
+        const heading = document.getElementById('inst-heading');
+        const spinner = document.getElementById('inst-spinner');
+
+        function setProgress(pct) { progress.style.width = pct + '%'; }
+        function setStatus(text) { status.textContent = text; }
+        function setDetail(text) { detail.textContent = text; }
+        function addLog(text) {
+            const line = document.createElement('div');
+            line.textContent = text;
+            log.appendChild(line);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // install
+        try {
+            setStatus('Fetching system package...');
+            setProgress(5);
+            addLog('Downloading setup.zip...');
+
+            let zip;
+            try {
+                const resp = await fetch('setup/setup.zip');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                setProgress(20);
+                const buf = await resp.arrayBuffer();
+                setProgress(30);
+                addLog('Unpacking archive...');
+                zip = await JSZip.loadAsync(buf);
+            } catch (fetchErr) {
+                addLog('setup.zip not available: ' + fetchErr.message);
+                addLog('Using fallback install...');
+                zip = null;
+            }
+
+            setStatus('Creating filesystem...');
+            setProgress(35);
+            addLog(`Creating VirtualFS_v2 for user "${config.username}"...`);
+
+            if (zip) {
+                // Use setup.js's extractor — handles icons, wallpapers, etc.
+                await extractZipToIDB(zip, config.username, (pct, msg) => {
+                    setProgress(35 + pct * 0.5);
+                    setDetail(msg);
+                    addLog(msg);
+                });
+            } else {
+                await fallbackInstall(config.username);
+            }
+
+            setProgress(88);
+            addLog('Filesystem populated.');
+
+            // Save user config to localStorage
+            setStatus('Configuring system...');
+            addLog(`Setting username: ${config.username}`);
+            addLog(`Setting hostname: ${config.computername}`);
+            addLog(`Setting theme: ${config.theme}`);
+
+            localStorage.setItem('edog_username', config.username);
+            localStorage.setItem('edog_computername', config.computername);
+            localStorage.setItem('edog_theme', config.theme);
+            if (config.password) {
+                localStorage.setItem('edog_password', config.password);
+            } else {
+                localStorage.removeItem('edog_password');
+            }
+            localStorage.setItem('edog_setup_done', 'true');
+            if (window.__setupVersion !== undefined) {
+                localStorage.setItem('edog_setup_version', window.__setupVersion);
+            }
+
+            setProgress(95);
+            await new Promise(r => setTimeout(r, 300));
+
+            setProgress(100);
+            addLog('Installation complete!');
+            await new Promise(r => setTimeout(r, 400));
+
+            // Show success
+            spinner.style.display = 'none';
+            heading.textContent = 'Installation Complete!';
+            heading.style.color = '#4ade80';
+            status.textContent = 'E-Dog OS has been installed to your hard drive.';
+            detail.textContent = '';
+
+            const cancelEl = document.getElementById('inst-cancel');
+            if (cancelEl) cancelEl.style.display = 'none';
+
+            const rebootBtn = makeBtn('Reboot Now', true, async () => {
+                await liveShutdown();
+                location.reload();
+            });
+            footer.appendChild(rebootBtn);
+
+            addLog('');
+            addLog('Ready to reboot. Remove installation media and restart.');
+        } catch (err) {
+            spinner.style.display = 'none';
+            heading.textContent = 'Installation Failed';
+            heading.style.color = '#f87171';
+            status.textContent = err.message;
+            addLog('ERROR: ' + err.message);
+
+            footer.appendChild(makeBtn('Close', false, () => closeWindow(windowId)));
+        }
+    }
+
+    render();
 }
 
-/* ============================================================
-   INTEGRATION — wrap window.__bootAndLogin
-   This file must be loaded AFTER boot.js and BEFORE script.js.
-============================================================ */
-const _origBoot = window.__bootAndLogin;
-window.__bootAndLogin = function (onReady) {
-    showPost(function () {
-        if (typeof _origBoot === 'function') _origBoot(onReady);
-        else onReady();
-    });
+/* ---- Wire into the boot sequence ---- */
+window.__bootAndLogin = async function (onReady) {
+    const isInstalled = await checkInstalled();
+
+    if (!isInstalled) {
+        // No OS installed — show BIOS, prompt for live CD
+        showBiosPost((overlay, addLine) => {
+            showNoBootDevice(overlay, addLine);
+        });
+        // onReady will be called after installation + reboot
+        // In live mode, we call it ourselves after initLiveOS
+        window.__onOsReady = onReady;
+    } else {
+        // OS is installed — normal boot
+        runBootSequence(() => {
+            window.__setupComplete.then(result => {
+                if (result && result.freshInstall) return;
+                showLoginScreen(onReady);
+            });
+        });
+    }
 };

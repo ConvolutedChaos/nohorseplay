@@ -3164,3 +3164,194 @@ body {
     padding-right: 8px;
     flex-shrink: 0;
 }
+
+/* Sidebar eject button */
+.sidebar-eject-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+
+.sidebar-eject-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+.favorites-list li:hover .sidebar-eject-btn {
+    opacity: 1;
+}
+
+.sidebar-eject-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f87171;
+}
+
+.app-window {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.app-window .title-bar {
+    flex-shrink: 0;
+}
+
+.app-window .app-body {
+    flex: 1;
+    min-height: 0;
+    height: auto !important;
+    /* override the calc() */
+}
+
+.app-window .toolbar {
+    flex-shrink: 0;
+}
+
+.app-window .content {
+    flex: 1;
+    min-height: 0;
+}
+
+.app-window .bottom-toolbar {
+    flex-shrink: 0;
+}
+
+.md-viewer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 36px 40px;
+    color: #d4d4d4;
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 800px;
+}
+
+.md-h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e8e8e8;
+    margin: 28px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.md-h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 24px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.md-h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #d8d8d8;
+    margin: 20px 0 8px;
+}
+
+.md-h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #d0d0d0;
+    margin: 16px 0 6px;
+}
+
+.md-h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #c8c8c8;
+    margin: 14px 0 6px;
+}
+
+.md-h6 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    margin: 12px 0 4px;
+}
+
+.md-p {
+    margin: 0 0 14px;
+}
+
+.md-hr {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 24px 0;
+}
+
+.md-link {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.md-link:hover {
+    text-decoration: underline;
+}
+
+.md-img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 8px 0;
+}
+
+.md-list {
+    margin: 0 0 14px;
+    padding-left: 24px;
+}
+
+.md-list li {
+    margin-bottom: 4px;
+}
+
+.md-blockquote {
+    border-left: 3px solid #444;
+    margin: 0 0 14px;
+    padding: 4px 16px;
+    color: #aaa;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0 4px 4px 0;
+}
+
+.md-codeblock {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.md-codeblock code {
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    color: #c8d4e0;
+}
+
+.md-inline-code {
+    background: #2a2a2a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #e8b4b8;
+}

@@ -1,13 +1,5 @@
 /* ============================================================
-   E-Dog OS — First-Run Setup Wizard
-   Include this BEFORE script.js in index.html.
-   Exposes: window.__setupComplete (Promise<{username}>)
-============================================================ */
-
-/* ============================================================
-   Shared DB opener for setup.js — always creates the schema.
-   Returns { db, brandNew } where brandNew=true means the
-   object store was just created (genuinely first run).
+    setup.js
 ============================================================ */
 function openSetupDB() {
     return new Promise((resolve, reject) => {
@@ -34,6 +26,14 @@ function openSetupDB() {
     });
 }
 
+// live environment
+// window.__setupComplete = (async function () {
+//     // The BIOS (bios.js) now handles the first-run experience
+//     // with the live CD → installer flow.
+//     // Setup.js just provides utility functions for the installer
+//     // and updater. Always resolve immediately.
+//     return { username: null, freshInstall: false };
+// })();
 
 window.__setupComplete = (async function () {
 
@@ -66,7 +66,6 @@ window.__setupComplete = (async function () {
         buildSetupUI(resolve);
     });
 })();
-
 
 /* ============================================================
    UI Builder — 4 steps: Welcome, Username, Password, Installing
