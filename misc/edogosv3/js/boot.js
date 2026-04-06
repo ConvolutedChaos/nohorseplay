@@ -121,12 +121,9 @@ function showLoginScreen(onLogin) {
     const overlay = document.createElement('div');
     overlay.id = 'loginOverlay';
 
-    // Replace the previous overlay.innerHTML block inside showLoginScreen(...) with this:
     overlay.innerHTML = `
-        <div class="login-bg-noise"></div>
-        <div class="login-bg-gradient"></div>
-
-        <div class="mint-wallpaper-overlay"></div>
+        <div class="login-blur-bg" id="loginBlurBg"></div>
+        <div class="login-dim"></div>
 
         <div class="mint-center-wrap">
             <div class="mint-login-card" role="dialog" aria-label="Login">
@@ -146,6 +143,7 @@ function showLoginScreen(onLogin) {
                     <div class="mint-username">${username}</div>
                 </div>
 
+                ${storedPw ? `
                 <label class="mint-pass-label">Password:</label>
                 <div class="mint-pass-wrap">
                     <input class="mint-password-input" id="loginPasswordInput" type="password" placeholder="" autocomplete="current-password">
@@ -156,10 +154,20 @@ function showLoginScreen(onLogin) {
                         <span class="mint-login-text">Log In</span>
                     </button>
                 </div>
-
+                <div id="loginError" class="login-error"></div>
                 <div class="mint-action-row">
                     <button class="mint-cancel-btn" id="loginCancelBtn">Cancel</button>
                 </div>
+                ` : `
+                <div class="mint-action-row mint-action-row-nopass">
+                    <button class="mint-login-btn mint-login-btn-full" id="loginSubmitBtn" title="Log In">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                        <span class="mint-login-text">Log In</span>
+                    </button>
+                </div>
+                `}
             </div>
         </div>
 
@@ -183,6 +191,15 @@ function showLoginScreen(onLogin) {
 
     document.body.appendChild(overlay);
 
+    // Apply the current desktop wallpaper as the blurred background
+    const blurBg = overlay.querySelector('#loginBlurBg');
+    const bodyBg = document.body.style.backgroundImage;
+    if (bodyBg) {
+        blurBg.style.backgroundImage = bodyBg;
+        blurBg.style.backgroundSize = document.body.style.backgroundSize || 'cover';
+        blurBg.style.backgroundPosition = document.body.style.backgroundPosition || 'center center';
+    }
+
     imgFromFS('/usr/share/icons/128/computer.svg').then(img => {
         const wrapper = overlay.querySelector('#computerIconWrapper');
         img.width = "56";
@@ -204,30 +221,13 @@ function showLoginScreen(onLogin) {
     const cancelBtn = overlay.querySelector('#loginCancelBtn');
     if (cancelBtn) {
         cancelBtn.addEventListener('click', () => {
-            const pwInput = document.getElementById('loginPasswordInput');
-            if (pwInput) pwInput.value = '';
+            overlay.querySelector('#loginPasswordInput').value = '';
         });
     }
 
-    // Clock update
-    function updateClock() {
-        const now = new Date();
-        const h = now.getHours().toString().padStart(2, '0');
-        const m = now.getMinutes().toString().padStart(2, '0');
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const months = ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'];
-        const clockEl = document.getElementById('loginClock');
-        const dateEl = document.getElementById('loginDate');
-        if (clockEl) clockEl.textContent = `${h}:${m}`;
-        if (dateEl) dateEl.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
-    }
-    updateClock();
-    const clockTimer = setInterval(updateClock, 1000);
-
     function doLogin() {
-        const inputEl = document.getElementById('loginPasswordInput');
-        const errorEl = document.getElementById('loginError');
+        const inputEl = overlay.querySelector('#loginPasswordInput');
+        const errorEl = overlay.querySelector('#loginError');
         const enteredPw = inputEl ? inputEl.value : '';
 
         if (storedPw && enteredPw !== storedPw) {
@@ -244,7 +244,6 @@ function showLoginScreen(onLogin) {
             return;
         }
 
-        clearInterval(clockTimer);
         overlay.style.transition = 'opacity 0.6s ease';
         overlay.style.opacity = '0';
         setTimeout(() => {
@@ -260,17 +259,11 @@ function showLoginScreen(onLogin) {
     if (pwInput) {
         pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
         setTimeout(() => pwInput.focus(), 400);
+    } else {
+        setTimeout(() => overlay.querySelector('#loginSubmitBtn')?.focus(), 400);
     }
 
-    overlay.querySelector('#loginPowerBtn')?.addEventListener('click', () => {
-        clearInterval(clockTimer);
-        shutdown();
-    });
-
-    overlay.querySelector('#loginRebootBtn')?.addEventListener('click', () => {
-        clearInterval(clockTimer);
-        reboot();
-    });
+    overlay.querySelector('#loginPowerBtn')?.addEventListener('click', () => shutdown());
 
     // Animate in
     requestAnimationFrame(() => {

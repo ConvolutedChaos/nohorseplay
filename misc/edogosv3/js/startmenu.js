@@ -70,6 +70,13 @@
             categories: ['all', 'system'],
             action: () => spawnAbout(),
         },
+        {
+            name: 'Changelog',
+            icon: '/usr/share/icons/32/settings-about.png',
+            emoji: 'ℹ',
+            categories: ['all', 'system'],
+            action: () => openCustomAppFromPath("/usr/share/changelog.app"),
+        },
     ];
 
     /* ── Category definitions ────────────────────────────── */
@@ -257,8 +264,7 @@
 
                     item.onclick = () => {
                         closeStartMenu();
-                        const wid = spawnWindow();
-                        setTimeout(() => navigateToPath(wid, place.path), 80);
+                        spawnWindow(null, place.path);
                     };
 
                     area.insertBefore(item, noRes);

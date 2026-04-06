@@ -275,6 +275,7 @@ function spawnWriter(item) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/writer.png" onerror="this.onerror=null;this.replaceWith(document.createTextNode('📝'))"> ${titleName} — Writer</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -287,8 +288,8 @@ function spawnWriter(item) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
-    win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     // Taskbar button
     const tbBtn = document.createElement('button');
@@ -299,15 +300,19 @@ function spawnWriter(item) {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
     };
-    tbBtn.oncontextmenu = (ev) => {
-        ev.preventDefault();
-        buildMenu(ev.clientX, ev.clientY, [{ label: "Close", icon: "close", action: () => closeWindow(windowId) }]);
-    };
     document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
     windows[windowId].taskbarBtn = tbBtn;
 
     const body = win.querySelector('.app-body');
-    _buildWriterBody(body, item, windowId, win);
+    const writerCleanup = _buildWriterBody(body, item, windowId, win);
+
+    function doCloseWriter() { writerCleanup?.(); closeWindow(windowId); }
+
+    win.querySelector('.window-close-button').onclick = doCloseWriter;
+    tbBtn.oncontextmenu = (ev) => {
+        ev.preventDefault();
+        buildMenu(ev.clientX, ev.clientY, [{ label: "Close", icon: "close", action: doCloseWriter }]);
+    };
 
     focusWindow(windowId);
     return windowId;
@@ -362,6 +367,9 @@ function _buildWriterBody(body, item, windowId, winEl) {
     const menubar = _el('div', 'wr-menubar');
     root.appendChild(menubar);
 
+    // Cleanup function — set later once listeners are registered
+    let writerCleanup = null;
+
     const menus = {
         'File': [
             { label: 'New', icon: 'newFile', shortcut: 'Ctrl+N', action: () => spawnWriter() },
@@ -375,7 +383,7 @@ function _buildWriterBody(body, item, windowId, winEl) {
             { sep: true },
             { label: 'Print', icon: 'print', shortcut: 'Ctrl+P', action: () => _wrPrint(page) },
             { sep: true },
-            { label: 'Close', action: () => closeWindow(windowId) },
+            { label: 'Close', action: () => { writerCleanup?.(); closeWindow(windowId); } },
         ],
         'Edit': [
             { label: 'Undo', icon: 'undo', shortcut: 'Ctrl+Z', action: () => _exec('undo') },
@@ -492,12 +500,13 @@ function _buildWriterBody(body, item, windowId, winEl) {
         menubar.appendChild(mi);
     }
 
-    document.addEventListener('mousedown', (e) => {
+    const _onMenuMousedown = (e) => {
         if (!menubar.contains(e.target)) {
             _closeWriterMenus(menubar);
             openDropdown = null;
         }
-    });
+    };
+    document.addEventListener('mousedown', _onMenuMousedown);
 
     // ── Toolbar ──────────────────────────────────────────────
     const toolbar = _el('div', 'wr-toolbar');
@@ -633,7 +642,8 @@ function _buildWriterBody(body, item, windowId, winEl) {
         if (!findInput.value) return;
         const html = page.innerHTML;
         const escaped = findInput.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        page.innerHTML = html.replace(new RegExp(escaped, 'g'), replInput.value);
+        const safeRepl = replInput.value.replace(/\$/g, '$$$$');
+        page.innerHTML = html.replace(new RegExp(escaped, 'g'), safeRepl);
         _markDirty(wrState, winEl);
     };
 
@@ -657,12 +667,18 @@ function _buildWriterBody(body, item, windowId, winEl) {
     page.addEventListener('input', () => _markDirty(wrState, winEl));
 
     // Update toolbar state on selection change
-    document.addEventListener('selectionchange', () => {
-        if (!document.activeElement || !page.contains(document.activeElement) && document.activeElement !== page) return;
+    const _onSelectionChange = () => {
+        if (!document.activeElement || (!page.contains(document.activeElement) && document.activeElement !== page)) return;
         btnBold.classList.toggle('active', document.queryCommandState('bold'));
         btnItalic.classList.toggle('active', document.queryCommandState('italic'));
         btnUnderline.classList.toggle('active', document.queryCommandState('underline'));
-    });
+    };
+    document.addEventListener('selectionchange', _onSelectionChange);
+
+    writerCleanup = () => {
+        document.removeEventListener('selectionchange', _onSelectionChange);
+        document.removeEventListener('mousedown', _onMenuMousedown);
+    };
 
     // ── Status bar ───────────────────────────────────────────
     const statusbar = _el('div', 'wr-statusbar');
@@ -745,6 +761,7 @@ function _buildWriterBody(body, item, windowId, winEl) {
     });
 
     page.focus();
+    return writerCleanup;
 }
 
 

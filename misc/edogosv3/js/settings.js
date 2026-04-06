@@ -264,7 +264,7 @@
    Wallpaper management
 ============================================================ */
 const WP_CHOICE_KEY = 'edog_wp_choice';  // 'theme' | 'none' | 'custom' | fs-path
-const WP_CUSTOM_KEY = 'edog_wp_data';    // base64 data URL for custom image
+const WP_CUSTOM_KEY = 'edog_wp_path';    // VFS path of user-uploaded wallpaper
 const WP_FIT_KEY = 'edog_wp_fit';     // cover | contain | 100% 100% | auto
 
 async function _applyWallpaperOverride() {
@@ -289,8 +289,13 @@ async function _applyWallpaperOverride() {
 
     if (choice === 'none') { _setWallpaper(null); return; }
     if (choice === 'custom') {
-        const data = localStorage.getItem(WP_CUSTOM_KEY);
-        if (data) _setWallpaper(`url("${data}")`);
+        const path = localStorage.getItem(WP_CUSTOM_KEY);
+        if (path) {
+            try {
+                const css = await imgFromFS(path, { background: true });
+                if (css) _setWallpaper(css);
+            } catch (e) { /* custom wallpaper missing from VFS — skip */ }
+        }
         return;
     }
     // Preset path stored in VFS
@@ -354,6 +359,7 @@ function spawnSettings(initialSection = 'appearance') {
         <div class="title-bar" data-winid="${windowId}">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/settings.png"> Settings</span>
         </div>
         <div class="settings-layout">
@@ -371,6 +377,7 @@ function spawnSettings(initialSection = 'appearance') {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -574,13 +581,18 @@ async function _buildWallpaperGrid(gridEl, actionsEl) {
     }
 
     /* ---- Custom wallpaper card ---- */
-    const customData = localStorage.getItem(WP_CUSTOM_KEY);
-    const customCard = _makeWpCard('custom', customData ? 'Custom' : 'Upload…', currentChoice === 'custom');
+    const customPath = localStorage.getItem(WP_CUSTOM_KEY);
+    const customCard = _makeWpCard('custom', customPath ? 'Custom' : 'Upload…', currentChoice === 'custom');
     const customPreview = customCard.querySelector('.settings-wp-preview');
     const customLabel = customCard.querySelector('.settings-wp-label');
 
-    if (customData) {
-        customPreview.style.cssText = `width:94px;height:58px;background-image:url("${customData}");background-size:cover;background-position:center;`;
+    if (customPath) {
+        customPreview.style.background = '#141414';
+        imgFromFS(customPath, { background: customPreview }).catch(() => {
+            customPreview.style.background = '#1a1a1a';
+            customPreview.innerHTML = '<span style="color:#444;font-size:10px;">N/A</span>';
+        });
+        customPreview.style.cssText = 'width:94px;height:58px;background-size:cover;background-position:center;';
     } else {
         customPreview.style.background = '#141414';
         customPreview.innerHTML = '<span style="color:#444;font-size:24px;line-height:1;">+</span>';
@@ -594,23 +606,40 @@ async function _buildWallpaperGrid(gridEl, actionsEl) {
     fileInput.style.display = 'none';
     actionsEl.appendChild(fileInput);
 
-    fileInput.onchange = (e) => {
+    fileInput.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const dataUrl = ev.target.result;
-            localStorage.setItem(WP_CUSTOM_KEY, dataUrl);
-            localStorage.setItem(WP_CHOICE_KEY, 'custom');
-            customPreview.style.cssText = `width:94px;height:58px;background-image:url("${dataUrl}");background-size:cover;background-position:center;`;
-            customPreview.innerHTML = '';
-            customLabel.textContent = 'Custom';
-            _deselectAllWpCards(gridEl);
-            customCard.classList.add('selected');
-            _refreshClearBtn();
-            applyTheme(localStorage.getItem('edog_theme') || 'dark');
-        };
-        reader.readAsDataURL(file);
+
+        const ext = (file.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+        const username = (typeof getUsername === 'function') ? getUsername() : 'user';
+        const vfsPath = `/home/${username}/.edogos/background.${ext}`;
+
+        const ab = await file.arrayBuffer();
+
+        // Write to VFS (overwrite if exists, create if not)
+        let node;
+        try {
+            node = await accessFile(vfsPath);
+        } catch {
+            node = await createFile(vfsPath);
+        }
+        node.content = ab;
+        node.size = ab.byteLength;
+        node.mime = file.type;
+        node.updatedAt = Date.now();
+        await idbPut(node);
+
+        localStorage.setItem(WP_CUSTOM_KEY, vfsPath);
+        localStorage.setItem(WP_CHOICE_KEY, 'custom');
+
+        const objUrl = URL.createObjectURL(new Blob([ab], { type: file.type }));
+        customPreview.style.cssText = `width:94px;height:58px;background-image:url("${objUrl}");background-size:cover;background-position:center;`;
+        customPreview.innerHTML = '';
+        customLabel.textContent = 'Custom';
+        _deselectAllWpCards(gridEl);
+        customCard.classList.add('selected');
+        _refreshClearBtn();
+        applyTheme(localStorage.getItem('edog_theme') || 'dark');
     };
 
     customCard.onclick = () => {
@@ -640,7 +669,14 @@ async function _buildWallpaperGrid(gridEl, actionsEl) {
         clearBtn.className = 'small-btn';
         clearBtn.textContent = 'Remove Custom';
         clearBtn.style.marginLeft = '8px';
-        clearBtn.onclick = () => {
+        clearBtn.onclick = async () => {
+            const path = localStorage.getItem(WP_CUSTOM_KEY);
+            if (path) {
+                try {
+                    const node = await accessFile(path);
+                    await idbDelete(node.id);
+                } catch { /* already gone */ }
+            }
             localStorage.removeItem(WP_CUSTOM_KEY);
             if (localStorage.getItem(WP_CHOICE_KEY) === 'custom') {
                 localStorage.setItem(WP_CHOICE_KEY, 'theme');
@@ -721,6 +757,11 @@ function _buildSystemSection(el) {
                 <button class="small-btn" id="sf-cname-save">Apply</button>
             </div>
         </div>
+        <div class="settings-group-label" style="margin-top:26px;">File Explorer</div>
+        <div class="settings-form-row" style="gap:10px;align-items:center;">
+            <input type="checkbox" id="sf-show-hidden" style="width:16px;height:16px;cursor:pointer;accent-color:#0c74df;" ${localStorage.getItem('edog_show_hidden') === 'true' ? 'checked' : ''}>
+            <label for="sf-show-hidden" style="cursor:pointer;user-select:none;">Show hidden files and folders (names starting with <code style="font-size:11px;background:#1a1a1a;padding:1px 4px;border-radius:3px;">.</code>)</label>
+        </div>
         <div class="settings-group-label" style="margin-top:26px;">Danger Zone</div>
         <div class="settings-danger-row">
             <button class="settings-danger-btn" id="sf-wipe">Wipe All Files &amp; Folders</button>
@@ -748,6 +789,11 @@ function _buildSystemSection(el) {
         </div>
         <div class="settings-form-hint" id="sf-usb-status" style="margin-top:6px;min-height:1em;"></div>
     `;
+
+    el.querySelector('#sf-show-hidden').onchange = (e) => {
+        localStorage.setItem('edog_show_hidden', e.target.checked ? 'true' : 'false');
+        if (typeof renderAllWindows === 'function') renderAllWindows();
+    };
 
     el.querySelector('#sf-uname-save').onclick = () => {
         const val = el.querySelector('#sf-uname').value.trim();

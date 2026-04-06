@@ -1,18 +1,5 @@
-/* ============================================================
-   E-Dog OS — System Updater
-   Loaded after setup.js, before script.js.
 
-   HOW TO USE:
-     1. Add/change files in setup.zip.
-     2. Bump SETUP_VERSION by 1 below.
-     3. Deploy. Returning users will automatically receive the
-        update on their next page load.
-
-   What gets updated: everything in setup.zip EXCEPT home/.
-   User files are never touched.
-============================================================ */
-
-const SETUP_VERSION = 10;
+const SETUP_VERSION = 13;
 window.__setupVersion = SETUP_VERSION;
 
 // window.__updateComplete = (async function () {

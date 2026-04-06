@@ -1,8 +1,10 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.2";
+const VERSION = "E-Dog OS 3.1.3";
 const DB_NAME = 'VirtualFS_v2';
+
+function showHiddenFiles() { return localStorage.getItem('edog_show_hidden') === 'true'; }
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
 let dbPromise;
@@ -1030,6 +1032,7 @@ const iconMap = {
         'msi': ['application-x-ms-dos-executable.svg', 'application-x-ms-dos-executable.png'],
         'html': ['html-x-generic.svg', 'html-x-generic.png'],
         'htm': ['html-x-generic.svg', 'html-x-generic.png'],
+        'mhtml': ['html-x-generic.svg', 'html-x-generic.png'],
         'css': ['css-x-generic.svg', 'css-x-generic.png'],
         'js': ['application-javascript.svg', 'application-javascript.svg'],
         'json': ['script-x-generic.svg', 'script-x-generic.png'],
@@ -1194,7 +1197,7 @@ async function buildFileIconWrapper(item) {
 ============================================================ */
 let winCount = 0;
 
-function spawnWindow(initialFolderId = null) {
+function spawnWindow(initialFolderId = null, initialPath = null) {
     const windowId = 'win_' + (++winCount);
     const username = getUsername();
     const homePath = `/home/${username}`;
@@ -1225,7 +1228,8 @@ function spawnWindow(initialFolderId = null) {
         <div class="title-bar" data-winid="${windowId}">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
-            <span class="title-bar-text">File Explorer</span>
+            <button class="window-maximize-button" title="Maximize">□</button>
+            <span id="fe-titleicon-${windowId}"></span><span class="title-bar-text">File Explorer</span>
         </div>
 
         <div class="toolbar">
@@ -1361,6 +1365,7 @@ function spawnWindow(initialFolderId = null) {
 
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     win.querySelector('.btn-back').onclick = () => goBack(windowId);
     win.querySelector('.btn-forward').onclick = () => goForward(windowId);
@@ -1465,7 +1470,7 @@ function spawnWindow(initialFolderId = null) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.textContent = '🗂 File Explorer ' + winCount;
+    tbBtn.innerHTML = `<span id="fe-tbicon-${windowId}"></span> File Explorer ${winCount}`;
     tbBtn.onclick = () => {
         if (win.style.display === 'none') {
             win.style.display = 'block';
@@ -1483,8 +1488,20 @@ function spawnWindow(initialFolderId = null) {
 
     windows[windowId].taskbarBtn = tbBtn;
 
+    const _feIconCss = 'width:16px;height:16px;object-fit:contain;';
+    loadIconImg('/usr/share/icons/16/folder.svg', './icons/16/folder.svg', _feIconCss).then(img => {
+        img.className = 'app-icon-title-bar';
+        win.querySelector(`#fe-titleicon-${windowId}`)?.appendChild(img);
+    });
+    loadIconImg('/usr/share/icons/16/folder.svg', './icons/16/folder.svg', _feIconCss).then(img => {
+        img.className = 'app-icon-title-bar';
+        tbBtn.querySelector(`#fe-tbicon-${windowId}`)?.appendChild(img);
+    });
+
     if (initialFolderId) {
         navigate(windowId, initialFolderId);
+    } else if (initialPath) {
+        navigateToPath(windowId, initialPath);
     } else {
         navigateToPath(windowId, homePath);
     }
@@ -1518,6 +1535,33 @@ function minimizeWindow(windowId) {
     }
 }
 
+function maximizeWindow(windowId) {
+    const win = windows[windowId];
+    if (!win) return;
+    const el = win.el;
+    const taskbarEl = document.getElementById('taskbar');
+    const TASKBAR_HEIGHT = taskbarEl ? taskbarEl.offsetHeight : 44;
+    const btn = el.querySelector('.window-maximize-button');
+    if (el.classList.contains('maximized')) {
+        el.classList.remove('maximized');
+        if (win.restoreRect) {
+            el.style.left = win.restoreRect.left;
+            el.style.top = win.restoreRect.top;
+            el.style.width = win.restoreRect.width;
+            el.style.height = win.restoreRect.height;
+        }
+        if (btn) { btn.textContent = '□'; btn.title = 'Maximize'; }
+    } else {
+        win.restoreRect = { left: el.style.left, top: el.style.top, width: el.style.width, height: el.style.height };
+        el.classList.add('maximized');
+        el.style.left = '0px';
+        el.style.top = '0px';
+        el.style.width = window.innerWidth + 'px';
+        el.style.height = (window.innerHeight - TASKBAR_HEIGHT) + 'px';
+        if (btn) { btn.textContent = '❐'; btn.title = 'Restore Down'; }
+    }
+}
+
 /* ============================================================
    Drag system
 ============================================================ */
@@ -1531,6 +1575,7 @@ function startDrag(e, winEl) {
         startY: e.clientY,
         origLeft: rect.left,
         origTop: rect.top,
+        wasMaximized: winEl.classList.contains('maximized'),
     };
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
@@ -1538,6 +1583,20 @@ function startDrag(e, winEl) {
 
 function onDrag(e) {
     if (!dragState) return;
+    // Defer unmaximize until actual movement so a single click never restores the window
+    if (dragState.wasMaximized) {
+        dragState.wasMaximized = false;
+        const winEl = dragState.el;
+        maximizeWindow(winEl.id);
+        winEl.style.left = Math.max(0, e.clientX - winEl.offsetWidth / 2) + 'px';
+        winEl.style.top = '0px';
+        const rect = winEl.getBoundingClientRect();
+        dragState.startX = e.clientX;
+        dragState.startY = e.clientY;
+        dragState.origLeft = rect.left;
+        dragState.origTop = rect.top;
+        return;
+    }
     const dx = e.clientX - dragState.startX;
     const dy = e.clientY - dragState.startY;
     const el = dragState.el;
@@ -1557,6 +1616,13 @@ function stopDrag() {
     document.removeEventListener('mouseup', stopDrag);
     if (window._mmOnStopDrag) window._mmOnStopDrag();
 }
+
+document.addEventListener('dblclick', e => {
+    const titleBar = e.target.closest('.title-bar');
+    if (!titleBar || e.target.closest('button')) return;
+    const win = titleBar.closest('.app-window');
+    if (win) maximizeWindow(win.id);
+});
 
 /* ============================================================
    Navigation (per-window)
@@ -1651,10 +1717,23 @@ async function renderWindow(windowId) {
     state.selectedIds = new Set();
     state.anchorId = null;
 
-    const list = await idbGetAllByIndex('parentId', state.currentFolderId);
+    let list = await idbGetAllByIndex('parentId', state.currentFolderId);
     const mainPanel = el.querySelector('.main-panel');
     mainPanel.innerHTML = '';
-    list.sort((a, b) => (a.type === b.type) ? a.name.localeCompare(b.name) : (a.type === 'folder' ? -1 : 1));
+    list.sort((a, b) => {
+        const groupOf = item => {
+            const isFolder = item.type === 'folder';
+            const isHidden = item.name.startsWith('.');
+            if (isFolder && !isHidden) return 0;
+            if (isFolder &&  isHidden) return 1;
+            if (!isFolder && !isHidden) return 2;
+            return 3;
+        };
+        const ga = groupOf(a), gb = groupOf(b);
+        if (ga !== gb) return ga - gb;
+        return a.name.localeCompare(b.name);
+    });
+    if (!showHiddenFiles()) list = list.filter(item => !item.name.startsWith('.'));
 
     const VIRTUAL_THRESHOLD = 200; // use virtual scrolling above this count
 
@@ -2090,7 +2169,7 @@ async function renderAllWindows() {
 const IMAGE_EXTS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico']);
 const VIDEO_EXTS = new Set(['mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv']);
 const AUDIO_EXTS = new Set(['mp3', 'wav', 'ogg']);
-const HTML_EXTS = new Set(['html', 'htm']);
+const HTML_EXTS = new Set(['html', 'htm', 'mhtml']);
 const ZIP_EXTS = new Set(['zip', 'jar', 'war', 'apk', 'epub', 'cbz']);
 const GAMES = new Set(['BasketballSimulator', 'ESU10', 'HighwayCam', 'OnEdge', 'PhysicsFun', 'PhysicsFunV2', 'PoliceSimulator', 'TornadoSimulator', 'WebCars', 'WebCarsV2', 'WebCarsV3', 'StoreSimulator']);
 const WRITER_EXTS = new Set(['edoc']);
@@ -2129,6 +2208,7 @@ function spawnApp(type, item) {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
                     <span class="title-bar-text">${appMeta.icon} ${appMeta.title}</span>
                 </div>
                 <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -2143,6 +2223,7 @@ function spawnApp(type, item) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -2174,35 +2255,207 @@ function spawnApp(type, item) {
 }
 
 function _buildEditorBody(body, item, windowId) {
-    const toolbar = document.createElement('div');
-    toolbar.style.cssText = 'display:flex;gap:6px;padding:6px 8px;background:#1a1a1a;border-bottom:1px solid #000;flex-shrink:0;';
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'small-btn';
-    saveBtn.textContent = '💾 Save';
-    const statusSpan = document.createElement('span');
-    statusSpan.style.cssText = 'color:#888;font-size:12px;align-self:center;margin-left:6px;';
-    statusSpan.textContent = item.name;
-    toolbar.appendChild(saveBtn);
-    toolbar.appendChild(statusSpan);
-    body.appendChild(toolbar);
+    // Inject styles once
+    if (!document.getElementById('editor-app-styles')) {
+        const s = document.createElement('style');
+        s.id = 'editor-app-styles';
+        s.textContent = `
+.ed-root { display:flex; flex-direction:column; height:100%; background:#1e1e1e; color:#d4d4d4; font-family:'Segoe UI',system-ui,sans-serif; font-size:13px; overflow:hidden; }
+.ed-menubar { display:flex; align-items:center; gap:0; background:#252526; border-bottom:1px solid #1a1a1a; height:28px; flex-shrink:0; padding:0 4px; }
+.ed-menu-item { padding:4px 10px; font-size:12px; color:#ccc; cursor:pointer; border-radius:3px; position:relative; white-space:nowrap; user-select:none; }
+.ed-menu-item:hover, .ed-menu-item.open { background:#3a3a3a; color:#fff; }
+.ed-dropdown { position:absolute; top:100%; left:0; z-index:9999; background:#2d2d2d; border:1px solid #404040; border-radius:6px; min-width:200px; box-shadow:0 8px 32px rgba(0,0,0,.6); padding:4px 0; display:none; }
+.ed-dropdown.open { display:block; }
+.ed-dd-item { display:flex; align-items:center; padding:6px 16px 6px 12px; font-size:12px; color:#ccc; cursor:pointer; white-space:nowrap; }
+.ed-dd-item:hover { background:#094771; color:#fff; }
+.ed-dd-item.disabled { color:#555; pointer-events:none; }
+.ed-dd-shortcut { margin-left:auto; padding-left:24px; color:#666; font-size:11px; }
+.ed-dd-sep { height:1px; background:#3a3a3a; margin:4px 8px; }
+.ed-textarea { flex:1; width:100%; box-sizing:border-box; background:#1e1e1e; color:#d4d4d4; border:none; outline:none; padding:12px; font-family:monospace; font-size:13px; line-height:1.5; resize:none; }
+.ed-find-bar { display:none; align-items:center; gap:6px; padding:4px 8px; background:#252526; border-top:1px solid #1a1a1a; flex-shrink:0; }
+.ed-find-bar.open { display:flex; }
+.ed-find-input { background:#333; color:#d4d4d4; border:1px solid #555; border-radius:3px; padding:3px 7px; font-size:12px; outline:none; width:180px; font-family:inherit; }
+.ed-find-input:focus { border-color:#007acc; }
+.ed-find-count { color:#888; font-size:11px; min-width:64px; }
+.ed-statusbar { display:flex; align-items:center; padding:0 10px; background:#007acc; color:#fff; font-size:11px; flex-shrink:0; height:22px; gap:16px; }
+.ed-statusbar-right { margin-left:auto; }
+`;
+        document.head.appendChild(s);
+    }
 
+    const root = document.createElement('div');
+    root.className = 'ed-root';
+    body.appendChild(root);
+
+    const winEl = document.getElementById(windowId);
+    let isDirty = false;
+
+    function setDirty(d) {
+        isDirty = d;
+        const tb = winEl?.querySelector('.title-bar-text');
+        if (tb) tb.innerHTML = `<img class="app-icon-title-bar" src="icons/16/text-editor.png"> ${d ? '● ' : ''}Text Editor — ${item.name || 'Untitled'}`;
+    }
+
+    // ── Menubar ──────────────────────────────────────────────
+    const menubar = document.createElement('div');
+    menubar.className = 'ed-menubar';
+    root.appendChild(menubar);
+
+    let openDropdown = null;
+    function closeMenus() {
+        menubar.querySelectorAll('.ed-dropdown').forEach(d => d.classList.remove('open'));
+        menubar.querySelectorAll('.ed-menu-item').forEach(m => m.classList.remove('open'));
+        openDropdown = null;
+    }
+
+    function makeMenu(label, entries) {
+        const mi = document.createElement('div');
+        mi.className = 'ed-menu-item';
+        mi.textContent = label;
+        const dd = document.createElement('div');
+        dd.className = 'ed-dropdown';
+        for (const entry of entries) {
+            if (entry.sep) { const sep = document.createElement('div'); sep.className = 'ed-dd-sep'; dd.appendChild(sep); continue; }
+            const row = document.createElement('div');
+            row.className = 'ed-dd-item' + (entry.disabled ? ' disabled' : '');
+            const lbl = document.createElement('span'); lbl.textContent = entry.label; row.appendChild(lbl);
+            if (entry.shortcut) { const sc = document.createElement('span'); sc.className = 'ed-dd-shortcut'; sc.textContent = entry.shortcut; row.appendChild(sc); }
+            row.onmousedown = (e) => { e.stopPropagation(); closeMenus(); if (!entry.disabled) entry.action(); };
+            dd.appendChild(row);
+        }
+        mi.appendChild(dd);
+        mi.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = dd.classList.contains('open'); closeMenus(); if (!isOpen) { dd.classList.add('open'); mi.classList.add('open'); openDropdown = dd; } });
+        mi.addEventListener('mouseenter', () => { if (openDropdown && openDropdown !== dd) { closeMenus(); dd.classList.add('open'); mi.classList.add('open'); openDropdown = dd; } });
+        menubar.appendChild(mi);
+    }
+
+    const outsideClose = (e) => { if (!menubar.contains(e.target)) closeMenus(); if (!document.contains(menubar)) document.removeEventListener('mousedown', outsideClose); };
+    document.addEventListener('mousedown', outsideClose);
+
+    // ── Textarea ─────────────────────────────────────────────
     const ta = document.createElement('textarea');
-    ta.style.cssText = 'flex:1;width:100%;box-sizing:border-box;background:#1e1e1e;color:#d4d4d4;border:none;outline:none;padding:12px;font-family:monospace;font-size:13px;line-height:1.5;resize:none;';
+    ta.className = 'ed-textarea';
     let text = '';
     if (item.content) {
         if (item.content instanceof ArrayBuffer) text = new TextDecoder().decode(item.content);
         else text = String(item.content);
     }
     ta.value = text;
-    body.appendChild(ta);
 
-    saveBtn.onclick = async () => {
+    // ── Find bar ─────────────────────────────────────────────
+    const findBar = document.createElement('div');
+    findBar.className = 'ed-find-bar';
+    const findInput = document.createElement('input');
+    findInput.className = 'ed-find-input';
+    findInput.placeholder = 'Find…';
+    findInput.type = 'text';
+    const findCount = document.createElement('span');
+    findCount.className = 'ed-find-count';
+    const findPrev = document.createElement('button');
+    findPrev.className = 'small-btn'; findPrev.textContent = '↑'; findPrev.title = 'Previous';
+    const findNext = document.createElement('button');
+    findNext.className = 'small-btn'; findNext.textContent = '↓'; findNext.title = 'Next';
+    const findClose = document.createElement('button');
+    findClose.className = 'small-btn'; findClose.textContent = '✕';
+    findBar.append(findInput, findCount, findPrev, findNext, findClose);
+
+    let findMatches = [], findIdx = -1;
+    function doFind() {
+        const q = findInput.value;
+        findMatches = [];
+        if (!q) { findCount.textContent = ''; return; }
+        const val = ta.value, qLow = q.toLowerCase();
+        let i = 0;
+        while ((i = val.toLowerCase().indexOf(qLow, i)) !== -1) { findMatches.push(i); i += qLow.length; }
+        if (!findMatches.length) { findCount.textContent = 'No results'; findIdx = -1; return; }
+        findIdx = 0; selectFindMatch();
+    }
+    function selectFindMatch() {
+        if (!findMatches.length) return;
+        findIdx = ((findIdx % findMatches.length) + findMatches.length) % findMatches.length;
+        const pos = findMatches[findIdx];
+        ta.focus(); ta.setSelectionRange(pos, pos + findInput.value.length);
+        findCount.textContent = `${findIdx + 1} / ${findMatches.length}`;
+    }
+    findInput.addEventListener('input', doFind);
+    findInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { findIdx += e.shiftKey ? -1 : 1; selectFindMatch(); e.preventDefault(); } if (e.key === 'Escape') { findBar.classList.remove('open'); ta.focus(); } });
+    findPrev.onclick = () => { findIdx--; selectFindMatch(); };
+    findNext.onclick = () => { findIdx++; selectFindMatch(); };
+    findClose.onclick = () => { findBar.classList.remove('open'); ta.focus(); };
+
+    function toggleFind() {
+        if (findBar.classList.contains('open')) { findBar.classList.remove('open'); ta.focus(); }
+        else { findBar.classList.add('open'); findInput.value = ''; findCount.textContent = ''; requestAnimationFrame(() => findInput.focus()); }
+    }
+
+    // ── Status bar ───────────────────────────────────────────
+    const statusbar = document.createElement('div');
+    statusbar.className = 'ed-statusbar';
+    const statusPos = document.createElement('span');
+    const statusChars = document.createElement('span');
+    statusChars.className = 'ed-statusbar-right';
+    statusbar.append(statusPos, statusChars);
+
+    function updateStatus() {
+        const val = ta.value, sel = ta.selectionStart;
+        const lines = val.substring(0, sel).split('\n');
+        statusPos.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
+        statusChars.textContent = `${val.length} chars`;
+    }
+
+    // ── Actions ───────────────────────────────────────────────
+    async function doSave() {
+        if (!item.id) { doDownload(); return; }
         item.content = ta.value;
         item.updatedAt = Date.now();
         await idbPut(item);
-        statusSpan.textContent = '✓ Saved';
-        setTimeout(() => statusSpan.textContent = item.name, 2000);
-    };
+        setDirty(false);
+    }
+    function doDownload() {
+        const blob = new Blob([ta.value], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = item.name || 'untitled.txt'; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // ── Menus ─────────────────────────────────────────────────
+    makeMenu('File', [
+        { label: 'New',      shortcut: 'Ctrl+N', action: () => spawnApp('editor', {}) },
+        { sep: true },
+        { label: item.id ? 'Save' : 'Save (no file)',  shortcut: 'Ctrl+S', disabled: !item.id, action: doSave },
+        { label: 'Download', action: doDownload },
+        { sep: true },
+        { label: 'Close',    action: () => closeWindow(windowId) },
+    ]);
+    makeMenu('Edit', [
+        { label: 'Undo',       shortcut: 'Ctrl+Z', action: () => { ta.focus(); document.execCommand('undo'); } },
+        { label: 'Redo',       shortcut: 'Ctrl+Y', action: () => { ta.focus(); document.execCommand('redo'); } },
+        { sep: true },
+        { label: 'Cut',        shortcut: 'Ctrl+X', action: () => { ta.focus(); document.execCommand('cut'); } },
+        { label: 'Copy',       shortcut: 'Ctrl+C', action: () => { ta.focus(); document.execCommand('copy'); } },
+        { label: 'Paste',      shortcut: 'Ctrl+V', action: () => { ta.focus(); document.execCommand('paste'); } },
+        { sep: true },
+        { label: 'Select All', shortcut: 'Ctrl+A', action: () => { ta.focus(); ta.select(); } },
+        { sep: true },
+        { label: 'Find…',      shortcut: 'Ctrl+F', action: toggleFind },
+    ]);
+
+    // ── Assemble ──────────────────────────────────────────────
+    root.append(ta, findBar, statusbar);
+
+    ta.addEventListener('input', () => { if (!isDirty) setDirty(true); updateStatus(); });
+    ta.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); doSave(); }
+        if (e.ctrlKey && e.key === 'f') { e.preventDefault(); toggleFind(); }
+        if (e.ctrlKey && e.key === 'n') { e.preventDefault(); spawnApp('editor', {}); }
+    });
+    ta.addEventListener('click', updateStatus);
+    ta.addEventListener('keyup', updateStatus);
+
+    updateStatus();
+    setDirty(false);
+    ta.focus();
 }
 
 function _buildImageBody(body, item) {
@@ -3196,6 +3449,7 @@ function spawnCustomApp(item) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text"><img class="app-icon-title-bar" alt="${customIcon} icon" src="../../../icons/even_more_icons/${customIcon}.png"> ${name}</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
@@ -3205,6 +3459,7 @@ function spawnCustomApp(item) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text">${icon} ${name}</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
@@ -3220,6 +3475,7 @@ function spawnCustomApp(item) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     // Render content in a sandboxed iframe
     const iframe = document.createElement('iframe');
@@ -4770,7 +5026,18 @@ function buildMenu(x, y, entries) {
     menuEl.style.left = x + 'px';
     menuEl.style.top = y + 'px';
 
-    for (const entry of entries) {
+    // Collapse adjacent/leading/trailing separators
+    const filtered = [];
+    for (const e of entries) {
+        if (!e) {
+            if (filtered.length && filtered[filtered.length - 1]) filtered.push(null);
+        } else {
+            filtered.push(e);
+        }
+    }
+    if (filtered.length && !filtered[filtered.length - 1]) filtered.pop();
+
+    for (const entry of filtered) {
         if (!entry) {
             const sep = document.createElement('hr');
             sep.className = 'ctx-sep';
@@ -4994,6 +5261,7 @@ function spawnBaconBrowser(url) {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
                     <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Explorer</span>
                 </div>
                 <div class="app-body" style="height:calc(100% - 42px);overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -5008,6 +5276,7 @@ function spawnBaconBrowser(url) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -5056,6 +5325,7 @@ function spawnTerminal(startPath) {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
                     <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/terminal.png"> Terminal</span>
                 </div>
                 <div class="app-body" style="height:calc(100% - 42px);overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -5070,6 +5340,7 @@ function spawnTerminal(startPath) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -5429,7 +5700,23 @@ async function _buildTerminalBody(body, windowId, winEl, startPath) {
                         if (!rmForce) print(`rm: cannot remove '${target}': No such file or directory`, 'output-error');
                         continue;
                     }
-                    //if (resolved.id === 'root') { print(`rm: cannot remove '${target}': Permission denied`, 'output-error'); continue; }
+                    if (resolved.id === 'root') {
+                        spawnWarning(
+                            `rm: remove the root directory '/'? This will wipe the entire filesystem.`,
+                            [
+                                {
+                                    label: 'Delete',
+                                    style: 'danger',
+                                    onClick: async () => {
+                                        await recursiveDelete('root');
+                                        await renderAllWindows();
+                                    }
+                                },
+                                { label: 'Cancel' }
+                            ]
+                        );
+                        continue;
+                    }
                     if (resolved.id === termState.cwdId) { print(`rm: cannot remove '${target}': Device or resource busy`, 'output-error'); continue; }
                     const node = await idbGet(resolved.id);
                     if (!node) {
@@ -5680,6 +5967,7 @@ function _makePropsShell(title, w, h) {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
                     <span class="title-bar-text">Properties — ${title}</span>
                 </div>
                 <div class="props-body" style="height:calc(100% - 42px);"></div>
@@ -5694,6 +5982,7 @@ function _makePropsShell(title, w, h) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -6060,10 +6349,16 @@ function parseMarkdown(src) {
     src = src.replace(/^[-*_]{3,}\s*$/gm, '<hr class="md-hr">');
 
     // Images (before links so ![...](...) isn't caught by link regex)
-    src = src.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img class="md-img" src="$2" alt="$1">');
+    src = src.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
+        if (/^javascript:/i.test(url) || /^data:/i.test(url)) return '';
+        return `<img class="md-img" src="${url}" alt="${alt}">`;
+    });
 
     // Links
-    src = src.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a class="md-link" href="$2" target="_blank">$1</a>');
+    src = src.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+        const safe = /^javascript:/i.test(url) || /^data:/i.test(url) ? '#' : url;
+        return `<a class="md-link" href="${safe}" target="_blank">${text}</a>`;
+    });
 
     // Bold + italic
     src = src.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
@@ -6356,6 +6651,7 @@ function spawnAbout() {
                 <div class="title-bar">
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
                     <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/info.png"> About</span>
                 </div>
                 <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -6370,6 +6666,7 @@ function spawnAbout() {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -6420,6 +6717,7 @@ function spawnGame(gameName) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/applications-games.png"> ${gameName}</span>
         </div>
         <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
@@ -6434,6 +6732,7 @@ function spawnGame(gameName) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
@@ -6923,19 +7222,15 @@ async function startMenuAction(action) {
     } else if (action === 'newFile') {
         const userDirId = await getUserDirId();
         if (!userDirId) return;
-        const wid = spawnWindow();
-        setTimeout(async () => {
-            await navigateToPath(wid, homePath);
-            await createItemInline('file', userDirId, wid);
-        }, 80);
+        const wid = spawnWindow(null, homePath);
+        await navigateToPath(wid, homePath);
+        await createItemInline('file', userDirId, wid);
     } else if (action === 'newFolder') {
         const userDirId = await getUserDirId();
         if (!userDirId) return;
-        const wid = spawnWindow();
-        setTimeout(async () => {
-            await navigateToPath(wid, homePath);
-            await createItemInline('folder', userDirId, wid);
-        }, 80);
+        const wid = spawnWindow(null, homePath);
+        await navigateToPath(wid, homePath);
+        await createItemInline('folder', userDirId, wid);
     } else if (action === 'settings') {
         alert('Settings — coming soon!');
     } else if (action === 'about') {
@@ -6955,10 +7250,9 @@ async function startMenuAction(action) {
     }
 }
 
-async function startOpenFolder(path) {
+function startOpenFolder(path) {
     closeStartMenu();
-    const wid = spawnWindow();
-    setTimeout(() => navigateToPath(wid, path), 80);
+    spawnWindow(null, path);
 }
 
 /* ============================================================
@@ -7107,6 +7401,9 @@ async function initWiFiIcon() {
 
         // Run system update check for returning users (no-op on fresh installs)
         await (window.__updateComplete ?? Promise.resolve());
+
+        document.getElementById('virtualDesktop').style.visibility = 'visible';
+        document.getElementById('taskbar').style.visibility = 'visible';
 
         if (setupResult && setupResult.freshInstall) {
             // Fresh install already completed via setup — just open home

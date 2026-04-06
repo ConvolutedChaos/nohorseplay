@@ -708,6 +708,7 @@ function spawnGameRunner(sceneData, gameName) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text">▶ ${gameName || 'Game'}</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;background:#000;"></div>`;
@@ -716,6 +717,7 @@ function spawnGameRunner(sceneData, gameName) {
     win.querySelector('.title-bar').addEventListener('mousedown', e => { if (!e.target.closest('button')) startDrag(e, win); });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
     const tbBtn = document.createElement('button'); tbBtn.className = 'win-btn'; tbBtn.dataset.winid = windowId;
     tbBtn.textContent = `▶ ${gameName || 'Game'}`;
     tbBtn.onclick = () => { if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); } else focusWindow(windowId); };
@@ -792,6 +794,7 @@ function spawnGameEngine(fileItem) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text">⚙ E-Dog Engine</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>`;
@@ -800,6 +803,7 @@ function spawnGameEngine(fileItem) {
     win.querySelector('.title-bar').addEventListener('mousedown', e => { if (!e.target.closest('button')) startDrag(e, win); });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
     const tbBtn = document.createElement('button'); tbBtn.className = 'win-btn'; tbBtn.dataset.winid = windowId;
     tbBtn.innerHTML = '⚙ E-Dog Engine';
     tbBtn.onclick = () => { if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); } else focusWindow(windowId); };

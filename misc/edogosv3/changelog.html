@@ -158,8 +158,9 @@
 		}
 
 		.changes li {
-			display: flex;
-			align-items: flex-start;
+			display: grid;
+			grid-template-columns: auto 1fr;
+			align-items: start;
 			gap: 10px;
 			font-size: 0.95rem;
 			line-height: 1.55;
@@ -230,19 +231,70 @@
 		</header>
 
 		<div class="timeline">
-
+			<!-- v3.1.3 -->
+			<div class="release">
+				<div class="release-header">
+					<span class="version">v3.1.3</span>
+					<span class="date">April 5, 2026</span>
+				</div>
+				<ul class="changes">
+					<li><span class="tag new">New</span> Added the IDE, which can be used to write apps for E-Dog OS
+					</li>
+					<li><span class="tag new">New</span> Added hidden files in the file explorer</li>
+					<li><span class="tag fix">Fix</span> Fixed the title overlapping with the buttons (Aero Theme)</li>
+					<li><span class="tag fix">Fix</span> Fixed the bottom bar overlapping with the files (File Explorer)
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed Writer, Paint, and Settings not having any maximize
+						buttons</li>
+					<li><span class="tag fix">Fix</span> The preview would not expand when maximized (Markdown Viewer)
+					</li>
+					<li><span class="tag improved">Improved</span> Settings now supports uploaded wallpapers over 3MB
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed a find-replace error (Writer)
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed a URL error (Markdown Viewer)
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed an error where the file explorer would not load
+						sometimes.
+					</li>
+					<li><span class="tag improved">Improved</span> If you run <code>rm -r /</code>, the system will now
+						ask you.
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed a problem where more than one line would appear in the
+						context menu</li>
+					<li><span class="tag new">New</span> The file explorer now has an icon</li>
+					<li><span class="tag fix">Fix</span> Wrong password now shows an error message on the login screen
+					</li>
+					<li><span class="tag fix">Fix</span> Fixed a <code>setInterval</code> leak — the login screen clock
+						timer was not always stopped when the overlay was removed</li>
+					<li><span class="tag fix">Fix</span> Removed dead <code>#loginRebootBtn</code> listener that
+						silently never fired</li>
+					<li><span class="tag fix">Fix</span> Removed dead <code>#loginClock</code> / <code>#loginDate</code>
+						queries in the login screen that referenced elements which did not exist</li>
+					<li><span class="tag fix">Fix</span> Fixed a memory leak where <code>selectionchange</code> and
+						<code>mousedown</code> listeners added by Writer were never removed when the window was closed
+					</li>
+				</ul>
+			</div>
+			<!-- v3.1.2 -->
 			<div class="release">
 				<div class="release-header">
 					<span class="version">v3.1.2</span>
 					<span class="date">April 4, 2026</span>
 				</div>
 				<ul class="changes">
-					<li><span class="tag new">New</span> Added all-purpose <code title="This command can be used to remove a file or folder.">rm</code> command in the terminal</li>
+					<li><span class="tag new">New</span> Added all-purpose <code
+							title="This command can be used to remove a file or folder.">rm</code> command in the
+						terminal</li>
 					<li><span class="tag new">New</span> Added USB support (Go to Settings)</li>
 					<li><span class="tag new">New</span> Added multiple monitor support</li>
 					<li><span class="tag new">New</span> Added recycle bin support</li>
 					<li><span class="tag improved">Improved</span> Improved custom app support</li>
-					<li><span class="tag improved">Improved</span> Improved zip file opening, will now open as a new volume in the file manager</li>
+					<li><span class="tag improved">Improved</span> Improved zip file opening, will now open as a new
+						volume in the file manager. The old archive manager still exists.</li>
+					<li><span class="tag new">New</span> Windows can now be maximized via a maximize button or by
+						double-clicking the title bar. Dragging a maximized window restores it.</li>
+					<li><span class="tag new">New</span> Added a changelog app.</li>
 				</ul>
 			</div>
 		</div>

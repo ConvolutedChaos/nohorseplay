@@ -536,6 +536,7 @@ function spawnPaint(fileItem) {
         <div class="title-bar">
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
+            <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text">
                 <img class="app-icon-title-bar" src="icons/16/paint.png"
                      onerror="this.style.display='none'"> ${titleText}
@@ -553,6 +554,7 @@ function spawnPaint(fileItem) {
     });
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
+    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
 
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';

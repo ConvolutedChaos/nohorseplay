@@ -743,23 +743,15 @@ async function runInstallerWizard(body, windowId) {
 
 /* ---- Wire into the boot sequence ---- */
 window.__bootAndLogin = async function (onReady) {
-    const isInstalled = await checkInstalled();
+    // Live preview / installer path is not active yet.
+    // All the infrastructure (checkInstalled, bootLiveSession, spawnInstaller, etc.)
+    // is preserved above and can be wired back in when ready.
 
-    if (!isInstalled) {
-        // No OS installed — show BIOS, prompt for live CD
-        showBiosPost((overlay, addLine) => {
-            showNoBootDevice(overlay, addLine);
+    // Always do the normal boot for now.
+    runBootSequence(() => {
+        window.__setupComplete.then(result => {
+            if (result && result.freshInstall) return;
+            showLoginScreen(onReady);
         });
-        // onReady will be called after installation + reboot
-        // In live mode, we call it ourselves after initLiveOS
-        window.__onOsReady = onReady;
-    } else {
-        // OS is installed — normal boot
-        runBootSequence(() => {
-            window.__setupComplete.then(result => {
-                if (result && result.freshInstall) return;
-                showLoginScreen(onReady);
-            });
-        });
-    }
+    });
 };

@@ -139,10 +139,7 @@
 
         switch (msg.winType) {
             case 'fileExplorer':
-                winId = spawnWindow();
-                if (msg.currentFolderId) {
-                    setTimeout(() => navigate(winId, msg.currentFolderId), 80);
-                }
+                winId = spawnWindow(msg.currentFolderId || null);
                 break;
             case 'editor': case 'image': case 'video':
             case 'audio':  case 'zip':   case 'markdown': case 'bacon':
