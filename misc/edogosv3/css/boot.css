@@ -2,6 +2,69 @@
    E-Dog OS — Boot Screen & Login Screen Styles
 ============================================================ */
 
+/* ---- BIOS Font ---- */
+@font-face {
+    font-family: 'BiosFont';
+    src: url('../biosfont.woff2') format('woff2'),
+         url('../biosfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* ---- Blue Screen of Death ---- */
+#bsodOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999999;
+    background: #0000aa;
+    color: #aaaaaa;
+    font-family: 'BiosFont', 'Courier New', monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.bsod-inner {
+    width: 100%;
+    height: 100%;
+    padding: 28px 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.bsod-header {
+    background: #aaaaaa;
+    color: #0000aa;
+    padding: 2px 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-family: 'BiosFont', 'Courier New', monospace;
+    font-size: 16px;
+}
+
+.bsod-body {
+    color: #aaaaaa;
+    white-space: pre-wrap;
+    font-family: 'BiosFont', 'Courier New', monospace;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.bsod-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1em;
+    background: #aaaaaa;
+    vertical-align: text-bottom;
+    animation: bsod-blink 1s step-end infinite;
+}
+
+@keyframes bsod-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
 /* ---- BOOT OVERLAY ---- */
 #bootOverlay {
     position: fixed;

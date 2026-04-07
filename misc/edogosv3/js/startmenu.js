@@ -154,6 +154,8 @@
 
             const iconSpan = document.createElement('span');
             iconSpan.className = 'sm-cat-icon';
+            iconSpan.dataset.catIcon = cat.icon;
+            iconSpan.dataset.catSvg = cat.svg;
 
             // Append the img from imgFromFS
             imgFromFS(cat.icon).then(img => {
@@ -367,9 +369,23 @@
         // Initial render
         renderApps();
 
+        // Retry loading category icons that only have an SVG fallback
+        function reloadCategoryIcons() {
+            catSidebar.querySelectorAll('.sm-cat-icon').forEach(iconSpan => {
+                if (iconSpan.querySelector('img')) return; // already loaded
+                const iconPath = iconSpan.dataset.catIcon;
+                if (!iconPath) return;
+                imgFromFS(iconPath).then(img => {
+                    iconSpan.innerHTML = '';
+                    iconSpan.appendChild(img);
+                }).catch(() => { /* keep SVG fallback */ });
+            });
+        }
+
         // Focus search on open
         const observer = new MutationObserver(() => {
             if (menu.classList.contains('open')) {
+                reloadCategoryIcons();
                 searchInput.value = '';
                 renderApps();
                 setTimeout(() => searchInput.focus(), 50);

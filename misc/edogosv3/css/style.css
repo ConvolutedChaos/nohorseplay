@@ -524,6 +524,17 @@ body {
     object-fit: contain;
 }
 
+img.preview-thumb, canvas.preview-thumb {
+    max-width: calc(var(--img-size));
+    max-height: calc(var(--img-size));
+    width: auto;
+    height: auto;
+    display: block;
+    margin: auto;
+    border-radius: 3px;
+    object-fit: contain;
+}
+
 .item .iconFallback {
     font-size: 36px;
     line-height: calc(var(--img-size));

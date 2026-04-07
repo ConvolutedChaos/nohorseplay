@@ -314,6 +314,58 @@ async function reboot() {
     location.reload();
 }
 
+/* ---- Blue Screen of Death ---- */
+function showBSOD(errorCode, errorName) {
+    errorCode = errorCode || '0x0000000A';
+    errorName = errorName || 'IRQL_NOT_LESS_OR_EQUAL';
+
+    const existing = document.getElementById('bsodOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'bsodOverlay';
+
+    const addr = '0x' + Math.floor(Math.random() * 0xFFFFFFFF)
+        .toString(16).toUpperCase().padStart(8, '0');
+
+    const p1 = '0x' + Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase().padStart(8, '0');
+    const p2 = '0x' + Math.floor(Math.random() * 0xFF).toString(16).toUpperCase().padStart(8, '0');
+
+    overlay.innerHTML = `
+<div class="bsod-inner">
+  <div class="bsod-header"> E-Dog OS </div>
+  <div class="bsod-body">A fatal exception ${errorCode} has occurred at ${addr} in
+VXD EDogKernel(01). The current application will be
+terminated.
+
+  *  Press any key to terminate the current application.
+  *  Press CTRL+ALT+DEL to restart your computer. You will
+     lose any unsaved information in all applications.
+
+*** STOP: ${errorCode} (${p1}, ${p2}, 0x00000000, 0x00000000)
+    ${errorName}
+
+Beginning dump of virtual memory...
+Virtual memory dump complete.
+Contact your system administrator or technical support group
+for further assistance.
+
+Press any key to continue <span class="bsod-cursor"></span></div>
+</div>`;
+
+    document.body.appendChild(overlay);
+
+    function onKey() {
+        document.removeEventListener('keydown', onKey);
+        overlay.style.transition = 'opacity 0.3s';
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.remove(); location.reload(); }, 300);
+    }
+    document.addEventListener('keydown', onKey);
+}
+
+window.showBSOD = showBSOD;
+
 function _opStart() {
     _pendingOps++;
     turnOnDriveLight();
@@ -1157,6 +1209,108 @@ function wireUpSidebarIcons(containerEl) {
     });
 }
 
+/* ============================================================
+   File preview thumbnails (images, GIFs, videos)
+============================================================ */
+function _getPreviewType(item) {
+    if (item.type !== 'file') return null;
+    const ext = (item.name.split('.').pop() || '').toLowerCase();
+    if (IMAGE_EXTS.has(ext) || item.mime?.startsWith('image/')) return ext === 'gif' ? 'gif' : 'image';
+    if (VIDEO_EXTS.has(ext) || item.mime?.startsWith('video/')) return 'video';
+    return null;
+}
+
+async function _buildFilePreview(item) {
+    const previewType = _getPreviewType(item);
+    if (!previewType) return null;
+
+    const raw = item.content;
+    if (raw === null || raw === undefined) return null;
+
+    const ext = (item.name.split('.').pop() || '').toLowerCase();
+    let mime = item.mime || '';
+    if (!mime) {
+        if (previewType === 'video') mime = ext === 'mov' ? 'video/quicktime' : `video/${ext}`;
+        else if (ext === 'svg') mime = 'image/svg+xml';
+        else mime = `image/${ext}`;
+    }
+
+    const blobData = typeof raw === 'string' ? new TextEncoder().encode(raw) : raw;
+    const blob = new Blob([blobData], { type: mime });
+    const url = URL.createObjectURL(blob);
+
+    try {
+        if (previewType === 'image') {
+            return await new Promise((resolve, reject) => {
+                const img = document.createElement('img');
+                img.className = 'preview-thumb';
+                img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(); };
+                img.src = url;
+            });
+        }
+
+        if (previewType === 'gif') {
+            // Draw first frame to canvas so the GIF doesn't animate
+            return await new Promise((resolve, reject) => {
+                const img = document.createElement('img');
+                img.onload = () => {
+                    try {
+                        const size = parseInt(getComputedStyle(document.documentElement)
+                            .getPropertyValue('--img-size')) || 64;
+                        const w = img.naturalWidth || img.width || 1;
+                        const h = img.naturalHeight || img.height || 1;
+                        const scale = Math.min(size / w, size / h, 1);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(w * scale);
+                        canvas.height = Math.round(h * scale);
+                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.className = 'preview-thumb';
+                        URL.revokeObjectURL(url);
+                        resolve(canvas);
+                    } catch (e) { URL.revokeObjectURL(url); reject(e); }
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(); };
+                img.src = url;
+            });
+        }
+
+        if (previewType === 'video') {
+            // Seek to first frame and draw to canvas
+            return await new Promise((resolve, reject) => {
+                const video = document.createElement('video');
+                video.muted = true;
+                video.preload = 'metadata';
+                let settled = false;
+                const finish = (fn) => { if (settled) return; settled = true; video.src = ''; URL.revokeObjectURL(url); fn(); };
+                video.onseeked = () => finish(() => {
+                    try {
+                        const size = parseInt(getComputedStyle(document.documentElement)
+                            .getPropertyValue('--img-size')) || 64;
+                        const w = video.videoWidth || 1;
+                        const h = video.videoHeight || 1;
+                        const scale = Math.min(size / w, size / h, 1);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(w * scale);
+                        canvas.height = Math.round(h * scale);
+                        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                        canvas.className = 'preview-thumb';
+                        resolve(canvas);
+                    } catch (e) { reject(e); }
+                });
+                video.onloadedmetadata = () => { video.currentTime = 0.001; };
+                video.onerror = () => finish(() => reject());
+                setTimeout(() => finish(() => reject(new Error('timeout'))), 8000);
+                video.src = url;
+            });
+        }
+    } catch {
+        URL.revokeObjectURL(url);
+        return null;
+    }
+    return null;
+}
+
 async function buildFileIconWrapper(item) {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = 'height:calc(var(--img-size));display:flex;align-items:center;justify-content:center;';
@@ -1180,15 +1334,27 @@ async function buildFileIconWrapper(item) {
             const img = await loadIconImg(fsPath, webPath);
             img.className = 'icon-img';
             wrapper.appendChild(img);
-            return wrapper;
+            break;
         } catch { }
     }
 
-    // All candidates failed — emoji fallback
-    const fallback = document.createElement('div');
-    fallback.className = 'iconFallback';
-    fallback.textContent = item.type === 'folder' ? '📁' : '📄';
-    wrapper.appendChild(fallback);
+    if (!wrapper.children.length) {
+        // All candidates failed — emoji fallback
+        const fallback = document.createElement('div');
+        fallback.className = 'iconFallback';
+        fallback.textContent = item.type === 'folder' ? '📁' : '📄';
+        wrapper.appendChild(fallback);
+    }
+
+    // Async preview: replaces icon once thumbnail is ready
+    if (_getPreviewType(item)) {
+        _buildFilePreview(item).then(previewEl => {
+            if (!previewEl) return;
+            wrapper.innerHTML = '';
+            wrapper.appendChild(previewEl);
+        }).catch(() => {});
+    }
+
     return wrapper;
 }
 
@@ -7247,6 +7413,8 @@ async function startMenuAction(action) {
         reboot();
     } else if (action === 'shutdown') {
         shutdown();
+    } else if (action === 'bsod') {
+        showBSOD();
     }
 }
 
