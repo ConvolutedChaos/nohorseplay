@@ -77,6 +77,13 @@
             categories: ['all', 'system'],
             action: () => openCustomAppFromPath("/usr/share/changelog.app"),
         },
+        // {
+        //     name: 'Calculator',
+        //     icon: '/usr/share/icons/32/calculator.png',
+        //     emoji: '🧮',
+        //     categories: ['all', 'accessories'],
+        //     action: () => openCustomAppFromPath("/bin/calculator.app"),
+        // },
     ];
 
     /* ── Category definitions ────────────────────────────── */

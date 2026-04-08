@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.3";
+const VERSION = "E-Dog OS 3.1.5";
 const DB_NAME = 'VirtualFS_v2';
 
 function showHiddenFiles() { return localStorage.getItem('edog_show_hidden') === 'true'; }
@@ -314,7 +314,6 @@ async function reboot() {
     location.reload();
 }
 
-/* ---- Blue Screen of Death ---- */
 function showBSOD(errorCode, errorName) {
     errorCode = errorCode || '0x0000000A';
     errorName = errorName || 'IRQL_NOT_LESS_OR_EQUAL';
@@ -364,8 +363,6 @@ Press any key to continue <span class="bsod-cursor"></span></div>
     document.addEventListener('keydown', onKey);
 }
 
-window.showBSOD = showBSOD;
-
 function _opStart() {
     _pendingOps++;
     turnOnDriveLight();
@@ -405,38 +402,21 @@ function turnOffDriveLight() {
    External Media
 ============================================================ */
 
-/**
- * Mount table — the single source of truth.
- * Mirrors /etc/mtab on real Linux.
- *
- * Each entry:
- *   {
- *     device:     string,         // e.g. "/dev/cdrom0", "/dev/sdb1"
- *     mountPoint: string,         // e.g. "/media/MyDisc"
- *     label:      string,         // human-readable volume name
- *     fsType:     string,         // "iso9660", "vfat", "zip", "virtual"
- *     readOnly:   boolean,
- *     mountedAt:  number,         // Date.now() when mounted
- *     source:     string|null,    // original file path if mounted from a file
- *     icon:       string,         // sidebar icon slug: "cd", "usb", "disk"
- *     capacity:   number|null,    // labeled capacity in bytes (null = unlimited)
- *   }
- */
 const _mountTable = [];
 let _deviceCounter = { cdrom: 0, usb: 0, loop: 0 };
 const _MOUNTS_KEY = 'edog_mounts';
 
 function _saveMountsToStorage() {
     localStorage.setItem(_MOUNTS_KEY, JSON.stringify(_mountTable.map(m => ({
-        device:     m.device,
+        device: m.device,
         mountPoint: m.mountPoint,
-        label:      m.label,
-        fsType:     m.fsType,
-        readOnly:   m.readOnly,
-        source:     m.source,
-        icon:       m.icon,
-        mountedAt:  m.mountedAt,
-        capacity:   m.capacity ?? null,
+        label: m.label,
+        fsType: m.fsType,
+        readOnly: m.readOnly,
+        source: m.source,
+        icon: m.icon,
+        mountedAt: m.mountedAt,
+        capacity: m.capacity ?? null,
     }))));
 }
 
@@ -748,7 +728,6 @@ async function removeCD(cdName) {
     return eject(`/media/${cdName}`);
 }
 
-// these are read-write by default.
 async function insertUSB(label, files = [], capacity = null) {
     return mount({
         label,
@@ -968,9 +947,9 @@ async function _getTmpId() {
 
 async function _trashNode(node, tmpId) {
     node.trashedFrom = node.parentId;
-    node.trashedAt   = Date.now();
-    node.parentId    = tmpId;
-    node.updatedAt   = Date.now();
+    node.trashedAt = Date.now();
+    node.parentId = tmpId;
+    node.updatedAt = Date.now();
     await idbPut(node);
 }
 
@@ -1352,7 +1331,7 @@ async function buildFileIconWrapper(item) {
             if (!previewEl) return;
             wrapper.innerHTML = '';
             wrapper.appendChild(previewEl);
-        }).catch(() => {});
+        }).catch(() => { });
     }
 
     return wrapper;
@@ -1891,7 +1870,7 @@ async function renderWindow(windowId) {
             const isFolder = item.type === 'folder';
             const isHidden = item.name.startsWith('.');
             if (isFolder && !isHidden) return 0;
-            if (isFolder &&  isHidden) return 1;
+            if (isFolder && isHidden) return 1;
             if (!isFolder && !isHidden) return 2;
             return 3;
         };
@@ -2215,8 +2194,6 @@ function renderVirtualGrid(mainPanel, list, windowId, state) {
     renderVisible();
 }
 
-// Walk up the parent chain from a folder ID to find if it's inside a mounted drive.
-// Returns the _mountTable entry if found, or null.
 async function _findMountForFolder(folderId) {
     let id = folderId;
     for (let depth = 0; depth < 16; depth++) {
@@ -2587,24 +2564,24 @@ function _buildEditorBody(body, item, windowId) {
 
     // ── Menus ─────────────────────────────────────────────────
     makeMenu('File', [
-        { label: 'New',      shortcut: 'Ctrl+N', action: () => spawnApp('editor', {}) },
+        { label: 'New', shortcut: 'Ctrl+N', action: () => spawnApp('editor', {}) },
         { sep: true },
-        { label: item.id ? 'Save' : 'Save (no file)',  shortcut: 'Ctrl+S', disabled: !item.id, action: doSave },
+        { label: item.id ? 'Save' : 'Save (no file)', shortcut: 'Ctrl+S', disabled: !item.id, action: doSave },
         { label: 'Download', action: doDownload },
         { sep: true },
-        { label: 'Close',    action: () => closeWindow(windowId) },
+        { label: 'Close', action: () => closeWindow(windowId) },
     ]);
     makeMenu('Edit', [
-        { label: 'Undo',       shortcut: 'Ctrl+Z', action: () => { ta.focus(); document.execCommand('undo'); } },
-        { label: 'Redo',       shortcut: 'Ctrl+Y', action: () => { ta.focus(); document.execCommand('redo'); } },
+        { label: 'Undo', shortcut: 'Ctrl+Z', action: () => { ta.focus(); document.execCommand('undo'); } },
+        { label: 'Redo', shortcut: 'Ctrl+Y', action: () => { ta.focus(); document.execCommand('redo'); } },
         { sep: true },
-        { label: 'Cut',        shortcut: 'Ctrl+X', action: () => { ta.focus(); document.execCommand('cut'); } },
-        { label: 'Copy',       shortcut: 'Ctrl+C', action: () => { ta.focus(); document.execCommand('copy'); } },
-        { label: 'Paste',      shortcut: 'Ctrl+V', action: () => { ta.focus(); document.execCommand('paste'); } },
+        { label: 'Cut', shortcut: 'Ctrl+X', action: () => { ta.focus(); document.execCommand('cut'); } },
+        { label: 'Copy', shortcut: 'Ctrl+C', action: () => { ta.focus(); document.execCommand('copy'); } },
+        { label: 'Paste', shortcut: 'Ctrl+V', action: () => { ta.focus(); document.execCommand('paste'); } },
         { sep: true },
         { label: 'Select All', shortcut: 'Ctrl+A', action: () => { ta.focus(); ta.select(); } },
         { sep: true },
-        { label: 'Find…',      shortcut: 'Ctrl+F', action: toggleFind },
+        { label: 'Find…', shortcut: 'Ctrl+F', action: toggleFind },
     ]);
 
     // ── Assemble ──────────────────────────────────────────────
@@ -5182,7 +5159,8 @@ const CTX_ICONS = {
     cut: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="20" r="2"/><circle cx="6" cy="4" r="2"/><line x1="6" y1="6" x2="6" y2="18"/><line x1="21" y1="4" x2="6" y2="18"/><line x1="21" y1="20" x2="6" y2="6"/></svg>`,
     paste: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>`,
     eject: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 5 4 15 20 15"/><rect x="4" y="18" width="16" height="2" rx="1"/></svg>`,
-    restore: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`
+    restore: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+    paintBrush: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"> <path d="M2 22s4-2 6-4l12-12a2 2 0 0 0-2-2L6 16c-2 2-4 6-4 6z"/> </svg>`,
 };
 
 function buildMenu(x, y, entries) {
@@ -5243,12 +5221,16 @@ async function showContextMenu(x, y, item, windowId) {
 
     if (inTrash) {
         buildMenu(x, y, [
-            { label: multi ? `Restore ${ids.length} items` : 'Restore', icon: 'restore',
-              action: () => multi ? _restoreItems(ids) : restoreItem(item.id) },
+            {
+                label: multi ? `Restore ${ids.length} items` : 'Restore', icon: 'restore',
+                action: () => multi ? _restoreItems(ids) : restoreItem(item.id)
+            },
             null,
-            { label: multi ? `Delete ${ids.length} items permanently` : 'Delete Permanently',
-              icon: 'delete', danger: true,
-              action: () => multi ? _deleteItems(ids) : deleteItem(item.id, windowId) },
+            {
+                label: multi ? `Delete ${ids.length} items permanently` : 'Delete Permanently',
+                icon: 'delete', danger: true,
+                action: () => multi ? _deleteItems(ids) : deleteItem(item.id, windowId)
+            },
         ]);
     } else {
         buildMenu(x, y, [
@@ -5263,8 +5245,10 @@ async function showContextMenu(x, y, item, windowId) {
             { label: multi ? `Cut ${ids.length} items` : 'Cut', icon: 'cut', action: () => _cutItems(ids) },
             null,
             !multi ? { label: 'Rename', icon: 'rename', action: () => renameItem(item.id, windowId) } : null,
-            { label: multi ? `Delete ${ids.length} items` : 'Delete', icon: 'delete', danger: true,
-              action: () => multi ? _deleteItems(ids) : deleteItem(item.id, windowId) },
+            {
+                label: multi ? `Delete ${ids.length} items` : 'Delete', icon: 'delete', danger: true,
+                action: () => multi ? _deleteItems(ids) : deleteItem(item.id, windowId)
+            },
             !multi && item.type === 'file'
                 ? { label: 'Download', icon: 'download', action: () => downloadItem(item.id) }
                 : null,
@@ -5326,10 +5310,12 @@ async function showFolderBgContextMenu(x, y, windowId) {
         buildMenu(x, y, [
             { label: 'Empty Recycle Bin', icon: 'delete', danger: true, action: () => emptyTrash() },
             null,
-            { label: 'Restore All', icon: 'restore', action: async () => {
-                const children = await idbGetAllByIndex('parentId', tmpId);
-                if (children.length) await _restoreItems(children.map(c => c.id));
-            }},
+            {
+                label: 'Restore All', icon: 'restore', action: async () => {
+                    const children = await idbGetAllByIndex('parentId', tmpId);
+                    if (children.length) await _restoreItems(children.map(c => c.id));
+                }
+            },
         ]);
         return;
     }
@@ -5381,8 +5367,6 @@ function showDesktopContextMenu(x, y, item, deskState) {
 function showDesktopBlankContextMenu(x, y) {
     const hasPaste = fsClipboard.mode && fsClipboard.ids.length > 0;
     buildMenu(x, y, [
-        { label: 'New File Explorer', icon: 'newWindow', action: () => spawnWindow() },
-        { label: 'Open Bacon Browser', icon: 'open', action: () => spawnBaconBrowser() },
         {
             label: 'New Folder', icon: 'newFolder', action: async () => {
                 const desktopNode = await getDesktopNode();
@@ -5403,7 +5387,7 @@ function showDesktopBlankContextMenu(x, y) {
             action: async () => { const dn = await getDesktopNode(); if (dn) await _pasteItems(dn.id); }
         } : null,
         null,
-        { label: 'Drive Properties', icon: 'drive', action: () => spawnDriveProperties() },
+        { label: 'Change Wallpaper', icon: 'paintBrush', action: () => spawnSettings() },
     ]);
 }
 
@@ -6619,6 +6603,64 @@ function updateZoom(v) {
 /* ============================================================
    Desktop renderer
 ============================================================ */
+
+// System desktop icons — always shown, before user files
+const SYSTEM_DESKTOP_ICONS = [
+    {
+        id: 'system-computer',
+        label: () => 'Computer',
+        iconPath: '/usr/share/icons/128/computer.svg',
+        action: () => spawnWindow(null, '/')
+    },
+    {
+        id: 'system-home',
+        label: () => getUsername() + '\'s Home',
+        iconPath: '/usr/share/icons/128/folder-home.svg',
+        action: () => spawnWindow(null, `/home/${getUsername()}`)
+    },
+];
+
+async function _buildSystemIconTile(sys, desktopEl, deskState) {
+    const tile = document.createElement('div');
+    tile.className = 'item system-desktop-icon';
+    tile.dataset.sysId = sys.id;
+    tile.title = sys.label();
+
+    const iconWrapper = document.createElement('div');
+    iconWrapper.style.cssText = 'height:var(--img-size);display:flex;align-items:center;justify-content:center;';
+    const img = await loadIconImg(sys.iconPath, '');
+    img.className = 'icon-img';
+    iconWrapper.appendChild(img);
+    tile.appendChild(iconWrapper);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'name';
+    nameDiv.textContent = sys.label();
+    tile.appendChild(nameDiv);
+
+    tile.onmousedown = (ev) => {
+        if (ev.button !== 0) return;
+        desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+        deskState.selectedIds.clear();
+        deskState.anchorId = null;
+        tile.classList.add('selected');
+    };
+
+    tile.ondblclick = sys.action;
+
+    tile.oncontextmenu = (ev) => {
+        ev.preventDefault();
+        desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+        deskState.selectedIds.clear();
+        tile.classList.add('selected');
+        buildMenu(ev.clientX, ev.clientY, [
+            { label: 'Open', icon: 'open', action: sys.action }
+        ]);
+    };
+
+    return tile;
+}
+
 async function renderDesktop() {
     const username = getUsername();
     let desktopNode = null;
@@ -6640,6 +6682,11 @@ async function renderDesktop() {
 
     // Desktop multi-select state
     const deskState = { selectedIds: new Set(), anchorId: null };
+
+    // Render pinned system icons first
+    for (const sys of SYSTEM_DESKTOP_ICONS) {
+        desktopEl.appendChild(await _buildSystemIconTile(sys, desktopEl, deskState));
+    }
 
     for (const item of items) {
         const tile = document.createElement('div');
@@ -7554,6 +7601,7 @@ async function initWiFiIcon() {
     document.getElementById("wifi-icon").remove();
     let newIcon = await imgFromFS("/usr/share/icons/tray/network-100.png");
     newIcon.title = "Internet Access";
+    newIcon.style.cssText = 'width:18px;height:18px;object-fit:contain;opacity:0.85;';
     dateTime.parentNode.insertBefore(newIcon, dateTime);
 }
 
@@ -7758,6 +7806,7 @@ window.shutdown = shutdown;
 window.waitForIdle = waitForIdle;
 window.restoreItem = restoreItem;
 window.emptyTrash = emptyTrash;
+window.showBSOD = showBSOD;
 
 if (useDriveLight) {
     driveLight.style.display = "block";

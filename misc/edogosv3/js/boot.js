@@ -123,6 +123,7 @@ function showLoginScreen(onLogin) {
 
     overlay.innerHTML = `
         <div class="login-blur-bg" id="loginBlurBg"></div>
+        <div class="login-tile-pattern"></div>
         <div class="login-dim"></div>
 
         <div class="mint-center-wrap">
@@ -191,13 +192,16 @@ function showLoginScreen(onLogin) {
 
     document.body.appendChild(overlay);
 
-    // Apply the current desktop wallpaper as the blurred background
+    // Apply the current desktop wallpaper as the blurred background.
+    // Always force cover + no-repeat so it fills the screen regardless
+    // of whatever fit mode the user chose for their desktop wallpaper.
     const blurBg = overlay.querySelector('#loginBlurBg');
     const bodyBg = document.body.style.backgroundImage;
     if (bodyBg) {
         blurBg.style.backgroundImage = bodyBg;
-        blurBg.style.backgroundSize = document.body.style.backgroundSize || 'cover';
-        blurBg.style.backgroundPosition = document.body.style.backgroundPosition || 'center center';
+        blurBg.style.backgroundSize = 'cover';
+        blurBg.style.backgroundPosition = 'center center';
+        blurBg.style.backgroundRepeat = 'no-repeat';
     }
 
     imgFromFS('/usr/share/icons/128/computer.svg').then(img => {
