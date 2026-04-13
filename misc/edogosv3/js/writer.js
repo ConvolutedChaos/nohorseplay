@@ -32,28 +32,28 @@
 /* ── Root layout ─────────────────────────────────────────── */
 .writer-root {
     display: flex; flex-direction: column; height: 100%;
-    background: #1e1e1e; color: #d4d4d4;
-    font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px;
+    background: var(--panel-bg); color: var(--start-item-color);
+    font-family: var(--font-ui); font-size: var(--font-size-ui);
     user-select: none; overflow: hidden;
 }
 
 /* ── Menu bar ────────────────────────────────────────────── */
 .wr-menubar {
     display: flex; align-items: center; gap: 0;
-    background: #252526; border-bottom: 1px solid #1a1a1a;
+    background: var(--toolbar-bg); border-bottom: 1px solid var(--toolbar-border);
     height: 28px; flex-shrink: 0; padding: 0 4px;
 }
 .wr-menu-item {
-    padding: 4px 10px; font-size: 12px; color: #ccc;
+    padding: 4px 10px; font-size: 12px; color: var(--toolbar-btn-color);
     cursor: pointer; border-radius: 3px; position: relative;
     white-space: nowrap;
 }
-.wr-menu-item:hover { background: #3a3a3a; color: #fff; }
+.wr-menu-item:hover { background: var(--start-item-hover); color: var(--start-item-color); }
 
 /* ── Dropdown menus ──────────────────────────────────────── */
 .wr-dropdown {
     position: absolute; top: 100%; left: 0; z-index: 9999;
-    background: #2d2d2d; border: 1px solid #404040;
+    background: var(--ctx-bg); border: 1px solid var(--ctx-border);
     border-radius: 6px; min-width: 220px;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
     padding: 4px 0; display: none;
@@ -61,21 +61,21 @@
 .wr-dropdown.open { display: block; }
 .wr-dd-item {
     display: flex; align-items: center; gap: 8px;
-    padding: 6px 16px 6px 12px; font-size: 12px; color: #ccc;
+    padding: 6px 16px 6px 12px; font-size: 12px; color: var(--ctx-item-color);
     cursor: pointer; white-space: nowrap;
 }
-.wr-dd-item:hover { background: #094771; color: #fff; }
-.wr-dd-item.disabled { color: #555; pointer-events: none; }
+.wr-dd-item:hover { background: var(--ctx-item-hover); color: var(--start-item-color); }
+.wr-dd-item.disabled { color: var(--start-section-color); pointer-events: none; }
 .wr-dd-item .dd-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .wr-dd-item .dd-icon img { width: 16px; height: 16px; object-fit: contain; }
 .wr-dd-item .dd-icon svg { width: 14px; height: 14px; }
-.wr-dd-item .dd-shortcut { margin-left: auto; color: #666; font-size: 11px; }
-.wr-dd-sep { height: 1px; background: #3a3a3a; margin: 4px 8px; }
+.wr-dd-item .dd-shortcut { margin-left: auto; color: var(--start-section-color); font-size: 11px; }
+.wr-dd-sep { height: 1px; background: var(--ctx-sep); margin: 4px 8px; }
 
 /* ── Toolbar ─────────────────────────────────────────────── */
 .wr-toolbar {
     display: flex; align-items: center; gap: 2px;
-    background: #2a2a2a; border-bottom: 1px solid #1a1a1a;
+    background: var(--toolbar-bg); border-bottom: 1px solid var(--toolbar-border);
     padding: 4px 8px; flex-shrink: 0; flex-wrap: wrap;
     min-height: 34px;
 }
@@ -83,19 +83,20 @@
     display: flex; align-items: center; gap: 1px;
     padding: 0 3px;
 }
-.wr-tb-group + .wr-tb-group { border-left: 1px solid #3a3a3a; }
+.wr-tb-group + .wr-tb-group { border-left: 1px solid var(--ctx-sep); }
 .wr-tb-btn {
     width: 28px; height: 26px; border: none; border-radius: 3px;
-    background: transparent; color: #bbb; cursor: pointer;
+    background: transparent; color: var(--toolbar-btn-color); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     font-size: 13px; padding: 0; transition: background .1s;
 }
-.wr-tb-btn:hover { background: #3e3e3e; color: #fff; }
-.wr-tb-btn.active { background: #094771; color: #fff; }
+.wr-tb-btn:hover { background: var(--start-item-hover); color: var(--start-item-color); }
+.wr-tb-btn.active { background: var(--sidebar-item-active); color: #fff; }
 .wr-tb-btn svg { width: 15px; height: 15px; pointer-events: none; }
 .wr-tb-btn img { width: 16px; height: 16px; object-fit: contain; pointer-events: none; }
 .wr-tb-select {
-    background: #333; color: #ccc; border: 1px solid #444;
+    background: var(--toolbar-address-bg); color: var(--toolbar-address-color);
+    border: 1px solid var(--toolbar-btn-border);
     border-radius: 3px; padding: 2px 4px; font-size: 11px;
     height: 26px; cursor: pointer; outline: none;
 }
@@ -106,7 +107,7 @@
     display: flex; align-items: center; justify-content: center;
     padding: 0;
 }
-.wr-tb-color-btn:hover { background: #3e3e3e; }
+.wr-tb-color-btn:hover { background: var(--start-item-hover); }
 .wr-tb-color-swatch {
     width: 14px; height: 3px; border-radius: 1px;
     position: absolute; bottom: 3px; left: 50%;
@@ -119,7 +120,7 @@
 
 /* ── Ruler ───────────────────────────────────────────────── */
 .wr-ruler {
-    height: 22px; background: #262626; border-bottom: 1px solid #1a1a1a;
+    height: 22px; background: var(--toolbar-bg); border-bottom: 1px solid var(--toolbar-border);
     flex-shrink: 0; display: flex; align-items: flex-end;
     overflow: hidden; padding-left: 0;
 }
@@ -128,18 +129,19 @@
     margin: 0 auto; position: relative;
 }
 .wr-ruler-tick {
-    position: absolute; bottom: 0; width: 1px; background: #555;
+    position: absolute; bottom: 0; width: 1px; background: var(--ctx-sep);
 }
 .wr-ruler-num {
-    position: absolute; bottom: 6px; font-size: 9px; color: #666;
+    position: absolute; bottom: 6px; font-size: 9px; color: var(--start-section-color);
     transform: translateX(-50%); font-family: monospace;
 }
 
 /* ── Editor area ─────────────────────────────────────────── */
 .wr-editor-area {
-    flex: 1; overflow: auto; background: #3a3a3a;
+    flex: 1; overflow: auto; background: var(--panel-bg);
     display: flex; justify-content: center; padding: 24px 16px;
 }
+/* The page itself is always white — it represents a printed document */
 .wr-page {
     width: 816px; min-height: 1056px;
     background: #fff; color: #1a1a1a;
@@ -172,7 +174,7 @@
 /* ── Status bar ──────────────────────────────────────────── */
 .wr-statusbar {
     display: flex; align-items: center; gap: 16px;
-    background: #007acc; color: #fff; height: 22px;
+    background: var(--sidebar-item-active); color: #fff; height: 22px;
     padding: 0 12px; font-size: 11px; flex-shrink: 0;
 }
 .wr-statusbar .wr-sb-sep { width: 1px; height: 14px; background: rgba(255,255,255,.3); }
@@ -185,27 +187,29 @@
 
 /* ── Find/Replace bar ────────────────────────────────────── */
 .wr-find-bar {
-    display: none; background: #2d2d2d; border-bottom: 1px solid #1a1a1a;
+    display: none; background: var(--toolbar-bg); border-bottom: 1px solid var(--toolbar-border);
     padding: 6px 12px; gap: 6px; align-items: center; flex-shrink: 0;
 }
 .wr-find-bar.open { display: flex; }
 .wr-find-bar input {
-    background: #3c3c3c; border: 1px solid #555; color: #ddd;
+    background: var(--toolbar-address-bg); border: 1px solid var(--start-search-border);
+    color: var(--toolbar-address-color);
     padding: 3px 8px; border-radius: 3px; font-size: 12px;
     outline: none; width: 180px;
 }
 .wr-find-bar input:focus { border-color: #0078d4; }
 .wr-find-bar button {
-    background: #3c3c3c; border: 1px solid #555; color: #ccc;
+    background: var(--toolbar-btn-bg); border: 1px solid var(--toolbar-btn-border);
+    color: var(--toolbar-btn-color);
     padding: 3px 10px; border-radius: 3px; font-size: 11px;
     cursor: pointer;
 }
-.wr-find-bar button:hover { background: #4a4a4a; color: #fff; }
+.wr-find-bar button:hover { filter: brightness(1.15); color: var(--start-item-color); }
 .wr-find-bar .fr-close {
-    background: none; border: none; color: #888; font-size: 16px;
+    background: none; border: none; color: var(--start-section-color); font-size: 16px;
     cursor: pointer; padding: 0 4px; margin-left: auto;
 }
-.wr-find-bar .fr-close:hover { color: #fff; }
+.wr-find-bar .fr-close:hover { color: var(--start-item-color); }
 
 /* ── Print view ──────────────────────────────────────────── */
 @media print {
@@ -217,8 +221,6 @@
     document.head.appendChild(s);
 })();
 
-
-/* ── SVG icon bank ───────────────────────────────────────── */
 const WR_SVG = {
     bold: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6V4zm0 8h9a4 4 0 014 4 4 4 0 01-4 4H6v-8z"/></svg>`,
     italic: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 4h6l-1 2h-1.5l-3 12H12l-1 2H5l1-2h1.5l3-12H9l1-2z"/></svg>`,
@@ -248,7 +250,6 @@ const WR_SVG = {
     sup: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 19l5.5-8H5V9h14v2h-5.5L19 19h-3l-4-6.5L8 19H5zm12-14v1h3v1h-3v1h4V5h-4z"/></svg>`,
     wordCount: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>`,
 };
-
 
 /* ============================================================
    spawnWriter — main entry point

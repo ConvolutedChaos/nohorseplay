@@ -1,9 +1,6 @@
 /* ============================================================
    START MENU — Unity-style Dash Redesign
-   Drop this into css/startmenu.css and link it in index.html,
-   OR paste it at the end of css/style.css.
-   
-   This REPLACES all existing #startMenu styles.
+   Uses CSS custom properties from style.css for theme support.
 ============================================================ */
 
 /* ── Reset any old start menu rules ─────────────────────── */
@@ -15,10 +12,10 @@
     max-height: calc(100vh - 60px);  /* never clip off screen */
     min-height: 320px;
 
-    background: rgba(28, 28, 30, 0.97);
+    background: var(--start-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--ctx-border);
     border-radius: 12px;
     box-shadow: 0 16px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3);
 
@@ -28,7 +25,7 @@
     z-index: 10000;
 
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: #d4d4d4;
+    color: var(--start-item-color);
     font-size: 13px;
 }
 
@@ -44,11 +41,11 @@
 .sm-search input {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--start-search-bg);
+    border: 1px solid var(--start-search-border);
     border-radius: 8px;
     padding: 8px 12px 8px 34px;
-    color: #e0e0e0;
+    color: var(--start-item-color);
     font-size: 13px;
     outline: none;
     transition: border-color 0.15s, background 0.15s;
@@ -59,11 +56,11 @@
     background-size: 14px;
 }
 .sm-search input:focus {
-    border-color: rgba(59, 130, 246, 0.5);
-    background-color: rgba(255,255,255,0.1);
+    border-color: var(--sidebar-item-active);
+    background-color: var(--start-search-bg);
 }
 .sm-search input::placeholder {
-    color: #666;
+    color: var(--start-section-color);
 }
 
 /* ── Main body: categories left + apps right ────────────── */
@@ -83,15 +80,15 @@
     flex-direction: column;
     padding: 4px 0;
     overflow-y: auto;
-    border-right: 1px solid rgba(255,255,255,0.06);
+    border-right: 1px solid var(--ctx-sep);
 
     /* thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    scrollbar-color: var(--start-search-border) transparent;
 }
 .sm-categories::-webkit-scrollbar { width: 4px; }
 .sm-categories::-webkit-scrollbar-track { background: transparent; }
-.sm-categories::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+.sm-categories::-webkit-scrollbar-thumb { background: var(--start-search-border); border-radius: 2px; }
 
 .sm-cat-btn {
     display: flex;
@@ -100,7 +97,7 @@
     padding: 7px 14px;
     border: none;
     background: transparent;
-    color: #bbb;
+    color: var(--sidebar-item-color);
     font-size: 12px;
     cursor: pointer;
     text-align: left;
@@ -110,12 +107,12 @@
     flex-shrink: 0;
 }
 .sm-cat-btn:hover {
-    background: rgba(255,255,255,0.06);
-    color: #fff;
+    background: var(--start-item-hover);
+    color: var(--start-item-color);
 }
 .sm-cat-btn.active {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    background: var(--sidebar-item-active);
+    color: #fff;
     font-weight: 600;
 }
 .sm-cat-btn .sm-cat-icon {
@@ -138,7 +135,7 @@
 
 .sm-cat-sep {
     height: 1px;
-    background: rgba(255,255,255,0.06);
+    background: var(--ctx-sep);
     margin: 4px 12px;
     flex-shrink: 0;
 }
@@ -152,11 +149,11 @@
 
     /* thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    scrollbar-color: var(--start-search-border) transparent;
 }
 .sm-apps-area::-webkit-scrollbar { width: 5px; }
 .sm-apps-area::-webkit-scrollbar-track { background: transparent; }
-.sm-apps-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+.sm-apps-area::-webkit-scrollbar-thumb { background: var(--start-search-border); border-radius: 3px; }
 
 /* Section headers inside the app area */
 .sm-section-header {
@@ -164,7 +161,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #555;
+    color: var(--start-section-color);
     padding: 8px 6px 4px;
     margin-top: 4px;
 }
@@ -191,10 +188,10 @@
     min-width: 0;
 }
 .sm-app-tile:hover {
-    background: rgba(255,255,255,0.08);
+    background: var(--start-item-hover);
 }
 .sm-app-tile:active {
-    background: rgba(255,255,255,0.12);
+    background: var(--start-item-hover);
     transform: scale(0.97);
 }
 .sm-app-tile .sm-app-icon {
@@ -216,7 +213,7 @@
 }
 .sm-app-tile .sm-app-name {
     font-size: 11px;
-    color: #ccc;
+    color: var(--sidebar-item-color);
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -226,7 +223,7 @@
     max-width: 100%;
     word-break: break-word;
 }
-.sm-app-tile:hover .sm-app-name { color: #fff; }
+.sm-app-tile:hover .sm-app-name { color: var(--start-item-color); }
 
 /* Place item (list style, used in Places category) */
 .sm-place-item {
@@ -237,12 +234,12 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.1s;
-    color: #bbb;
+    color: var(--sidebar-item-color);
     font-size: 12px;
 }
 .sm-place-item:hover {
-    background: rgba(255,255,255,0.07);
-    color: #fff;
+    background: var(--start-item-hover);
+    color: var(--start-item-color);
 }
 .sm-place-item .sm-place-icon {
     width: 18px;
@@ -269,14 +266,14 @@
     justify-content: flex-end;
     gap: 6px;
     padding: 8px 14px;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid var(--ctx-sep);
     flex-shrink: 0;
-    background: rgba(0,0,0,0.15);
+    background: var(--start-footer-bg);
 }
 .sm-footer button {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #999;
+    background: var(--start-footer-btn-bg);
+    border: 1px solid var(--start-footer-btn-border);
+    color: var(--start-footer-btn-color);
     padding: 5px 14px;
     border-radius: 6px;
     font-size: 11px;
@@ -284,9 +281,9 @@
     transition: background 0.1s, color 0.1s, border-color 0.1s;
 }
 .sm-footer button:hover {
-    background: rgba(255,255,255,0.06);
-    color: #ccc;
-    border-color: rgba(255,255,255,0.15);
+    background: var(--start-item-hover);
+    color: var(--start-item-color);
+    border-color: var(--start-search-border);
 }
 .sm-footer .sm-btn-danger:hover {
     background: rgba(248, 113, 113, 0.12);
@@ -294,7 +291,7 @@
     border-color: rgba(248, 113, 113, 0.25);
 }
 .sm-footer .sm-version {
-    color: #444;
+    color: var(--start-section-color);
     font-size: 10px;
     margin-right: auto;
 }
@@ -307,7 +304,7 @@
     justify-content: center;
     gap: 8px;
     padding: 40px 20px;
-    color: #555;
+    color: var(--start-section-color);
     font-size: 13px;
     text-align: center;
 }

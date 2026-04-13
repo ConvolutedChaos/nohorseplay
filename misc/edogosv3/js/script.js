@@ -1,16 +1,19 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.5";
+const VERSION = "E-Dog OS 3.1.6";
 const DB_NAME = 'VirtualFS_v2';
 
-function showHiddenFiles() { return localStorage.getItem('edog_show_hidden') === 'true'; }
+let page = document.body;
+
+let shouldIconsBeLight = true;
+
 const STORE = 'nodes';
 const mountedCDs = []; // tracks currently inserted CD names
 let dbPromise;
 
 let driveLight = document.getElementById("driveLight");
-let useDriveLight = false;
+let useDriveLight = localStorage.getItem('edog_drive_light') === 'true';
 
 let _driveSoundTimer = null;
 
@@ -322,6 +325,8 @@ function showBSOD(errorCode, errorName) {
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
+    overlay.style.userSelect = "none";
+    overlay.style.cursor = "none";
     overlay.id = 'bsodOverlay';
 
     const addr = '0x' + Math.floor(Math.random() * 0xFFFFFFFF)
@@ -331,34 +336,35 @@ function showBSOD(errorCode, errorName) {
     const p2 = '0x' + Math.floor(Math.random() * 0xFF).toString(16).toUpperCase().padStart(8, '0');
 
     overlay.innerHTML = `
-<div class="bsod-inner">
-  <div class="bsod-header"> E-Dog OS </div>
-  <div class="bsod-body">A fatal exception ${errorCode} has occurred at ${addr} in
-VXD EDogKernel(01). The current application will be
-terminated.
+    <div class="bsod-inner">
+      <div class="bsod-header"> E-Dog OS </div>
+      <div class="bsod-body">
+    A fatal exception ${errorCode} has occurred at ${addr} in
+    DISK072512. The current application will be
+    terminated.
+    
+      *  Press any key to terminate the current application.
+      *  Press CTRL+ALT+DEL to restart your computer. You will
+         lose any unsaved information in all applications.
+    
+    *** STOP: ${errorCode} (${p1}, ${p2}, 0x00000000, 0x00000000)
+        ${errorName}
 
-  *  Press any key to terminate the current application.
-  *  Press CTRL+ALT+DEL to restart your computer. You will
-     lose any unsaved information in all applications.
+    Beginning dump of memory...
+    Memory dump complete.
 
-*** STOP: ${errorCode} (${p1}, ${p2}, 0x00000000, 0x00000000)
-    ${errorName}
-
-Beginning dump of virtual memory...
-Virtual memory dump complete.
-Contact your system administrator or technical support group
-for further assistance.
-
-Press any key to continue <span class="bsod-cursor"></span></div>
-</div>`;
+    Press any key to continue <span class="bsod-cursor"></span></div>
+    </div>
+    `;
 
     document.body.appendChild(overlay);
 
     function onKey() {
         document.removeEventListener('keydown', onKey);
-        overlay.style.transition = 'opacity 0.3s';
-        overlay.style.opacity = '0';
-        setTimeout(() => { overlay.remove(); location.reload(); }, 300);
+        overlay.remove();
+        page.style.background = "#000000";
+        page.innerHTML = "";
+        location.reload();
     }
     document.addEventListener('keydown', onKey);
 }
@@ -396,6 +402,10 @@ function turnOnDriveLight() {
 
 function turnOffDriveLight() {
     driveLight.style.backgroundColor = "#000000"
+}
+
+function showHiddenFiles() {
+    return localStorage.getItem('edog_show_hidden') === 'true';
 }
 
 /* ============================================================
@@ -501,6 +511,12 @@ async function mount(opts = {}) {
     if (isMounted(mountPoint)) {
         console.warn(`mount: ${mountPoint} is already mounted`);
         return findMount(mountPoint);
+    }
+
+    // Only one disc (CD/DVD/ISO/ZIP image) in the drive at a time
+    if (icon === 'cd' && _mountTable.some(m => m.icon === 'cd')) {
+        spawnError('A disc is already in the drive. Eject it before inserting another.', 'info');
+        return null;
     }
 
     const device = _allocDevice(devType);
@@ -818,6 +834,7 @@ function getComputername() {
 /* ============================================================
    Window manager state
 ============================================================ */
+
 let zCounter = 20;
 let focusedWindowId = null;
 const windows = {};
@@ -825,6 +842,7 @@ const windows = {};
 /* ============================================================
    Clipboard (cut/copy/paste for files)
 ============================================================ */
+
 let fsClipboard = { mode: null, ids: [] }; // mode: 'copy' | 'cut'
 
 function _copyItems(ids) {
@@ -842,12 +860,13 @@ function _cutItems(ids) {
     });
 }
 
-async function _deepCopyChildren(srcId, dstId) {
+async function _deepCopyChildren(srcId, dstId, ctx) {
     const children = await idbGetAllByIndex('parentId', srcId);
     for (const child of children) {
         const newChild = { ...child, id: crypto.randomUUID(), parentId: dstId, createdAt: Date.now(), updatedAt: Date.now() };
         await idbAdd(newChild);
-        if (child.type === 'folder') await _deepCopyChildren(child.id, newChild.id);
+        if (ctx) { ctx.done++; ctx.prog.update(ctx.done, ctx.total, child.name); }
+        if (child.type === 'folder') await _deepCopyChildren(child.id, newChild.id, ctx);
     }
 }
 
@@ -867,6 +886,21 @@ async function _pasteItems(targetFolderId) {
         return candidate;
     }
 
+    const isCopy = fsClipboard.mode === 'copy';
+
+    // Pre-count total items so the progress bar can show a percentage.
+    let total = fsClipboard.ids.length;
+    if (isCopy) {
+        for (const id of fsClipboard.ids) {
+            const node = await idbGet(id);
+            if (node?.type === 'folder') total += await _countFolderItems(node.id);
+        }
+    }
+
+    const prog = total > 1 ? showFsProgress(isCopy ? 'Copying Files' : 'Moving Files') : null;
+    const ctx = (prog && isCopy) ? { done: 0, total, prog } : null;
+    let moveDone = 0;
+
     for (const id of fsClipboard.ids) {
         const node = await idbGet(id);
         if (!node) continue;
@@ -877,10 +911,13 @@ async function _pasteItems(targetFolderId) {
             node.parentId = targetFolderId;
             node.updatedAt = Date.now();
             await idbPut(node);
+            moveDone++;
+            if (prog) prog.update(moveDone, total, node.name);
         } else {
             const newNode = { ...node, id: crypto.randomUUID(), name: uniqueName(node.name), parentId: targetFolderId, createdAt: Date.now(), updatedAt: Date.now() };
             await idbAdd(newNode);
-            if (node.type === 'folder') await _deepCopyChildren(node.id, newNode.id);
+            if (ctx) { ctx.done++; prog.update(ctx.done, ctx.total, node.name); }
+            if (node.type === 'folder') await _deepCopyChildren(node.id, newNode.id, ctx);
         }
     }
 
@@ -888,10 +925,13 @@ async function _pasteItems(targetFolderId) {
         document.querySelectorAll('.item.cut-pending').forEach(el => el.classList.remove('cut-pending'));
         fsClipboard = { mode: null, ids: [] };
     }
+    if (prog) prog.close();
     await renderAllWindows();
 }
 
 async function _moveItems(ids, targetFolderId) {
+    const prog = ids.length > 1 ? showFsProgress('Moving Files') : null;
+    let done = 0;
     for (const id of ids) {
         const node = await idbGet(id);
         if (!node || node.parentId === targetFolderId) continue;
@@ -899,7 +939,10 @@ async function _moveItems(ids, targetFolderId) {
         node.parentId = targetFolderId;
         node.updatedAt = Date.now();
         await idbPut(node);
+        done++;
+        if (prog) prog.update(done, ids.length, node.name);
     }
+    if (prog) prog.close();
     await renderAllWindows();
 }
 
@@ -920,21 +963,46 @@ async function _deleteItems(ids) {
     const nodes = (await Promise.all(ids.map(id => idbGet(id)))).filter(Boolean);
     if (nodes.some(n => n.parentId === tmpId)) {
         // Already in trash — permanently delete
-        if (!confirm(`Permanently delete ${nodes.length} item(s)?\n\nThis cannot be undone.`)) return;
-        for (const n of nodes) {
-            if (n.type === 'folder') await recursiveDelete(n.id);
-            else await idbDelete(n.id);
-        }
+        spawnWarning(`Permanently delete ${nodes.length} item(s)?\n\nThis cannot be undone.`, [
+            {
+                label: 'Delete',
+                style: 'danger',
+                onClick: async () => {
+                    let total = nodes.length;
+                    for (const n of nodes) {
+                        if (n.type === 'folder') total += await _countFolderItems(n.id);
+                    }
+                    const prog = total > 1 ? showFsProgress('Deleting Files') : null;
+                    const ctx = prog ? { done: 0, total, prog } : null;
+                    for (const n of nodes) {
+                        if (n.type === 'folder') await recursiveDelete(n.id, ctx);
+                        else await idbDelete(n.id);
+                        if (ctx) { ctx.done++; prog.update(ctx.done, ctx.total, n.name); }
+                    }
+                    if (prog) prog.close();
+                    await renderAllWindows();
+                }
+            },
+            { label: 'Cancel' }
+        ]);
     } else {
         // Move to Recycle Bin
-        for (const n of nodes) await _trashNode(n, tmpId);
+        const prog = nodes.length > 2 ? showFsProgress('Moving to Recycle Bin') : null;
+        let done = 0;
+        for (const n of nodes) {
+            await _trashNode(n, tmpId);
+            done++;
+            if (prog) prog.update(done, nodes.length, n.name);
+        }
+        if (prog) prog.close();
+        await renderAllWindows();
     }
-    await renderAllWindows();
 }
 
 /* ============================================================
    Recycle Bin
 ============================================================ */
+
 let _tmpFolderId = null;
 
 async function _getTmpId() {
@@ -998,16 +1066,103 @@ async function emptyTrash() {
             {
                 label: 'Empty Recycle Bin', style: 'danger',
                 onClick: async () => {
+                    let total = children.length;
                     for (const c of children) {
-                        if (c.type === 'folder') await recursiveDelete(c.id);
-                        else await idbDelete(c.id);
+                        if (c.type === 'folder') total += await _countFolderItems(c.id);
                     }
+                    const prog = total > 1 ? showFsProgress('Emptying Recycle Bin') : null;
+                    const ctx = prog ? { done: 0, total, prog } : null;
+                    for (const c of children) {
+                        if (c.type === 'folder') await recursiveDelete(c.id, ctx);
+                        else await idbDelete(c.id);
+                        if (ctx) { ctx.done++; prog.update(ctx.done, ctx.total, c.name); }
+                    }
+                    if (prog) prog.close();
                     await renderAllWindows();
                 }
             },
             { label: 'Cancel' },
         ]
     );
+}
+
+/* ============================================================
+   File-operation progress dialog
+============================================================ */
+
+/**
+ * Show a themed system-window progress dialog for slow filesystem operations.
+ * The dialog is delayed by DELAY_MS so instant ops never flash it.
+ * Returns { update(done, total, fileName), close() }.
+ */
+
+function showFsProgress(title) {
+    const DELAY_MS = 200;     // wait before showing
+    const MIN_VISIBLE_MS = 300; // keep visible at least this long once shown
+
+    let windowId = null;
+    let el = null;
+    let closed = false;
+    let shownAt = null;
+
+    const timer = setTimeout(() => {
+        if (closed) return;
+        windowId = 'win_' + (++winCount);
+        el = document.createElement('div');
+        el.className = 'app-window focused';
+        el.id = windowId;
+        const w = 400;
+        const left = Math.max(0, Math.round((window.innerWidth - w) / 2));
+        const top = Math.max(0, Math.round((window.innerHeight - 130) / 2));
+        el.style.cssText = `left:${left}px;top:${top}px;width:${w}px;height:auto;z-index:${++zCounter};`;
+        el.innerHTML = `
+            <div class="title-bar">
+                <span class="title-bar-text">${_escHtml(title)}</span>
+            </div>
+            <div class="fs-progress-body">
+                <div class="fs-progress-filename">Preparing\u2026</div>
+                <div class="fs-progress-track">
+                    <div class="fs-progress-fill indeterminate"></div>
+                </div>
+                <div class="fs-progress-count"></div>
+            </div>`;
+        document.getElementById('windowContainer').appendChild(el);
+        windows[windowId] = { el, state: { type: 'progress' } };
+        shownAt = Date.now();
+    }, DELAY_MS);
+
+    return {
+        update(done, total, fileName) {
+            if (closed || !el) return;
+            const fill = el.querySelector('.fs-progress-fill');
+            const count = el.querySelector('.fs-progress-count');
+            const fn = el.querySelector('.fs-progress-filename');
+            if (total > 0) {
+                fill.classList.remove('indeterminate');
+                fill.style.width = Math.round(done / total * 100) + '%';
+                count.textContent = `${done} of ${total} item${total !== 1 ? 's' : ''}`;
+            }
+            if (fileName) fn.textContent = fileName;
+        },
+        close() {
+            closed = true;
+            clearTimeout(timer);
+            if (!el) return;
+            const elapsed = Date.now() - (shownAt || Date.now());
+            const delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
+            setTimeout(() => closeWindow(windowId), delay);
+        }
+    };
+}
+
+/** Count total nodes inside a folder tree (excluding the root folder itself). */
+async function _countFolderItems(folderId) {
+    const children = await idbGetAllByIndex('parentId', folderId);
+    let count = children.length;
+    for (const c of children) {
+        if (c.type === 'folder') count += await _countFolderItems(c.id);
+    }
+    return count;
 }
 
 function focusWindow(windowId) {
@@ -1255,14 +1410,22 @@ async function _buildFilePreview(item) {
         }
 
         if (previewType === 'video') {
-            // Seek to first frame and draw to canvas
+            // Seek to first decoded frame and draw to canvas.
+            // preload='auto' is required so the browser buffers enough data to
+            // actually decode a frame — 'metadata' only loads duration/dimensions
+            // and leaves the canvas blank on most browsers.
             return await new Promise((resolve, reject) => {
                 const video = document.createElement('video');
                 video.muted = true;
-                video.preload = 'metadata';
+                video.preload = 'auto';
                 let settled = false;
-                const finish = (fn) => { if (settled) return; settled = true; video.src = ''; URL.revokeObjectURL(url); fn(); };
-                video.onseeked = () => finish(() => {
+
+                function cleanup() { video.src = ''; URL.revokeObjectURL(url); }
+                function fail() { if (settled) return; settled = true; cleanup(); reject(); }
+
+                video.onseeked = () => {
+                    if (settled) return;
+                    settled = true;
                     try {
                         const size = parseInt(getComputedStyle(document.documentElement)
                             .getPropertyValue('--img-size')) || 64;
@@ -1272,14 +1435,18 @@ async function _buildFilePreview(item) {
                         const canvas = document.createElement('canvas');
                         canvas.width = Math.round(w * scale);
                         canvas.height = Math.round(h * scale);
+                        // drawImage must happen before cleanup clears the src
                         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
                         canvas.className = 'preview-thumb';
+                        cleanup();
                         resolve(canvas);
-                    } catch (e) { reject(e); }
-                });
-                video.onloadedmetadata = () => { video.currentTime = 0.001; };
-                video.onerror = () => finish(() => reject());
-                setTimeout(() => finish(() => reject(new Error('timeout'))), 8000);
+                    } catch (e) { cleanup(); reject(e); }
+                };
+                // onloadeddata fires when the first frame is available to decode;
+                // onloadedmetadata is too early — frame data isn't buffered yet.
+                video.onloadeddata = () => { video.currentTime = 0.001; };
+                video.onerror = fail;
+                setTimeout(fail, 8000);
                 video.src = url;
             });
         }
@@ -1340,6 +1507,7 @@ async function buildFileIconWrapper(item) {
 /* ============================================================
    Window creation
 ============================================================ */
+
 let winCount = 0;
 
 function spawnWindow(initialFolderId = null, initialPath = null) {
@@ -1369,6 +1537,11 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
+    // v3.1.6:
+    // Removed:
+    // <button class="small-btn btn-new-folder">+ Folder</button>
+    // and
+    // <button class="small-btn btn-new-file">+ File</button>
     win.innerHTML = `
         <div class="title-bar" data-winid="${windowId}">
             <button class="window-close-button" title="Close">✕</button>
@@ -1382,8 +1555,6 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
             <button class="btn-forward" title="Forward">➡</button>
             <button class="btn-up" title="Up">⬆</button>
             <div class="address">/ </div>
-            <button class="small-btn btn-new-folder">+ Folder</button>
-            <button class="small-btn btn-new-file">+ File</button>
             <button class="small-btn btn-upload">Upload Files</button>
             <button class="small-btn btn-upload-folder">Upload Folder</button>
             <input type="file" class="file-input" style="display:none" multiple>
@@ -1426,15 +1597,79 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
     const system = [
         { slug: 'root', label: 'File System', color: '#94a3b8', path: '/', name: 'root' },
         { slug: 'users', label: 'Users', color: '#86efac', path: '/home', name: 'home' },
-        { slug: 'trash', label: 'Recycle Bin', color: '#f87171', path: '/tmp', name: 'tmp' },
+        { slug: 'trash', label: 'Recycle Bin', color: '#f87171', virtId: 'virt:trash' },
     ];
 
     async function buildSidebarList(listEl, items) {
         for (const p of items) {
             const li = await buildSidebarItem(p.slug, p.label, p.color);
-            li.dataset.path = p.path;
-            li.dataset.name = p.name;
-            li.onclick = () => navigateToPath(windowId, p.path);
+            if (p.virtId) {
+                li.onclick = () => navigate(windowId, p.virtId);
+            } else {
+                li.dataset.path = p.path;
+                li.dataset.name = p.name;
+                li.onclick = () => navigateToPath(windowId, p.path);
+            }
+
+            // Right-click context menu
+            li.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                const menuItems = [
+                    {
+                        label: 'Open',
+                        icon: 'open',
+                        action: () => {
+                            if (p.virtId) navigate(windowId, p.virtId);
+                            else navigateToPath(windowId, p.path);
+                        }
+                    },
+                    {
+                        label: 'Open in New Window',
+                        icon: 'newWindow',
+                        action: () => {
+                            if (p.virtId) spawnWindow(p.virtId);
+                            else spawnWindow(null, p.path);
+                        }
+                    },
+                ];
+                if (p.virtId === 'virt:trash') {
+                    menuItems.push(null);
+                    menuItems.push({ label: 'Empty Recycle Bin', icon: 'delete', danger: true, action: () => emptyTrash() });
+                }
+                buildMenu(e.clientX, e.clientY, menuItems);
+            });
+
+            // Drag-and-drop: accept files/folders dragged onto sidebar items
+            li.addEventListener('dragover', (e) => {
+                if (!e.dataTransfer.types.includes('application/edogos-items')) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                li.classList.add('drag-over');
+            });
+            li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
+            li.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                li.classList.remove('drag-over');
+                const raw = e.dataTransfer.getData('application/edogos-items');
+                if (!raw) return;
+                const ids = JSON.parse(raw);
+                let targetId;
+                if (p.virtId === 'virt:trash') {
+                    targetId = await _getTmpId();
+                } else {
+                    const parts = p.path.split('/').filter(Boolean);
+                    let currentId = 'root';
+                    for (const part of parts) {
+                        const children = await idbGetAllByIndex('parentId', currentId);
+                        const match = children.find(n => n.name === part && n.type === 'folder');
+                        if (!match) return;
+                        currentId = match.id;
+                    }
+                    targetId = currentId;
+                }
+                await _moveItems(ids, targetId);
+            });
+
             listEl.appendChild(li);
         }
     }
@@ -1507,6 +1742,7 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
 
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
@@ -1515,14 +1751,16 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
     win.querySelector('.btn-back').onclick = () => goBack(windowId);
     win.querySelector('.btn-forward').onclick = () => goForward(windowId);
     win.querySelector('.btn-up').onclick = () => goUp(windowId);
-    win.querySelector('.btn-new-folder').onclick = () => _winNewFolder(windowId);
-    win.querySelector('.btn-new-file').onclick = () => _winNewFile(windowId);
+    // win.querySelector('.btn-new-folder').onclick = () => _winNewFolder(windowId);
+    // win.querySelector('.btn-new-file').onclick = () => _winNewFile(windowId);
 
     const uploadBtn = win.querySelector('.btn-upload');
     const fileInput = win.querySelector('.file-input');
     uploadBtn.onclick = () => { fileInput.value = ''; fileInput.click(); };
     fileInput.onchange = async (e) => {
         const files = Array.from(e.target.files);
+        const prog = files.length > 1 ? showFsProgress('Uploading Files') : null;
+        let done = 0;
         for (const file of files) {
             const content = await file.arrayBuffer();
             await idbAdd({
@@ -1532,7 +1770,10 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
                 content, size: file.size, mime: file.type,
                 createdAt: Date.now(), updatedAt: Date.now()
             });
+            done++;
+            if (prog) prog.update(done, files.length, file.name);
         }
+        if (prog) prog.close();
         await renderWindow(windowId);
     };
 
@@ -1548,6 +1789,9 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
 
         uploadFolderBtn.textContent = 'Uploading…';
         uploadFolderBtn.disabled = true;
+
+        const prog = showFsProgress('Uploading Folder');
+        let done = 0;
 
         try {
             const folderCache = {};
@@ -1598,10 +1842,13 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                 });
+                done++;
+                prog.update(done, files.length, parts[parts.length - 1]);
             }
 
             await renderAllWindows();
         } finally {
+            prog.close();
             uploadFolderBtn.textContent = 'Upload Folder';
             uploadFolderBtn.disabled = false;
         }
@@ -1710,6 +1957,7 @@ function maximizeWindow(windowId) {
 /* ============================================================
    Drag system
 ============================================================ */
+
 let dragState = null;
 
 function startDrag(e, winEl) {
@@ -1762,6 +2010,82 @@ function stopDrag() {
     if (window._mmOnStopDrag) window._mmOnStopDrag();
 }
 
+/* ============================================================
+   Resize system
+============================================================ */
+
+let resizeState = null;
+
+function addResizeHandles(winEl) {
+    ['rh-n', 'rh-s', 'rh-e', 'rh-w', 'rh-ne', 'rh-nw', 'rh-se', 'rh-sw'].forEach(dir => {
+        const h = document.createElement('div');
+        h.className = `resize-handle ${dir}`;
+        h.addEventListener('mousedown', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            focusWindow(winEl.id);
+            startWindowResize(e, winEl, dir);
+        });
+        winEl.appendChild(h);
+    });
+}
+
+function startWindowResize(e, winEl, dir) {
+    const rect = winEl.getBoundingClientRect();
+    resizeState = {
+        el: winEl,
+        dir,
+        startX: e.clientX,
+        startY: e.clientY,
+        origLeft: rect.left,
+        origTop: rect.top,
+        origWidth: rect.width,
+        origHeight: rect.height,
+    };
+    document.addEventListener('mousemove', onWindowResize);
+    document.addEventListener('mouseup', stopWindowResize);
+}
+
+function onWindowResize(e) {
+    if (!resizeState) return;
+    const { el, dir, startX, startY, origLeft, origTop, origWidth, origHeight } = resizeState;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const MIN_W = 320, MIN_H = 180;
+    const TASKBAR_HEIGHT = 44;
+
+    let newLeft = origLeft, newTop = origTop, newWidth = origWidth, newHeight = origHeight;
+
+    if (dir.includes('e')) newWidth = Math.max(MIN_W, origWidth + dx);
+    if (dir.includes('s')) newHeight = Math.max(MIN_H, origHeight + dy);
+    if (dir.includes('w')) {
+        const w = Math.max(MIN_W, origWidth - dx);
+        newLeft = origLeft + origWidth - w;
+        newWidth = w;
+    }
+    if (dir.includes('n')) {
+        const h = Math.max(MIN_H, origHeight - dy);
+        newTop = origTop + origHeight - h;
+        newHeight = h;
+    }
+
+    newLeft = Math.max(0, newLeft);
+    newTop = Math.max(0, newTop);
+    if (newLeft + newWidth > window.innerWidth) newWidth = window.innerWidth - newLeft;
+    if (newTop + newHeight > window.innerHeight - TASKBAR_HEIGHT) newHeight = window.innerHeight - TASKBAR_HEIGHT - newTop;
+
+    el.style.left = newLeft + 'px';
+    el.style.top = newTop + 'px';
+    el.style.width = newWidth + 'px';
+    el.style.height = newHeight + 'px';
+}
+
+function stopWindowResize() {
+    resizeState = null;
+    document.removeEventListener('mousemove', onWindowResize);
+    document.removeEventListener('mouseup', stopWindowResize);
+}
+
 document.addEventListener('dblclick', e => {
     const titleBar = e.target.closest('.title-bar');
     if (!titleBar || e.target.closest('button')) return;
@@ -1772,6 +2096,7 @@ document.addEventListener('dblclick', e => {
 /* ============================================================
    Navigation (per-window)
 ============================================================ */
+
 async function navigate(windowId, folderId, addHistory = true) {
     const win = windows[windowId];
     if (!win) return;
@@ -1826,6 +2151,10 @@ async function goForward(windowId) {
 async function goUp(windowId) {
     const state = windows[windowId]?.state;
     if (!state) return;
+    if (state.currentFolderId.startsWith('virt:')) {
+        await navigate(windowId, 'root');
+        return;
+    }
     const cnode = await idbGet(state.currentFolderId);
     if (cnode && cnode.parentId) {
         await navigate(windowId, cnode.parentId);
@@ -1835,8 +2164,179 @@ async function goUp(windowId) {
 }
 
 /* ============================================================
+   Virtual Folders — system views with no real FS node
+   IDs use the "virt:" prefix so they can never clash with
+   IndexedDB UUIDs and can never be reached via navigateToPath.
+============================================================ */
+
+const VIRTUAL_FOLDERS = {
+    'virt:computer': {
+        id: 'virt:computer',
+        label: 'Computer',
+        render: async (mainPanel, windowId, state) => {
+            const CD_DRIVE_MODEL = 'HL-DT-ST DVD+-RW N725E';
+            const cdMount = getMountTable().find(m => m.icon === 'cd') || null;
+
+            const drives = [
+                {
+                    label: 'File System',
+                    slug: 'root',
+                    color: '#94a3b8',
+                    title: 'File System',
+                    empty: false,
+                    action: () => navigate(windowId, 'root'),
+                },
+                // USB drives (dynamic, excludes disc mounts)
+                ...getMountTable()
+                    .filter(m => m.icon === 'usb')
+                    .map(m => ({
+                        label: m.label,
+                        slug: 'usb',
+                        color: '#7dd3fc',
+                        title: m.label,
+                        empty: false,
+                        action: () => navigateToPath(windowId, m.mountPoint),
+                    })),
+                // Physical CD/DVD drive — always present, state reflects mounted disc
+                {
+                    label: cdMount ? cdMount.label : 'DVD RW Drive',
+                    slug: 'cd',
+                    color: cdMount ? '#e2c97e' : '#666',
+                    title: cdMount
+                        ? `${CD_DRIVE_MODEL} — ${cdMount.label}`
+                        : CD_DRIVE_MODEL,
+                    empty: !cdMount,
+                    action: cdMount
+                        ? () => navigateToPath(windowId, cdMount.mountPoint)
+                        : () => spawnError('No disc in drive.', 'info'),
+                },
+            ];
+
+            for (const drive of drives) {
+                const tile = document.createElement('div');
+                tile.className = 'item';
+                tile.title = drive.title;
+                if (drive.empty) tile.style.opacity = '0.55';
+
+                const iconWrapper = document.createElement('div');
+                iconWrapper.style.cssText = 'height:var(--img-size);display:flex;align-items:center;justify-content:center;';
+                loadIconImg(
+                    `/usr/share/icons/128/folder-${drive.slug}.svg`,
+                    `./icons/128/folder-${drive.slug}.svg`,
+                ).then(img => {
+                    img.className = 'icon-img';
+                    iconWrapper.appendChild(img);
+                }).catch(() => {
+                    const fb = document.createElement('div');
+                    fb.style.cssText = `color:${drive.color};font-size:40px;display:flex;align-items:center;`;
+                    fb.textContent = drive.slug === 'usb' ? '🖴' : drive.slug === 'cd' ? '💿' : '🖥';
+                    iconWrapper.appendChild(fb);
+                });
+                tile.appendChild(iconWrapper);
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'name';
+                nameDiv.textContent = drive.label;
+                tile.appendChild(nameDiv);
+
+                tile.onmousedown = (ev) => {
+                    if (ev.button !== 0) return;
+                    mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                    state.selectedIds.clear();
+                    state.selectedItemId = null;
+                    state.anchorId = null;
+                    tile.classList.add('selected');
+                };
+                tile.ondblclick = drive.action;
+                tile.oncontextmenu = (ev) => {
+                    ev.preventDefault();
+                    const menuItems = [{ label: 'Open', icon: 'open', action: drive.action }];
+                    if (!drive.empty) {
+                        menuItems.push({ label: `Eject ${drive.label}`, icon: 'eject', action: () => eject(cdMount.mountPoint) });
+                    }
+                    buildMenu(ev.clientX, ev.clientY, menuItems);
+                };
+
+                mainPanel.appendChild(tile);
+            }
+        },
+    },
+
+    'virt:trash': {
+        id: 'virt:trash',
+        label: 'Recycle Bin',
+        render: async (mainPanel, windowId, state) => {
+            const tmpId = await _getTmpId();
+            if (!tmpId) return;
+
+            const items = await idbGetAllByIndex('parentId', tmpId);
+            items.sort((a, b) => (b.trashedAt || 0) - (a.trashedAt || 0));
+
+            if (items.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.cssText = 'padding:32px;color:#888;text-align:center;width:100%;';
+                empty.textContent = 'Recycle Bin is empty.';
+                mainPanel.appendChild(empty);
+                return;
+            }
+
+            for (const item of items) {
+                const tile = document.createElement('div');
+                tile.className = 'item';
+                tile.dataset.id = item.id;
+                tile.title = item.name;
+
+                const iconPlaceholder = document.createElement('div');
+                iconPlaceholder.style.cssText = 'height:var(--img-size);display:flex;align-items:center;justify-content:center;color:#444;font-size:28px;';
+                iconPlaceholder.textContent = item.type === 'folder' ? '📁' : '📄';
+                tile.appendChild(iconPlaceholder);
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'name';
+                nameDiv.textContent = item.name;
+                tile.appendChild(nameDiv);
+
+                tile.onmousedown = (ev) => {
+                    if (ev.button !== 0) return;
+                    if (ev.ctrlKey) {
+                        if (state.selectedIds.has(item.id)) {
+                            state.selectedIds.delete(item.id);
+                            tile.classList.remove('selected');
+                        } else {
+                            state.selectedIds.add(item.id);
+                            tile.classList.add('selected');
+                            state.selectedItemId = item.id;
+                            state.anchorId = item.id;
+                        }
+                    } else {
+                        mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                        state.selectedIds.clear();
+                        tile.classList.add('selected');
+                        state.selectedIds.add(item.id);
+                        state.selectedItemId = item.id;
+                        state.anchorId = item.id;
+                    }
+                    mainPanel.focus({ preventScroll: true });
+                };
+                tile.oncontextmenu = (ev) => {
+                    ev.preventDefault();
+                    showContextMenu(ev.clientX, ev.clientY, item, windowId);
+                };
+
+                mainPanel.appendChild(tile);
+
+                buildFileIconWrapper(item).then(iconWrapper => {
+                    if (iconPlaceholder.isConnected) iconPlaceholder.replaceWith(iconWrapper);
+                }).catch(() => { });
+            }
+        },
+    },
+};
+
+/* ============================================================
    Rendering (per-window)
 ============================================================ */
+
 async function renderWindow(windowId) {
     const winObj = windows[windowId];
     if (!winObj) return;
@@ -1844,6 +2344,47 @@ async function renderWindow(windowId) {
 
     // Only file explorer windows have .address — skip everything else
     if (!el.querySelector('.address')) return;
+
+    // Virtual folders: custom views with no real FS node
+    if (state.currentFolderId.startsWith('virt:')) {
+        const vf = VIRTUAL_FOLDERS[state.currentFolderId];
+        if (!vf) return;
+
+        el.querySelector('.address').textContent = vf.label;
+        const titleBarText = el.querySelector('.title-bar-text');
+        if (titleBarText) titleBarText.textContent = 'File Explorer — ' + vf.label;
+
+        state.selectedItemId = null;
+        state.selectedIds = new Set();
+        state.anchorId = null;
+
+        const mainPanel = el.querySelector('.main-panel');
+        mainPanel.onscroll = null;
+        mainPanel.innerHTML = '';
+
+        await vf.render(mainPanel, windowId, state);
+
+        mainPanel.oncontextmenu = (ev) => {
+            if (ev.target === mainPanel) {
+                ev.preventDefault();
+                showFolderBgContextMenu(ev.clientX, ev.clientY, windowId);
+            }
+        };
+        mainPanel.onmousedown = (ev) => {
+            if (ev.target === mainPanel) {
+                mainPanel.querySelectorAll('.item').forEach(e => e.classList.remove('selected'));
+                state.selectedItemId = null;
+                state.selectedIds.clear();
+                state.anchorId = null;
+            }
+        };
+        mainPanel.setAttribute('tabindex', '-1');
+
+        el.querySelector('.file-count').textContent = mainPanel.querySelectorAll('.item').length + ' items';
+        el.querySelector('.free-space').textContent = '';
+        renderDesktop();
+        return;
+    }
 
     const path = [];
     let walker = state.currentFolderId;
@@ -1864,6 +2405,7 @@ async function renderWindow(windowId) {
 
     let list = await idbGetAllByIndex('parentId', state.currentFolderId);
     const mainPanel = el.querySelector('.main-panel');
+    mainPanel.onscroll = null;
     mainPanel.innerHTML = '';
     list.sort((a, b) => {
         const groupOf = item => {
@@ -2309,7 +2851,8 @@ async function renderAllWindows() {
 /* ============================================================
    App window factory
 ============================================================ */
-const IMAGE_EXTS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico']);
+
+const IMAGE_EXTS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico', 'avif']);
 const VIDEO_EXTS = new Set(['mp4', 'webm', 'ogg', 'ogv', 'mov', 'avi', 'mkv']);
 const AUDIO_EXTS = new Set(['mp3', 'wav', 'ogg']);
 const HTML_EXTS = new Set(['html', 'htm', 'mhtml']);
@@ -2364,6 +2907,7 @@ function spawnApp(type, item) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -3551,6 +4095,32 @@ function _buildGameBody(body, gameName) {
     body.appendChild(frame);
 }
 
+/**
+ * Load a custom-app icon into a target element.
+ * customIcon can be:
+ *   - a full virtual FS path  (/usr/share/icons/32/foo.png)  — loaded via loadIconImg
+ *   - a legacy short name     (box, calculator, …)           — loaded from even_more_icons/
+ *   - falsy                                                  — emoji fallback rendered
+ */
+
+function _loadCustomAppIcon(customIcon, emojiIcon, targetEl) {
+    if (!targetEl) return;
+    if (!customIcon) {
+        targetEl.textContent = emojiIcon || '📦';
+        return;
+    }
+    const isPath = customIcon.startsWith('/');
+    const fsPath = isPath ? customIcon : `/usr/share/icons/32/${customIcon}.png`;
+    const webPath = isPath ? '' : `../../../icons/even_more_icons/${customIcon}.png`;
+    loadIconImg(fsPath, webPath, 'width:16px;height:16px;object-fit:contain;vertical-align:middle;')
+        .then(img => {
+            img.className = 'app-icon-title-bar';
+            targetEl.innerHTML = '';
+            targetEl.appendChild(img);
+        })
+        .catch(() => { targetEl.textContent = emojiIcon || '📦'; });
+}
+
 function spawnCustomApp(item) {
     // Parse the .app JSON
     let config;
@@ -3566,7 +4136,7 @@ function spawnCustomApp(item) {
 
     const {
         name = item.name.replace(/\.app$/i, ''),
-        customIcon = 'box',
+        customIcon = '',
         icon = '📦',
         width = 800,
         height = 600,
@@ -3587,35 +4157,27 @@ function spawnCustomApp(item) {
     win.style.height = height + 'px';
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
-    if (customIcon) {
-        win.innerHTML = `
-        <div class="title-bar">
-            <button class="window-close-button" title="Close">✕</button>
-            <button class="window-minimize-button" title="Minimize">—</button>
-            <button class="window-maximize-button" title="Maximize">□</button>
-            <span class="title-bar-text"><img class="app-icon-title-bar" alt="${customIcon} icon" src="../../../icons/even_more_icons/${customIcon}.png"> ${name}</span>
-        </div>
-        <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
-        `;
-    } else {
-        win.innerHTML = `
-        <div class="title-bar">
-            <button class="window-close-button" title="Close">✕</button>
-            <button class="window-minimize-button" title="Minimize">—</button>
-            <button class="window-maximize-button" title="Maximize">□</button>
-            <span class="title-bar-text">${icon} ${name}</span>
-        </div>
-        <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
-        `;
-    }
+    // Icon placeholder — filled async so it works for both FS paths and legacy names
+    win.innerHTML = `
+    <div class="title-bar">
+        <button class="window-close-button" title="Close">✕</button>
+        <button class="window-minimize-button" title="Minimize">—</button>
+        <button class="window-maximize-button" title="Maximize">□</button>
+        <span class="title-bar-text"><span class="ca-tb-icon-${windowId}"></span> ${_escHtml(name)}</span>
+    </div>
+    <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;"></div>
+    `;
 
     document.getElementById('windowContainer').appendChild(win);
     windows[windowId] = { el: win, state: { type: 'customapp', item } };
+
+    _loadCustomAppIcon(customIcon, icon, win.querySelector(`.ca-tb-icon-${windowId}`));
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -3661,6 +4223,42 @@ function spawnCustomApp(item) {
                 exists:    (path)       => _call('exists',     { path }),
             };
         })();
+
+        window.os = (() => {
+            let _id = 0;
+            const _pending = new Map();
+
+            window.addEventListener('message', (e) => {
+                if (e.data?.channel !== 'edogos' || e.data.id == null) return;
+                const cb = _pending.get(e.data.id);
+                if (cb) { _pending.delete(e.data.id); cb(e.data); }
+            });
+
+            function _call(action, args = {}) {
+                return new Promise((resolve, reject) => {
+                    const id = ++_id;
+                    _pending.set(id, (msg) => {
+                        if (msg.error) reject(new Error(msg.error));
+                        else resolve(msg.result);
+                    });
+                    window.parent.postMessage(
+                        { channel: 'edogos', id, action, args }, '*'
+                    );
+                });
+            }
+
+            return {
+                // Spawn a Blue Screen of Death. Both args are optional.
+                spawnBSOD:    (errorCode, errorName) => _call('spawnBSOD',    { errorCode, errorName }),
+                // Spawn an error dialog (type: 'error' | 'warning' | 'info')
+                spawnError:   (text, type)           => _call('spawnError',   { text, type }),
+                // Reboot or shut down the OS
+                reboot:       ()                     => _call('reboot',       {}),
+                shutdown:     ()                     => _call('shutdown',      {}),
+                // Get the current OS version string
+                getVersion:   ()                     => _call('getVersion',   {}),
+            };
+        })();
         <\/script>
     `;
 
@@ -3671,11 +4269,10 @@ function spawnCustomApp(item) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    if (customIcon) {
-        tbBtn.innerHTML = `<img class="app-icon-title-bar" alt="${customIcon} icon" src="../../../icons/even_more_icons/${customIcon}.png"> ${name}`;
-    } else {
-        tbBtn.textContent = `${icon} ${name}`;
-    }
+    const tbIconSpan = document.createElement('span');
+    tbBtn.appendChild(tbIconSpan);
+    tbBtn.appendChild(document.createTextNode(' ' + name));
+    _loadCustomAppIcon(customIcon, icon, tbIconSpan);
 
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
@@ -4151,7 +4748,6 @@ async function _buildZipBody(body, item) {
    BACON EXPLORER — Full Implementation
 ============================================================ */
 
-// Global browser state (persisted in memory, sessionStorage for bookmarks/history)
 const baconState = {
     bookmarks: JSON.parse(sessionStorage.getItem('bacon_bookmarks') || '[]'),
     history: JSON.parse(sessionStorage.getItem('bacon_history') || '[]'),
@@ -5141,9 +5737,10 @@ function closeVideoPlayer() { }
 /* ============================================================
    Context menu helpers
 ============================================================ */
+
 let menuEl = null;
 
-const CTX_ICONS = {
+const OLD_CTX_ICONS = {
     open: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v9a2 2 0 01-2 2H7a2 2 0 01-2-2z"/></svg>`,
     rename: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
     delete: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>`,
@@ -5163,7 +5760,32 @@ const CTX_ICONS = {
     paintBrush: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"> <path d="M2 22s4-2 6-4l12-12a2 2 0 0 0-2-2L6 16c-2 2-4 6-4 6z"/> </svg>`,
 };
 
-function buildMenu(x, y, entries) {
+const CTX_ICONS = {
+    open: "document-open.png",
+    rename: "edit-clear.png",
+    delete: "exit.png",
+    download: "bottom.png",
+    properties: "gtk-properties.png",
+    newFolder: "folder_new.png",
+    newFile: "file_new.png",
+    goUp: "go-up.png",
+    goBack: "go-previous.png",
+    newWindow: "window_new.png",
+    drive: "gtk-properties.png",
+    copy: "edit-copy.png",
+    cut: "edit-cut.png",
+    paste: "edit-paste.png",
+    eject: "media-eject.png",
+    restore: "edit-undo.png",
+    paintBrush: "gtk-edit.png"
+};
+
+function getIconPath(name) {
+    const theme = shouldIconsBeLight ? "light" : "dark";
+    return `/usr/share/icons/actions/${theme}/${name}`;
+}
+
+async function buildMenu(x, y, entries) {
     if (menuEl) menuEl.remove();
     menuEl = document.createElement('div');
     menuEl.className = 'ctx-menu';
@@ -5191,7 +5813,10 @@ function buildMenu(x, y, entries) {
         const { label, icon, danger, action } = entry;
         const row = document.createElement('div');
         row.className = 'ctx-row' + (danger ? ' danger' : '');
-        if (icon && CTX_ICONS[icon]) row.innerHTML = CTX_ICONS[icon];
+        if (icon && CTX_ICONS[icon]) {
+            const img = await imgFromFS(getIconPath(CTX_ICONS[icon]));
+            row.appendChild(img);
+        }
         const span = document.createElement('span');
         span.textContent = label;
         row.appendChild(span);
@@ -5304,7 +5929,7 @@ async function showFolderBgContextMenu(x, y, windowId) {
     const hasPaste = fsClipboard.mode && fsClipboard.ids.length > 0;
 
     const tmpId = await _getTmpId();
-    const inTrash = state?.currentFolderId === tmpId;
+    const inTrash = state?.currentFolderId === tmpId || state?.currentFolderId === 'virt:trash';
 
     if (inTrash) {
         buildMenu(x, y, [
@@ -5424,6 +6049,7 @@ function spawnBaconBrowser(url) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -5454,6 +6080,7 @@ function spawnBaconBrowser(url) {
 /* ============================================================
    TERMINAL
 ============================================================ */
+
 function spawnTerminal(startPath) {
     const username = getUsername();
     const windowId = 'win_' + (++winCount);
@@ -5488,6 +6115,7 @@ function spawnTerminal(startPath) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -5969,6 +6597,7 @@ async function _buildTerminalBody(body, windowId, winEl, startPath) {
                     ['date', 'Print current date/time'],
                     ['uname [-a]', 'Print system info'],
                     ['error [error]', 'Throw an error'],
+                    ['stresstest [--size <MB>]', 'Benchmark drive write/read speed  (default 1 MB)'],
                     ['help', 'Show this help'],
                 ].forEach(([c, d]) => {
                     const lineEl = document.createElement('div');
@@ -5998,6 +6627,82 @@ async function _buildTerminalBody(body, windowId, winEl, startPath) {
                 }
                 const message = args.join(' ');
                 spawnError(message); // Or throw new Error(message) if you want to throw
+                break;
+            }
+
+            case 'stresstest': {
+                const ST_CHUNK = 65536; // 64 KB per block (max for crypto.getRandomValues)
+                let stMB = 1;
+                for (let i = 0; i < args.length; i++) {
+                    if ((args[i] === '--size' || args[i] === '-s') && args[i + 1]) {
+                        stMB = parseFloat(args[i + 1]);
+                    }
+                }
+                if (isNaN(stMB) || stMB <= 0) { print('stresstest: invalid --size value', 'output-error'); break; }
+                if (stMB > 256) { print('stresstest: --size capped at 256 MB', 'output-error'); break; }
+
+                const stTotal = Math.round(stMB * 1024 * 1024);
+                const stCount = Math.max(1, Math.ceil(stTotal / ST_CHUNK));
+                const stActual = stCount * ST_CHUNK;
+                const stMBActual = (stActual / 1024 / 1024).toFixed(2);
+
+                print(`Stress test — ${stMBActual} MB  ·  ${stCount} × 64 KB blocks`, 'output-info');
+                turnOnDriveLight();
+
+                const stIds = Array.from({ length: stCount }, (_, i) => `__stresstest_${i}`);
+
+                // Write phase
+                print('Writing…', 'output-dim');
+                scrollBottom();
+                const stBuf = new Uint8Array(ST_CHUNK);
+                let stWriteMs;
+                try {
+                    const t0 = performance.now();
+                    for (let i = 0; i < stCount; i++) {
+                        crypto.getRandomValues(stBuf);
+                        await idbPut({
+                            id: stIds[i], type: 'file', name: stIds[i],
+                            parentId: '__stresstest_parent__',
+                            content: stBuf.buffer.slice(0), size: ST_CHUNK,
+                            createdAt: Date.now(), updatedAt: Date.now()
+                        });
+                    }
+                    stWriteMs = performance.now() - t0;
+                } catch (e) {
+                    turnOffDriveLight();
+                    print(`stresstest: write failed — ${e.message}`, 'output-error');
+                    break;
+                }
+                const stWriteMBps = (stActual / 1024 / 1024) / (stWriteMs / 1000);
+                print(`Write  ${stWriteMBps.toFixed(2)} MB/s  (${stWriteMs.toFixed(0)} ms)`, 'output-success');
+                scrollBottom();
+
+                // Read phase
+                print('Reading…', 'output-dim');
+                scrollBottom();
+                let stReadMs;
+                try {
+                    const t1 = performance.now();
+                    for (const id of stIds) {
+                        await idbGet(id);
+                    }
+                    stReadMs = performance.now() - t1;
+                } catch (e) {
+                    turnOffDriveLight();
+                    print(`stresstest: read failed — ${e.message}`, 'output-error');
+                    break;
+                }
+                const stReadMBps = (stActual / 1024 / 1024) / (stReadMs / 1000);
+                print(`Read   ${stReadMBps.toFixed(2)} MB/s  (${stReadMs.toFixed(0)} ms)`, 'output-success');
+                scrollBottom();
+
+                // Cleanup
+                print('Cleaning up…', 'output-dim');
+                scrollBottom();
+                for (const id of stIds) await idbDelete(id);
+                turnOffDriveLight();
+
+                print(`Done — total ${((stWriteMs + stReadMs) / 1000).toFixed(2)} s`, 'output-info');
                 break;
             }
 
@@ -6130,6 +6835,7 @@ function _makePropsShell(title, w, h) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -6419,21 +7125,38 @@ async function deleteItem(id, windowId) {
     const tmpId = await _getTmpId();
     if (node.parentId === tmpId) {
         // Already in Recycle Bin — permanently delete
-        if (!confirm(`Permanently delete "${node.name}"?\n\nThis cannot be undone.`)) return;
-        if (node.type === 'folder') await recursiveDelete(node.id);
-        else await idbDelete(node.id);
+        spawnWarning(`Permanently delete "${node.name}"?\n\nThis cannot be undone.`, [
+            {
+                label: 'Delete',
+                style: 'danger',
+                onClick: async () => {
+                    if (node.type === 'folder') {
+                        const total = 1 + await _countFolderItems(node.id);
+                        const prog = total > 5 ? showFsProgress(`Deleting "${node.name}"`) : null;
+                        const ctx = prog ? { done: 0, total, prog } : null;
+                        await recursiveDelete(node.id, ctx);
+                        if (prog) prog.close();
+                    } else {
+                        await idbDelete(node.id);
+                    }
+                    await renderAllWindows();
+                }
+            },
+            { label: 'Cancel' }
+        ]);
     } else {
         // Move to Recycle Bin (no confirmation needed)
         await _trashNode(node, tmpId);
+        await renderAllWindows();
     }
-    await renderAllWindows();
 }
 
-async function recursiveDelete(folderId) {
+async function recursiveDelete(folderId, ctx) {
     const children = await idbGetAllByIndex('parentId', folderId);
     for (const c of children) {
-        if (c.type === 'folder') await recursiveDelete(c.id);
+        if (c.type === 'folder') await recursiveDelete(c.id, ctx);
         else await idbDelete(c.id);
+        if (ctx) { ctx.done++; ctx.prog.update(ctx.done, ctx.total, c.name); }
     }
     await idbDelete(folderId);
 }
@@ -6610,7 +7333,7 @@ const SYSTEM_DESKTOP_ICONS = [
         id: 'system-computer',
         label: () => 'Computer',
         iconPath: '/usr/share/icons/128/computer.svg',
-        action: () => spawnWindow(null, '/')
+        action: () => spawnWindow('virt:computer')
     },
     {
         id: 'system-home',
@@ -6661,22 +7384,29 @@ async function _buildSystemIconTile(sys, desktopEl, deskState) {
     return tile;
 }
 
+let _renderDesktopGen = 0;
+
 async function renderDesktop() {
+    const gen = ++_renderDesktopGen;
     const username = getUsername();
     let desktopNode = null;
     const rootChildren = await idbGetAllByIndex('parentId', 'root');
+    if (gen !== _renderDesktopGen) return;
     const homeDir = rootChildren.find(n => n.name === 'home' && n.type === 'folder');
     if (homeDir) {
         const homeChildren = await idbGetAllByIndex('parentId', homeDir.id);
+        if (gen !== _renderDesktopGen) return;
         const userDir = homeChildren.find(n => n.name === username && n.type === 'folder');
         if (userDir) {
             const userChildren = await idbGetAllByIndex('parentId', userDir.id);
+            if (gen !== _renderDesktopGen) return;
             desktopNode = userChildren.find(n => n.name === 'Desktop' && n.type === 'folder');
         }
     }
     if (!desktopNode) return;
 
     const items = await idbGetAllByIndex('parentId', desktopNode.id);
+    if (gen !== _renderDesktopGen) return;
     const desktopEl = document.getElementById('virtualDesktop');
     desktopEl.innerHTML = '';
 
@@ -6685,7 +7415,9 @@ async function renderDesktop() {
 
     // Render pinned system icons first
     for (const sys of SYSTEM_DESKTOP_ICONS) {
-        desktopEl.appendChild(await _buildSystemIconTile(sys, desktopEl, deskState));
+        const tile = await _buildSystemIconTile(sys, desktopEl, deskState);
+        if (gen !== _renderDesktopGen) return;
+        desktopEl.appendChild(tile);
     }
 
     for (const item of items) {
@@ -6696,6 +7428,7 @@ async function renderDesktop() {
         if (fsClipboard.mode === 'cut' && fsClipboard.ids.includes(item.id)) tile.classList.add('cut-pending');
 
         const iconWrapper = await buildFileIconWrapper(item);
+        if (gen !== _renderDesktopGen) return;
         tile.appendChild(iconWrapper);
 
         const nameDiv = document.createElement('div');
@@ -6877,6 +7610,7 @@ function spawnAbout() {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -6943,6 +7677,7 @@ function spawnGame(gameName) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
     win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
     win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
@@ -7052,6 +7787,7 @@ function spawnError(text, type = 'error', buttons = null) {
         if (e.target.closest('button')) return;
         startDrag(e, win);
     });
+    addResizeHandles(win);
     win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
 
     // Taskbar button
@@ -7229,6 +7965,7 @@ function spawnPrompt(message, defaultValue = '', opts = {}) {
             if (e.target.closest('button')) return;
             startDrag(e, win);
         });
+        addResizeHandles(win);
         win.querySelector('.window-close-button').onclick = () => finish(null);
 
         // Taskbar button
@@ -7563,6 +8300,44 @@ window.addEventListener('message', async (e) => {
     source.postMessage({ channel: 'edogfs', id, result, error }, '*');
 });
 
+window.addEventListener('message', (e) => {
+    if (!e.data || e.data.channel !== 'edogos') return;
+
+    const { id, action, args } = e.data;
+    const source = e.source;
+    let result, error;
+
+    try {
+        switch (action) {
+            case 'spawnBSOD':
+                showBSOD(args.errorCode || undefined, args.errorName || undefined);
+                result = { ok: true };
+                break;
+            case 'spawnError':
+                spawnError(args.text ?? '', args.type || 'error');
+                result = { ok: true };
+                break;
+            case 'reboot':
+                reboot();
+                result = { ok: true };
+                break;
+            case 'shutdown':
+                shutdown();
+                result = { ok: true };
+                break;
+            case 'getVersion':
+                result = { version: VERSION };
+                break;
+            default:
+                throw new Error('Unknown OS action: ' + action);
+        }
+    } catch (err) {
+        error = err.message;
+    }
+
+    source.postMessage({ channel: 'edogos', id, result, error }, '*');
+});
+
 function _arrayBufferToBase64(buf) {
     const bytes = new Uint8Array(buf);
     let binary = '';
@@ -7608,7 +8383,7 @@ async function initWiFiIcon() {
 /* ============================================================
    Boot
 ============================================================ */
-(async function init() {
+async function init() {
     dbPromise = await openDB();
     applyTheme(currentTheme);
 
@@ -7650,7 +8425,9 @@ async function initWiFiIcon() {
         // Fallback: no boot/login (boot.js not loaded)
         await bootIntoOS();
     }
-})();
+}
+
+init();
 
 async function ensureDefaultFolders() {
     const all = await idbGetAll();
@@ -7687,13 +8464,136 @@ async function ensureDefaultFolders() {
     }
 }
 
+
+
 /* ============================================================
    THEME SYSTEM
 ============================================================ */
-const THEMES = ['dark', 'aero2010'];
+const THEME_REGISTRY = [
+    {
+        id: 'dark',
+        label: 'Dark',
+        wallpaper: '/usr/share/backgrounds/default-wallpaper.jpg',
+        lightIcons: true,
+        preview: {
+            desktop: '#2b2b2b',
+            titlebar: 'linear-gradient(#3a3a3a,#242424)',
+            toolbar: '#1E1E1E',
+            sidebar: '#1E1E1E',
+            panel: '#2D2D2D',
+            taskbar: '#111',
+            btnClose: '#ff5f57',
+            btnMin: '#ffbd2e',
+            btnRadius: '2px',
+        },
+    },
+    {
+        id: 'light',
+        label: 'Light',
+        wallpaper: '/usr/share/backgrounds/default-wallpaper.jpg',
+        lightIcons: false,
+        preview: {
+            desktop: '#f5f5f5',
+            titlebar: 'linear-gradient(#ffffff, #e9e9e9)',
+            toolbar: '#ffffff',
+            sidebar: '#f7f7f7',
+            panel: '#ffffff',
+            taskbar: '#eaeaea',
+
+            btnClose: '#ff5f57',
+            btnMin: '#ffbd2e',
+            btnRadius: '4px',
+        },
+    },
+    {
+        id: 'aero2010',
+        label: 'Aero 2010',
+        wallpaper: '/usr/share/backgrounds/wallpaper-2.jpg',
+        lightIcons: false,
+        preview: {
+            desktop: 'linear-gradient(135deg,#4a6e8a,#3a5a7a)',
+            titlebar: 'linear-gradient(#5b9bd5,#2e6db0)',
+            toolbar: 'linear-gradient(#e8f0f8,#d0dce8)',
+            sidebar: 'linear-gradient(#dce8f4,#c8d8ec)',
+            panel: 'linear-gradient(#f8fafe,#f0f4fc)',
+            taskbar: 'linear-gradient(#3a6490,#1e3d6a)',
+            btnClose: '#ff6b6b',
+            btnMin: '#ffd060',
+            btnRadius: '50%',
+        },
+    },
+    {
+        id: 'aeroglass',
+        label: 'Aero Glass',
+        wallpaper: '/usr/share/backgrounds/wallpaper-2.jpg',
+        lightIcons: false,
+        preview: {
+            desktop: 'linear-gradient(180deg,#2c6fad,#1a5090)',
+            titlebar: 'linear-gradient(180deg,rgba(255,255,255,0.6),rgba(120,185,255,0.25))',
+            toolbar: 'rgba(210,232,255,0.82)',
+            sidebar: 'rgba(195,222,255,0.72)',
+            panel: 'rgba(245,251,255,0.95)',
+            taskbar: 'rgba(5,12,28,0.88)',
+            btnClose: '#e81123',
+            btnMin: 'linear-gradient(180deg,#f0f6ff,#c8ddf0)',
+            btnRadius: '3px',
+        },
+    },
+    {
+        id: 'nord',
+        label: 'Nord',
+        wallpaper: '/usr/share/backgrounds/wallpaper-3.jpg',
+        lightIcons: true,
+        preview: {
+            desktop: '#2e3440',
+            titlebar: 'linear-gradient(#4c566a,#3b4252)',
+            toolbar: '#3b4252',
+            sidebar: '#3b4252',
+            panel: '#434c5e',
+            taskbar: '#2e3440',
+            btnClose: '#bf616a',
+            btnMin: '#ebcb8b',
+            btnRadius: '50%',
+        },
+    },
+    {
+        id: 'midnight',
+        label: 'Midnight',
+        wallpaper: '/usr/share/backgrounds/wallpaper-4.jpg',
+        lightIcons: true,
+        preview: {
+            desktop: '#000',
+            titlebar: 'linear-gradient(#1a1a1a,#0d0d0d)',
+            toolbar: '#0d0d0d',
+            sidebar: '#080808',
+            panel: '#111',
+            taskbar: '#000',
+            btnClose: '#cc3333',
+            btnMin: '#cc9900',
+            btnRadius: '3px',
+        },
+    },
+    {
+        id: 'sunrise',
+        label: 'Sunrise',
+        wallpaper: '/usr/share/backgrounds/wallpaper-5.jpg',
+        lightIcons: true,
+        preview: {
+            desktop: '#1c1008',
+            titlebar: 'linear-gradient(#3a2010,#2a1a08)',
+            toolbar: '#2a1e10',
+            sidebar: '#221810',
+            panel: '#2a2018',
+            taskbar: '#160e04',
+            btnClose: '#e05030',
+            btnMin: '#e0a030',
+            btnRadius: '3px',
+        },
+    },
+];
+const THEMES = THEME_REGISTRY.map(t => t.id);
+
 let currentTheme = localStorage.getItem('edog_theme') || 'dark';
-const bgUrl = "/usr/share/backgrounds/default-wallpaper.jpg";
-const bg2Url = "/usr/share/backgrounds/wallpaper-2.jpg";
 
 async function applyTheme(theme) {
     currentTheme = theme;
@@ -7705,27 +8605,22 @@ async function applyTheme(theme) {
         document.documentElement.classList.add('theme-' + theme);
     }
 
-    if (theme == 'dark') {
-        if (dbPromise) {
-            const cssValue = await imgFromFS(bgUrl, { background: true }).catch(() => null);
-            if (cssValue) document.body.style.backgroundImage = cssValue;
-        }
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundPosition = "center center";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.height = "100vh";
-        document.body.style.margin = "0";
-    } else {
-        if (dbPromise) {
-            const cssValue = await imgFromFS(bg2Url, { background: true }).catch(() => null);
-            if (cssValue) document.body.style.backgroundImage = cssValue;
-        }
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundPosition = "center center";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.height = "100vh";
-        document.body.style.margin = "0";
+    const themeEntry = THEME_REGISTRY.find(t => t.id === theme);
+    const wallpaperPath = themeEntry?.wallpaper ?? null;
+
+    shouldIconsBeLight = themeEntry.lightIcons;
+
+    if (wallpaperPath && dbPromise) {
+        const cssValue = await imgFromFS(wallpaperPath, { background: true }).catch(() => null);
+        if (cssValue) document.body.style.backgroundImage = cssValue;
+    } else if (!wallpaperPath) {
+        document.body.style.backgroundImage = 'none';
     }
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundPosition = "center center";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.height = "100vh";
+    document.body.style.margin = "0";
 
     THEMES.forEach(t => {
         const card = document.getElementById('themecard-' + t);

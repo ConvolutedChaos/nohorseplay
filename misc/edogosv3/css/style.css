@@ -87,6 +87,92 @@
     --theme-transition: 0.25s ease;
 }
 
+/* ---- LIGHT THEME ---- */
+:root.theme-light {
+    --item-size: 100px;
+    --img-size: 64px;
+
+    /* --- LIGHT THEME --- */
+    --desktop-bg: #f3f4f6;
+    --desktop-text: #1f2937;
+
+    --window-bg: #ffffff;
+    --window-border: #d1d5db;
+    --window-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --window-shadow-focus: 0 12px 30px rgba(0, 0, 0, 0.15);
+    --window-radius: 8px;
+
+    --titlebar-bg: linear-gradient(#ffffff, #f1f5f9);
+    --titlebar-bg-unfocused: linear-gradient(#f3f4f6, #e5e7eb);
+    --titlebar-color: #111827;
+    --titlebar-height: 25px;
+
+    --btn-close-bg: #ff5f57;
+    --btn-minimize-bg: #ffbd2e;
+    --btn-maximize-bg: #28c940;
+    --btn-unfocused-bg: #c7c7c7;
+    --btn-radius: 4px;
+    --btn-size: 28px;
+
+    --toolbar-bg: #ffffff;
+    --toolbar-bg-unfocused: #f3f4f6;
+    --toolbar-border: #e5e7eb;
+    --toolbar-btn-bg: #f9fafb;
+    --toolbar-btn-border: #d1d5db;
+    --toolbar-btn-color: #111827;
+    --toolbar-btn-radius: 6px;
+    --toolbar-address-bg: #f1f5f9;
+    --toolbar-address-color: #111827;
+    --toolbar-address-radius: 6px;
+
+    --sidebar-bg: #f9fafb;
+    --sidebar-bg-unfocused: #f3f4f6;
+    --sidebar-item-color: #374151;
+    --sidebar-item-hover: #e5e7eb;
+    --sidebar-item-active: #2563eb;
+    --sidebar-item-active-unfocused: #9ca3af;
+    --sidebar-section-color: #6b7280;
+
+    --panel-bg: #ffffff;
+
+    --bottombar-bg: #f3f4f6;
+    --bottombar-border: #e5e7eb;
+
+    --taskbar-bg: #e5e7eb;
+    --taskbar-border: #d1d5db;
+    --taskbar-btn-bg: #f9fafb;
+    --taskbar-btn-border: #d1d5db;
+    --taskbar-btn-color: #111827;
+    --taskbar-btn-active: #2563eb;
+    --taskbar-newwin-bg: #16a34a;
+    --taskbar-newwin-border: #15803d;
+
+    --start-header-bg: linear-gradient(#ffffff, #f1f5f9);
+    --start-bg: #ffffff;
+    --start-footer-bg: #f3f4f6;
+    --start-section-color: #6b7280;
+    --start-item-color: #111827;
+    --start-item-hover: #e5e7eb;
+    --start-search-bg: #f1f5f9;
+    --start-search-border: #d1d5db;
+    --start-footer-btn-bg: #f9fafb;
+    --start-footer-btn-border: #d1d5db;
+    --start-footer-btn-color: #374151;
+
+    --ctx-bg: #ffffff;
+    --ctx-border: #e5e7eb;
+    --ctx-item-color: #111827;
+    --ctx-item-hover: #f3f4f6;
+    --ctx-sep: #e5e7eb;
+
+    --font-ui: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    --font-size-ui: 13px;
+    --font-mono: monospace;
+
+    /* Theme picker */
+    --theme-transition: 0.25s ease;
+}
+
 /* ---- AERO 2010 THEME ---- */
 :root.theme-aero2010 {
     --desktop-bg: #4a6e8a;
@@ -164,6 +250,527 @@
     --font-size-ui: 12px;
 }
 
+/* ---- AERO GLASS THEME ---- */
+:root.theme-aeroglass {
+    --desktop-bg: #1e5ca8;
+    --desktop-text: #fff;
+
+    --window-bg: rgba(235, 248, 255, 0.78);
+    --window-border: rgba(130, 190, 255, 0.55);
+    --window-shadow: 0 8px 40px rgba(0, 40, 120, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+    --window-shadow-focus: 0 16px 60px rgba(0, 60, 180, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.55) inset;
+    --window-radius: 8px;
+
+    --titlebar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(175, 215, 255, 0.42) 45%, rgba(120, 180, 250, 0.28) 100%);
+    --titlebar-bg-unfocused: linear-gradient(180deg, rgba(235, 245, 255, 0.35) 0%, rgba(190, 215, 240, 0.2) 100%);
+    --titlebar-color: #002260;
+    --titlebar-height: 32px;
+
+    --btn-close-bg: linear-gradient(180deg, #ff7070, #e81123);
+    --btn-minimize-bg: linear-gradient(180deg, #f4f9ff, #c8ddf0);
+    --btn-maximize-bg: linear-gradient(180deg, #f4f9ff, #c8ddf0);
+    --btn-unfocused-bg: linear-gradient(180deg, #d8e8f4, #b8cce0);
+    --btn-radius: 3px;
+    --btn-size: 26px;
+
+    --toolbar-bg: linear-gradient(180deg, rgba(228, 244, 255, 0.88) 0%, rgba(198, 228, 255, 0.78) 100%);
+    --toolbar-bg-unfocused: linear-gradient(180deg, rgba(215, 232, 248, 0.72) 0%, rgba(195, 218, 240, 0.65) 100%);
+    --toolbar-border: rgba(130, 190, 248, 0.5);
+    --toolbar-btn-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(208, 234, 255, 0.72) 49%, rgba(178, 218, 255, 0.68) 51%, rgba(215, 238, 255, 0.78) 100%);
+    --toolbar-btn-border: rgba(95, 158, 228, 0.72);
+    --toolbar-btn-color: #002a6e;
+    --toolbar-btn-radius: 4px;
+    --toolbar-address-bg: rgba(255, 255, 255, 0.8);
+    --toolbar-address-color: #001848;
+    --toolbar-address-radius: 3px;
+
+    --sidebar-bg: linear-gradient(180deg, rgba(218, 240, 255, 0.72) 0%, rgba(190, 225, 255, 0.65) 100%);
+    --sidebar-bg-unfocused: linear-gradient(180deg, rgba(215, 232, 248, 0.6) 0%, rgba(195, 218, 240, 0.55) 100%);
+    --sidebar-item-color: #001e5c;
+    --sidebar-item-hover: rgba(255, 255, 255, 0.52);
+    --sidebar-item-active: linear-gradient(180deg, rgba(55, 128, 225, 0.88), rgba(25, 88, 185, 0.92));
+    --sidebar-item-active-unfocused: rgba(140, 185, 228, 0.65);
+    --sidebar-section-color: #4a6a9a;
+
+    --panel-bg: rgba(246, 252, 255, 0.93);
+
+    --bottombar-bg: linear-gradient(180deg, rgba(218, 240, 255, 0.78), rgba(190, 222, 250, 0.72));
+    --bottombar-border: rgba(118, 182, 244, 0.4);
+
+    --taskbar-bg: rgba(5, 12, 30, 0.85);
+    --taskbar-border: rgba(75, 140, 228, 0.28);
+    --taskbar-btn-bg: linear-gradient(180deg, rgba(55, 100, 188, 0.52) 0%, rgba(28, 62, 148, 0.62) 49%, rgba(20, 52, 138, 0.68) 51%, rgba(38, 80, 165, 0.56) 100%);
+    --taskbar-btn-border: rgba(75, 142, 228, 0.52);
+    --taskbar-btn-color: #fff;
+    --taskbar-btn-active: linear-gradient(180deg, rgba(95, 162, 248, 0.72) 0%, rgba(55, 122, 218, 0.78) 49%, rgba(45, 112, 208, 0.82) 51%, rgba(65, 132, 228, 0.74) 100%);
+    --taskbar-newwin-bg: rgba(18, 78, 38, 0.72);
+    --taskbar-newwin-border: rgba(38, 145, 68, 0.52);
+
+    --start-header-bg: linear-gradient(180deg, rgba(55, 125, 228, 0.95), rgba(28, 82, 188, 0.98));
+    --start-bg: rgba(238, 250, 255, 0.96);
+    --start-footer-bg: linear-gradient(180deg, rgba(192, 222, 248, 0.92), rgba(165, 202, 240, 0.94));
+    --start-section-color: #5578aa;
+    --start-item-color: #001640;
+    --start-item-hover: rgba(178, 218, 255, 0.55);
+    --start-search-bg: rgba(255, 255, 255, 0.88);
+    --start-search-border: rgba(115, 178, 245, 0.62);
+    --start-footer-btn-bg: linear-gradient(180deg, rgba(222, 240, 255, 0.92), rgba(195, 222, 250, 0.92));
+    --start-footer-btn-border: rgba(98, 162, 228, 0.62);
+    --start-footer-btn-color: #001848;
+
+    --ctx-bg: rgba(238, 250, 255, 0.95);
+    --ctx-border: rgba(118, 182, 244, 0.62);
+    --ctx-item-color: #001640;
+    --ctx-item-hover: linear-gradient(180deg, rgba(192, 228, 255, 0.75), rgba(165, 212, 255, 0.82));
+    --ctx-sep: rgba(138, 198, 248, 0.4);
+
+    --font-ui: "Segoe UI", "Lucida Grande", Tahoma, Geneva, sans-serif;
+    --font-size-ui: 12px;
+}
+
+/* ---- NORD THEME ---- */
+:root.theme-nord {
+    --desktop-bg: #2e3440;
+    --desktop-text: #eceff4;
+
+    --window-bg: #eceff4;
+    --window-border: #4c566a;
+    --window-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    --window-shadow-focus: 0 12px 40px rgba(0, 0, 0, 0.7);
+    --window-radius: 6px;
+
+    --titlebar-bg: linear-gradient(180deg, #4c566a, #3b4252);
+    --titlebar-bg-unfocused: linear-gradient(180deg, #5a6476, #4a5266);
+    --titlebar-color: #eceff4;
+    --titlebar-height: 25px;
+
+    --btn-close-bg: #bf616a;
+    --btn-minimize-bg: #ebcb8b;
+    --btn-maximize-bg: #a3be8c;
+    --btn-unfocused-bg: #4c566a;
+    --btn-radius: 50%;
+    --btn-size: 26px;
+
+    --toolbar-bg: #3b4252;
+    --toolbar-bg-unfocused: #434c5e;
+    --toolbar-border: #2e3440;
+    --toolbar-btn-bg: #434c5e;
+    --toolbar-btn-border: #4c566a;
+    --toolbar-btn-color: #eceff4;
+    --toolbar-btn-radius: 5px;
+    --toolbar-address-bg: #2e3440;
+    --toolbar-address-color: #d8dee9;
+    --toolbar-address-radius: 5px;
+
+    --sidebar-bg: #3b4252;
+    --sidebar-bg-unfocused: #434c5e;
+    --sidebar-item-color: #d8dee9;
+    --sidebar-item-hover: #434c5e;
+    --sidebar-item-active: #5e81ac;
+    --sidebar-item-active-unfocused: #4c566a;
+    --sidebar-section-color: #616e88;
+
+    --panel-bg: #434c5e;
+
+    --bottombar-bg: #3b4252;
+    --bottombar-border: #2e3440;
+
+    --taskbar-bg: #2e3440;
+    --taskbar-border: #272c36;
+    --taskbar-btn-bg: #3b4252;
+    --taskbar-btn-border: #4c566a;
+    --taskbar-btn-color: #eceff4;
+    --taskbar-btn-active: #5e81ac;
+    --taskbar-newwin-bg: #3a5040;
+    --taskbar-newwin-border: #2a4030;
+
+    --start-header-bg: linear-gradient(180deg, #4c566a, #3b4252);
+    --start-bg: #3b4252;
+    --start-footer-bg: #2e3440;
+    --start-section-color: #616e88;
+    --start-item-color: #d8dee9;
+    --start-item-hover: #434c5e;
+    --start-search-bg: #2e3440;
+    --start-search-border: #4c566a;
+    --start-footer-btn-bg: #434c5e;
+    --start-footer-btn-border: #4c566a;
+    --start-footer-btn-color: #d8dee9;
+
+    --ctx-bg: #3b4252;
+    --ctx-border: #2e3440;
+    --ctx-item-color: #d8dee9;
+    --ctx-item-hover: #434c5e;
+    --ctx-sep: #4c566a;
+
+    --font-ui: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    --font-size-ui: 13px;
+}
+
+/* ---- MIDNIGHT THEME ---- */
+:root.theme-midnight {
+    --desktop-bg: #000;
+    --desktop-text: #e0e0e0;
+
+    --window-bg: #0d0d0d;
+    --window-border: #1a1a1a;
+    --window-shadow: 0 8px 30px rgba(0, 0, 0, 0.95);
+    --window-shadow-focus: 0 12px 44px rgba(0, 0, 0, 1), 0 0 0 1px #222;
+    --window-radius: 8px;
+
+    --titlebar-bg: linear-gradient(180deg, #1a1a1a, #0d0d0d);
+    --titlebar-bg-unfocused: linear-gradient(180deg, #141414, #0a0a0a);
+    --titlebar-color: #b0b0b0;
+    --titlebar-height: 25px;
+
+    --btn-close-bg: #cc3333;
+    --btn-minimize-bg: #cc9900;
+    --btn-maximize-bg: #1e9a1e;
+    --btn-unfocused-bg: #333;
+    --btn-radius: 4px;
+    --btn-size: 28px;
+
+    --toolbar-bg: #0d0d0d;
+    --toolbar-bg-unfocused: #0f0f0f;
+    --toolbar-border: #000;
+    --toolbar-btn-bg: #141414;
+    --toolbar-btn-border: #222;
+    --toolbar-btn-color: #ccc;
+    --toolbar-btn-radius: 6px;
+    --toolbar-address-bg: #050505;
+    --toolbar-address-color: #bbb;
+    --toolbar-address-radius: 6px;
+
+    --sidebar-bg: #080808;
+    --sidebar-bg-unfocused: #0a0a0a;
+    --sidebar-item-color: #999;
+    --sidebar-item-hover: #141414;
+    --sidebar-item-active: #6366f1;
+    --sidebar-item-active-unfocused: #333;
+    --sidebar-section-color: #3a3a3a;
+
+    --panel-bg: #111;
+
+    --bottombar-bg: #0a0a0a;
+    --bottombar-border: #000;
+
+    --taskbar-bg: #000;
+    --taskbar-border: #0a0a0a;
+    --taskbar-btn-bg: #0d0d0d;
+    --taskbar-btn-border: #1a1a1a;
+    --taskbar-btn-color: #bbb;
+    --taskbar-btn-active: #6366f1;
+    --taskbar-newwin-bg: #0d2a0d;
+    --taskbar-newwin-border: #1a3a1a;
+
+    --start-header-bg: linear-gradient(180deg, #1a1a1a, #0d0d0d);
+    --start-bg: #080808;
+    --start-footer-bg: #050505;
+    --start-section-color: #3a3a3a;
+    --start-item-color: #999;
+    --start-item-hover: #141414;
+    --start-search-bg: #050505;
+    --start-search-border: #222;
+    --start-footer-btn-bg: #0d0d0d;
+    --start-footer-btn-border: #1a1a1a;
+    --start-footer-btn-color: #888;
+
+    --ctx-bg: #0d0d0d;
+    --ctx-border: #000;
+    --ctx-item-color: #999;
+    --ctx-item-hover: #141414;
+    --ctx-sep: #1a1a1a;
+
+    --font-ui: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    --font-size-ui: 13px;
+}
+
+/* ---- SUNRISE THEME ---- */
+:root.theme-sunrise {
+    --desktop-bg: #1c1008;
+    --desktop-text: #f5e6c8;
+
+    --window-bg: #1e1610;
+    --window-border: #3a2a14;
+    --window-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    --window-shadow-focus: 0 12px 40px rgba(0, 0, 0, 0.9);
+    --window-radius: 6px;
+
+    --titlebar-bg: linear-gradient(180deg, #3a2010, #2a1a08);
+    --titlebar-bg-unfocused: linear-gradient(180deg, #4a3020, #3a2010);
+    --titlebar-color: #f5e6c8;
+    --titlebar-height: 25px;
+
+    --btn-close-bg: #e05030;
+    --btn-minimize-bg: #e0a030;
+    --btn-maximize-bg: #60a030;
+    --btn-unfocused-bg: #4a3a2a;
+    --btn-radius: 4px;
+    --btn-size: 28px;
+
+    --toolbar-bg: #2a1e10;
+    --toolbar-bg-unfocused: #2e2214;
+    --toolbar-border: #1a1008;
+    --toolbar-btn-bg: #3a2a14;
+    --toolbar-btn-border: #4a3820;
+    --toolbar-btn-color: #e8d4a8;
+    --toolbar-btn-radius: 6px;
+    --toolbar-address-bg: #130e06;
+    --toolbar-address-color: #e8d4a8;
+    --toolbar-address-radius: 6px;
+
+    --sidebar-bg: #221810;
+    --sidebar-bg-unfocused: #251b12;
+    --sidebar-item-color: #d4c090;
+    --sidebar-item-hover: #2e2418;
+    --sidebar-item-active: #d97706;
+    --sidebar-item-active-unfocused: #4a3820;
+    --sidebar-section-color: #6a5030;
+
+    --panel-bg: #2a2018;
+
+    --bottombar-bg: #221810;
+    --bottombar-border: #1a1008;
+
+    --taskbar-bg: #160e04;
+    --taskbar-border: #1a1008;
+    --taskbar-btn-bg: #2a1c0c;
+    --taskbar-btn-border: #3a2a14;
+    --taskbar-btn-color: #e8d4a8;
+    --taskbar-btn-active: #d97706;
+    --taskbar-newwin-bg: #1a3014;
+    --taskbar-newwin-border: #2a4020;
+
+    --start-header-bg: linear-gradient(180deg, #3a2010, #2a1a08);
+    --start-bg: #221810;
+    --start-footer-bg: #160e04;
+    --start-section-color: #6a5030;
+    --start-item-color: #d4c090;
+    --start-item-hover: #2e2418;
+    --start-search-bg: #130e06;
+    --start-search-border: #3a2a14;
+    --start-footer-btn-bg: #2a1c0c;
+    --start-footer-btn-border: #3a2a14;
+    --start-footer-btn-color: #c0a070;
+
+    --ctx-bg: #221810;
+    --ctx-border: #1a1008;
+    --ctx-item-color: #d4c090;
+    --ctx-item-hover: #2e2418;
+    --ctx-sep: #3a2a14;
+
+    --font-ui: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    --font-size-ui: 13px;
+}
+
+/* ============================================================
+   EXTRA THEME OVERRIDES
+   Non-variable rules (backdrop-filter, pseudo-elements, etc.)
+   for themes that need more than CSS variable swaps.
+   To keep themes self-contained, add new theme extras HERE.
+   ============================================================ */
+
+/* --- Aero Glass extra rules --- */
+
+/* Desktop: rich blue Vista-style sky gradient */
+:root.theme-aeroglass body {
+    background: var(--desktop-bg)
+        linear-gradient(180deg, #3a8ae8 0%, #2d89ef 35%, #1a6abf 65%, #144fa0 100%);
+}
+
+/* Window: frosted glass */
+:root.theme-aeroglass .app-window {
+    backdrop-filter: blur(14px) saturate(1.6);
+    -webkit-backdrop-filter: blur(14px) saturate(1.6);
+}
+
+/* Title bar: glass with a bright reflection stripe at the top */
+:root.theme-aeroglass .title-bar {
+    backdrop-filter: blur(18px) saturate(1.8);
+    -webkit-backdrop-filter: blur(18px) saturate(1.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+:root.theme-aeroglass .title-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.0) 100%);
+    pointer-events: none;
+    border-radius: var(--window-radius) var(--window-radius) 0 0;
+    z-index: 0;
+}
+
+:root.theme-aeroglass .title-bar-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #002260;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 0 12px rgba(100, 165, 255, 0.4);
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 1;
+}
+
+/* Window buttons: right-side, with glass shine */
+:root.theme-aeroglass .window-close-button {
+    border: 1px solid rgba(160, 0, 0, 0.45);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    color: #fff;
+    font-size: 10px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+:root.theme-aeroglass .window-minimize-button,
+:root.theme-aeroglass .window-maximize-button {
+    border: 1px solid rgba(90, 148, 220, 0.52);
+    box-shadow: 0 1px 3px rgba(0, 40, 120, 0.28), 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+    color: #003070;
+    font-size: 10px;
+    z-index: 1;
+}
+
+/* Toolbar: glass */
+:root.theme-aeroglass .toolbar {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+:root.theme-aeroglass .toolbar button {
+    box-shadow: 0 1px 3px rgba(0, 40, 120, 0.22), 0 1px 0 rgba(255, 255, 255, 0.92) inset;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:root.theme-aeroglass .toolbar button:hover {
+    background: linear-gradient(180deg, #fff 0%, #eaf4ff 50%, #d5ecff 100%);
+    border-color: rgba(55, 130, 228, 0.82);
+}
+
+:root.theme-aeroglass .toolbar .address {
+    border: 1px solid rgba(115, 180, 245, 0.52);
+    box-shadow: inset 0 1px 4px rgba(0, 40, 130, 0.12);
+}
+
+/* Small toolbar buttons */
+:root.theme-aeroglass .small-btn {
+    box-shadow: 0 1px 3px rgba(0, 40, 120, 0.22), 0 1px 0 rgba(255, 255, 255, 0.92) inset;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:root.theme-aeroglass .small-btn:hover {
+    background: linear-gradient(180deg, #fff 0%, #eaf4ff 50%, #d5ecff 100%);
+    border-color: rgba(55, 130, 228, 0.82);
+}
+
+/* Sidebar: glass with subtle right border */
+:root.theme-aeroglass .sidebar {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(118, 192, 255, 0.32);
+}
+
+:root.theme-aeroglass .sidebar li.active {
+    box-shadow: 0 1px 4px rgba(0, 40, 130, 0.38), 0 1px 0 rgba(255, 255, 255, 0.28) inset;
+    text-shadow: 0 1px 2px rgba(0, 0, 70, 0.42);
+}
+
+/* File items: dark text on the light panel.
+   Uses .main-panel to beat :root:not(.theme-aero2010) .item specificity. */
+:root.theme-aeroglass .main-panel .item {
+    color: #001840;
+}
+
+:root.theme-aeroglass .item.selected {
+    outline: 2px solid rgba(55, 128, 225, 0.82);
+    background: rgba(175, 218, 255, 0.38);
+}
+
+/* Context menu: frosted glass */
+:root.theme-aeroglass .ctx-menu {
+    backdrop-filter: blur(22px) saturate(1.7);
+    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    box-shadow: 0 8px 32px rgba(0, 40, 130, 0.38), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+}
+
+:root.theme-aeroglass .ctx-row:hover {
+    box-shadow: 0 1px 2px rgba(0, 40, 120, 0.18) inset;
+    border-radius: 3px;
+}
+
+:root.theme-aeroglass .ctx-row.danger {
+    color: #b01020;
+}
+
+:root.theme-aeroglass .ctx-row.danger:hover {
+    background: linear-gradient(180deg, #ffe8e8, #ffd0d0);
+}
+
+/* Bottom toolbar: glass */
+:root.theme-aeroglass .bottom-toolbar {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #002060;
+}
+
+/* Taskbar: signature dark glass bar */
+:root.theme-aeroglass #taskbar {
+    height: 50px;
+    backdrop-filter: blur(26px) saturate(1.9);
+    -webkit-backdrop-filter: blur(26px) saturate(1.9);
+    border-top: 1px solid rgba(95, 155, 255, 0.28);
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+/* Taskbar buttons: glossy Aero pill */
+:root.theme-aeroglass #taskbar button {
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 40, 170, 0.35), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+/* Start button: the Aero glass pearl orb */
+:root.theme-aeroglass #startBtn {
+    background: radial-gradient(ellipse at 50% 25%, #72c8ff 0%, #2b8de8 42%, #1060c8 100%) !important;
+    border: 1px solid rgba(28, 82, 200, 0.72) !important;
+    border-radius: 5px !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 90, 0.62) !important;
+    box-shadow: 0 2px 10px rgba(0, 60, 200, 0.55), 0 1px 0 rgba(255, 255, 255, 0.32) inset !important;
+    padding: 7px 16px !important;
+}
+
+:root.theme-aeroglass #startBtn:hover {
+    background: radial-gradient(ellipse at 50% 25%, #90d8ff 0%, #3d9ef8 42%, #1a72da 100%) !important;
+}
+
+/* Start menu: glass panel */
+:root.theme-aeroglass #startMenu {
+    bottom: 54px;
+    backdrop-filter: blur(22px) saturate(1.7);
+    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow: 0 -4px 36px rgba(0, 40, 130, 0.52), 0 0 0 1px rgba(255, 255, 255, 0.32) inset;
+    border-color: rgba(118, 182, 248, 0.52);
+}
+
+:root.theme-aeroglass .start-header {
+    text-shadow: 0 1px 2px rgba(0, 0, 70, 0.52);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset;
+}
+
+:root.theme-aeroglass .start-footer button {
+    box-shadow: 0 1px 2px rgba(0, 40, 120, 0.18), 0 1px 0 rgba(255, 255, 255, 0.78) inset;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+/* Virtual desktop: items stay white on the blue desktop */
+:root.theme-aeroglass #virtualDesktop {
+    bottom: 54px;
+}
+
 body {
     margin: 0;
     font-family: var(--font-ui);
@@ -206,6 +813,20 @@ body {
     border-radius: 0 !important;
     border: none !important;
 }
+
+.resize-handle {
+    position: absolute;
+    z-index: 100;
+}
+.resize-handle.rh-n  { top: 0;    left: 8px;   right: 8px;  height: 5px; cursor: n-resize; }
+.resize-handle.rh-s  { bottom: 0; left: 8px;   right: 8px;  height: 5px; cursor: s-resize; }
+.resize-handle.rh-e  { right: 0;  top: 8px;    bottom: 8px; width: 5px;  cursor: e-resize; }
+.resize-handle.rh-w  { left: 0;   top: 8px;    bottom: 8px; width: 5px;  cursor: w-resize; }
+.resize-handle.rh-ne { top: 0;    right: 0;    width: 12px; height: 12px; cursor: ne-resize; }
+.resize-handle.rh-nw { top: 0;    left: 0;     width: 12px; height: 12px; cursor: nw-resize; }
+.resize-handle.rh-se { bottom: 0; right: 0;    width: 12px; height: 12px; cursor: se-resize; }
+.resize-handle.rh-sw { bottom: 0; left: 0;     width: 12px; height: 12px; cursor: sw-resize; }
+.app-window.maximized .resize-handle { display: none; }
 
 .app-icon-title-bar {
     width: 16px;
@@ -450,6 +1071,11 @@ body {
     border-right: 1px solid rgba(120, 160, 200, 0.3);
 }
 
+.sidebar li.drag-over {
+    outline: 2px dashed #3b82f6;
+    background: rgba(59, 130, 246, 0.12);
+}
+
 .sidebar .sidebar-section {
     font-size: 10px;
     font-weight: 700;
@@ -488,9 +1114,6 @@ body {
     user-select: none;
 }
 
-:root:not(.theme-aero2010) .item {
-    color: #eee;
-}
 
 .item.selected {
     outline: 2px solid #3b82f6;
@@ -671,7 +1294,7 @@ img.preview-thumb, canvas.preview-thumb {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #1E1E1E;
+    background: var(--panel-bg);
 }
 
 .props-icon-row {
@@ -679,8 +1302,8 @@ img.preview-thumb, canvas.preview-thumb {
     align-items: center;
     gap: 14px;
     padding: 18px 20px 14px;
-    border-bottom: 1px solid #111;
-    background: #252525;
+    border-bottom: 1px solid var(--toolbar-border);
+    background: var(--toolbar-bg);
 }
 
 .props-icon-row .props-big-icon {
@@ -706,13 +1329,13 @@ img.preview-thumb, canvas.preview-thumb {
 .props-name {
     font-size: 15px;
     font-weight: 600;
-    color: #eee;
+    color: var(--start-item-color);
     word-break: break-all;
 }
 
 .props-kind {
     font-size: 12px;
-    color: #888;
+    color: var(--start-section-color);
     margin-top: 3px;
 }
 
@@ -725,7 +1348,7 @@ img.preview-thumb, canvas.preview-thumb {
 .props-row {
     display: flex;
     padding: 7px 0;
-    border-bottom: 1px solid #2a2a2a;
+    border-bottom: 1px solid var(--ctx-sep);
     font-size: 13px;
     gap: 10px;
 }
@@ -737,13 +1360,13 @@ img.preview-thumb, canvas.preview-thumb {
 .props-row .pk {
     width: 110px;
     flex-shrink: 0;
-    color: #888;
+    color: var(--start-section-color);
     font-size: 12px;
     padding-top: 1px;
 }
 
 .props-row .pv {
-    color: #ddd;
+    color: var(--start-item-color);
     word-break: break-all;
     flex: 1;
 }
@@ -751,7 +1374,7 @@ img.preview-thumb, canvas.preview-thumb {
 .props-meter {
     height: 6px;
     border-radius: 3px;
-    background: #333;
+    background: var(--ctx-sep);
     margin-top: 6px;
     overflow: hidden;
 }
@@ -759,7 +1382,7 @@ img.preview-thumb, canvas.preview-thumb {
 .props-meter-fill {
     height: 100%;
     border-radius: 3px;
-    background: #0c74df;
+    background: var(--sidebar-item-active);
     transition: width 0.4s ease;
 }
 
@@ -771,20 +1394,20 @@ img.preview-thumb, canvas.preview-thumb {
     align-items: center;
     gap: 8px;
     padding: 6px 10px;
-    background: #1E1E1E;
-    border-bottom: 1px solid #000;
+    background: var(--toolbar-bg);
+    border-bottom: 1px solid var(--toolbar-border);
     flex-shrink: 0;
 }
 
 .zip-toolbar .zip-path {
     flex: 1;
-    background: #0f0f0f;
-    color: #aaa;
+    background: var(--toolbar-address-bg);
+    color: var(--toolbar-address-color);
     padding: 4px 8px;
     border-radius: 5px;
     font-size: 12px;
     font-family: monospace;
-    border: 1px solid #333;
+    border: 1px solid var(--toolbar-btn-border);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -793,15 +1416,16 @@ img.preview-thumb, canvas.preview-thumb {
 .zip-toolbar button {
     padding: 4px 10px;
     border-radius: 5px;
-    border: 1px solid #444;
-    background: #2e2e2e;
-    color: #eee;
+    border: 1px solid var(--toolbar-btn-border);
+    background: var(--toolbar-btn-bg);
+    color: var(--toolbar-btn-color);
     cursor: pointer;
     font-size: 12px;
+    font-family: var(--font-ui);
 }
 
 .zip-toolbar button:hover {
-    background: #3a3a3a;
+    filter: brightness(1.15);
 }
 
 .zip-toolbar button:disabled {
@@ -812,7 +1436,7 @@ img.preview-thumb, canvas.preview-thumb {
 .zip-list {
     flex: 1;
     overflow-y: auto;
-    background: #2D2D2D;
+    background: var(--panel-bg);
 }
 
 .zip-list table {
@@ -822,8 +1446,8 @@ img.preview-thumb, canvas.preview-thumb {
 }
 
 .zip-list thead th {
-    background: #1E1E1E;
-    color: #888;
+    background: var(--toolbar-bg);
+    color: var(--start-section-color);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -833,13 +1457,13 @@ img.preview-thumb, canvas.preview-thumb {
     position: sticky;
     top: 0;
     z-index: 1;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--toolbar-border);
     user-select: none;
     cursor: pointer;
 }
 
 .zip-list thead th:hover {
-    color: #ccc;
+    color: var(--start-item-color);
 }
 
 .zip-list thead th.sorted-asc::after {
@@ -853,17 +1477,18 @@ img.preview-thumb, canvas.preview-thumb {
 }
 
 .zip-list tbody tr {
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid var(--ctx-sep);
     cursor: pointer;
+    color: var(--start-item-color);
 }
 
 .zip-list tbody tr:hover {
-    background: #333;
+    background: var(--start-item-hover);
 }
 
 .zip-list tbody tr.selected {
-    background: #0c74df22;
-    outline: 1px solid #0c74df44;
+    background: var(--sidebar-item-active);
+    color: #fff;
 }
 
 .zip-list tbody td {
@@ -3390,6 +4015,49 @@ img.preview-thumb, canvas.preview-thumb {
 .md-codeblock code {
     font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
     color: #c8d4e0;
+}
+
+/* ── File-operation progress dialog ── */
+.fs-progress-body {
+    background: var(--panel-bg);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.fs-progress-filename {
+    font-size: 12px;
+    color: var(--desktop-text);
+    opacity: 0.7;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-height: 16px;
+}
+.fs-progress-track {
+    width: 100%; height: 8px;
+    background: rgba(127,127,127,0.2);
+    border-radius: 4px; overflow: hidden;
+    position: relative;
+}
+.fs-progress-fill {
+    height: 100%;
+    background: var(--sidebar-item-active, #3b82f6);
+    border-radius: 4px;
+    transition: width 0.1s linear;
+}
+.fs-progress-fill.indeterminate {
+    width: 35% !important;
+    position: absolute;
+    animation: fs-prog-slide 1.2s ease-in-out infinite;
+}
+@keyframes fs-prog-slide {
+    0%   { left: -35%; }
+    100% { left: 100%; }
+}
+.fs-progress-count {
+    font-size: 11px;
+    color: var(--desktop-text);
+    opacity: 0.5;
+    text-align: right;
 }
 
 .md-inline-code {

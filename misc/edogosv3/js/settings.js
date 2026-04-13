@@ -362,7 +362,7 @@ function spawnSettings(initialSection = 'appearance') {
             <button class="window-maximize-button" title="Maximize">□</button>
             <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/settings.png"> Settings</span>
         </div>
-        <div class="settings-layout">
+        <div class="settings-layout" oncontextmenu="return false">
             <nav class="settings-nav" id="settings-nav-${windowId}"></nav>
             <div class="settings-content" id="settings-content-${windowId}"></div>
         </div>
@@ -469,15 +469,11 @@ async function _buildAppearanceSection(el) {
 /* ---- Theme cards ---- */
 function _buildThemeRow(el) {
     const currentT = localStorage.getItem('edog_theme') || 'dark';
-    const themes = [
-        { id: 'dark', label: 'Dark', html: _themePreviewHtml('dark') },
-        { id: 'aero2010', label: 'Aero 2010', html: _themePreviewHtml('aero2010') },
-    ];
-    themes.forEach(t => {
+    THEME_REGISTRY.forEach(t => {
         const card = document.createElement('div');
         card.className = 'settings-theme-card' + (currentT === t.id ? ' selected' : '');
         card.innerHTML = `
-            <div class="stc-preview">${t.html}</div>
+            <div class="stc-preview">${_themePreviewHtml(t)}</div>
             <div class="stc-label">${t.label}</div>
             <div class="stc-check">✓</div>
         `;
@@ -490,32 +486,23 @@ function _buildThemeRow(el) {
     });
 }
 
-function _themePreviewHtml(id) {
-    if (id === 'dark') return `
-        <div style="width:100%;height:100%;background:#2b2b2b;position:relative;overflow:hidden;">
-            <div style="height:10px;background:linear-gradient(#3a3a3a,#242424);display:flex;align-items:center;padding:0 3px;gap:2px;">
-                <div style="width:5px;height:5px;border-radius:2px;background:#ff5f57;"></div>
-                <div style="width:5px;height:5px;border-radius:2px;background:#ffbd2e;"></div>
-            </div>
-            <div style="height:7px;background:#1E1E1E;border-bottom:1px solid #000;"></div>
-            <div style="display:flex;height:40px;">
-                <div style="width:28%;background:#1E1E1E;border-right:1px solid #000;"></div>
-                <div style="flex:1;background:#2D2D2D;"></div>
-            </div>
-            <div style="height:7px;background:#111;border-top:1px solid #333;position:absolute;bottom:0;left:0;right:0;"></div>
-        </div>`;
+// Generates the mini preview thumbnail from a THEME_REGISTRY entry's `preview` object.
+// To add a new theme: define preview colors in THEME_REGISTRY — no HTML needed here.
+function _themePreviewHtml(themeEntry) {
+    const p = themeEntry.preview;
+    const btnStyle = `width:5px;height:5px;border-radius:${p.btnRadius || '2px'};flex-shrink:0;`;
     return `
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#4a6e8a,#3a5a7a);position:relative;overflow:hidden;">
-            <div style="height:12px;background:linear-gradient(#5b9bd5,#2e6db0);display:flex;align-items:center;padding:0 3px;gap:2px;">
-                <div style="width:5px;height:5px;border-radius:50%;background:#ff6b6b;border:1px solid rgba(0,0,0,.3);"></div>
-                <div style="width:5px;height:5px;border-radius:50%;background:#ffd060;border:1px solid rgba(0,0,0,.3);"></div>
+        <div style="width:100%;height:100%;background:${p.desktop};position:relative;overflow:hidden;">
+            <div style="height:10px;background:${p.titlebar};display:flex;align-items:center;padding:0 3px;gap:2px;">
+                <div style="${btnStyle}background:${p.btnClose};"></div>
+                <div style="${btnStyle}background:${p.btnMin};"></div>
             </div>
-            <div style="height:8px;background:linear-gradient(#e8f0f8,#d0dce8);border-bottom:1px solid #aac0d8;"></div>
-            <div style="display:flex;height:36px;">
-                <div style="width:28%;background:linear-gradient(#dce8f4,#c8d8ec);border-right:1px solid rgba(120,160,200,.4);"></div>
-                <div style="flex:1;background:linear-gradient(#f8fafe,#f0f4fc);"></div>
+            <div style="height:7px;background:${p.toolbar};border-bottom:1px solid rgba(0,0,0,0.25);"></div>
+            <div style="display:flex;height:40px;">
+                <div style="width:28%;background:${p.sidebar};border-right:1px solid rgba(0,0,0,0.15);"></div>
+                <div style="flex:1;background:${p.panel};"></div>
             </div>
-            <div style="height:9px;background:linear-gradient(#3a6490,#1e3d6a);position:absolute;bottom:0;left:0;right:0;border-top:1px solid #1a3050;"></div>
+            <div style="height:7px;background:${p.taskbar};position:absolute;bottom:0;left:0;right:0;border-top:1px solid rgba(0,0,0,0.3);"></div>
         </div>`;
 }
 
@@ -534,13 +521,28 @@ async function _buildWallpaperGrid(gridEl, actionsEl) {
         },
         {
             id: '/usr/share/backgrounds/default-wallpaper.jpg',
-            label: 'Dark Wallpaper',
+            label: 'Default',
             fsPath: '/usr/share/backgrounds/default-wallpaper.jpg',
         },
         {
             id: '/usr/share/backgrounds/wallpaper-2.jpg',
-            label: 'Aero Wallpaper',
+            label: 'Aero',
             fsPath: '/usr/share/backgrounds/wallpaper-2.jpg',
+        },
+        {
+            id: '/usr/share/backgrounds/wallpaper-3.jpg',
+            label: 'Nord',
+            fsPath: '/usr/share/backgrounds/wallpaper-3.jpg',
+        },
+        {
+            id: '/usr/share/backgrounds/wallpaper-4.jpg',
+            label: 'Midnight',
+            fsPath: '/usr/share/backgrounds/wallpaper-4.jpg',
+        },
+        {
+            id: '/usr/share/backgrounds/wallpaper-5.jpg',
+            label: 'Sunrise',
+            fsPath: '/usr/share/backgrounds/wallpaper-5.jpg',
         },
         {
             id: 'none',
@@ -762,6 +764,11 @@ function _buildSystemSection(el) {
             <input type="checkbox" id="sf-show-hidden" style="width:16px;height:16px;cursor:pointer;accent-color:#0c74df;" ${localStorage.getItem('edog_show_hidden') === 'true' ? 'checked' : ''}>
             <label for="sf-show-hidden" style="cursor:pointer;user-select:none;">Show hidden files and folders (names starting with <code style="font-size:11px;background:#1a1a1a;padding:1px 4px;border-radius:3px;">.</code>)</label>
         </div>
+        <div class="settings-group-label" style="margin-top:26px;">Hardware</div>
+        <div class="settings-form-row" style="gap:10px;align-items:center;">
+            <input type="checkbox" id="sf-drive-light" style="width:16px;height:16px;cursor:pointer;accent-color:#0c74df;" ${localStorage.getItem('edog_drive_light') === 'true' ? 'checked' : ''}>
+            <label for="sf-drive-light" style="cursor:pointer;user-select:none;">Show drive activity light</label>
+        </div>
         <div class="settings-group-label" style="margin-top:26px;">Danger Zone</div>
         <div class="settings-danger-row">
             <button class="settings-danger-btn" id="sf-wipe">Wipe All Files &amp; Folders</button>
@@ -793,6 +800,15 @@ function _buildSystemSection(el) {
     el.querySelector('#sf-show-hidden').onchange = (e) => {
         localStorage.setItem('edog_show_hidden', e.target.checked ? 'true' : 'false');
         if (typeof renderAllWindows === 'function') renderAllWindows();
+    };
+
+    el.querySelector('#sf-drive-light').onchange = (e) => {
+        localStorage.setItem('edog_drive_light', e.target.checked ? 'true' : 'false');
+        if (typeof useDriveLight !== 'undefined') {
+            useDriveLight = e.target.checked;
+            const dl = document.getElementById('driveLight');
+            if (dl) dl.style.display = useDriveLight ? 'block' : 'none';
+        }
     };
 
     el.querySelector('#sf-uname-save').onclick = () => {
