@@ -8,6 +8,5 @@ Disallow:
 User-agent: DuckDuckBot
 Disallow:
 
-# Block other crawlers and similar tools. That means you Ashyr.
 User-agent: *
 Disallow: /

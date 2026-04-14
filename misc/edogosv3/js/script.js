@@ -1,15 +1,12 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.6";
+const VERSION = "E-Dog OS 3.1.7";
 const DB_NAME = 'VirtualFS_v2';
-
-let page = document.body;
-
-let shouldIconsBeLight = true;
-
 const STORE = 'nodes';
-const mountedCDs = []; // tracks currently inserted CD names
+
+const mountedCDs = [];
+
 let dbPromise;
 
 let driveLight = document.getElementById("driveLight");
@@ -20,6 +17,10 @@ let _driveSoundTimer = null;
 let _pendingOps = 0;          // count of in-flight IDB transactions
 let _shuttingDown = false;    // true once shutdown/reboot begins
 let _idleResolvers = [];      // callbacks waiting for _pendingOps === 0
+
+let page = document.body;
+
+let shouldIconsBeLight = true;
 
 function openDB() {
     return new Promise((resolve, reject) => {
@@ -863,6 +864,8 @@ function _cutItems(ids) {
 async function _deepCopyChildren(srcId, dstId, ctx) {
     const children = await idbGetAllByIndex('parentId', srcId);
     for (const child of children) {
+        if (ctx?.prog?.cancelled) return;
+        while (ctx?.prog?.paused) await new Promise(r => setTimeout(r, 80));
         const newChild = { ...child, id: crypto.randomUUID(), parentId: dstId, createdAt: Date.now(), updatedAt: Date.now() };
         await idbAdd(newChild);
         if (ctx) { ctx.done++; ctx.prog.update(ctx.done, ctx.total, child.name); }
@@ -1091,68 +1094,254 @@ async function emptyTrash() {
 ============================================================ */
 
 /**
- * Show a themed system-window progress dialog for slow filesystem operations.
- * The dialog is delayed by DELAY_MS so instant ops never flash it.
- * Returns { update(done, total, fileName), close() }.
+ * Show a Windows 10/11-style progress dialog for filesystem operations.
+ * Delayed by DELAY_MS so instant ops never flash.
+ * Returns { update(done, total, fileName), close(), paused, cancelled }.
  */
-
 function showFsProgress(title) {
-    const DELAY_MS = 200;     // wait before showing
-    const MIN_VISIBLE_MS = 300; // keep visible at least this long once shown
+    const DELAY_MS = 200;   // ms before showing (avoids flash on fast ops)
+    const MIN_SHOW_MS = 500;   // minimum visible time once shown
+    const GRAPH_PTS = 80;    // data points kept in the speed graph
+    const SAMPLE_MS = 250;   // how often to push a new graph sample (ms)
+    const EWA_A = 0.18;  // exponential smoothing factor for speed
 
-    let windowId = null;
-    let el = null;
-    let closed = false;
-    let shownAt = null;
+    let windowId = null, el = null, canvas = null, ctx2d = null;
+    let closed = false, shownAt = null, rafId = null;
+    let _paused = false, _cancelled = false;
 
+    // Speed tracking state
+    let lastDone = 0, lastTime = Date.now();
+    let smoothSpeed = 0;                         // EWA-smoothed speed (items/s)
+    let graphData = new Array(GRAPH_PTS).fill(0);
+    let peakSpeed = 1;                         // for Y-axis scale
+    let lastSampleTs = 0;
+
+    /* ── helpers ── */
+    function _accent() {
+        return getComputedStyle(document.documentElement)
+            .getPropertyValue('--sidebar-item-active').trim() || '#3b82f6';
+    }
+
+    function _fmtSpeed(v) {
+        if (v < 0.5) return '';
+        if (v >= 1000) return (v / 1000).toFixed(1) + 'k items/s';
+        return Math.round(v) + ' items/s';
+    }
+
+    function _fmtTime(sec) {
+        if (!isFinite(sec) || sec <= 0) return '';
+        if (sec < 4) return 'A few seconds remaining';
+        if (sec < 90) return 'About ' + (Math.round(sec / 5) * 5) + ' seconds remaining';
+        const m = Math.round(sec / 60);
+        return 'About ' + m + ' minute' + (m !== 1 ? 's' : '') + ' remaining';
+    }
+
+    /* ── canvas graph ── */
+    function _drawGraph() {
+        if (!canvas || !ctx2d) return;
+        const W = canvas.width, H = canvas.height;
+        ctx2d.clearRect(0, 0, W, H);
+
+        const accent = _accent();
+        const n = graphData.length;
+        const stepX = W / Math.max(n - 1, 1);
+        const maxV = Math.max(peakSpeed, 1);
+
+        function yOf(i) {
+            return H - Math.max((graphData[i] / maxV) * (H - 8), 0) - 2;
+        }
+
+        // Build top-line path (area fill)
+        ctx2d.beginPath();
+        ctx2d.moveTo(0, yOf(0));
+        for (let i = 1; i < n; i++) ctx2d.lineTo(i * stepX, yOf(i));
+        ctx2d.lineTo((n - 1) * stepX, H);
+        ctx2d.lineTo(0, H);
+        ctx2d.closePath();
+        ctx2d.globalAlpha = 0.22;
+        ctx2d.fillStyle = accent;
+        ctx2d.fill();
+        ctx2d.globalAlpha = 1;
+
+        // Stroke the top line
+        ctx2d.beginPath();
+        ctx2d.moveTo(0, yOf(0));
+        for (let i = 1; i < n; i++) ctx2d.lineTo(i * stepX, yOf(i));
+        ctx2d.strokeStyle = accent;
+        ctx2d.lineWidth = 1.5;
+        ctx2d.stroke();
+
+        // Dot at the latest (right-most) point
+        const lx = (n - 1) * stepX, ly = yOf(n - 1);
+        ctx2d.beginPath();
+        ctx2d.arc(lx, ly, 3, 0, Math.PI * 2);
+        ctx2d.fillStyle = accent;
+        ctx2d.globalAlpha = 0.9;
+        ctx2d.fill();
+        ctx2d.globalAlpha = 1;
+    }
+
+    function _startRaf() {
+        function frame(ts) {
+            if (closed) return;
+            rafId = requestAnimationFrame(frame);
+            if (!_paused && ts - lastSampleTs >= SAMPLE_MS) {
+                lastSampleTs = ts;
+                graphData.push(smoothSpeed);
+                graphData.shift();
+                // Slowly decay peak so the graph re-scales when speed drops
+                peakSpeed = Math.max(Math.max(...graphData), peakSpeed * 0.997);
+            }
+            _drawGraph();
+        }
+        rafId = requestAnimationFrame(frame);
+    }
+
+    /* ── window creation (delayed) ── */
     const timer = setTimeout(() => {
         if (closed) return;
         windowId = 'win_' + (++winCount);
         el = document.createElement('div');
         el.className = 'app-window focused';
         el.id = windowId;
-        const w = 400;
+        const w = 460;
         const left = Math.max(0, Math.round((window.innerWidth - w) / 2));
-        const top = Math.max(0, Math.round((window.innerHeight - 130) / 2));
+        const top = Math.max(0, Math.round((window.innerHeight - 280) / 2));
         el.style.cssText = `left:${left}px;top:${top}px;width:${w}px;height:auto;z-index:${++zCounter};`;
         el.innerHTML = `
             <div class="title-bar">
                 <span class="title-bar-text">${_escHtml(title)}</span>
             </div>
             <div class="fs-progress-body">
-                <div class="fs-progress-filename">Preparing\u2026</div>
-                <div class="fs-progress-track">
+                <div class="fs-progress-accent-bar"></div>
+                <div class="fs-progress-header">
+                    <span class="fs-progress-op-title">${_escHtml(title)}</span>
+                    <div class="fs-progress-controls">
+                        <button class="fs-progress-btn fsp-pause">Pause</button>
+                        <button class="fs-progress-btn fsp-cancel">Cancel</button>
+                    </div>
+                </div>
+                <div class="fs-progress-pct-row">
+                    <span class="fs-progress-pct">0%</span>
+                    <span class="fs-progress-pct-sub">complete</span>
+                </div>
+                <div class="fs-progress-bar-wrap">
                     <div class="fs-progress-fill indeterminate"></div>
                 </div>
-                <div class="fs-progress-count"></div>
+                <div class="fs-progress-graph-section">
+                    <canvas class="fs-progress-canvas" height="80"></canvas>
+                    <span class="fs-progress-speed-lbl"></span>
+                </div>
+                <div class="fs-progress-details">
+                    <div class="fs-progress-filename">Preparing\u2026</div>
+                    <div class="fs-progress-meta-row">
+                        <span class="fs-progress-count"></span>
+                        <span class="fs-progress-time"></span>
+                    </div>
+                </div>
             </div>`;
+
         document.getElementById('windowContainer').appendChild(el);
         windows[windowId] = { el, state: { type: 'progress' } };
         shownAt = Date.now();
+
+        canvas = el.querySelector('.fs-progress-canvas');
+        ctx2d = canvas.getContext('2d');
+        canvas.width = w - 36; // match CSS margin: 18px each side
+
+        el.querySelector('.fsp-pause').onclick = () => {
+            _paused = !_paused;
+            el.querySelector('.fsp-pause').textContent = _paused ? 'Resume' : 'Pause';
+            el.querySelector('.fs-progress-op-title').textContent =
+                (_paused ? 'Paused \u2014 ' : '') + title;
+        };
+        el.querySelector('.fsp-cancel').onclick = () => {
+            _cancelled = true;
+            obj.close();
+        };
+
+        // Draggable via title bar (skip button clicks)
+        el.querySelector('.title-bar').addEventListener('mousedown', e => {
+            if (e.target.closest('button')) return;
+            startDrag(e, el);
+        });
+        // Bring to front on any click
+        el.addEventListener('mousedown', () => focusWindow(windowId));
+
+        // Taskbar button
+        const tbBtn = document.createElement('button');
+        tbBtn.className = 'win-btn active';
+        tbBtn.dataset.winid = windowId;
+        tbBtn.textContent = title;
+        tbBtn.onclick = () => focusWindow(windowId);
+        tbBtn.oncontextmenu = ev => {
+            ev.preventDefault();
+            buildMenu(ev.clientX, ev.clientY, [
+                { label: 'Cancel', icon: 'close', action: () => { _cancelled = true; obj.close(); } },
+            ]);
+        };
+        document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
+        windows[windowId].taskbarBtn = tbBtn;
+
+        focusWindow(windowId);
+        _startRaf();
     }, DELAY_MS);
 
-    return {
+    /* ── public API ── */
+    const obj = {
+        get paused() { return _paused; },
+        get cancelled() { return _cancelled; },
+
         update(done, total, fileName) {
             if (closed || !el) return;
+
+            // Compute EWA-smoothed speed
+            const now = Date.now();
+            const dt = (now - lastTime) / 1000;
+            if (dt >= 0.05) {
+                const delta = Math.max(0, done - lastDone);
+                const inst = delta / dt;
+                smoothSpeed = smoothSpeed < 0.001 ? inst
+                    : smoothSpeed * (1 - EWA_A) + inst * EWA_A;
+                lastDone = done;
+                lastTime = now;
+            }
+
+            const pct = total > 0 ? Math.min(100, Math.round(done / total * 100)) : 0;
+            const rem = Math.max(0, total - done);
+            const eta = smoothSpeed > 0.5 ? rem / smoothSpeed : Infinity;
+
             const fill = el.querySelector('.fs-progress-fill');
-            const count = el.querySelector('.fs-progress-count');
-            const fn = el.querySelector('.fs-progress-filename');
+            const pctEl = el.querySelector('.fs-progress-pct');
+            const countEl = el.querySelector('.fs-progress-count');
+            const fnEl = el.querySelector('.fs-progress-filename');
+            const timeEl = el.querySelector('.fs-progress-time');
+            const spdEl = el.querySelector('.fs-progress-speed-lbl');
+
             if (total > 0) {
                 fill.classList.remove('indeterminate');
-                fill.style.width = Math.round(done / total * 100) + '%';
-                count.textContent = `${done} of ${total} item${total !== 1 ? 's' : ''}`;
+                fill.style.width = pct + '%';
+                pctEl.textContent = pct + '%';
             }
-            if (fileName) fn.textContent = fileName;
+            countEl.textContent = rem > 0
+                ? rem.toLocaleString() + ' item' + (rem !== 1 ? 's' : '') + ' remaining'
+                : '';
+            timeEl.textContent = _fmtTime(eta);
+            spdEl.textContent = _fmtSpeed(smoothSpeed);
+            if (fileName) fnEl.textContent = fileName;
         },
+
         close() {
             closed = true;
             clearTimeout(timer);
+            if (rafId) cancelAnimationFrame(rafId);
             if (!el) return;
             const elapsed = Date.now() - (shownAt || Date.now());
-            const delay = Math.max(0, MIN_VISIBLE_MS - elapsed);
+            const delay = Math.max(0, MIN_SHOW_MS - elapsed);
             setTimeout(() => closeWindow(windowId), delay);
         }
     };
+    return obj;
 }
 
 /** Count total nodes inside a folder tree (excluding the root folder itself). */
@@ -7154,11 +7343,13 @@ async function deleteItem(id, windowId) {
 async function recursiveDelete(folderId, ctx) {
     const children = await idbGetAllByIndex('parentId', folderId);
     for (const c of children) {
+        if (ctx?.prog?.cancelled) return;
+        while (ctx?.prog?.paused) await new Promise(r => setTimeout(r, 80));
         if (c.type === 'folder') await recursiveDelete(c.id, ctx);
         else await idbDelete(c.id);
         if (ctx) { ctx.done++; ctx.prog.update(ctx.done, ctx.total, c.name); }
     }
-    await idbDelete(folderId);
+    if (!ctx?.prog?.cancelled) await idbDelete(folderId);
 }
 
 async function downloadItem(id) {
@@ -8469,6 +8660,126 @@ async function ensureDefaultFolders() {
 /* ============================================================
    THEME SYSTEM
 ============================================================ */
+
+/* -- Custom-color theme helpers -- */
+function hexToHsl(hex) {
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+            case g: h = ((b - r) / d + 2) / 6; break;
+            case b: h = ((r - g) / d + 4) / 6; break;
+        }
+    }
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
+
+function generateCustomVars(hex) {
+    const [h, s] = hexToHsl(hex);
+    const sm = Math.min(s * 0.5, 50);
+    const sl = Math.min(s * 0.3, 30);
+    const hs = (S, L) => `hsl(${h},${S}%,${L}%)`;
+    const al = 50, as_ = Math.max(s, 60);
+    const accent = `hsl(${h},${as_}%,${al}%)`;
+    return {
+        '--desktop-bg': hs(sl, 8),
+        '--desktop-text': hs(50, 88),
+        '--window-bg': hs(sl, 10),
+        '--window-border': hs(sm, 20),
+        '--window-shadow': '0 8px 30px rgba(0,0,0,0.7)',
+        '--window-shadow-focus': '0 12px 40px rgba(0,0,0,0.9)',
+        '--window-radius': '6px',
+        '--titlebar-bg': `linear-gradient(180deg,${hs(sm, 18)},${hs(sm, 11)})`,
+        '--titlebar-bg-unfocused': `linear-gradient(180deg,${hs(sm, 22)},${hs(sm, 18)})`,
+        '--titlebar-color': hs(50, 90),
+        '--titlebar-height': '25px',
+        '--btn-close-bg': '#c0392b',
+        '--btn-minimize-bg': '#c09000',
+        '--btn-maximize-bg': '#3a9a3a',
+        '--btn-unfocused-bg': hs(sl, 20),
+        '--btn-radius': '4px',
+        '--btn-size': '28px',
+        '--toolbar-bg': hs(sm, 12),
+        '--toolbar-bg-unfocused': hs(sm, 14),
+        '--toolbar-border': hs(sl, 6),
+        '--toolbar-btn-bg': hs(sm, 18),
+        '--toolbar-btn-border': hs(sm, 25),
+        '--toolbar-btn-color': hs(40, 85),
+        '--toolbar-btn-radius': '6px',
+        '--toolbar-address-bg': hs(sl, 5),
+        '--toolbar-address-color': hs(40, 85),
+        '--toolbar-address-radius': '6px',
+        '--sidebar-bg': hs(sm, 9),
+        '--sidebar-bg-unfocused': hs(sm, 11),
+        '--sidebar-item-color': hs(35, 72),
+        '--sidebar-item-hover': hs(sm, 15),
+        '--sidebar-item-active': accent,
+        '--sidebar-item-active-unfocused': hs(sm, 25),
+        '--sidebar-section-color': hs(sm, 30),
+        '--panel-bg': hs(sl, 13),
+        '--bottombar-bg': hs(sm, 9),
+        '--bottombar-border': hs(sl, 6),
+        '--taskbar-bg': hs(sl, 5),
+        '--taskbar-border': hs(sl, 8),
+        '--taskbar-btn-bg': hs(sm, 11),
+        '--taskbar-btn-border': hs(sm, 18),
+        '--taskbar-btn-color': hs(40, 85),
+        '--taskbar-btn-active': accent,
+        '--taskbar-newwin-bg': 'hsl(120,40%,10%)',
+        '--taskbar-newwin-border': 'hsl(120,40%,18%)',
+        '--start-header-bg': `linear-gradient(180deg,${hs(sm, 18)},${hs(sm, 11)})`,
+        '--start-bg': hs(sm, 9),
+        '--start-footer-bg': hs(sl, 5),
+        '--start-section-color': hs(sm, 30),
+        '--start-item-color': hs(35, 72),
+        '--start-item-hover': hs(sm, 15),
+        '--start-search-bg': hs(sl, 5),
+        '--start-search-border': hs(sm, 20),
+        '--start-footer-btn-bg': hs(sm, 11),
+        '--start-footer-btn-border': hs(sm, 18),
+        '--start-footer-btn-color': hs(35, 65),
+        '--ctx-bg': hs(sm, 9),
+        '--ctx-border': hs(sl, 6),
+        '--ctx-item-color': hs(35, 72),
+        '--ctx-item-hover': hs(sm, 15),
+        '--ctx-sep': hs(sm, 18),
+        '--font-ui': 'system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial',
+        '--font-size-ui': '13px',
+    };
+}
+
+const CUSTOM_THEME_VARS = [
+    '--desktop-bg', '--desktop-text', '--window-bg', '--window-border',
+    '--window-shadow', '--window-shadow-focus', '--window-radius',
+    '--titlebar-bg', '--titlebar-bg-unfocused', '--titlebar-color', '--titlebar-height',
+    '--btn-close-bg', '--btn-minimize-bg', '--btn-maximize-bg', '--btn-unfocused-bg',
+    '--btn-radius', '--btn-size',
+    '--toolbar-bg', '--toolbar-bg-unfocused', '--toolbar-border',
+    '--toolbar-btn-bg', '--toolbar-btn-border', '--toolbar-btn-color', '--toolbar-btn-radius',
+    '--toolbar-address-bg', '--toolbar-address-color', '--toolbar-address-radius',
+    '--sidebar-bg', '--sidebar-bg-unfocused', '--sidebar-item-color', '--sidebar-item-hover',
+    '--sidebar-item-active', '--sidebar-item-active-unfocused', '--sidebar-section-color',
+    '--panel-bg', '--bottombar-bg', '--bottombar-border',
+    '--taskbar-bg', '--taskbar-border', '--taskbar-btn-bg', '--taskbar-btn-border',
+    '--taskbar-btn-color', '--taskbar-btn-active', '--taskbar-newwin-bg', '--taskbar-newwin-border',
+    '--start-header-bg', '--start-bg', '--start-footer-bg', '--start-section-color',
+    '--start-item-color', '--start-item-hover', '--start-search-bg', '--start-search-border',
+    '--start-footer-btn-bg', '--start-footer-btn-border', '--start-footer-btn-color',
+    '--ctx-bg', '--ctx-border', '--ctx-item-color', '--ctx-item-hover', '--ctx-sep',
+    '--font-ui', '--font-size-ui',
+];
+
+function _clearCustomColorVars() {
+    CUSTOM_THEME_VARS.forEach(v => document.documentElement.style.removeProperty(v));
+}
+
 const THEME_REGISTRY = [
     {
         id: 'dark',
@@ -8590,6 +8901,30 @@ const THEME_REGISTRY = [
             btnRadius: '3px',
         },
     },
+    {
+        id: 'nature',
+        label: 'Nature',
+        wallpaper: '/usr/share/backgrounds/wallpaper-6.jpg',
+        lightIcons: true,
+        preview: {
+            desktop: '#0d1f0d',
+            titlebar: 'linear-gradient(#1a3a1a,#0f2a0f)',
+            toolbar: '#162a16',
+            sidebar: '#122212',
+            panel: '#1a2e1a',
+            taskbar: '#091509',
+            btnClose: '#c0392b',
+            btnMin: '#c09000',
+            btnRadius: '4px',
+        },
+    },
+    {
+        id: 'custom',
+        label: 'Custom',
+        wallpaper: null,
+        lightIcons: true,
+        preview: null, // generated dynamically from edog_custom_color
+    },
 ];
 const THEMES = THEME_REGISTRY.map(t => t.id);
 
@@ -8600,9 +8935,18 @@ async function applyTheme(theme) {
     localStorage.setItem('edog_theme', theme);
 
     document.documentElement.classList.remove(...THEMES.map(t => 'theme-' + t));
+    _clearCustomColorVars();
 
     if (theme !== 'dark') {
         document.documentElement.classList.add('theme-' + theme);
+    }
+
+    if (theme === 'custom') {
+        const hex = localStorage.getItem('edog_custom_color') || '#6366f1';
+        const vars = generateCustomVars(hex);
+        for (const [prop, val] of Object.entries(vars)) {
+            document.documentElement.style.setProperty(prop, val);
+        }
     }
 
     const themeEntry = THEME_REGISTRY.find(t => t.id === theme);

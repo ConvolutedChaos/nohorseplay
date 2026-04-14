@@ -562,6 +562,84 @@
     --font-size-ui: 13px;
 }
 
+/* ---- NATURE THEME ---- */
+:root.theme-nature {
+    --desktop-bg: #0d1f0d;
+    --desktop-text: #c8e8b0;
+
+    --window-bg: #111e11;
+    --window-border: #1e3a1e;
+    --window-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    --window-shadow-focus: 0 12px 40px rgba(0, 0, 0, 0.9);
+    --window-radius: 6px;
+
+    --titlebar-bg: linear-gradient(180deg, #1a3a1a, #0f2a0f);
+    --titlebar-bg-unfocused: linear-gradient(180deg, #254525, #1a3a1a);
+    --titlebar-color: #c8e8b0;
+    --titlebar-height: 25px;
+
+    --btn-close-bg: #c0392b;
+    --btn-minimize-bg: #c09000;
+    --btn-maximize-bg: #3a9a3a;
+    --btn-unfocused-bg: #2a3a2a;
+    --btn-radius: 4px;
+    --btn-size: 28px;
+
+    --toolbar-bg: #162a16;
+    --toolbar-bg-unfocused: #1a2e1a;
+    --toolbar-border: #0a180a;
+    --toolbar-btn-bg: #1e3a1e;
+    --toolbar-btn-border: #2a4a2a;
+    --toolbar-btn-color: #b8dca0;
+    --toolbar-btn-radius: 6px;
+    --toolbar-address-bg: #091409;
+    --toolbar-address-color: #b8dca0;
+    --toolbar-address-radius: 6px;
+
+    --sidebar-bg: #122212;
+    --sidebar-bg-unfocused: #152515;
+    --sidebar-item-color: #a8cc90;
+    --sidebar-item-hover: #1c301c;
+    --sidebar-item-active: #4caf50;
+    --sidebar-item-active-unfocused: #2a4a2a;
+    --sidebar-section-color: #3a5a3a;
+
+    --panel-bg: #1a2e1a;
+
+    --bottombar-bg: #122212;
+    --bottombar-border: #0a180a;
+
+    --taskbar-bg: #091509;
+    --taskbar-border: #0d1e0d;
+    --taskbar-btn-bg: #152515;
+    --taskbar-btn-border: #1e3a1e;
+    --taskbar-btn-color: #b8dca0;
+    --taskbar-btn-active: #4caf50;
+    --taskbar-newwin-bg: #0d200d;
+    --taskbar-newwin-border: #1a3a1a;
+
+    --start-header-bg: linear-gradient(180deg, #1a3a1a, #0f2a0f);
+    --start-bg: #122212;
+    --start-footer-bg: #091509;
+    --start-section-color: #3a5a3a;
+    --start-item-color: #a8cc90;
+    --start-item-hover: #1c301c;
+    --start-search-bg: #091409;
+    --start-search-border: #1e3a1e;
+    --start-footer-btn-bg: #152515;
+    --start-footer-btn-border: #1e3a1e;
+    --start-footer-btn-color: #88aa70;
+
+    --ctx-bg: #122212;
+    --ctx-border: #0a180a;
+    --ctx-item-color: #a8cc90;
+    --ctx-item-hover: #1c301c;
+    --ctx-sep: #1e3a1e;
+
+    --font-ui: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    --font-size-ui: 13px;
+}
+
 /* ============================================================
    EXTRA THEME OVERRIDES
    Non-variable rules (backdrop-filter, pseudo-elements, etc.)
@@ -4017,47 +4095,151 @@ img.preview-thumb, canvas.preview-thumb {
     color: #c8d4e0;
 }
 
-/* ── File-operation progress dialog ── */
+/* ── File-operation progress dialog (Windows 10/11 style) ── */
 .fs-progress-body {
     background: var(--panel-bg);
-    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    overflow: hidden;
 }
-.fs-progress-filename {
+.fs-progress-accent-bar {
+    height: 3px;
+    background: var(--sidebar-item-active, #3b82f6);
+    flex-shrink: 0;
+}
+.fs-progress-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px 6px;
+}
+.fs-progress-op-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--desktop-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fs-progress-controls { display: flex; gap: 6px; flex-shrink: 0; }
+.fs-progress-btn {
+    padding: 3px 11px;
+    border-radius: 4px;
+    border: 1px solid rgba(127,127,127,0.28);
+    background: rgba(127,127,127,0.07);
+    color: var(--desktop-text);
+    font-size: 11px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: background .1s;
+    line-height: 1.7;
+    user-select: none;
+}
+.fs-progress-btn:hover { background: rgba(127,127,127,0.17); }
+.fsp-cancel { color: #f87171 !important; border-color: rgba(248,113,113,0.32) !important; }
+.fsp-cancel:hover { background: rgba(248,113,113,0.1) !important; }
+
+.fs-progress-pct-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 4px 18px 0;
+}
+.fs-progress-pct {
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--desktop-text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    min-width: 3.5ch;
+}
+.fs-progress-pct-sub {
     font-size: 12px;
     color: var(--desktop-text);
-    opacity: 0.7;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    min-height: 16px;
+    opacity: 0.45;
 }
-.fs-progress-track {
-    width: 100%; height: 8px;
-    background: rgba(127,127,127,0.2);
-    border-radius: 4px; overflow: hidden;
+.fs-progress-bar-wrap {
+    margin: 8px 18px 0;
+    height: 3px;
+    background: rgba(127,127,127,0.14);
+    border-radius: 2px;
+    overflow: hidden;
     position: relative;
 }
 .fs-progress-fill {
     height: 100%;
     background: var(--sidebar-item-active, #3b82f6);
-    border-radius: 4px;
-    transition: width 0.1s linear;
+    border-radius: 2px;
+    transition: width 0.2s linear;
+    position: relative;
 }
 .fs-progress-fill.indeterminate {
-    width: 35% !important;
+    width: 30% !important;
     position: absolute;
-    animation: fs-prog-slide 1.2s ease-in-out infinite;
+    animation: fs-prog-slide 1.4s ease-in-out infinite;
 }
 @keyframes fs-prog-slide {
-    0%   { left: -35%; }
+    0%   { left: -30%; }
     100% { left: 100%; }
+}
+.fs-progress-graph-section {
+    position: relative;
+    margin: 10px 18px 0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.fs-progress-canvas {
+    display: block;
+    width: 100%;
+    height: 80px;
+    background: rgba(0,0,0,0.13);
+}
+.fs-progress-speed-lbl {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 11px;
+    font-family: var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    color: var(--sidebar-item-active, #3b82f6);
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+.fs-progress-details {
+    padding: 8px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.fs-progress-filename {
+    font-size: 12px;
+    color: var(--desktop-text);
+    opacity: 0.68;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 16px;
+}
+.fs-progress-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    min-height: 15px;
 }
 .fs-progress-count {
     font-size: 11px;
     color: var(--desktop-text);
-    opacity: 0.5;
-    text-align: right;
+    opacity: 0.42;
+}
+.fs-progress-time {
+    font-size: 11px;
+    color: var(--desktop-text);
+    opacity: 0.42;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .md-inline-code {

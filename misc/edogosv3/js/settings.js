@@ -100,6 +100,25 @@
     }
     .settings-theme-card.selected .stc-check { opacity: 1; }
 
+    /* ---- Custom color row ---- */
+    .settings-custom-color-row {
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        margin-top: 10px; padding: 10px 12px;
+        background: #1a1a1a; border-radius: 8px; border: 1px solid #2a2a2a;
+    }
+    .settings-custom-color-label { color: #aaa; font-size: 12px; font-family: var(--font-ui); }
+    .settings-custom-color-picker {
+        width: 36px; height: 26px; border: 1px solid #444; border-radius: 4px;
+        cursor: pointer; background: none; padding: 1px;
+    }
+    .settings-custom-color-hex {
+        font-size: 12px; font-family: monospace; color: #ccc;
+        background: #111; border: 1px solid #333; border-radius: 4px;
+        padding: 3px 7px; width: 74px; outline: none;
+    }
+    .settings-custom-color-hex:focus { border-color: #3b82f6; }
+    .settings-custom-color-hint { font-size: 11px; color: #555; font-family: var(--font-ui); }
+
     /* ---- Wallpaper grid ---- */
     .settings-wp-grid    { display: flex; gap: 10px; flex-wrap: wrap; }
     .settings-wp-card {
@@ -454,6 +473,7 @@ async function _buildAppearanceSection(el) {
         <div class="settings-section-title">Appearance</div>
         <div class="settings-group-label">Theme</div>
         <div class="settings-theme-row" id="st-theme-row"></div>
+        <div class="settings-custom-color-row" id="st-custom-color-row"></div>
         <div class="settings-group-label" style="margin-top:24px;">Wallpaper</div>
         <div class="settings-wp-grid"    id="st-wp-grid"></div>
         <div class="settings-wp-actions" id="st-wp-actions"></div>
@@ -462,6 +482,7 @@ async function _buildAppearanceSection(el) {
     `;
 
     _buildThemeRow(el.querySelector('#st-theme-row'));
+    _buildCustomColorRow(el.querySelector('#st-custom-color-row'));
     await _buildWallpaperGrid(el.querySelector('#st-wp-grid'), el.querySelector('#st-wp-actions'));
     _buildFitRow(el.querySelector('#st-wp-fit'));
 }
@@ -469,7 +490,9 @@ async function _buildAppearanceSection(el) {
 /* ---- Theme cards ---- */
 function _buildThemeRow(el) {
     const currentT = localStorage.getItem('edog_theme') || 'dark';
-    THEME_REGISTRY.forEach(t => {
+
+    // Regular theme cards (skip 'custom' — it gets its own special card below)
+    THEME_REGISTRY.filter(t => t.id !== 'custom').forEach(t => {
         const card = document.createElement('div');
         card.className = 'settings-theme-card' + (currentT === t.id ? ' selected' : '');
         card.innerHTML = `
@@ -481,9 +504,84 @@ function _buildThemeRow(el) {
             el.querySelectorAll('.settings-theme-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             applyTheme(t.id);
+            const ccRow = document.getElementById('st-custom-color-row');
+            if (ccRow) ccRow.style.display = 'none';
         };
         el.appendChild(card);
     });
+
+    // Custom color card
+    const storedHex = localStorage.getItem('edog_custom_color') || '#6366f1';
+    const customCard = document.createElement('div');
+    customCard.id = 'st-custom-theme-card';
+    customCard.className = 'settings-theme-card' + (currentT === 'custom' ? ' selected' : '');
+    customCard.innerHTML = `
+        <div class="stc-preview">${_customColorPreviewHtml(storedHex)}</div>
+        <div class="stc-label">Custom</div>
+        <div class="stc-check">✓</div>
+    `;
+    customCard.onclick = () => {
+        el.querySelectorAll('.settings-theme-card').forEach(c => c.classList.remove('selected'));
+        customCard.classList.add('selected');
+        applyTheme('custom');
+        const ccRow = document.getElementById('st-custom-color-row');
+        if (ccRow) ccRow.style.display = '';
+    };
+    el.appendChild(customCard);
+}
+
+function _customColorPreviewHtml(hex) {
+    if (!hex || !/^#[0-9a-fA-F]{6}$/.test(hex)) hex = '#6366f1';
+    const [h, s] = hexToHsl(hex);
+    const sm = Math.min(s * 0.5, 50);
+    const sl = Math.min(s * 0.3, 30);
+    return _themePreviewHtml({ preview: {
+        desktop:   `hsl(${h},${sl}%,8%)`,
+        titlebar:  `linear-gradient(hsl(${h},${sm}%,18%),hsl(${h},${sm}%,11%))`,
+        toolbar:   `hsl(${h},${sm}%,12%)`,
+        sidebar:   `hsl(${h},${sm}%,9%)`,
+        panel:     `hsl(${h},${sl}%,13%)`,
+        taskbar:   `hsl(${h},${sl}%,5%)`,
+        btnClose:  '#c0392b',
+        btnMin:    '#c09000',
+        btnRadius: '4px',
+    }});
+}
+
+function _buildCustomColorRow(el) {
+    const storedHex = localStorage.getItem('edog_custom_color') || '#6366f1';
+    const isActive = (localStorage.getItem('edog_theme') || 'dark') === 'custom';
+    el.style.display = isActive ? '' : 'none';
+    el.innerHTML = `
+        <span class="settings-custom-color-label">Color</span>
+        <input type="color" class="settings-custom-color-picker" id="st-custom-color-picker" value="${storedHex}">
+        <input type="text"  class="settings-custom-color-hex"    id="st-custom-color-hex"    maxlength="7" spellcheck="false" value="${storedHex}">
+        <span class="settings-custom-color-hint">Generates a dark theme tinted to your chosen hue</span>
+    `;
+
+    const pickerEl = el.querySelector('#st-custom-color-picker');
+    const hexEl    = el.querySelector('#st-custom-color-hex');
+
+    function applyColor(hex) {
+        if (!/^#[0-9a-fA-F]{6}$/i.test(hex)) return;
+        localStorage.setItem('edog_custom_color', hex);
+        pickerEl.value = hex;
+        hexEl.value    = hex;
+        applyTheme('custom');
+        // Refresh the card preview
+        const card = document.getElementById('st-custom-theme-card');
+        if (card) card.querySelector('.stc-preview').innerHTML = _customColorPreviewHtml(hex);
+    }
+
+    pickerEl.oninput = () => applyColor(pickerEl.value);
+    hexEl.oninput    = () => {
+        let v = hexEl.value.trim();
+        if (!v.startsWith('#')) v = '#' + v;
+        applyColor(v);
+    };
+    hexEl.onblur = () => {
+        hexEl.value = localStorage.getItem('edog_custom_color') || storedHex;
+    };
 }
 
 // Generates the mini preview thumbnail from a THEME_REGISTRY entry's `preview` object.
@@ -543,6 +641,11 @@ async function _buildWallpaperGrid(gridEl, actionsEl) {
             id: '/usr/share/backgrounds/wallpaper-5.jpg',
             label: 'Sunrise',
             fsPath: '/usr/share/backgrounds/wallpaper-5.jpg',
+        },
+        {
+            id: '/usr/share/backgrounds/wallpaper-6.jpg',
+            label: 'Nature',
+            fsPath: '/usr/share/backgrounds/wallpaper-6.jpg',
         },
         {
             id: 'none',
