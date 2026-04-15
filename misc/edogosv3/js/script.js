@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.7";
+const VERSION = "E-Dog OS 3.1.8";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 

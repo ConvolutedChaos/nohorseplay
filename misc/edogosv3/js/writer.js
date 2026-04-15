@@ -100,7 +100,7 @@
     border-radius: 3px; padding: 2px 4px; font-size: 11px;
     height: 26px; cursor: pointer; outline: none;
 }
-.wr-tb-select:focus { border-color: #0078d4; }
+.wr-tb-select:focus { border-color: var(--sidebar-item-active, #0078d4); }
 .wr-tb-color-btn {
     width: 28px; height: 26px; border: none; border-radius: 3px;
     cursor: pointer; position: relative; background: transparent;
@@ -197,7 +197,7 @@
     padding: 3px 8px; border-radius: 3px; font-size: 12px;
     outline: none; width: 180px;
 }
-.wr-find-bar input:focus { border-color: #0078d4; }
+.wr-find-bar input:focus { border-color: var(--sidebar-item-active, #0078d4); }
 .wr-find-bar button {
     background: var(--toolbar-btn-bg); border: 1px solid var(--toolbar-btn-border);
     color: var(--toolbar-btn-color);
