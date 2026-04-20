@@ -68,7 +68,9 @@
             --btn-txt: #1a1a1a;
             --thumb-bg: rgba(0, 0, 0, .06);
             --fi-sz: 88px;
-            /* controlled by size slider */
+            --chunk-num-bg: rgba(26, 115, 232, .10);
+            --chunk-num-txt: #1a73e8;
+            --chunk-del-hov: #ff5f57;
         }
 
         [data-theme="dark"] {
@@ -123,7 +125,9 @@
             --btn-b: #333337;
             --btn-txt: #e8e8e8;
             --thumb-bg: rgba(255, 255, 255, .06);
-            --fi-sz: 88px;
+            --chunk-num-bg: rgba(77, 161, 255, .14);
+            --chunk-num-txt: #4da1ff;
+            --chunk-del-hov: #ff5f57;
         }
 
         /* ─── Reset & base ─── */
@@ -319,7 +323,6 @@
             filter: var(--ic-filter)
         }
 
-        /* Active/pressed state for toggle buttons */
         .tbtn.active {
             background: var(--accent);
             border-color: var(--accent-dark);
@@ -401,7 +404,8 @@
             justify-content: center;
             background: var(--win-bg);
             z-index: 200;
-            padding: 16px
+            padding: 16px;
+            overflow-y: auto;
         }
 
         .ld-win {
@@ -540,6 +544,330 @@
             background: var(--div)
         }
 
+        /* ─── Chunk section ─── */
+        .chunk-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chunk-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chunk-hint {
+            font-size: 11px;
+            color: var(--textd);
+        }
+
+        .chunk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .chunk-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            animation: chunkIn .15s ease;
+        }
+
+        @keyframes chunkIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .chunk-num {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            background: var(--chunk-num-bg);
+            color: var(--chunk-num-txt);
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+            letter-spacing: -.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .chunk-ta {
+            flex: 1;
+            height: 58px;
+            background: var(--in-bg);
+            border: 1px solid var(--in-b);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+            font-size: 11px;
+            padding: 6px 8px;
+            resize: vertical;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+            min-height: 38px;
+        }
+
+        .chunk-ta:focus {
+            border-color: var(--in-bf);
+            box-shadow: 0 0 0 3px var(--in-bs);
+        }
+
+        .chunk-ta::placeholder {
+            color: var(--textd)
+        }
+
+        .chunk-ta.has-data {
+            border-color: var(--tl-green);
+        }
+
+        .chunk-del {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            border: 1px solid var(--in-b);
+            background: var(--btn-bg);
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+            line-height: 1;
+            transition: background .1s, color .1s, border-color .1s;
+        }
+
+        .chunk-del:hover {
+            background: var(--chunk-del-hov);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .chunk-del:disabled {
+            opacity: 0.28;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .add-chunk-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--in-b);
+            background: transparent;
+            color: var(--text2);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: border-color .14s, color .14s, background .14s;
+            justify-content: center;
+        }
+
+        .add-chunk-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(26, 115, 232, .04);
+        }
+
+        [data-theme="dark"] .add-chunk-btn:hover {
+            background: rgba(77, 161, 255, .06);
+        }
+
+        .chunk-status {
+            font-size: 11px;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chunk-status .cs-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--textd);
+            flex-shrink: 0;
+        }
+
+        .chunk-status.ready .cs-dot {
+            background: var(--tl-green);
+        }
+
+        .chunk-status.partial .cs-dot {
+            background: var(--tl-yellow);
+        }
+
+        /* ─── Potato mode ─── */
+        .potato-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px 2px 5px;
+            border-radius: 10px;
+            border: 1px solid var(--in-b);
+            background: var(--btn-bg);
+            color: var(--text2);
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .01em;
+            cursor: pointer;
+            transition: background .12s, border-color .12s, color .12s;
+            user-select: none;
+        }
+
+        .potato-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .potato-toggle.on {
+            background: rgba(255, 149, 0, .12);
+            border-color: rgba(255, 149, 0, .5);
+            color: #c87000;
+        }
+
+        [data-theme="dark"] .potato-toggle.on {
+            background: rgba(255, 179, 64, .14);
+            border-color: rgba(255, 179, 64, .45);
+            color: #ffa820;
+        }
+
+        .potato-toggle .pt-pip {
+            width: 14px;
+            height: 8px;
+            border-radius: 4px;
+            border: 1px solid currentColor;
+            position: relative;
+            opacity: .7;
+            transition: background .12s;
+        }
+
+        .potato-toggle .pt-pip::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+            transition: transform .12s;
+        }
+
+        .potato-toggle.on .pt-pip {
+            opacity: 1;
+        }
+
+        .potato-toggle.on .pt-pip::after {
+            transform: translateX(6px);
+        }
+
+        /* Potato mode chunk row: button + status span, no textarea */
+        .chunk-row.potato {
+            align-items: center;
+        }
+
+        .chunk-row.potato .chunk-num {
+            margin-top: 0;
+        }
+
+        .chunk-row.potato .chunk-del {
+            margin-top: 0;
+        }
+
+        .chunk-paste-btn {
+            flex: 1;
+            height: 30px;
+            padding: 0 10px;
+            border-radius: 6px;
+            border: 1px solid var(--in-b);
+            background: var(--btn-bg);
+            color: var(--text2);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: border-color .12s, color .12s, background .12s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .chunk-paste-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(26, 115, 232, .04);
+        }
+
+        [data-theme="dark"] .chunk-paste-btn:hover {
+            background: rgba(77, 161, 255, .06);
+        }
+
+        .chunk-paste-btn:active {
+            filter: brightness(.92);
+        }
+
+        .chunk-paste-btn svg {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+
+        .chunk-paste-lbl {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chunk-paste-stat {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: var(--grid-bg);
+            color: var(--textd);
+            white-space: nowrap;
+            border: 1px solid var(--div);
+            flex-shrink: 0;
+            transition: background .12s, color .12s;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .chunk-paste-stat.loaded {
+            background: rgba(40, 200, 64, .12);
+            color: #1a9c30;
+            border-color: rgba(40, 200, 64, .3);
+        }
+
+        [data-theme="dark"] .chunk-paste-stat.loaded {
+            background: rgba(40, 200, 64, .14);
+            color: #4cd964;
+            border-color: rgba(40, 200, 64, .25);
+        }
+
+        /* old single b64 — kept for compat but hidden */
         .b64 {
             width: 100%;
             height: 72px;
@@ -553,15 +881,6 @@
             resize: vertical;
             outline: none;
             transition: border-color .15s, box-shadow .15s
-        }
-
-        .b64:focus {
-            border-color: var(--in-bf);
-            box-shadow: 0 0 0 3px var(--in-bs)
-        }
-
-        .b64::placeholder {
-            color: var(--textd)
         }
 
         .ldf {
@@ -942,7 +1261,6 @@
         }
 
         /* ── Preview mode items ── */
-        /* When preview mode is active, previewable items grow their icon area */
         #grid.preview-mode .fi.previewable {
             width: calc(var(--fi-sz) * 1.09);
             padding: 6px 4px 6px;
@@ -957,7 +1275,6 @@
             position: relative;
         }
 
-        /* Placeholder shimmer while loading */
         #grid.preview-mode .fi.previewable .fi-ic.loading {
             background: linear-gradient(90deg,
                     var(--thumb-bg) 0%,
@@ -977,7 +1294,6 @@
             }
         }
 
-        /* The actual thumbnail image */
         .fi-thumb {
             width: 100%;
             height: 100%;
@@ -985,7 +1301,6 @@
             display: block;
         }
 
-        /* Small video badge overlay */
         .fi-vid-badge {
             position: absolute;
             bottom: 4px;
@@ -1298,8 +1613,6 @@
 
         /* Mobile */
         @media(max-width:640px) {
-
-            /* ── Sidebar overlay ── */
             .sb {
                 position: absolute;
                 height: calc(100% - 72px);
@@ -1317,7 +1630,6 @@
                 display: none
             }
 
-            /* ── Toolbar: strip down to essentials ── */
             #upBtn,
             #sepNav,
             #sepPrev {
@@ -1333,12 +1645,10 @@
                 display: none
             }
 
-            /* ── Set a touch-friendly default icon size ── */
             :root {
                 --fi-sz: 72px
             }
 
-            /* ── Grid: CSS grid so rows fill evenly, no orphan gaps ── */
             #grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(var(--fi-sz), 1fr));
@@ -1347,7 +1657,6 @@
                 gap: 4px;
             }
 
-            /* Items fill their cell; icon stays centred, label gets full cell width */
             .fi {
                 width: auto
             }
@@ -1356,12 +1665,10 @@
                 max-width: 100%
             }
 
-            /* Preview mode: thumbnail items also fill their cell */
             #grid.preview-mode .fi.previewable {
                 width: auto
             }
 
-            /* ── Path bar: bigger tap targets ── */
             .pb {
                 height: 34px;
                 padding: 0 10px
@@ -1376,7 +1683,6 @@
                 font-size: 12px
             }
 
-            /* ── Status bar: only show item count ── */
             #sselw,
             #sszw {
                 display: none !important
@@ -1386,7 +1692,6 @@
                 padding: 0 10px
             }
 
-            /* ── Viewer toolbar: taller for touch ── */
             .vbar {
                 height: 44px;
                 padding: 0 10px
@@ -1396,7 +1701,6 @@
                 font-size: 13px
             }
 
-            /* ── Viewer arrows: always visible and finger-sized on touch ── */
             .vw-arrow {
                 opacity: 1 !important;
                 pointer-events: auto !important;
@@ -1417,7 +1721,6 @@
                 right: 6px
             }
 
-            /* ── Load screen ── */
             .ld-win {
                 border-radius: 12px
             }
@@ -1427,7 +1730,6 @@
                 gap: 12px
             }
 
-            /* ── General tap target minimum ── */
             .tbtn {
                 width: 36px;
                 height: 36px
@@ -1436,6 +1738,10 @@
             .tl {
                 width: 13px;
                 height: 13px
+            }
+
+            .chunk-list {
+                max-height: 200px;
             }
         }
 
@@ -1468,7 +1774,6 @@
             background: var(--div);
             outline: none;
             cursor: pointer;
-            /* filled track via background gradient set by JS */
         }
 
         .sz-slider::-webkit-slider-thumb {
@@ -1503,7 +1808,7 @@
             cursor: pointer;
         }
 
-        /* ══════════ PRELOADER ══════════ */
+        /* ══════════════ PRELOADER ══════════════ */
         #preloader {
             position: fixed;
             inset: 0;
@@ -1673,9 +1978,29 @@
                     </div>
                 </div>
                 <div class="or">or</div>
-                <div>
-                    <div class="sl">Paste Base64-Encoded ZIP</div>
-                    <textarea class="b64" id="b64in" placeholder="UEsDBBQAAAAIAA…"></textarea>
+                <!-- ── Multi-chunk Base64 section ── -->
+                <div class="chunk-section">
+                    <div class="chunk-section-header">
+                        <div class="sl" style="margin-bottom:0">Paste Base64 Chunks</div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="chunk-hint" id="chunkHint">1 chunk</span>
+                            <button class="potato-toggle" id="potatoToggle"
+                                title="Potato mode: load chunks directly from clipboard, no textarea">
+                                <span class="pt-pip"></span>🥔 Potato
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chunk-list" id="chunkList">
+                        <!-- Chunks injected by JS -->
+                    </div>
+                    <button class="add-chunk-btn" id="addChunkBtn">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.8" stroke-linecap="round">
+                            <line x1="6" y1="1" x2="6" y2="11" />
+                            <line x1="1" y1="6" x2="11" y2="6" />
+                        </svg>
+                        Add Next Chunk
+                    </button>
                 </div>
                 <div class="ldf">
                     <span class="errtxt" id="errtxt"></span>
@@ -1745,7 +2070,6 @@
                 </svg>
             </button>
             <div class="sep" id="sepPrev"></div>
-            <!-- Preview mode toggle -->
             <button class="tbtn" id="prevBtn" title="Toggle Preview Thumbnails">
                 <svg viewBox="0 0 14 14" fill="none">
                     <rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
@@ -1754,7 +2078,6 @@
                     <rect x="8" y="8" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.25" />
                 </svg>
             </button>
-            <!-- Size slider -->
             <div class="sz-slider-wrap" id="szWrap">
                 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
                     <rect x="2" y="2" width="3.5" height="3.5" rx=".6" />
@@ -1944,12 +2267,10 @@
         function applySize(px) {
             document.documentElement.style.setProperty('--fi-sz', px + 'px');
             updateSliderTrack($szSlider);
-            // Re-set up the intersection observer so newly sized items get loaded
             if (previewMode && thumbObserver) setupThumbObserver();
         }
 
         $szSlider.addEventListener('input', () => applySize(+$szSlider.value));
-        // Init track fill
         updateSliderTrack($szSlider);
 
         /* ─── Theme ─── */
@@ -1958,7 +2279,6 @@
             document.documentElement.setAttribute('data-theme', t);
             localStorage.setItem('zx-th', t);
             document.querySelectorAll('.thbtn').forEach(b => b.textContent = t === 'dark' ? '☾' : '☀︎');
-            // Recompute track fill since --accent changes
             updateSliderTrack($szSlider);
         }
         setTheme(localStorage.getItem('zx-th') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
@@ -1972,9 +2292,7 @@
 
         /* ─── Preview state ─── */
         let previewMode = false;
-        // Cache: zipEntryPath → data URL (image) or canvas data URL (video first frame)
         const thumbCache = new Map();
-        // Active IntersectionObserver for the current grid view
         let thumbObserver = null;
 
         const $prevBtn = document.getElementById('prevBtn');
@@ -1982,10 +2300,10 @@
             previewMode = !previewMode;
             $prevBtn.classList.toggle('active', previewMode);
             $prevBtn.title = previewMode ? 'Switch to Icon View' : 'Toggle Preview Thumbnails';
-            renderGrid(curPath); // re-render with new mode
+            renderGrid(curPath);
         });
 
-        /* ── Capture first video frame via hidden <video> + <canvas> ── */
+        /* ── Capture first video frame ── */
         function captureVideoFrame(blob) {
             return new Promise(resolve => {
                 const url = URL.createObjectURL(blob);
@@ -1993,22 +2311,16 @@
                 video.muted = true;
                 video.preload = 'metadata';
                 const THUMB = 80;
-
                 const cleanup = () => URL.revokeObjectURL(url);
-
                 video.addEventListener('error', () => { cleanup(); resolve(null); }, { once: true });
-
                 video.addEventListener('loadedmetadata', () => {
-                    // Seek just past 0 to get a real frame (not black on some codecs)
                     video.currentTime = Math.min(0.1, video.duration * 0.05 || 0.1);
                 }, { once: true });
-
                 video.addEventListener('seeked', () => {
                     try {
                         const canvas = document.createElement('canvas');
                         canvas.width = canvas.height = THUMB;
                         const ctx = canvas.getContext('2d');
-                        // Letterbox / pillarbox to fill square
                         const vw = video.videoWidth || THUMB;
                         const vh = video.videoHeight || THUMB;
                         const scale = Math.max(THUMB / vw, THUMB / vh);
@@ -2018,29 +2330,22 @@
                         resolve(canvas.toDataURL('image/jpeg', 0.75));
                     } catch { cleanup(); resolve(null); }
                 }, { once: true });
-
-                // Timeout — some video formats stall seeked
                 setTimeout(() => { cleanup(); resolve(null); }, 6000);
-
                 video.src = url;
                 video.load();
             });
         }
 
-        /* ── Load a thumbnail for one grid item ── */
         async function loadThumb(entry, type, icEl) {
-            const cacheKey = entry.name; // unique within zip
+            const cacheKey = entry.name;
             icEl.classList.remove('loading');
-
             if (thumbCache.has(cacheKey)) {
                 applyThumb(icEl, thumbCache.get(cacheKey), type);
                 return;
             }
-
             try {
                 const blob = await entry.async('blob');
                 let dataURL;
-
                 if (type === 'image') {
                     dataURL = await new Promise(resolve => {
                         const reader = new FileReader();
@@ -2051,25 +2356,18 @@
                 } else if (type === 'video') {
                     dataURL = await captureVideoFrame(blob);
                 }
-
                 thumbCache.set(cacheKey, dataURL);
                 applyThumb(icEl, dataURL, type);
-            } catch {
-                // On failure, just leave the shimmer gone (no crash)
-            }
+            } catch { }
         }
 
         function applyThumb(icEl, dataURL, type) {
-            if (!dataURL) return; // stay as shimmer placeholder
-
-            icEl.innerHTML = ''; // clear loading state
-
+            if (!dataURL) return;
+            icEl.innerHTML = '';
             const img = document.createElement('img');
             img.className = 'fi-thumb';
             img.src = dataURL;
             icEl.appendChild(img);
-
-            // Add play-triangle badge for videos
             if (type === 'video') {
                 const badge = document.createElement('div');
                 badge.className = 'fi-vid-badge';
@@ -2078,15 +2376,13 @@
             }
         }
 
-        /* ── Set up IntersectionObserver to lazy-load thumbs as items scroll in ── */
         function setupThumbObserver() {
             if (thumbObserver) thumbObserver.disconnect();
-
             thumbObserver = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (!entry.isIntersecting) return;
                     const el = entry.target;
-                    thumbObserver.unobserve(el); // load once
+                    thumbObserver.unobserve(el);
                     const zipPath = el.dataset.zipPath;
                     const type = el.dataset.thumbType;
                     const icEl = el.querySelector('.fi-ic');
@@ -2096,58 +2392,304 @@
                 });
             }, {
                 root: document.getElementById('grid'),
-                rootMargin: '120px', // start loading a little before they're visible
+                rootMargin: '120px',
                 threshold: 0
             });
-
-            // Observe all pending items
             document.querySelectorAll('#grid .fi[data-zip-path]').forEach(el => thumbObserver.observe(el));
         }
+
+        /* ═══════════════════════════════════════════════════════
+           CHUNK MANAGER
+           ═══════════════════════════════════════════════════════ */
+        const $chunkList = document.getElementById('chunkList');
+        const $chunkHint = document.getElementById('chunkHint');
+        const $potatoToggle = document.getElementById('potatoToggle');
+        const $addChunkBtn = document.getElementById('addChunkBtn');
+
+        let chunkCount = 0;
+        let potatoMode = false;
+
+        // In potato mode, actual Base64 strings live here (keyed by row UID),
+        // never in the DOM — that's the whole point.
+        const potatoStore = new Map(); // uid → string
+
+        /* ── Potato toggle ── */
+        $potatoToggle.addEventListener('click', () => {
+            potatoMode = !potatoMode;
+            $potatoToggle.classList.toggle('on', potatoMode);
+            $potatoToggle.title = potatoMode
+                ? 'Potato mode ON — click to switch back to textareas'
+                : 'Potato mode: load chunks directly from clipboard, no textarea';
+            // Rebuild list in new mode (data is lost on switch — fair trade)
+            potatoStore.clear();
+            $chunkList.innerHTML = '';
+            chunkCount = 0;
+            addChunk(false);
+            $addChunkBtn.style.display = potatoMode ? '' : '';
+            updateChunkHint();
+        });
+
+        /* ── Add a chunk row ── */
+        function addChunk(focusNew = true) {
+            chunkCount++;
+            const idx = chunkCount;
+            const uid = Math.random().toString(36).slice(2); // stable row ID
+
+            const row = document.createElement('div');
+            row.className = 'chunk-row' + (potatoMode ? ' potato' : '');
+            row.dataset.chunkIdx = idx;
+            row.dataset.uid = uid;
+
+            /* ── Chunk number badge ── */
+            const num = document.createElement('div');
+            num.className = 'chunk-num';
+            num.textContent = idx;
+
+            /* ── Delete button (shared by both modes) ── */
+            const del = document.createElement('button');
+            del.className = 'chunk-del';
+            del.title = 'Remove this chunk';
+            del.innerHTML = '×';
+            del.addEventListener('click', () => {
+                potatoStore.delete(uid);
+                row.remove();
+                renumberChunks();
+                updateChunkHint();
+            });
+
+            row.appendChild(num);
+
+            if (potatoMode) {
+                /* ── POTATO MODE: clipboard button + status badge ── */
+                const btn = document.createElement('button');
+                btn.className = 'chunk-paste-btn';
+                btn.innerHTML = `
+                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="1.5" width="7" height="9" rx="1.2"/>
+                        <path d="M3 3.5H2.5A1 1 0 0 0 1.5 4.5v8A1 1 0 0 0 2.5 13.5h7a1 1 0 0 0 1-1V12"/>
+                    </svg>
+                    <span class="chunk-paste-lbl">Paste chunk ${idx}</span>
+                    <span class="chunk-paste-stat" id="cstat-${uid}">Empty</span>
+                `;
+
+                btn.addEventListener('click', async () => {
+                    const stat = document.getElementById(`cstat-${uid}`);
+                    const lbl = btn.querySelector('.chunk-paste-lbl');
+                    try {
+                        stat.textContent = '…';
+                        stat.className = 'chunk-paste-stat';
+                        const text = await navigator.clipboard.readText();
+                        const cleaned = text.trim().replace(/\s/g, '');
+                        if (!cleaned) {
+                            stat.textContent = 'Empty clipboard';
+                            return;
+                        }
+                        potatoStore.set(uid, cleaned);
+                        // Show human-readable size (bytes before decode ≈ chars * 0.75)
+                        const approxBytes = Math.round(cleaned.length * 0.75);
+                        stat.textContent = '✓ ' + fmtSz(approxBytes);
+                        stat.className = 'chunk-paste-stat loaded';
+                        lbl.textContent = `Chunk ${row.dataset.chunkIdx} loaded`;
+                        updateChunkHint();
+                    } catch (e) {
+                        stat.textContent = 'No permission';
+                        stat.className = 'chunk-paste-stat';
+                    }
+                });
+
+                row.appendChild(btn);
+            } else {
+                /* ── NORMAL MODE: textarea ── */
+                const ta = document.createElement('textarea');
+                ta.className = 'chunk-ta';
+                ta.placeholder = idx === 1
+                    ? 'UEsDBBQAAAAIAA… (chunk 1 of N)'
+                    : `Paste chunk ${idx} here…`;
+                ta.spellcheck = false;
+                ta.autocomplete = 'off';
+                ta.autocorrect = 'off';
+                ta.autocapitalize = 'off';
+
+                ta.addEventListener('input', () => {
+                    ta.classList.toggle('has-data', ta.value.trim().length > 0);
+                    updateChunkHint();
+                });
+
+                row.appendChild(ta);
+
+                if (focusNew) {
+                    setTimeout(() => {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        ta.focus();
+                    }, 50);
+                }
+            }
+
+            row.appendChild(del);
+            $chunkList.appendChild(row);
+
+            if (potatoMode && focusNew) {
+                setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+            }
+
+            updateChunkHint();
+            updateDelButtons();
+        }
+
+        function renumberChunks() {
+            chunkCount = 0;
+            $chunkList.querySelectorAll('.chunk-row').forEach(row => {
+                chunkCount++;
+                row.dataset.chunkIdx = chunkCount;
+                row.querySelector('.chunk-num').textContent = chunkCount;
+                if (potatoMode) {
+                    const lbl = row.querySelector('.chunk-paste-lbl');
+                    const uid = row.dataset.uid;
+                    // Only reset label if not yet loaded
+                    if (!potatoStore.has(uid)) lbl.textContent = `Paste chunk ${chunkCount}`;
+                    else lbl.textContent = `Chunk ${chunkCount} loaded`;
+                } else {
+                    const ta = row.querySelector('.chunk-ta');
+                    if (ta) ta.placeholder = chunkCount === 1
+                        ? 'UEsDBBQAAAAIAA… (chunk 1 of N)'
+                        : `Paste chunk ${chunkCount} here…`;
+                }
+            });
+        }
+
+        function updateDelButtons() {
+            const rows = $chunkList.querySelectorAll('.chunk-row');
+            rows.forEach(row => {
+                row.querySelector('.chunk-del').disabled = (rows.length === 1);
+            });
+        }
+
+        function updateChunkHint() {
+            const rows = [...$chunkList.querySelectorAll('.chunk-row')];
+            const total = rows.length;
+            let filled;
+            if (potatoMode) {
+                filled = rows.filter(r => potatoStore.has(r.dataset.uid)).length;
+            } else {
+                filled = rows.filter(r => r.querySelector('.chunk-ta')?.value.trim()).length;
+            }
+            if (filled === 0) {
+                $chunkHint.textContent = total === 1 ? '1 chunk' : `${total} chunks`;
+            } else {
+                $chunkHint.textContent = `${filled} of ${total} loaded`;
+            }
+        }
+
+        function getChunkData() {
+            // Returns an array of non-empty Base64 strings in order
+            if (potatoMode) {
+                return [...$chunkList.querySelectorAll('.chunk-row')]
+                    .map(row => potatoStore.get(row.dataset.uid))
+                    .filter(Boolean);
+            }
+            return [...$chunkList.querySelectorAll('.chunk-ta')]
+                .map(ta => ta.value.trim().replace(/\s/g, ''))
+                .filter(Boolean);
+        }
+
+        function clearChunks() {
+            potatoStore.clear();
+            $chunkList.innerHTML = '';
+            chunkCount = 0;
+            addChunk(false);
+        }
+
+        $addChunkBtn.addEventListener('click', () => addChunk(true));
+
+        // Initialize with one chunk
+        addChunk(false);
 
         /* ─── Load screen ─── */
         const $fi = document.getElementById('fi');
         const $dz = document.getElementById('dz');
-        const $b64 = document.getElementById('b64in');
         const $dn = document.getElementById('dname');
         const $er = document.getElementById('errtxt');
         let chosenFile = null;
 
-        $fi.addEventListener('change', () => { if ($fi.files[0]) { chosenFile = $fi.files[0]; $dn.textContent = '✓ ' + chosenFile.name; $b64.value = ''; $er.textContent = '' } });
+        $fi.addEventListener('change', () => {
+            if ($fi.files[0]) {
+                chosenFile = $fi.files[0];
+                $dn.textContent = '✓ ' + chosenFile.name;
+                clearChunks();
+                $er.textContent = '';
+            }
+        });
         $dz.addEventListener('dragover', e => { e.preventDefault(); $dz.classList.add('over') });
         $dz.addEventListener('dragleave', () => $dz.classList.remove('over'));
         $dz.addEventListener('drop', e => {
             e.preventDefault(); $dz.classList.remove('over');
             const f = e.dataTransfer.files[0];
-            if (f) { chosenFile = f; $dn.textContent = '✓ ' + f.name; $b64.value = ''; $er.textContent = '' }
+            if (f) { chosenFile = f; $dn.textContent = '✓ ' + f.name; clearChunks(); $er.textContent = '' }
         });
-        $b64.addEventListener('input', () => { if ($b64.value.trim()) { chosenFile = null; $dn.textContent = '' } });
+
         document.getElementById('clrBtn').addEventListener('click', () => {
-            chosenFile = null; $fi.value = ''; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
+            chosenFile = null; $fi.value = ''; $dn.textContent = ''; $er.textContent = '';
+            clearChunks();
         });
         document.getElementById('opnBtn').addEventListener('click', doLoad);
 
         async function doLoad() {
-            $er.textContent = ''; let ab = null, name = 'archive.zip';
+            $er.textContent = '';
+            let ab = null, name = 'archive.zip';
+
             if (chosenFile) {
-                name = chosenFile.name; ab = await chosenFile.arrayBuffer();
-            } else if ($b64.value.trim()) {
+                name = chosenFile.name;
+                ab = await chosenFile.arrayBuffer();
+            } else {
+                // Gather chunks
+                const chunks = getChunkData();
+                if (chunks.length === 0) {
+                    $er.textContent = 'Please choose a file or paste Base64.';
+                    return;
+                }
+
+                // Concatenate all chunk strings, then decode as one Base64 blob
+                const combined = chunks.join('');
                 try {
-                    const b = atob($b64.value.trim().replace(/\s/g, ''));
+                    const b = atob(combined);
                     ab = new ArrayBuffer(b.length);
                     const v = new Uint8Array(ab);
                     for (let i = 0; i < b.length; i++) v[i] = b.charCodeAt(i);
-                } catch { $er.textContent = 'Invalid Base64.'; return; }
-            } else { $er.textContent = 'Please choose a file or paste Base64.'; return; }
+                } catch (e) {
+                    // Give a more useful error: which chunk is probably bad
+                    if (chunks.length === 1) {
+                        $er.textContent = 'Invalid Base64 data.';
+                    } else {
+                        $er.textContent = `Decode failed — check for missing or out-of-order chunks.`;
+                    }
+                    return;
+                }
+            }
 
-            archName = name; setpg('Reading archive…', 20);
+            archName = name;
+            setpg('Reading archive…', 20);
             try {
-                await tick(); setpg('Parsing ZIP…', 55); zip = await JSZip.loadAsync(ab);
-                setpg('Building tree…', 85); await tick(); tree = buildTree(zip);
-                setpg('Done', 100); await new Promise(r => setTimeout(r, 200));
-                hidepg(); launch();
-            } catch (e) { hidepg(); $er.textContent = 'Error: ' + e.message; }
+                await tick();
+                setpg('Parsing ZIP…', 55);
+                zip = await JSZip.loadAsync(ab);
+                setpg('Building tree…', 85);
+                await tick();
+                tree = buildTree(zip);
+                setpg('Done', 100);
+                await new Promise(r => setTimeout(r, 200));
+                hidepg();
+                launch();
+            } catch (e) {
+                hidepg();
+                $er.textContent = 'Error: ' + e.message;
+            }
         }
-        function setpg(t, p) { document.getElementById('pg').classList.add('on'); document.getElementById('pgtxt').textContent = t; document.getElementById('pgfl').style.width = p + '%'; }
+
+        function setpg(t, p) {
+            document.getElementById('pg').classList.add('on');
+            document.getElementById('pgtxt').textContent = t;
+            document.getElementById('pgfl').style.width = p + '%';
+        }
         function hidepg() { document.getElementById('pg').classList.remove('on'); }
         function tick() { return new Promise(r => setTimeout(r, 16)); }
 
@@ -2245,52 +2787,35 @@
         }
 
         function renderGrid(path) {
-            // Disconnect any previous observer before clearing DOM
             if (thumbObserver) { thumbObserver.disconnect(); thumbObserver = null; }
-
             const g = document.getElementById('grid'); g.innerHTML = '';
             const node = getNode(path); if (!node) return;
-
-            // Apply / remove preview-mode class on the grid container
             g.classList.toggle('preview-mode', previewMode);
-
             const items = Object.entries(node.__children || {}).sort((a, b) => {
                 const ad = a[1].__isDir ? 0 : 1, bd = b[1].__isDir ? 0 : 1;
                 return ad !== bd ? ad - bd : a[0].localeCompare(b[0]);
             });
-
             items.forEach(([name, child]) => {
                 const t = child.__isDir ? 'folder' : ftype(name);
                 const el = document.createElement('div'); el.className = 'fi';
-
                 const usePreview = previewMode && PREVIEWABLE_TYPES.has(t) && child.__entry;
-
                 if (usePreview) {
-                    // Mark the item for lazy thumbnail loading
                     el.classList.add('previewable');
                     el.dataset.zipPath = child.__entry.name;
                     el.dataset.thumbType = t;
-
-                    // Render a shimmer placeholder icon area + label
                     el.innerHTML = `<div class="fi-ic loading"></div><span class="fi-lbl">${esc(name)}</span>`;
                 } else {
                     el.innerHTML = icBig(t) + `<span class="fi-lbl">${esc(name)}</span>`;
                 }
-
                 el.addEventListener('click', () => clickFi(el, child, name));
                 el.addEventListener('dblclick', () => dblFi(child, name));
                 el.addEventListener('contextmenu', e => showCtx(e, el, child, name));
                 g.appendChild(el);
             });
-
             document.getElementById('sitems').textContent = items.length;
-
-            // Build the ordered file list used by the viewer prev/next arrows
             viewerFiles = items
                 .filter(([, child]) => !child.__isDir && child.__entry)
                 .map(([name, child]) => ({ node: child, name }));
-
-            // Kick off the IntersectionObserver for lazy thumbnail loading
             if (previewMode) setupThumbObserver();
         }
 
@@ -2309,8 +2834,7 @@
         function dblFi(node, name) { if (node.__isDir) navTo(node.__path); else openFile(node, name); }
 
         /* ─── Viewer navigation ─── */
-        // Flat ordered list of files in the current folder, updated when grid renders
-        let viewerFiles = []; // [{node, name}, …]
+        let viewerFiles = [];
         let viewerIdx = -1;
 
         function updateArrows() {
@@ -2329,8 +2853,6 @@
         async function openFile(node, name) {
             const entry = node.__entry || (zip && zip.file(node.__path.replace(/\/$/, '')));
             if (!entry) return;
-
-            // Update nav index
             viewerIdx = viewerFiles.findIndex(f => f.name === name && f.node === node);
             updateArrows();
             document.getElementById('vname').textContent = name; showVw();
@@ -2403,7 +2925,8 @@
             zip = null; tree = {}; selItem = null;
             document.getElementById('app').classList.remove('on');
             document.getElementById('ld').style.display = '';
-            $fi.value = ''; chosenFile = null; $b64.value = ''; $dn.textContent = ''; $er.textContent = '';
+            $fi.value = ''; chosenFile = null; $dn.textContent = ''; $er.textContent = '';
+            clearChunks();
         }
 
         /* ─── Sidebar resize/collapse ─── */
