@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.8";
+const VERSION = "E-Dog OS 3.1.9";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -3065,7 +3065,6 @@ function spawnApp(type, item) {
         video: { title: `Video Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/media-player.png">', w: 760, h: 520 },
         audio: { title: `Audio Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/media-player.png">', w: 400, h: 300 },
         zip: { title: `Archive — ${item.name || "blank"}`, icon: '🗜️', w: 760, h: 540 },
-        bacon: { title: `Bacon Browser`, icon: '<img class="app-icon-title-bar" src="icons/16/browser.png">', w: 900, h: 620 },
         markdown: { title: `${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/text-editor.png">', w: 750, h: 560 }
     }[type];
 
@@ -3104,7 +3103,7 @@ function spawnApp(type, item) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `${appMeta.icon} ${type === 'bacon' ? 'Bacon Browser' : item.name}`;
+    tbBtn.innerHTML = `${appMeta.icon} ${item.name}`;
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -3123,7 +3122,6 @@ function spawnApp(type, item) {
     if (type === 'audio') _buildAudioBody(body, item, windowId);
     if (type === 'video') _buildVideoBody(body, item, windowId);
     if (type === 'zip') _buildZipBody(body, item);
-    if (type === 'bacon') _buildBaconBody(body, item, windowId, win);
     if (type === 'markdown') _buildMarkdownBody(body, item, windowId);
 
     focusWindow(windowId);
@@ -4310,14 +4308,28 @@ function _loadCustomAppIcon(customIcon, emojiIcon, targetEl) {
         .catch(() => { targetEl.textContent = emojiIcon || '📦'; });
 }
 
+function _parseAppFile(raw) {
+    const firstLine = raw.slice(0, raw.indexOf('\n')).trim();
+    if (firstLine === '\\\\\\EDOGOSAPP 1.1' || firstLine === '!EDOGOSAPP 1.1') {
+        // New delimited format
+        const configMatch = raw.match(/\\\\\\CONFIG\r?\n([\s\S]*?)\\\\\\ENDCONFIG/);
+        const contentMatch = raw.match(/\\\\\\CODESTART\r?\n([\s\S]*?)\\\\\\CODEEND/);
+        if (!configMatch || !contentMatch) throw new Error('Malformed .app file: missing CONFIG or CODESTART block');
+        const config = JSON.parse(configMatch[1]);
+        config._html = contentMatch[1];
+        return config;
+    }
+    // Legacy JSON format
+    return JSON.parse(raw);
+}
+
 function spawnCustomApp(item) {
-    // Parse the .app JSON
     let config;
     try {
         const text = item.content instanceof ArrayBuffer
             ? new TextDecoder().decode(item.content)
             : String(item.content || '');
-        config = JSON.parse(text);
+        config = _parseAppFile(text);
     } catch (e) {
         spawnError('.app parse error: ' + e.message);
         return;
@@ -4329,8 +4341,8 @@ function spawnCustomApp(item) {
         icon = '📦',
         width = 800,
         height = 600,
-        html = '<p style="color:white;font-family:sans-serif;padding:20px">No HTML provided.</p>',
     } = config;
+    const html = config._html ?? config.html ?? '<p style="color:white;font-family:sans-serif;padding:20px">No HTML provided.</p>';
 
     const windowId = 'win_' + (++winCount);
     const offset = (winCount - 1) * 30;
@@ -4933,950 +4945,6 @@ async function _buildZipBody(body, item) {
     await renderDir('');
 }
 
-/* ============================================================
-   BACON EXPLORER — Full Implementation
-============================================================ */
-
-const baconState = {
-    bookmarks: JSON.parse(sessionStorage.getItem('bacon_bookmarks') || '[]'),
-    history: JSON.parse(sessionStorage.getItem('bacon_history') || '[]'),
-};
-
-function saveBaconState() {
-    try {
-        sessionStorage.setItem('bacon_bookmarks', JSON.stringify(baconState.bookmarks.slice(0, 200)));
-        sessionStorage.setItem('bacon_history', JSON.stringify(baconState.history.slice(0, 500)));
-    } catch (e) { }
-}
-
-function resolveUrl(input) {
-    input = input.trim();
-    if (!input) return 'about:blank';
-    if (input === 'bacon:new' || input === 'bacon://newtab' || input === 'about:blank') return input;
-    if (/^https?:\/\//i.test(input)) return input;
-    if (!input.includes(' ') && (input.includes('.') || input.startsWith('localhost'))) {
-        return 'https://' + input;
-    }
-    return 'https://duckduckgo.com/?q=' + encodeURIComponent(input);
-}
-
-function getFaviconUrl(url) {
-    try {
-        const u = new URL(url);
-        return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`;
-    } catch { return null; }
-}
-
-function getDisplayUrl(url) {
-    try {
-        const u = new URL(url);
-        return u.hostname + (u.pathname !== '/' ? u.pathname : '');
-    } catch { return url; }
-}
-
-function isSecure(url) {
-    return url.startsWith('https://');
-}
-
-function _buildBaconBody(body, item, windowId, winEl) {
-    body.style.cssText = 'display:flex;flex-direction:column;height:100%;background:#121212;';
-
-    const browser = {
-        tabs: [],
-        activeTabId: null,
-        showFindBar: false,
-        showBookmarkBar: true,
-        zoom: 100,
-    };
-
-    // ---- TAB BAR ----
-    const tabBar = document.createElement('div');
-    tabBar.className = 'bacon-tabbar';
-
-    const newTabBtn = document.createElement('button');
-    newTabBtn.className = 'bacon-new-tab-btn';
-    newTabBtn.title = 'New Tab';
-    newTabBtn.innerHTML = '+';
-    newTabBtn.onclick = () => openTab(browser, 'bacon:new', 'New Tab');
-    tabBar.appendChild(newTabBtn);
-    body.appendChild(tabBar);
-
-    // ---- NAV BAR ----
-    const navBar = document.createElement('div');
-    navBar.className = 'bacon-navbar';
-
-    const backBtn = makeBrowserBtn(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`, 'Back', () => activeIframe()?.contentWindow.history.back());
-    const fwdBtn = makeBrowserBtn(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`, 'Forward', () => activeIframe()?.contentWindow.history.forward());
-    const reloadBtn = makeBrowserBtn(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>`, 'Reload', () => reloadActiveTab());
-    const homeBtn = makeBrowserBtn(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>`, 'Home', () => navigateActiveTab('bacon:new'));
-
-    backBtn.style.marginRight = '2px';
-    fwdBtn.style.marginRight = '2px';
-    reloadBtn.style.marginRight = '4px';
-
-    navBar.appendChild(backBtn);
-    navBar.appendChild(fwdBtn);
-    navBar.appendChild(reloadBtn);
-    navBar.appendChild(homeBtn);
-
-    const addrWrap = document.createElement('div');
-    addrWrap.className = 'bacon-address-wrap';
-    addrWrap.style.margin = '0 6px';
-
-    const lockIcon = document.createElement('div');
-    lockIcon.className = 'bacon-address-icon';
-    lockIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`;
-
-    const addrInput = document.createElement('input');
-    addrInput.type = 'text';
-    addrInput.className = 'bacon-address';
-    addrInput.placeholder = 'Search or enter address…';
-    addrInput.spellcheck = false;
-    addrInput.autocomplete = 'off';
-
-    const goBtn = document.createElement('button');
-    goBtn.className = 'bacon-address-go';
-    goBtn.title = 'Go';
-    goBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
-
-    addrWrap.appendChild(lockIcon);
-    addrWrap.appendChild(addrInput);
-    addrWrap.appendChild(goBtn);
-
-    const autocomplete = document.createElement('div');
-    autocomplete.className = 'bacon-autocomplete';
-    autocomplete.style.display = 'none';
-    addrWrap.appendChild(autocomplete);
-
-    let acIndex = -1;
-
-    function showAutocomplete(val) {
-        if (!val.trim()) { autocomplete.style.display = 'none'; return; }
-        const items = buildAutocompleteSuggestions(val);
-        if (!items.length) { autocomplete.style.display = 'none'; return; }
-        autocomplete.innerHTML = '';
-        acIndex = -1;
-        items.forEach((item, i) => {
-            const row = document.createElement('div');
-            row.className = 'bacon-autocomplete-item';
-            row.innerHTML = `<span class="ac-icon">${item.icon}</span><span class="ac-main">${item.label}</span><span class="ac-sub">${item.sub || ''}</span>`;
-            row.onmousedown = (e) => {
-                e.preventDefault();
-                autocomplete.style.display = 'none';
-                navigateActiveTab(resolveUrl(item.value));
-                addrInput.blur();
-            };
-            autocomplete.appendChild(row);
-        });
-        autocomplete.style.display = 'block';
-    }
-
-    function buildAutocompleteSuggestions(val) {
-        const q = val.toLowerCase();
-        const results = [];
-        const globeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>`;
-        const histIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-        const bookIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-
-        baconState.bookmarks.filter(b => b.title?.toLowerCase().includes(q) || b.url?.toLowerCase().includes(q))
-            .slice(0, 3).forEach(b => results.push({ icon: bookIcon, label: b.title || b.url, sub: getDisplayUrl(b.url), value: b.url }));
-
-        const seen = new Set();
-        baconState.history.filter(h => h.url?.toLowerCase().includes(q) || h.title?.toLowerCase().includes(q))
-            .slice(0, 5).forEach(h => {
-                if (!seen.has(h.url)) {
-                    seen.add(h.url);
-                    results.push({ icon: histIcon, label: h.title || h.url, sub: getDisplayUrl(h.url), value: h.url });
-                }
-            });
-
-        results.push({ icon: globeIcon, label: `Search DuckDuckGo for "${val}"`, sub: '', value: val });
-
-        return results.slice(0, 8);
-    }
-
-    addrInput.addEventListener('focus', () => {
-        addrInput.select();
-        showAutocomplete(addrInput.value);
-    });
-
-    addrInput.addEventListener('input', () => showAutocomplete(addrInput.value));
-
-    addrInput.addEventListener('keydown', (e) => {
-        const items = autocomplete.querySelectorAll('.bacon-autocomplete-item');
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            acIndex = Math.min(acIndex + 1, items.length - 1);
-            items.forEach((it, i) => it.classList.toggle('selected', i === acIndex));
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            acIndex = Math.max(acIndex - 1, -1);
-            items.forEach((it, i) => it.classList.toggle('selected', i === acIndex));
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            autocomplete.style.display = 'none';
-            if (acIndex >= 0 && items[acIndex]) {
-                items[acIndex].dispatchEvent(new MouseEvent('mousedown'));
-            } else {
-                navigateActiveTab(resolveUrl(addrInput.value));
-            }
-        } else if (e.key === 'Escape') {
-            autocomplete.style.display = 'none';
-            addrInput.blur();
-        }
-    });
-
-    addrInput.addEventListener('blur', () => {
-        setTimeout(() => { autocomplete.style.display = 'none'; }, 150);
-    });
-
-    goBtn.onclick = () => {
-        autocomplete.style.display = 'none';
-        navigateActiveTab(resolveUrl(addrInput.value));
-    };
-
-    navBar.appendChild(addrWrap);
-
-    const bookmarkBtn = document.createElement('button');
-    bookmarkBtn.className = 'bacon-bookmark-btn';
-    bookmarkBtn.title = 'Bookmark this page';
-    bookmarkBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-    bookmarkBtn.onclick = () => toggleBookmark(browser, addrInput.value, bookmarkBtn, bookmarkBar);
-
-    const menuBtn = document.createElement('button');
-    menuBtn.className = 'bacon-menu-btn';
-    menuBtn.title = 'Browser Menu';
-    menuBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>`;
-    menuBtn.onclick = (e) => showBrowserMenu(e, browser, addrInput, bookmarkBar, winEl, body);
-
-    navBar.appendChild(bookmarkBtn);
-    navBar.appendChild(menuBtn);
-    body.appendChild(navBar);
-
-    // ---- BOOKMARK BAR ----
-    const bookmarkBar = document.createElement('div');
-    bookmarkBar.className = 'bacon-bookmarkbar';
-    body.appendChild(bookmarkBar);
-
-    // ---- CONTENT ----
-    const contentArea = document.createElement('div');
-    contentArea.className = 'bacon-content';
-    body.appendChild(contentArea);
-
-    const zoomBadge = document.createElement('div');
-    zoomBadge.className = 'bacon-zoom-badge';
-    zoomBadge.textContent = '100%';
-    contentArea.appendChild(zoomBadge);
-
-    // ---- FIND BAR ----
-    const findBar = document.createElement('div');
-    findBar.className = 'bacon-findbar';
-    findBar.style.display = 'none';
-    const findInput = document.createElement('input');
-    findInput.placeholder = 'Find in page…';
-    const findPrev = document.createElement('button');
-    findPrev.textContent = '▲';
-    findPrev.title = 'Previous';
-    const findNext = document.createElement('button');
-    findNext.textContent = '▼';
-    findNext.title = 'Next';
-    const findCount = document.createElement('span');
-    findCount.className = 'find-count';
-    const findClose = document.createElement('button');
-    findClose.className = 'find-close';
-    findClose.textContent = '✕';
-    findClose.onclick = () => { findBar.style.display = 'none'; browser.showFindBar = false; };
-    findBar.appendChild(findInput);
-    findBar.appendChild(findPrev);
-    findBar.appendChild(findNext);
-    findBar.appendChild(findCount);
-    findBar.appendChild(findClose);
-    body.appendChild(findBar);
-
-    // ---- STATUS BAR ----
-    const statusBar = document.createElement('div');
-    statusBar.className = 'bacon-statusbar';
-    const statusIndicator = document.createElement('div');
-    statusIndicator.className = 'status-indicator';
-    const statusUrl = document.createElement('div');
-    statusUrl.className = 'status-url';
-    statusUrl.textContent = 'Ready';
-    statusBar.appendChild(statusIndicator);
-    statusBar.appendChild(statusUrl);
-    body.appendChild(statusBar);
-
-    // ---- HELPER FUNCTIONS ----
-    function activeTab() {
-        return browser.tabs.find(t => t.id === browser.activeTabId);
-    }
-
-    function activeIframe() {
-        const tab = activeTab();
-        return tab ? tab.iframe : null;
-    }
-
-    function openTab(browser, url, title = 'New Tab') {
-        const tabId = 'tab_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-
-        const tabEl = document.createElement('div');
-        tabEl.className = 'bacon-tab';
-        tabEl.dataset.tabid = tabId;
-
-        const favicon = document.createElement('div');
-        favicon.className = 'tab-loading';
-
-        const tabTitle = document.createElement('span');
-        tabTitle.className = 'tab-title';
-        tabTitle.textContent = title;
-
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'tab-close';
-        closeBtn.title = 'Close Tab';
-        closeBtn.textContent = '✕';
-        closeBtn.onclick = (e) => {
-            e.stopPropagation();
-            closeTab(browser, tabId);
-        };
-
-        tabEl.appendChild(favicon);
-        tabEl.appendChild(tabTitle);
-        tabEl.appendChild(closeBtn);
-        tabEl.onclick = () => switchTab(browser, tabId);
-
-        tabBar.insertBefore(tabEl, newTabBtn);
-
-        const iframe = document.createElement('iframe');
-        iframe.className = 'bacon-iframe';
-        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals');
-        iframe.style.display = 'none';
-        contentArea.appendChild(iframe);
-
-        const tab = { id: tabId, url: '', title, tabEl, titleEl: tabTitle, favicon, iframe };
-        browser.tabs.push(tab);
-
-        switchTab(browser, tabId);
-        navigateTab(tab, url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-    }
-
-    function closeTab(browser, tabId) {
-        const idx = browser.tabs.findIndex(t => t.id === tabId);
-        if (idx === -1) return;
-        const tab = browser.tabs[idx];
-        tab.tabEl.remove();
-        tab.iframe.remove();
-        browser.tabs.splice(idx, 1);
-
-        if (browser.tabs.length === 0) {
-            openTab(browser, 'bacon:new', 'New Tab');
-        } else {
-            const newActive = browser.tabs[Math.min(idx, browser.tabs.length - 1)];
-            switchTab(browser, newActive.id);
-        }
-    }
-
-    function switchTab(browser, tabId) {
-        browser.activeTabId = tabId;
-        browser.tabs.forEach(t => {
-            t.tabEl.classList.toggle('active', t.id === tabId);
-            t.iframe.style.display = t.id === tabId ? 'block' : 'none';
-        });
-        const tab = browser.tabs.find(t => t.id === tabId);
-        if (tab) {
-            addrInput.value = tab.url === 'bacon:new' ? '' : (tab.url || '');
-            updateLockIcon(lockIcon, tab.url);
-            updateBookmarkStar(bookmarkBtn, tab.url);
-            winEl.querySelector('.title-bar-text').innerHTML = `<img class="app-icon-title-bar" src="icons/16/browser.png"> ${tab.title || 'Bacon Browser'}`;
-        }
-    }
-
-    function navigateActiveTab(url) {
-        const tab = activeTab();
-        if (!tab) return;
-        navigateTab(tab, url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-    }
-
-    function reloadActiveTab() {
-        const tab = activeTab();
-        if (!tab) return;
-        const url = tab.url;
-        navigateTab(tab, url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-    }
-
-    backBtn.onclick = () => activeIframe()?.contentWindow.history.back();
-    fwdBtn.onclick = () => activeIframe()?.contentWindow.history.forward();
-    reloadBtn.onclick = () => reloadActiveTab();
-    homeBtn.onclick = () => navigateActiveTab('bacon:new');
-
-    winEl.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey) {
-            if (e.key === 'f' || e.key === 'F') {
-                e.preventDefault();
-                browser.showFindBar = !browser.showFindBar;
-                findBar.style.display = browser.showFindBar ? 'flex' : 'none';
-                if (browser.showFindBar) findInput.focus();
-            } else if (e.key === 't' || e.key === 'T') {
-                e.preventDefault();
-                openTab(browser, 'bacon:new', 'New Tab');
-            } else if (e.key === 'w' || e.key === 'W') {
-                e.preventDefault();
-                if (browser.activeTabId) closeTab(browser, browser.activeTabId);
-            } else if (e.key === 'r' || e.key === 'R') {
-                e.preventDefault();
-                reloadActiveTab();
-            } else if (e.key === 'l' || e.key === 'L') {
-                e.preventDefault();
-                addrInput.focus();
-                addrInput.select();
-            } else if (e.key === '+' || e.key === '=') {
-                e.preventDefault();
-                browser.zoom = Math.min(browser.zoom + 10, 200);
-                applyZoom(browser, contentArea, zoomBadge);
-            } else if (e.key === '-') {
-                e.preventDefault();
-                browser.zoom = Math.max(browser.zoom - 10, 30);
-                applyZoom(browser, contentArea, zoomBadge);
-            } else if (e.key === '0') {
-                e.preventDefault();
-                browser.zoom = 100;
-                applyZoom(browser, contentArea, zoomBadge);
-            }
-        }
-    });
-
-    let initialUrl = 'bacon:new';
-    if (item && item.content) {
-        initialUrl = 'file:' + item.name;
-        openTab(browser, initialUrl, item.name);
-        const tab = browser.tabs[0];
-        let html = '';
-        if (item.content instanceof ArrayBuffer) html = new TextDecoder().decode(item.content);
-        else html = String(item.content);
-        tab.iframe.srcdoc = html;
-        tab.url = 'file:' + item.name;
-        addrInput.value = tab.url;
-        tab.titleEl.textContent = item.name;
-        tab.favicon.className = 'tab-favicon';
-        tab.favicon.innerHTML = '📄';
-        tab.iframe.style.display = 'block';
-    } else {
-        openTab(browser, 'bacon:new', 'New Tab');
-    }
-
-    renderBookmarkBar(bookmarkBar, browser, addrInput, lockIcon, bookmarkBtn, statusBar, statusIndicator, statusUrl, winEl, zoomBadge);
-}
-
-function makeBrowserBtn(svg, title, onClick) {
-    const btn = document.createElement('button');
-    btn.className = 'bacon-nav-btn';
-    btn.title = title;
-    btn.innerHTML = svg;
-    btn.onclick = onClick;
-    return btn;
-}
-
-function navigateTab(tab, url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge) {
-    tab.url = url;
-
-    tab.favicon.className = 'tab-loading';
-    tab.favicon.innerHTML = '';
-
-    if (url === 'bacon:new') {
-        tab.iframe.style.display = 'none';
-        renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl, statusBar, statusIndicator, statusUrl, zoomBadge, bookmarkBar);
-        addrInput.value = '';
-        updateLockIcon(lockIcon, '');
-        updateBookmarkStar(bookmarkBtn, '');
-        statusUrl.textContent = 'New Tab';
-        statusIndicator.className = 'status-indicator';
-        tab.favicon.className = 'tab-favicon';
-        tab.favicon.textContent = '🏠';
-        tab.titleEl.textContent = 'New Tab';
-        tab.title = 'New Tab';
-        winEl.querySelector('.title-bar-text').innerHTML = '<img class="app-icon-title-bar" src="icons/16/browser.png"> New Tab — Bacon Browser';
-        return;
-    }
-
-    const existing = tab.iframe.parentElement?.querySelector('.bacon-newtab');
-    if (existing) existing.remove();
-
-    tab.iframe.style.display = 'block';
-    addrInput.value = url;
-    updateLockIcon(lockIcon, url);
-    updateBookmarkStar(bookmarkBtn, url);
-    statusUrl.textContent = 'Loading ' + url + '…';
-    statusIndicator.className = 'status-indicator loading';
-
-    tab.iframe.onload = () => {
-        let title = url;
-        try { title = tab.iframe.contentDocument?.title || url; } catch (e) { }
-        tab.title = title || url;
-        tab.titleEl.textContent = tab.title;
-        tab.favicon.className = 'tab-favicon';
-        const fav = getFaviconUrl(url);
-        if (fav) {
-            const img = document.createElement('img');
-            img.src = fav;
-            img.className = 'tab-favicon';
-            img.onerror = () => {
-                tab.favicon.innerHTML = '🌐';
-                tab.favicon.className = 'tab-favicon';
-            };
-            tab.favicon.innerHTML = '';
-            tab.favicon.appendChild(img);
-        } else {
-            tab.favicon.textContent = '📄';
-        }
-
-        statusUrl.textContent = url;
-        statusIndicator.className = 'status-indicator';
-
-        if (browser.activeTabId === tab.id) {
-            winEl.querySelector('.title-bar-text').innerHTML = `<img class="app-icon-title-bar" src="icons/16/browser.png"> ${tab.title}`;
-            addrInput.value = url;
-            updateLockIcon(lockIcon, url);
-            updateBookmarkStar(bookmarkBtn, url);
-        }
-
-        if (url !== 'bacon:new' && !url.startsWith('about:')) {
-            baconState.history.unshift({ url, title: tab.title, time: Date.now() });
-            if (baconState.history.length > 500) baconState.history.pop();
-            saveBaconState();
-        }
-    };
-
-    tab.iframe.onerror = () => {
-        tab.favicon.className = 'tab-favicon';
-        tab.favicon.textContent = '⚠️';
-        statusUrl.textContent = 'Error loading ' + url;
-        statusIndicator.className = 'status-indicator';
-    };
-
-    tab.iframe.src = url;
-}
-
-async function renderNewTabPage(tab, addrInput, lockIcon, bookmarkBtn, browser, winEl, statusBar, statusIndicator, statusUrl, zoomBadge, bookmarkBar) {
-    const old = tab.iframe.parentElement?.querySelector('.bacon-newtab');
-    if (old) old.remove();
-
-    const page = document.createElement('div');
-    page.className = 'bacon-newtab';
-
-    const hero = document.createElement('div');
-    hero.className = 'bacon-newtab-hero';
-
-    const logoDiv = document.createElement('div');
-    logoDiv.className = 'bacon-newtab-logo';
-    try {
-        const img = await imgFromFS('/usr/share/baconexplorer/browser.svg');
-        logoDiv.appendChild(img);
-    } catch {
-        logoDiv.textContent = '🥓';
-    }
-
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'bacon-newtab-title';
-    titleDiv.textContent = 'Bacon Explorer';
-
-    hero.appendChild(logoDiv);
-    hero.appendChild(titleDiv);
-    page.appendChild(hero);
-
-    const searchBox = document.createElement('div');
-    searchBox.className = 'bacon-newtab-search';
-    searchBox.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            `;
-    const searchInput = document.createElement('input');
-    searchInput.placeholder = 'Search the web or enter a URL…';
-    const searchGoBtn = document.createElement('button');
-    searchGoBtn.textContent = 'Go';
-
-    searchBox.appendChild(searchInput);
-    searchBox.appendChild(searchGoBtn);
-    page.appendChild(searchBox);
-
-    const doSearch = () => {
-        const val = searchInput.value.trim();
-        if (val) {
-            const resolved = resolveUrl(val);
-            navigateTab(tab, resolved, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-            page.remove();
-            tab.iframe.style.display = 'block';
-        }
-    };
-    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
-    searchGoBtn.onclick = doSearch;
-
-    const speedDials = [];
-
-    const grid = document.createElement('div');
-    grid.className = 'bacon-newtab-grid';
-    speedDials.forEach(sd => {
-        const tile = document.createElement('div');
-        tile.className = 'bacon-speed-dial';
-        tile.innerHTML = `
-                    <div class="bacon-speed-dial-icon">${sd.emoji}</div>
-                    <div class="bacon-speed-dial-label">${sd.label}</div>
-                `;
-        tile.onclick = () => {
-            navigateTab(tab, sd.url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-            page.remove();
-            tab.iframe.style.display = 'block';
-        };
-        grid.appendChild(tile);
-    });
-    page.appendChild(grid);
-
-    if (baconState.bookmarks.length > 0) {
-        const bmSection = document.createElement('div');
-        bmSection.className = 'bacon-newtab-bookmarks';
-        bmSection.innerHTML = '<h3>Bookmarks</h3>';
-        const bmList = document.createElement('div');
-        bmList.className = 'bacon-newtab-bmark-list';
-        baconState.bookmarks.slice(0, 8).forEach(bm => {
-            const row = document.createElement('div');
-            row.className = 'bacon-newtab-bmark-row';
-            const fav = getFaviconUrl(bm.url);
-            row.innerHTML = `
-                        ${fav ? `<img src="${fav}" onerror="this.style.display='none'">` : ''}
-                        <span class="ntbmark-title">${bm.title || bm.url}</span>
-                        <span class="ntbmark-url">${getDisplayUrl(bm.url)}</span>
-                    `;
-            row.onclick = () => {
-                navigateTab(tab, bm.url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-                page.remove();
-                tab.iframe.style.display = 'block';
-            };
-            bmList.appendChild(row);
-        });
-        bmSection.appendChild(bmList);
-        page.appendChild(bmSection);
-    }
-
-    if (baconState.history.length > 0) {
-        const histSection = document.createElement('div');
-        histSection.className = 'bacon-newtab-bookmarks';
-        histSection.style.marginBottom = '32px';
-        histSection.innerHTML = '<h3>Recent History</h3>';
-        const histList = document.createElement('div');
-        histList.className = 'bacon-newtab-bmark-list';
-        const seen = new Set();
-        baconState.history.filter(h => { if (seen.has(h.url)) return false; seen.add(h.url); return true; })
-            .slice(0, 6).forEach(h => {
-                const row = document.createElement('div');
-                row.className = 'bacon-newtab-bmark-row';
-                const fav = getFaviconUrl(h.url);
-                row.innerHTML = `
-                        ${fav ? `<img src="${fav}" onerror="this.style.display='none'">` : ''}
-                        <span class="ntbmark-title">${h.title || h.url}</span>
-                        <span class="ntbmark-url">${getDisplayUrl(h.url)}</span>
-                    `;
-                row.onclick = () => {
-                    navigateTab(tab, h.url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-                    page.remove();
-                    tab.iframe.style.display = 'block';
-                };
-                histList.appendChild(row);
-            });
-        histSection.appendChild(histList);
-        page.appendChild(histSection);
-    }
-
-    tab.iframe.parentElement.appendChild(page);
-    setTimeout(() => searchInput.focus(), 100);
-}
-
-function updateLockIcon(lockIcon, url) {
-    if (!url || url.startsWith('bacon:')) {
-        lockIcon.className = 'bacon-address-icon';
-        lockIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>`;
-    } else if (isSecure(url)) {
-        lockIcon.className = 'bacon-address-icon secure';
-        lockIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`;
-    } else {
-        lockIcon.className = 'bacon-address-icon insecure';
-        lockIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 018-4.58M17 11V9"/><line x1="1" y1="1" x2="23" y2="23" stroke-width="2"/></svg>`;
-    }
-}
-
-function updateBookmarkStar(bookmarkBtn, url) {
-    const isBookmarked = baconState.bookmarks.some(b => b.url === url);
-    bookmarkBtn.classList.toggle('bookmarked', isBookmarked);
-    bookmarkBtn.title = isBookmarked ? 'Remove Bookmark' : 'Bookmark this page';
-    if (isBookmarked) {
-        bookmarkBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-    } else {
-        bookmarkBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
-    }
-}
-
-function toggleBookmark(browser, url, bookmarkBtn, bookmarkBar) {
-    if (!url || url === 'bacon:new') return;
-    const idx = baconState.bookmarks.findIndex(b => b.url === url);
-    if (idx >= 0) {
-        baconState.bookmarks.splice(idx, 1);
-    } else {
-        const tab = browser.tabs.find(t => t.id === browser.activeTabId);
-        baconState.bookmarks.push({ url, title: tab?.title || url, time: Date.now() });
-    }
-    saveBaconState();
-    updateBookmarkStar(bookmarkBtn, url);
-    renderBookmarkBar(bookmarkBar, browser, null, null, bookmarkBtn, null, null, null, null, null, null);
-}
-
-function renderBookmarkBar(bookmarkBar, browser, addrInput, lockIcon, bookmarkBtn, statusBar, statusIndicator, statusUrl, winEl, zoomBadge) {
-    bookmarkBar.innerHTML = '';
-    baconState.bookmarks.slice(0, 15).forEach(bm => {
-        const btn = document.createElement('div');
-        btn.className = 'bacon-bmark';
-        const fav = getFaviconUrl(bm.url);
-        btn.innerHTML = `
-                    ${fav ? `<img src="${fav}" onerror="this.style.display='none'">` : ''}
-                    <span class="bmark-label">${bm.title || getDisplayUrl(bm.url)}</span>
-                `;
-        btn.onclick = () => {
-            const tab = browser.tabs.find(t => t.id === browser.activeTabId);
-            if (tab && addrInput && statusBar) {
-                navigateTab(tab, bm.url, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, browser, winEl, zoomBadge);
-            }
-        };
-        btn.oncontextmenu = (e) => {
-            e.preventDefault();
-            showBrowserDropdown(e.clientX, e.clientY, [
-                {
-                    label: 'Remove Bookmark', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`, danger: true, action: () => {
-                        const idx = baconState.bookmarks.findIndex(b => b.url === bm.url);
-                        if (idx >= 0) baconState.bookmarks.splice(idx, 1);
-                        saveBaconState();
-                        updateBookmarkStar(bookmarkBtn, browser.tabs.find(t => t.id === browser.activeTabId)?.url || '');
-                        renderBookmarkBar(bookmarkBar, browser, addrInput, lockIcon, bookmarkBtn, statusBar, statusIndicator, statusUrl, winEl, zoomBadge);
-                    }
-                },
-                {
-                    label: 'Open in New Tab', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>`, action: () => {
-                        openTabHelper(browser, bm.url, bm.title, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, winEl, zoomBadge);
-                    }
-                },
-            ]);
-        };
-        bookmarkBar.appendChild(btn);
-    });
-}
-
-function applyZoom(browser, contentArea, zoomBadge) {
-    const pct = browser.zoom / 100;
-    const iframes = contentArea.querySelectorAll('.bacon-iframe');
-    iframes.forEach(iframe => {
-        iframe.style.transform = `scale(${pct})`;
-        iframe.style.transformOrigin = 'top left';
-        iframe.style.width = (100 / pct) + '%';
-        iframe.style.height = (100 / pct) + '%';
-    });
-    zoomBadge.textContent = browser.zoom + '%';
-    zoomBadge.classList.add('visible');
-    clearTimeout(zoomBadge._timer);
-    zoomBadge._timer = setTimeout(() => zoomBadge.classList.remove('visible'), 1500);
-}
-
-function showBrowserMenu(e, browser, addrInput, bookmarkBar, winEl, body) {
-    const url = browser.tabs.find(t => t.id === browser.activeTabId)?.url || '';
-    const menuItems = [
-        { label: 'New Tab', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`, action: () => openTabHelper(browser, 'bacon:new', 'New Tab', addrInput, null, null, bookmarkBar, null, null, null, winEl, null) },
-        null,
-        { label: 'Bookmarks', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`, action: () => showBookmarksPanel(browser, body) },
-        { label: 'History', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, action: () => showHistoryPanel(browser, body) },
-        null,
-        {
-            label: 'Find in Page (Ctrl+F)', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`, action: () => {
-                const findBar = body.querySelector('.bacon-findbar');
-                if (findBar) { findBar.style.display = 'flex'; findBar.querySelector('input')?.focus(); }
-            }
-        },
-        {
-            label: 'Zoom In (Ctrl++)', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`, action: () => {
-                browser.zoom = Math.min(browser.zoom + 10, 200);
-                applyZoom(browser, body.querySelector('.bacon-content'), body.querySelector('.bacon-zoom-badge'));
-            }
-        },
-        {
-            label: 'Zoom Out (Ctrl+-)', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`, action: () => {
-                browser.zoom = Math.max(browser.zoom - 10, 30);
-                applyZoom(browser, body.querySelector('.bacon-content'), body.querySelector('.bacon-zoom-badge'));
-            }
-        },
-        {
-            label: `Reset Zoom (${browser.zoom}%)`, icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>`, action: () => {
-                browser.zoom = 100;
-                applyZoom(browser, body.querySelector('.bacon-content'), body.querySelector('.bacon-zoom-badge'));
-            }
-        },
-        null,
-        {
-            label: 'View Page Source', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`, action: () => {
-                const tab = browser.tabs.find(t => t.id === browser.activeTabId);
-                if (!tab) return;
-                try {
-                    const src = tab.iframe.contentDocument?.documentElement?.outerHTML || '';
-                    const item = { name: 'page-source.html', type: 'file', content: src };
-                    spawnApp('editor', item);
-                } catch (e) { alert('Cannot access page source (cross-origin restriction).'); }
-            }
-        },
-        null,
-        {
-            label: 'Clear History', icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`, danger: true, action: () => {
-                if (confirm('Clear all browsing history?')) { baconState.history = []; saveBaconState(); }
-            }
-        },
-    ];
-    showBrowserDropdown(e.clientX, e.clientY, menuItems);
-}
-
-function openTabHelper(browser, url, title, addrInput, lockIcon, bookmarkBtn, bookmarkBar, statusBar, statusIndicator, statusUrl, winEl, zoomBadge) {
-    if (!browser._refs) return;
-    const r = browser._refs;
-    browser._openTab(url, title);
-}
-
-function showBrowserDropdown(x, y, items) {
-    document.querySelectorAll('.bacon-dropdown').forEach(d => d.remove());
-    window.removeEventListener('mousedown', closeBrowserDropdown);
-
-    const menu = document.createElement('div');
-    menu.className = 'bacon-dropdown';
-    menu.style.left = x + 'px';
-    menu.style.top = y + 'px';
-
-    items.forEach(item => {
-        if (!item) {
-            const sep = document.createElement('hr');
-            sep.className = 'bacon-dropdown-sep';
-            menu.appendChild(sep);
-            return;
-        }
-        const row = document.createElement('div');
-        row.className = 'bacon-dropdown-item' + (item.danger ? ' danger' : '');
-        row.innerHTML = `${item.icon || ''}<span>${item.label}</span>`;
-        row.onmousedown = (e) => {
-            e.stopPropagation();
-            menu.remove();
-            window.removeEventListener('mousedown', closeBrowserDropdown);
-            item.action();
-        };
-        menu.appendChild(row);
-    });
-
-    document.body.appendChild(menu);
-
-    requestAnimationFrame(() => {
-        const rect = menu.getBoundingClientRect();
-        if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 8) + 'px';
-        if (rect.bottom > window.innerHeight - 44) menu.style.top = (window.innerHeight - 44 - rect.height - 4) + 'px';
-    });
-
-    setTimeout(() => window.addEventListener('mousedown', closeBrowserDropdown), 0);
-}
-
-function closeBrowserDropdown(e) {
-    const menus = document.querySelectorAll('.bacon-dropdown');
-    menus.forEach(m => { if (!m.contains(e.target)) m.remove(); });
-    window.removeEventListener('mousedown', closeBrowserDropdown);
-}
-
-function showBookmarksPanel(browser, body) {
-    showSidePanel('Bookmarks', body, (panel) => {
-        if (baconState.bookmarks.length === 0) {
-            panel.innerHTML = '<div style="color:#555;font-size:12px;padding:16px;">No bookmarks yet. Click ★ to add one.</div>';
-            return;
-        }
-        baconState.bookmarks.forEach((bm, i) => {
-            const row = document.createElement('div');
-            row.className = 'bacon-history-item';
-            const fav = getFaviconUrl(bm.url);
-            row.innerHTML = `
-                        ${fav ? `<img src="${fav}" width="14" height="14" onerror="this.style.display='none'" style="flex-shrink:0;">` : '🌐'}
-                        <span class="hist-title">${bm.title || bm.url}</span>
-                        <span class="hist-url">${getDisplayUrl(bm.url)}</span>
-                    `;
-            row.onclick = () => {
-                const tab = browser.tabs.find(t => t.id === browser.activeTabId);
-            };
-            row.oncontextmenu = (e) => {
-                e.preventDefault();
-                showBrowserDropdown(e.clientX, e.clientY, [
-                    {
-                        label: 'Remove', danger: true, icon: '', action: () => {
-                            baconState.bookmarks.splice(i, 1);
-                            saveBaconState();
-                            panel.innerHTML = '';
-                            showBookmarksPanel(browser, body);
-                        }
-                    }
-                ]);
-            };
-            panel.appendChild(row);
-        });
-    });
-}
-
-function showHistoryPanel(browser, body) {
-    showSidePanel('History', body, (panel) => {
-        if (baconState.history.length === 0) {
-            panel.innerHTML = '<div style="color:#555;font-size:12px;padding:16px;">No history yet.</div>';
-            return;
-        }
-        baconState.history.slice(0, 100).forEach(h => {
-            const row = document.createElement('div');
-            row.className = 'bacon-history-item';
-            const fav = getFaviconUrl(h.url);
-            const time = h.time ? new Date(h.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-            row.innerHTML = `
-                        <span class="hist-time">${time}</span>
-                        ${fav ? `<img src="${fav}" width="12" height="12" onerror="this.style.display='none'" style="flex-shrink:0;">` : ''}
-                        <span class="hist-title">${h.title || h.url}</span>
-                        <span class="hist-url">${getDisplayUrl(h.url)}</span>
-                    `;
-            panel.appendChild(row);
-        });
-    });
-}
-
-function showSidePanel(title, body, fill) {
-    body.querySelectorAll('.bacon-side-panel').forEach(p => p.remove());
-
-    const panel = document.createElement('div');
-    panel.className = 'bacon-side-panel';
-    panel.style.cssText = `
-                position:absolute; top:0; right:0; bottom:0; width:300px;
-                background:#1a1a1a; border-left:1px solid #000;
-                display:flex; flex-direction:column; z-index:999;
-                box-shadow:-4px 0 16px rgba(0,0,0,0.5);
-            `;
-
-    const header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#141414;border-bottom:1px solid #000;flex-shrink:0;';
-    header.innerHTML = `<span style="font-size:13px;font-weight:600;color:#ccc;">${title}</span>`;
-    const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'background:transparent;border:none;color:#666;cursor:pointer;font-size:16px;padding:0;';
-    closeBtn.textContent = '✕';
-    closeBtn.onclick = () => panel.remove();
-    header.appendChild(closeBtn);
-
-    const content = document.createElement('div');
-    content.style.cssText = 'flex:1;overflow-y:auto;';
-
-    panel.appendChild(header);
-    panel.appendChild(content);
-
-    const contentArea = body.querySelector('.bacon-content');
-    if (contentArea) {
-        contentArea.style.position = 'relative';
-        contentArea.appendChild(panel);
-    }
-
-    fill(content);
-}
-
 /* ---- openFile dispatcher ---- */
 function openFile(item) {
     const ext = getExt(item.name);
@@ -5903,8 +4971,6 @@ function openFile(item) {
             await mountImageFile(fullPath);
         })();
         return;
-    } else if (HTML_EXTS.has(ext)) {
-        spawnApp('bacon', item);
     } else if (ext === 'app') {
         spawnCustomApp(item);
     } else if (ext === 'edoc') {
@@ -5973,6 +5039,7 @@ function getIconPath(name) {
     const theme = shouldIconsBeLight ? "light" : "dark";
     return `/usr/share/icons/actions/${theme}/${name}`;
 }
+
 
 async function buildMenu(x, y, entries) {
     if (menuEl) menuEl.remove();
@@ -6075,7 +5142,6 @@ async function showContextMenu(x, y, item, windowId) {
 function showOpenWithMenu(x, y, item) {
     const ext = getExt(item.name);
     const isImage = IMAGE_EXTS.has(ext) || item.mime?.startsWith('image/');
-    const isHtml = HTML_EXTS.has(ext);
     const isAudio = AUDIO_EXTS.has(ext) || item.mime?.startsWith('audio/');
     const isVideo = VIDEO_EXTS.has(ext) || item.mime?.startsWith('video/');
     const isZip = ZIP_EXTS.has(ext) || item.mime === 'application/zip';
@@ -6089,9 +5155,6 @@ function showOpenWithMenu(x, y, item) {
     if (isImage) {
         entries.push({ label: 'Image Viewer', icon: 'open', action: () => spawnApp('image', item) });
         entries.push({ label: 'Paint', icon: 'open', action: () => spawnPaint(item) });
-    }
-    if (isHtml) {
-        entries.push({ label: 'Bacon Browser', icon: 'open', action: () => spawnApp('bacon', item) });
     }
     if (isAudio) {
         entries.push({ label: 'Audio Player', icon: 'open', action: () => spawnApp('audio', item) });
@@ -6205,66 +5268,6 @@ function showDesktopBlankContextMenu(x, y) {
     ]);
 }
 
-function spawnBaconBrowser(url) {
-    const windowId = 'win_' + (++winCount);
-    const offset = (winCount - 1) * 30;
-    const left = Math.min(60 + offset, window.innerWidth - 920);
-    const top = Math.min(60 + offset, window.innerHeight - 660);
-
-    const win = document.createElement('div');
-    win.className = 'app-window';
-    win.id = windowId;
-    win.style.left = left + 'px';
-    win.style.top = top + 'px';
-    win.style.width = '920px';
-    win.style.height = '640px';
-
-    win.addEventListener('mousedown', () => focusWindow(windowId));
-
-    win.innerHTML = `
-                <div class="title-bar">
-                    <button class="window-close-button" title="Close">✕</button>
-                    <button class="window-minimize-button" title="Minimize">—</button>
-            <button class="window-maximize-button" title="Maximize">□</button>
-                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Explorer</span>
-                </div>
-                <div class="app-body" style="height:calc(100% - 42px);overflow:hidden;display:flex;flex-direction:column;"></div>
-            `;
-
-    document.getElementById('windowContainer').appendChild(win);
-    windows[windowId] = { el: win, state: { type: 'bacon', item: {} } };
-
-    win.querySelector('.title-bar').addEventListener('mousedown', e => {
-        if (e.target.closest('button')) return;
-        startDrag(e, win);
-    });
-    addResizeHandles(win);
-    win.querySelector('.window-close-button').onclick = () => closeWindow(windowId);
-    win.querySelector('.window-minimize-button').onclick = () => minimizeWindow(windowId);
-    win.querySelector('.window-maximize-button').onclick = () => maximizeWindow(windowId);
-
-    const tbBtn = document.createElement('button');
-    tbBtn.className = 'win-btn';
-    tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/browser.png"> Bacon Explorer`;
-    tbBtn.onclick = () => {
-        if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
-        else focusWindow(windowId);
-    };
-    document.getElementById('taskbar').insertBefore(tbBtn, document.getElementById('taskbar-tray'));
-
-    tbBtn.oncontextmenu = (ev) => {
-        ev.preventDefault();
-        buildMenu(ev.clientX, ev.clientY, [{ label: "Close", icon: "close", action: () => closeWindow(windowId) }]);
-    };
-    windows[windowId].taskbarBtn = tbBtn;
-
-    const body = win.querySelector('.app-body');
-    _buildBaconBody(body, url ? { name: url, content: null } : {}, windowId, win);
-
-    focusWindow(windowId);
-    return windowId;
-}
 
 /* ============================================================
    TERMINAL
@@ -8356,8 +7359,6 @@ async function startMenuAction(action) {
 
     if (action === 'newWindow') {
         spawnWindow();
-    } else if (action === 'openBacon') {
-        spawnBaconBrowser();
     } else if (action === 'openTerminal') {
         spawnTerminal();
     } else if (action === 'newFile') {
@@ -9029,7 +8030,7 @@ window.closeEditorIfBackdrop = closeEditorIfBackdrop;
 window.closeImageViewer = closeImageViewer;
 window.closeVideoPlayer = closeVideoPlayer;
 window.spawnWindow = spawnWindow;
-window.spawnBaconBrowser = spawnBaconBrowser;
+
 window.spawnTerminal = spawnTerminal;
 window.renameItem = renameItem;
 window.deleteItem = deleteItem;

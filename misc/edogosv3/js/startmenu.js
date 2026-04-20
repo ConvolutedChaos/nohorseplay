@@ -26,7 +26,7 @@
             icon: '/usr/share/icons/32/browser.png',
             emoji: '🌐',
             categories: ['all', 'internet'],
-            action: () => startMenuAction('openBacon'),
+            action: () => openCustomAppFromPath("/usr/bin/baconexplorer.app"),
         },
         {
             name: 'Terminal',
@@ -75,7 +75,7 @@
             icon: '/usr/share/icons/32/settings-about.png',
             emoji: 'ℹ',
             categories: ['all', 'system'],
-            action: () => openCustomAppFromPath("/usr/share/changelog.app"),
+            action: () => openCustomAppFromPath("/usr/bin/changelog.app"),
         },
         // {
         //     name: 'Calculator',
