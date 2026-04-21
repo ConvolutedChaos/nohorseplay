@@ -31,9 +31,6 @@
                   /usr/share/icons/16/<id>.png  (also, unless icon16.png present)
    icon16.png   → /usr/share/icons/16/<id>.png
    assets/**    → /usr/share/<id>/**
-
-   Add <script src="js/appstore.js"></script> to index.html
-   AFTER ide.js (needs winCount, focusWindow, etc. from script.js).
 ============================================================ */
 
 (function () {
@@ -45,14 +42,14 @@
     ============================================================ */
     const CATALOG = [
         {
-            id: 'blockbench',
-            name: 'Blockbench',
-            version: '1.0.0',
-            description: 'Low-poly animation and modeling software',
+            id: 'imgedit',
+            name: 'ImgEdit',
+            version: '1.0',
+            description: 'Create, edit, and convert images',
             author: 'E-Dog',
             category: 'accessories',
-            emoji: '🧮',
-            zip: './apps/blockbench.zip',
+            emoji: '🖼️',
+            zip: './apps/imgedit.zip',
         },
     ];
 
@@ -198,16 +195,31 @@
         if (!appEntries.length) throw new Error('Package contains no .app file');
         const appEntry = appEntries.find(f => !f.name.includes('/')) || appEntries[0];
 
-        // 4 — Read and patch .app JSON so customIcon points to the installed FS icon
+        // 4 — Read and patch .app so customIcon points to the installed FS icon
         onStatus?.('Patching app config…');
         const appText = await appEntry.async('string');
-        const appConfig = JSON.parse(appText);
-        appConfig.customIcon = `/usr/share/icons/32/${id}.png`;
-        const patchedApp = JSON.stringify(appConfig);
+        let patchedApp;
+        const firstLine = appText.slice(0, appText.indexOf('\n')).trim();
+        if (firstLine === '\\\\\\EDOGOSAPP 1.1' || firstLine === '!EDOGOSAPP 1.1') {
+            // New delimited format — patch only the CONFIG block
+            patchedApp = appText.replace(
+                /(\\\\\\CONFIG\r?\n)([\s\S]*?)(\\\\\\ENDCONFIG)/,
+                (_, open, configJson, close) => {
+                    const cfg = JSON.parse(configJson);
+                    cfg.customIcon = `/usr/share/icons/32/${id}.png`;
+                    return open + JSON.stringify(cfg, null, 2) + '\n' + close;
+                }
+            );
+        } else {
+            // Legacy JSON format
+            const appConfig = JSON.parse(appText);
+            appConfig.customIcon = `/usr/share/icons/32/${id}.png`;
+            patchedApp = JSON.stringify(appConfig);
+        }
 
         // 5 — Write .app to /usr/bin/
         onStatus?.('Installing app…');
-        await _upsertFile(`/usr/bin/${id}.app`, patchedApp, 'application/json');
+        await _upsertFile(`/usr/bin/${id}.app`, patchedApp, 'application/octet-stream');
 
         // 6 — Write icons
         const icon32Entry = zip.file('icon.png');
@@ -595,7 +607,7 @@
         iconWrap.textContent = app.emoji || '📦'; // default until async load
         loadIconImg(
             `/usr/share/icons/32/${app.id}.png`,
-            app.icon || '',
+            app.icon || `./apps/${app.id}.png`,
             'width:40px;height:40px;object-fit:contain;'
         ).then(img => {
             iconWrap.innerHTML = '';

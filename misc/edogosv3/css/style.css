@@ -1449,6 +1449,33 @@ img.preview-thumb, canvas.preview-thumb {
     flex: 1;
 }
 
+.props-icon-actions {
+    display: flex;
+    gap: 8px;
+    padding: 8px 20px 10px;
+    border-bottom: 1px solid var(--toolbar-border);
+    background: var(--toolbar-bg);
+}
+
+.props-icon-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--ctx-sep);
+    background: var(--ctx-bg);
+    color: var(--start-item-color);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.props-icon-btn:hover {
+    background: var(--ctx-hover);
+}
+
+.props-icon-btn-remove {
+    color: #f87171;
+}
+
 .props-meter {
     height: 6px;
     border-radius: 3px;

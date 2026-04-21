@@ -1,7 +1,7 @@
 /* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.1.9";
+const VERSION = "E-Dog OS 3.2.1";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -1649,6 +1649,20 @@ async function _buildFilePreview(item) {
 async function buildFileIconWrapper(item) {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = 'height:calc(var(--img-size));display:flex;align-items:center;justify-content:center;';
+
+    if (item.customIcon instanceof ArrayBuffer && item.customIcon.byteLength > 0) {
+        const blob = new Blob([item.customIcon]);
+        const url = URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.className = 'icon-img';
+        let loaded = false;
+        await new Promise(res => {
+            img.onload = () => { URL.revokeObjectURL(url); loaded = true; res(); };
+            img.onerror = () => { URL.revokeObjectURL(url); res(); };
+            img.src = url;
+        });
+        if (loaded) { wrapper.appendChild(img); return wrapper; }
+    }
 
     if (item.type === 'folder') {
         if (item.mountIcon) {
@@ -6056,15 +6070,18 @@ function _propsRow(key, value) {
     return `<div class="props-row"><span class="pk">${key}</span><span class="pv">${value}</span></div>`;
 }
 
-async function _spawnPropsWindow(item) {
-    const { windowId, body } = _makePropsShell(item.name, 380, 420);
-
-    const iconRow = document.createElement('div');
-    iconRow.className = 'props-icon-row';
-
-    const iconEl = document.createElement('div');
-    iconEl.className = 'props-big-icon';
-    if (item.type === 'folder') {
+function _populatePropsIconEl(iconEl, item) {
+    iconEl.innerHTML = '';
+    iconEl.style.color = '';
+    if (item.customIcon instanceof ArrayBuffer && item.customIcon.byteLength > 0) {
+        const blob = new Blob([item.customIcon]);
+        const url = URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.onload = () => URL.revokeObjectURL(url);
+        img.onerror = () => URL.revokeObjectURL(url);
+        img.src = url;
+        iconEl.appendChild(img);
+    } else if (item.type === 'folder') {
         const meta = getFolderIconMap()[item.name];
         if (meta) {
             const img = document.createElement('img');
@@ -6085,6 +6102,17 @@ async function _spawnPropsWindow(item) {
         iconEl.style.color = '#94a3b8';
         iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
     }
+}
+
+async function _spawnPropsWindow(item) {
+    const { windowId, body } = _makePropsShell(item.name, 380, 460);
+
+    const iconRow = document.createElement('div');
+    iconRow.className = 'props-icon-row';
+
+    const iconEl = document.createElement('div');
+    iconEl.className = 'props-big-icon';
+    _populatePropsIconEl(iconEl, item);
 
     const nameBlock = document.createElement('div');
     nameBlock.innerHTML = `<div class="props-name">${item.name}</div><div class="props-kind">${item.type === 'folder' ? 'Folder' : (item.mime || 'File')}</div>`;
@@ -6092,6 +6120,48 @@ async function _spawnPropsWindow(item) {
     iconRow.appendChild(iconEl);
     iconRow.appendChild(nameBlock);
     body.appendChild(iconRow);
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    body.appendChild(fileInput);
+
+    const iconActions = document.createElement('div');
+    iconActions.className = 'props-icon-actions';
+
+    const changeBtn = document.createElement('button');
+    changeBtn.className = 'props-icon-btn';
+    changeBtn.textContent = 'Change Icon…';
+    changeBtn.onclick = () => fileInput.click();
+    iconActions.appendChild(changeBtn);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'props-icon-btn props-icon-btn-remove';
+    removeBtn.textContent = 'Remove Custom Icon';
+    removeBtn.style.display = (item.customIcon instanceof ArrayBuffer && item.customIcon.byteLength > 0) ? '' : 'none';
+    removeBtn.onclick = async () => {
+        delete item.customIcon;
+        item.updatedAt = Date.now();
+        await idbPut(item);
+        _populatePropsIconEl(iconEl, item);
+        removeBtn.style.display = 'none';
+        renderAllWindows();
+    };
+    iconActions.appendChild(removeBtn);
+
+    body.appendChild(iconActions);
+
+    fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        item.customIcon = await file.arrayBuffer();
+        item.updatedAt = Date.now();
+        await idbPut(item);
+        _populatePropsIconEl(iconEl, item);
+        removeBtn.style.display = '';
+        renderAllWindows();
+    };
 
     const table = document.createElement('div');
     table.className = 'props-table';
