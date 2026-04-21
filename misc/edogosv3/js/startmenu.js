@@ -33,7 +33,7 @@
             icon: '/usr/share/icons/32/terminal.png',
             emoji: '⌨',
             categories: ['all', 'system'],
-            action: () => startMenuAction('openTerminal'),
+            action: () => openCustomAppFromPath("/usr/bin/terminal.app"),
         },
         {
             name: 'Settings',
@@ -356,6 +356,20 @@
                 app.action();
             };
 
+            tile.oncontextmenu = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const items = [];
+                if (app._pinned) {
+                    items.push({ label: 'Remove from Start Menu', icon: 'delete', danger: true, action: () => { closeStartMenu(); window.smUnpinApp(app._appPath); } });
+                }
+                if (app._appPath) {
+                    if (items.length) items.push(null);
+                    items.push({ label: 'Add to Desktop', action: () => { closeStartMenu(); _smAddToDesktop(app); } });
+                }
+                if (items.length) buildMenu(e.clientX, e.clientY, items);
+            };
+
             return tile;
         }
 
@@ -372,6 +386,9 @@
             }
             renderApps(q);
         };
+
+        // Expose renderApps for live updates (pin/unpin)
+        _smRenderApps = renderApps;
 
         // Initial render
         renderApps();
@@ -401,13 +418,63 @@
         observer.observe(menu, { attributes: true, attributeFilter: ['class'] });
     }
 
+    /* ── Pin persistence (localStorage) ─────────────────────── */
+    // localStorage is always available at parse time, unlike IDB which
+    // is only assigned inside init(). This avoids a race where
+    // _smLoadPinnedApps ran before dbPromise was set and silently failed.
+    let _smRenderApps = null; // set by buildStartMenu for live re-renders
+
+    const _SM_STORE_KEY = 'edog_pinned_apps';
+
+    function _smLoadPinnedApps() {
+        try {
+            const raw = localStorage.getItem(_SM_STORE_KEY);
+            if (!raw) return;
+            const pinned = JSON.parse(raw);
+            if (!Array.isArray(pinned)) return;
+            for (const a of pinned) {
+                if (!a.path || !a.name) continue;
+                if (APP_REGISTRY.some(x => x._appPath === a.path)) continue;
+                APP_REGISTRY.push({
+                    name: a.name,
+                    icon: a.customIcon ? `/usr/share/icons/32/${a.customIcon}.png` : (a.icon || ''),
+                    emoji: a.emoji || '📦',
+                    categories: ['all', 'user'],
+                    _pinned: true,
+                    _appPath: a.path,
+                    _customIcon: a.customIcon || '',
+                    action: () => openCustomAppFromPath(a.path),
+                });
+            }
+        } catch (_) { /* malformed — skip */ }
+    }
+
+    function _smSaveConfig() {
+        const pinned = APP_REGISTRY
+            .filter(a => a._pinned && a._appPath)
+            .map(a => ({ name: a.name, path: a._appPath, emoji: a.emoji || '📦', icon: a.icon || '', customIcon: a._customIcon || '' }));
+        localStorage.setItem(_SM_STORE_KEY, JSON.stringify(pinned));
+    }
+
+    async function _smAddToDesktop(app) {
+        try {
+            const destPath = `/home/${getUsername()}/Desktop/${app.name}.app`;
+            const existing = await _fsResolve(destPath);
+            if (existing) { spawnError(`"${app.name}.app" is already on the Desktop.`, 'info'); return; }
+            const src = await accessFile(app._appPath);
+            const content = src.contentType === 'text' ? src.text : src.buffer;
+            await createFile(destPath, content);
+            await renderAllWindows();
+        } catch (e) { spawnError('Could not add to Desktop: ' + e.message, 'error'); }
+    }
+
     // -- Expose a way to register apps from other scripts --
     window._smAppRegistry = APP_REGISTRY;
 
     /**
      * Register a new app in the start menu.
      * Call from any script after startmenu.js loads.
-     * 
+     *
      * @example
      * registerStartMenuApp({
      *   name: 'Calculator',
@@ -421,7 +488,36 @@
         APP_REGISTRY.push(appDef);
     };
 
-    // Build on DOMContentLoaded or immediately if already loaded
+    window.smPinApp = function (path, name, emoji, customIcon) {
+        if (APP_REGISTRY.some(a => a._appPath === path)) {
+            spawnError(`"${name}" is already pinned to the Start Menu.`, 'info');
+            return;
+        }
+        APP_REGISTRY.push({
+            name,
+            icon: customIcon ? `/usr/share/icons/32/${customIcon}.png` : '',
+            emoji: emoji || '📦',
+            categories: ['all', 'user'],
+            _pinned: true,
+            _appPath: path,
+            _customIcon: customIcon || '',
+            action: () => openCustomAppFromPath(path),
+        });
+        _smSaveConfig();
+        if (_smRenderApps) _smRenderApps();
+    };
+
+    window.smUnpinApp = function (path) {
+        const idx = APP_REGISTRY.findIndex(a => a._appPath === path && a._pinned);
+        if (idx < 0) return;
+        APP_REGISTRY.splice(idx, 1);
+        _smSaveConfig();
+        if (_smRenderApps) _smRenderApps();
+    };
+
+    // Load pinned apps synchronously before building the menu
+    _smLoadPinnedApps();
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', buildStartMenu);
     } else {

@@ -157,6 +157,9 @@
                     <button class="ide-tb-btn" title="Compile / Export (.app)" onclick="ideCompile('${windowId}')">
                         ${SVG.compile} Compile
                     </button>
+                    <button class="ide-tb-btn" title="Pin to Start Menu" onclick="idePinToStart('${windowId}')">
+                        ${SVG.pin} Pin to Start
+                    </button>
                 </div>
 
                 <!-- Find Bar (hidden) -->
@@ -673,6 +676,22 @@
         _showFilePicker(windowId, 'save', '/home/' + getUsername() + '/');
     }
 
+    /* ── Pin to Start Menu ────────────────────────────────── */
+    async function _idePinToStart(windowId) {
+        const st = ideStates[windowId];
+        if (!st) return;
+        if (!st.filePath) {
+            spawnError('Save the app first, then pin it.', 'warning');
+            return;
+        }
+        if (typeof window.smPinApp !== 'function') {
+            spawnError('Start menu is not available.', 'error');
+            return;
+        }
+        window.smPinApp(st.filePath, st.appConfig.name, st.appConfig.icon, st.appConfig.customIcon);
+        spawnError(`"${st.appConfig.name}" pinned to the Start Menu.`, 'info');
+    }
+
     /* ── Run in OS ────────────────────────────────────────── */
     function ideRun(windowId) {
         const st = ideStates[windowId];
@@ -1047,6 +1066,7 @@
         preview:     `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="1"/><circle cx="8" cy="8" r="2"/></svg>`,
         config:      `<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 10.2a2.2 2.2 0 100-4.4 2.2 2.2 0 000 4.4zm5.4-1.35.05.05 1.1.64-.8 1.38-1.23-.71a4.5 4.5 0 01-.85.5l-.17 1.4H9.5l-.18-1.4a4.5 4.5 0 01-.85-.5l-1.23.71-.8-1.38 1.1-.64a4.3 4.3 0 010-1.7l-1.1-.64.8-1.38 1.23.71c.26-.19.54-.35.85-.5L9.5 3.9h1.55l.18 1.4c.31.15.59.31.85.5l1.23-.71.8 1.38-1.1.64a4.3 4.3 0 010 1.7z"/></svg>`,
         compile:     `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6L2 8l2 2M12 6l2 2-2 2M9 4l-2 8"/></svg>`,
+        pin:         `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2l5 5-2 2-2-1-3 3v2H5l-1 2-1-1 2-1V10L2 7l3-3 1 2z"/></svg>`,
         html_file:   `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="width:12px;height:12px"><path d="M3 2h7l3 3v9H3V2zm7 0v3h3"/></svg>`,
         preview_icon:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:12px;height:12px"><rect x="1" y="2" width="14" height="11" rx="1"/><path d="M1 6h14"/></svg>`,
     };
@@ -1563,5 +1583,6 @@
     window.ideFindNext          = ideFindNext;
     window.ideFindPrev          = ideFindPrev;
     window.ideFindKey           = ideFindKey;
+    window.idePinToStart        = _idePinToStart;
 
 })();

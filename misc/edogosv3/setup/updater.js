@@ -1,4 +1,4 @@
-const SETUP_VERSION = 25;
+const SETUP_VERSION = 28;
 window.__setupVersion = SETUP_VERSION;
 
 // window.__updateComplete = (async function () {

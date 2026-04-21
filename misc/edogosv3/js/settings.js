@@ -404,6 +404,13 @@ function spawnSettings(initialSection = 'appearance') {
 /* ---- Navigation sidebar ---- */
 const _SETTINGS_SECTIONS = [
     { id: 'appearance', label: 'Appearance', icon: '<img style="margin-top: 5px;" src="icons/16/settings-backgrounds.png">' },
+    { id: 'desktop',    label: 'Desktop',    icon: '',
+        iconInit: (span) => {
+            imgFromFS('/usr/share/icons/16/folder-desktop.svg')
+                .then(img => { img.style.marginTop = '5px'; span.appendChild(img); })
+                .catch(() => { span.textContent = '🖥'; span.style.fontSize = '14px'; });
+        }
+    },
     { id: 'system', label: 'System', icon: '<img style="margin-top: 5px;" src="icons/16/settings.png">' },
     { id: 'experimental', label: 'Experimental', icon: '<img style="margin-top: 5px;" src="icons/16/terminal.png">' },
     { id: 'about', label: 'About', icon: '<img style="margin-top: 5px;" src="icons/16/settings-about.png">' },
@@ -418,6 +425,7 @@ function _buildSettingsNav(windowId, activeSection) {
         const item = document.createElement('div');
         item.className = 'settings-nav-item' + (sec.id === activeSection ? ' active' : '');
         item.innerHTML = `<span class="snav-icon">${sec.icon}</span><span>${sec.label}</span>`;
+        if (sec.iconInit) sec.iconInit(item.querySelector('.snav-icon'));
         item.onclick = () => {
             nav.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
@@ -432,9 +440,63 @@ function _buildSettingsNav(windowId, activeSection) {
 function _renderSettingsSection(id, el) {
     el.innerHTML = '';
     if (id === 'appearance') _buildAppearanceSection(el);
+    else if (id === 'desktop')    _buildDesktopSection(el);
     else if (id === 'system') _buildSystemSection(el);
     else if (id === 'experimental') _buildExperimentalSection(el);
     else if (id === 'about') _buildAboutSection(el);
+}
+
+/* ============================================================
+   DESKTOP section
+============================================================ */
+async function _buildDesktopSection(el) {
+    el.innerHTML = `
+        <div class="settings-section-title">Desktop Icons</div>
+        <div class="settings-group-label">System Icons</div>
+        <div class="settings-form-hint" style="margin-bottom:14px;">
+            Choose which system icons appear on the desktop.
+        </div>
+        <div id="sdi-icon-list"></div>
+    `;
+
+    const list = el.querySelector('#sdi-icon-list');
+    const icons = (typeof SYSTEM_DESKTOP_ICONS !== 'undefined' ? SYSTEM_DESKTOP_ICONS : window.SYSTEM_DESKTOP_ICONS) || [];
+
+    for (const sys of icons) {
+        const row = document.createElement('div');
+        row.className = 'settings-form-row';
+        row.style.cssText = 'gap:12px;align-items:center;margin-bottom:12px;';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.style.cssText = 'width:16px;height:16px;cursor:pointer;accent-color:#0c74df;flex-shrink:0;';
+        cb.checked = (typeof _isDesktopIconVisible === 'function' ? _isDesktopIconVisible : window._isDesktopIconVisible)(sys.id);
+        cb.onchange = () => {
+            (typeof _setDesktopIconVisibility === 'function' ? _setDesktopIconVisibility : window._setDesktopIconVisibility)(sys.id, cb.checked);
+            if (typeof renderDesktop === 'function') renderDesktop();
+        };
+        row.appendChild(cb);
+
+        const iconWrap = document.createElement('span');
+        iconWrap.style.cssText = 'width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+        if (sys.iconPathFn) {
+            sys.iconPathFn().then(({ fsPath, webPath }) =>
+                loadIconImg(fsPath, webPath, 'width:20px;height:20px;object-fit:contain;').then(img => iconWrap.appendChild(img)).catch(() => {})
+            ).catch(() => {});
+        } else if (sys.iconPath) {
+            loadIconImg(sys.iconPath, sys.iconWebPath || '', 'width:20px;height:20px;object-fit:contain;')
+                .then(img => iconWrap.appendChild(img)).catch(() => {});
+        }
+        row.appendChild(iconWrap);
+
+        const label = document.createElement('label');
+        label.textContent = sys.label();
+        label.style.cssText = 'cursor:pointer;user-select:none;';
+        label.onclick = () => { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); };
+        row.appendChild(label);
+
+        list.appendChild(row);
+    }
 }
 
 function _buildExperimentalSection(el) {

@@ -2051,7 +2051,7 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `<span id="fe-tbicon-${windowId}"></span> File Explorer ${winCount}`;
+    tbBtn.innerHTML = `<span id="fe-tbicon-${windowId}"></span> File Explorer`;
     tbBtn.onclick = () => {
         if (win.style.display === 'none') {
             win.style.display = 'block';
@@ -6527,15 +6527,49 @@ const SYSTEM_DESKTOP_ICONS = [
         id: 'system-computer',
         label: () => 'Computer',
         iconPath: '/usr/share/icons/128/computer.svg',
-        action: () => spawnWindow('virt:computer')
+        iconWebPath: 'icons/16/computer.svg',
+        action: () => spawnWindow('virt:computer'),
     },
     {
         id: 'system-home',
         label: () => getUsername() + '\'s Home',
         iconPath: '/usr/share/icons/128/folder-home.svg',
-        action: () => spawnWindow(null, `/home/${getUsername()}`)
+        iconWebPath: '',
+        action: () => spawnWindow(null, `/home/${getUsername()}`),
+    },
+    {
+        id: 'system-trash',
+        label: () => 'Recycle Bin',
+        iconPathFn: async () => {
+            const tmpId = await _getTmpId();
+            if (tmpId) {
+                const items = await idbGetAllByIndex('parentId', tmpId);
+                return items.length > 0
+                    ? { fsPath: '/usr/share/icons/16/trash-full.svg', webPath: 'icons/16/trash-full.svg' }
+                    : { fsPath: '/usr/share/icons/16/trash.svg',      webPath: 'icons/16/trash.svg' };
+            }
+            return { fsPath: '/usr/share/icons/16/trash.svg', webPath: 'icons/16/trash.svg' };
+        },
+        action: () => spawnWindow('virt:trash'),
+        contextMenu: () => [
+            { label: 'Open', icon: 'open', action: () => spawnWindow('virt:trash') },
+            null,
+            { label: 'Empty Recycle Bin', icon: 'delete', danger: true, action: () => emptyTrash() },
+        ],
     },
 ];
+
+function _getDesktopIconVisibility() {
+    try { return JSON.parse(localStorage.getItem('edog_desktop_icons') || '{}'); } catch { return {}; }
+}
+function _isDesktopIconVisible(id) {
+    return _getDesktopIconVisibility()[id] !== false;
+}
+function _setDesktopIconVisibility(id, visible) {
+    const v = _getDesktopIconVisibility();
+    v[id] = visible;
+    localStorage.setItem('edog_desktop_icons', JSON.stringify(v));
+}
 
 async function _buildSystemIconTile(sys, desktopEl, deskState) {
     const tile = document.createElement('div');
@@ -6545,7 +6579,13 @@ async function _buildSystemIconTile(sys, desktopEl, deskState) {
 
     const iconWrapper = document.createElement('div');
     iconWrapper.style.cssText = 'height:var(--img-size);display:flex;align-items:center;justify-content:center;';
-    const img = await loadIconImg(sys.iconPath, '');
+    let img;
+    if (sys.iconPathFn) {
+        const { fsPath, webPath } = await sys.iconPathFn();
+        img = await loadIconImg(fsPath, webPath);
+    } else {
+        img = await loadIconImg(sys.iconPath, sys.iconWebPath || '');
+    }
     img.className = 'icon-img';
     iconWrapper.appendChild(img);
     tile.appendChild(iconWrapper);
@@ -6570,9 +6610,8 @@ async function _buildSystemIconTile(sys, desktopEl, deskState) {
         desktopEl.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
         deskState.selectedIds.clear();
         tile.classList.add('selected');
-        buildMenu(ev.clientX, ev.clientY, [
-            { label: 'Open', icon: 'open', action: sys.action }
-        ]);
+        const items = sys.contextMenu ? sys.contextMenu() : [{ label: 'Open', icon: 'open', action: sys.action }];
+        buildMenu(ev.clientX, ev.clientY, items);
     };
 
     return tile;
@@ -6607,8 +6646,9 @@ async function renderDesktop() {
     // Desktop multi-select state
     const deskState = { selectedIds: new Set(), anchorId: null };
 
-    // Render pinned system icons first
+    // Render pinned system icons first (respect per-icon visibility)
     for (const sys of SYSTEM_DESKTOP_ICONS) {
+        if (!_isDesktopIconVisible(sys.id)) continue;
         const tile = await _buildSystemIconTile(sys, desktopEl, deskState);
         if (gen !== _renderDesktopGen) return;
         desktopEl.appendChild(tile);
@@ -8046,6 +8086,9 @@ window.shutdown = shutdown;
 window.waitForIdle = waitForIdle;
 window.restoreItem = restoreItem;
 window.emptyTrash = emptyTrash;
+window.SYSTEM_DESKTOP_ICONS = SYSTEM_DESKTOP_ICONS;
+window._setDesktopIconVisibility = _setDesktopIconVisibility;
+window._isDesktopIconVisible = _isDesktopIconVisible;
 window.showBSOD = showBSOD;
 
 if (useDriveLight) {
