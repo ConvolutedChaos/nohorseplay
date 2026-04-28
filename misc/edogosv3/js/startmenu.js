@@ -47,7 +47,7 @@
             icon: '/usr/share/icons/32/paint.png',
             emoji: '🎨',
             categories: ['all', 'graphics'],
-            action: () => spawnPaint(),
+            action: () => openCustomAppFromPath("/usr/bin/paint.app"),
         },
         {
             name: 'Writer',
@@ -215,6 +215,12 @@
         versionSpan.className = 'sm-version';
         versionSpan.textContent = typeof VERSION !== 'undefined' ? VERSION : 'E-Dog OS';
         footer.appendChild(versionSpan);
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'sm-btn-danger';
+        logoutBtn.textContent = 'Log Out';
+        logoutBtn.onclick = () => { closeStartMenu(); startMenuAction('logout'); };
+        footer.appendChild(logoutBtn);
 
         const rebootBtn = document.createElement('button');
         rebootBtn.className = 'sm-btn-danger';

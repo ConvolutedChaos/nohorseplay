@@ -18,7 +18,7 @@
      * @param {string}        [filePath]         Virtual FS path the file came from
      */
     function spawnIDE(existingContent, filePath) {
-        const W = 1060, H = 700;
+        const { w: W, h: H } = _clampWinSize(1060, 700);
         const windowId = 'win_' + (++winCount);
         const offset   = (winCount - 1) * 22;
         const left     = Math.max(20, Math.min(50 + offset, window.innerWidth  - W - 20));

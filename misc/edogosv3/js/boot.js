@@ -305,3 +305,4 @@ window.__bootAndLogin = function (onReady) {
 /* ---- Export password helpers for setup.js ---- */
 window.__setStoredPassword = setStoredPassword;
 window.__getStoredPassword = getStoredPassword;
+window.__showLoginScreen = showLoginScreen;

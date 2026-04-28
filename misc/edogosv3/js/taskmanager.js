@@ -979,13 +979,14 @@
 
         const windowId = 'win_' + (++winCount);
         const offset   = (winCount - 1) * 28;
-        const left     = Math.min(120 + offset, window.innerWidth  - 760);
-        const top      = Math.min( 60 + offset, window.innerHeight - 520);
+        const { w: _tmW, h: _tmH } = _clampWinSize(750, 500);
+        const left     = Math.min(120 + offset, window.innerWidth  - _tmW);
+        const top      = Math.min( 60 + offset, window.innerHeight - _tmH);
 
         const win = document.createElement('div');
         win.className = 'app-window';
         win.id = windowId;
-        win.style.cssText = `left:${left}px;top:${top}px;width:750px;height:500px;`;
+        win.style.cssText = `left:${left}px;top:${top}px;width:${_tmW}px;height:${_tmH}px;`;
         win.addEventListener('mousedown', () => focusWindow(windowId));
 
         win.innerHTML = `

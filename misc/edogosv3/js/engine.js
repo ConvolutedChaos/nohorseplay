@@ -702,7 +702,8 @@ function spawnGameRunner(sceneData, gameName) {
     const offset = (winCount - 1) * 24;
     const win = document.createElement('div');
     win.className = 'app-window'; win.id = windowId;
-    win.style.cssText = `left:${Math.min(120 + offset, window.innerWidth - 660)}px;top:${Math.min(80 + offset, window.innerHeight - 520)}px;width:640px;height:500px;`;
+    const { w: _grW, h: _grH } = _clampWinSize(640, 500);
+    win.style.cssText = `left:${Math.min(120 + offset, window.innerWidth - _grW)}px;top:${Math.min(80 + offset, window.innerHeight - _grH)}px;width:${_grW}px;height:${_grH}px;`;
     win.addEventListener('mousedown', () => focusWindow(windowId));
     win.innerHTML = `
         <div class="title-bar">
@@ -788,7 +789,8 @@ function spawnGameEngine(fileItem) {
     const offset = (winCount - 1) * 24;
     const win = document.createElement('div');
     win.className = 'app-window'; win.id = windowId;
-    win.style.cssText = `left:${Math.min(40 + offset, window.innerWidth - 1100)}px;top:${Math.min(30 + offset, window.innerHeight - 720)}px;width:1080px;height:700px;`;
+    const { w: _geW, h: _geH } = _clampWinSize(1080, 700);
+    win.style.cssText = `left:${Math.min(40 + offset, window.innerWidth - _geW)}px;top:${Math.min(30 + offset, window.innerHeight - _geH)}px;width:${_geW}px;height:${_geH}px;`;
     win.addEventListener('mousedown', () => focusWindow(windowId));
     win.innerHTML = `
         <div class="title-bar">

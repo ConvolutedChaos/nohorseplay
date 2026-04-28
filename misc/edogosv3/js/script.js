@@ -1,7 +1,7 @@
-/* ============================================================
+﻿/* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.2.1";
+const VERSION = "E-Dog OS 3.2.2";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -32,7 +32,20 @@ function openDB() {
             store.add({ id: 'root', name: 'root', type: 'folder', parentId: null, createdAt: Date.now(), updatedAt: Date.now() });
         };
         r.onsuccess = () => resolve(r.result);
-        r.onerror = () => reject(r.error);
+        r.onerror = () => {
+            const err = r.error || new Error('IndexedDB failed to open');
+            err.fatal = true;
+            err.bsodCode = '0x0000007A';
+            err.bsodName = 'KERNEL_DATA_INPAGE_ERROR';
+            reject(err);
+        };
+        r.onblocked = () => {
+            const err = new Error('IndexedDB open blocked by another tab');
+            err.fatal = true;
+            err.bsodCode = '0x0000007A';
+            err.bsodName = 'KERNEL_DATA_INPAGE_ERROR';
+            reject(err);
+        };
     });
 }
 function idbGet(key) {
@@ -318,6 +331,21 @@ async function reboot() {
     location.reload();
 }
 
+function logout() {
+    for (const id of Object.keys(windows)) closeWindow(id);
+    closeStartMenu();
+    document.getElementById('virtualDesktop').style.visibility = 'hidden';
+    document.getElementById('taskbar').style.visibility = 'hidden';
+    if (typeof window.__showLoginScreen === 'function') {
+        window.__showLoginScreen(() => {
+            document.getElementById('virtualDesktop').style.visibility = 'visible';
+            document.getElementById('taskbar').style.visibility = 'visible';
+        });
+    } else {
+        location.reload();
+    }
+}
+
 function showBSOD(errorCode, errorName) {
     errorCode = errorCode || '0x0000000A';
     errorName = errorName || 'IRQL_NOT_LESS_OR_EQUAL';
@@ -344,9 +372,12 @@ function showBSOD(errorCode, errorName) {
     DISK072512. The current application will be
     terminated.
     
-      *  Press any key to terminate the current application.
-      *  Press CTRL+ALT+DEL to restart your computer. You will
-         lose any unsaved information in all applications.
+    The problem may be due to:
+      *  Missing or corrupted system files
+      *  Invalid memory access
+      *  A disk error
+    
+    If the problem persists, you may need to reinstall E-Dog OS.
     
     *** STOP: ${errorCode} (${p1}, ${p2}, 0x00000000, 0x00000000)
         ${errorName}
@@ -832,10 +863,6 @@ function getComputername() {
     return localStorage.getItem('edog_computername') || 'edog-computer';
 }
 
-/* ============================================================
-   Window manager state
-============================================================ */
-
 let zCounter = 20;
 let focusedWindowId = null;
 const windows = {};
@@ -962,7 +989,7 @@ async function _isDescendant(ancestorId, nodeId) {
 }
 
 async function _deleteItems(ids) {
-    const tmpId = await _getTmpId();
+    const tmpId = await _getTrashId();
     const nodes = (await Promise.all(ids.map(id => idbGet(id)))).filter(Boolean);
     if (nodes.some(n => n.parentId === tmpId)) {
         // Already in trash — permanently delete
@@ -1006,7 +1033,19 @@ async function _deleteItems(ids) {
    Recycle Bin
 ============================================================ */
 
+let _trashFolderId = null;
 let _tmpFolderId = null;
+
+async function _getTrashId() {
+    if (_trashFolderId) return _trashFolderId;
+    const rootChildren = await idbGetAllByIndex('parentId', 'root');
+    const sys = rootChildren.find(n => n.name === 'sys' && n.type === 'folder');
+    if (!sys) return null;
+    const sysChildren = await idbGetAllByIndex('parentId', sys.id);
+    const trash = sysChildren.find(n => n.name === '.trash' && n.type === 'folder');
+    if (trash) _trashFolderId = trash.id;  // don't cache null — folder may not exist yet
+    return _trashFolderId ?? null;
+}
 
 async function _getTmpId() {
     if (_tmpFolderId) return _tmpFolderId;
@@ -1055,7 +1094,7 @@ async function _restoreItems(ids) {
 }
 
 async function emptyTrash() {
-    const tmpId = await _getTmpId();
+    const tmpId = await _getTrashId();
     if (!tmpId) return;
     const children = await idbGetAllByIndex('parentId', tmpId);
     if (!children.length) {
@@ -1858,7 +1897,7 @@ function spawnWindow(initialFolderId = null, initialPath = null) {
                 const ids = JSON.parse(raw);
                 let targetId;
                 if (p.virtId === 'virt:trash') {
-                    targetId = await _getTmpId();
+                    targetId = await _getTrashId();
                 } else {
                     const parts = p.path.split('/').filter(Boolean);
                     let currentId = 'root';
@@ -2155,6 +2194,14 @@ function maximizeWindow(windowId) {
         el.style.height = (window.innerHeight - TASKBAR_HEIGHT) + 'px';
         if (btn) { btn.textContent = '❐'; btn.title = 'Restore Down'; }
     }
+}
+
+function _clampWinSize(reqW, reqH) {
+    const tbH = document.getElementById('taskbar')?.offsetHeight ?? 44;
+    return {
+        w: Math.min(reqW, window.innerWidth),
+        h: Math.min(reqH, window.innerHeight - tbH),
+    };
 }
 
 /* ============================================================
@@ -2469,7 +2516,7 @@ const VIRTUAL_FOLDERS = {
         id: 'virt:trash',
         label: 'Recycle Bin',
         render: async (mainPanel, windowId, state) => {
-            const tmpId = await _getTmpId();
+            const tmpId = await _getTrashId();
             if (!tmpId) return;
 
             const items = await idbGetAllByIndex('parentId', tmpId);
@@ -3085,10 +3132,11 @@ function spawnApp(type, item) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _aw, h: _ah } = _clampWinSize(appMeta.w, appMeta.h);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = appMeta.w + 'px';
-    win.style.height = appMeta.h + 'px';
+    win.style.width = _aw + 'px';
+    win.style.height = _ah + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
@@ -3135,7 +3183,7 @@ function spawnApp(type, item) {
     if (type === 'image') _buildImageBody(body, item);
     if (type === 'audio') _buildAudioBody(body, item, windowId);
     if (type === 'video') _buildVideoBody(body, item, windowId);
-    if (type === 'zip') _buildZipBody(body, item);
+    if (type === 'zip') _buildZipBody(body, item, windowId);
     if (type === 'markdown') _buildMarkdownBody(body, item, windowId);
 
     focusWindow(windowId);
@@ -4366,10 +4414,11 @@ function spawnCustomApp(item) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _caw, h: _cah } = _clampWinSize(width, height);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = width + 'px';
-    win.style.height = height + 'px';
+    win.style.width = _caw + 'px';
+    win.style.height = _cah + 'px';
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     // Icon placeholder — filled async so it works for both FS paths and legacy names
@@ -4402,7 +4451,10 @@ function spawnCustomApp(item) {
     iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-modals');
 
+    const _themeVarDecls = Object.entries(_snapshotThemeVars()).map(([k, v]) => `${k}:${v}`).join(';');
+
     const fsSDK = `
+        <style id="__edogtheme">:root{${_themeVarDecls}}</style>
         <script>
         window.fs = (() => {
             let _id = 0;
@@ -4428,14 +4480,15 @@ function spawnCustomApp(item) {
             }
 
             return {
-                username: '${getUsername()}',
-                home:     '/home/${getUsername()}',
-                readFile:  (path)       => _call('readFile',  { path }),
-                writeFile: (path, text) => _call('writeFile', { path, text }),
-                listDir:   (path)       => _call('listDir',   { path }),
-                mkdir:     (path)       => _call('mkdir',      { path }),
-                delete:    (path)       => _call('delete',     { path }),
-                exists:    (path)       => _call('exists',     { path }),
+                username:        '${getUsername()}',
+                home:            '/home/${getUsername()}',
+                readFile:        (path)        => _call('readFile',  { path }),
+                writeFile:       (path, text)  => _call('writeFile', { path, text }),
+                writeBinaryFile: (path, base64) => _call('writeFile', { path, base64 }),
+                listDir:         (path)        => _call('listDir',   { path }),
+                mkdir:           (path)        => _call('mkdir',      { path }),
+                delete:          (path)        => _call('delete',     { path }),
+                exists:          (path)        => _call('exists',     { path }),
             };
         })();
 
@@ -4447,6 +4500,14 @@ function spawnCustomApp(item) {
                 if (e.data?.channel !== 'edogos' || e.data.id == null) return;
                 const cb = _pending.get(e.data.id);
                 if (cb) { _pending.delete(e.data.id); cb(e.data); }
+            });
+
+            // Live theme updates from the OS
+            window.addEventListener('message', (e) => {
+                if (e.data?.channel !== 'edogtheme') return;
+                const s = document.getElementById('__edogtheme');
+                if (s) s.textContent = ':root{' + Object.entries(e.data.vars).map(([k,v]) => k+':'+v).join(';') + '}';
+                if (typeof window.__onThemeChange === 'function') window.__onThemeChange(e.data.theme);
             });
 
             function _call(action, args = {}) {
@@ -4472,12 +4533,15 @@ function spawnCustomApp(item) {
                 shutdown:     ()                     => _call('shutdown',      {}),
                 // Get the current OS version string
                 getVersion:   ()                     => _call('getVersion',   {}),
+                // Get the current theme name (e.g. 'dark', 'light', 'nord', ...)
+                getTheme:     ()                     => _call('getTheme',     {}),
             };
         })();
         <\/script>
     `;
 
     iframe.srcdoc = fsSDK + html;
+    windows[windowId].iframe = iframe;
     win.querySelector('.app-body').appendChild(iframe);
 
     // Taskbar button
@@ -4696,11 +4760,340 @@ const ZIP_SVG = {
     up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>`,
 };
 
-async function _buildZipBody(body, item) {
-    body.style.cssText = 'display:flex;flex-direction:column;height:100%;background:#2D2D2D;';
+/* ---- Archive helpers ---- */
+
+function _guessMimeFromExt(ext) {
+    const m = {
+        txt: 'text/plain', html: 'text/html', htm: 'text/html', css: 'text/css',
+        js: 'application/javascript', mjs: 'application/javascript',
+        json: 'application/json', xml: 'application/xml', svg: 'image/svg+xml',
+        png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif',
+        webp: 'image/webp', bmp: 'image/bmp', ico: 'image/x-icon', avif: 'image/avif',
+        mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg',
+        mp4: 'video/mp4', webm: 'video/webm',
+        pdf: 'application/pdf', zip: 'application/zip', md: 'text/markdown',
+    };
+    return m[ext] || 'application/octet-stream';
+}
+
+async function _gatherItemsForZip(ids) {
+    const result = [];
+    async function recurse(nodeId, pathPrefix) {
+        const node = await idbGet(nodeId);
+        if (!node) return;
+        const path = pathPrefix ? `${pathPrefix}/${node.name}` : node.name;
+        if (node.type === 'file') {
+            result.push({ path, node });
+        } else if (node.type === 'folder') {
+            const children = await idbGetAllByIndex('parentId', nodeId);
+            for (const child of children) await recurse(child.id, path);
+        }
+    }
+    for (const id of ids) await recurse(id, '');
+    return result;
+}
+
+async function _zipExtractToVFS(zip, fileEntries, destFolderId, progress) {
+    const folderCache = new Map([['', destFolderId]]);
+    const total = fileEntries.length;
+    let done = 0;
+
+    for (const entry of fileEntries) {
+        if (progress?.cancelled) break;
+        while (progress?.paused) await new Promise(r => setTimeout(r, 100));
+
+        const parts = entry.name.split('/').filter(Boolean);
+        const fileName = parts.pop();
+        if (!fileName) { done++; continue; }
+
+        let parentId = destFolderId;
+        let pathKey = '';
+        for (const dir of parts) {
+            const newKey = pathKey ? `${pathKey}/${dir}` : dir;
+            if (folderCache.has(newKey)) {
+                parentId = folderCache.get(newKey);
+            } else {
+                const kids = await idbGetAllByIndex('parentId', parentId);
+                const ex = kids.find(n => n.name === dir && n.type === 'folder');
+                if (ex) {
+                    parentId = ex.id;
+                } else {
+                    const now = Date.now();
+                    const nid = crypto.randomUUID();
+                    await idbAdd({ id: nid, name: dir, type: 'folder', parentId, createdAt: now, updatedAt: now });
+                    parentId = nid;
+                }
+                folderCache.set(newKey, parentId);
+            }
+            pathKey = newKey;
+        }
+
+        const buf = await entry.async('arraybuffer');
+        const now = Date.now();
+        const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : '';
+        const mime = _guessMimeFromExt(ext);
+
+        const siblings = await idbGetAllByIndex('parentId', parentId);
+        const existing = siblings.find(n => n.name === fileName && n.type === 'file');
+        if (existing) {
+            await idbPut({ ...existing, content: buf, size: buf.byteLength, updatedAt: now });
+        } else {
+            await idbAdd({ id: crypto.randomUUID(), name: fileName, type: 'file', parentId, content: buf, size: buf.byteLength, mime, createdAt: now, updatedAt: now });
+        }
+
+        done++;
+        progress?.update(done, total, fileName);
+        await new Promise(r => setTimeout(r, 0));
+    }
+}
+
+function _spawnZipModal({ title, buildBody, buttons }) {
+    const overlay = document.createElement('div');
+    overlay.className = 'zip-modal-overlay';
+
+    const modal = document.createElement('div');
+    modal.className = 'zip-modal';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'zip-modal-title';
+    titleEl.textContent = title;
+    modal.appendChild(titleEl);
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'zip-modal-body';
+    buildBody(bodyEl);
+    modal.appendChild(bodyEl);
+
+    const footer = document.createElement('div');
+    footer.className = 'zip-modal-footer';
+
+    const close = () => overlay.remove();
+
+    for (const btn of buttons) {
+        const b = document.createElement('button');
+        b.className = 'zip-modal-btn' + (btn.primary ? ' primary' : '') + (btn.danger ? ' danger' : '');
+        b.textContent = btn.label;
+        b.onclick = () => {
+            if (btn.onClick) btn.onClick(close, modal);
+            else close();
+        };
+        footer.appendChild(b);
+    }
+    modal.appendChild(footer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    return { overlay, modal, close };
+}
+
+function _showZipExtractDialog(zip, allFiles, fileEntries, archiveName) {
+    const count = fileEntries.length;
+
+    _spawnZipModal({
+        title: 'Extract to VFS',
+        buildBody(body) {
+            const destRow = document.createElement('div');
+            destRow.className = 'zip-modal-field';
+            const destLabel = document.createElement('label');
+            destLabel.textContent = 'Destination folder:';
+            const destInput = document.createElement('input');
+            destInput.className = 'zip-modal-input';
+            destInput.type = 'text';
+            destInput.value = `/home/${getUsername()}/`;
+            destRow.appendChild(destLabel);
+            destRow.appendChild(destInput);
+            body.appendChild(destRow);
+
+            const subRow = document.createElement('div');
+            subRow.className = 'zip-modal-checkbox-row';
+            const subCheck = document.createElement('input');
+            subCheck.type = 'checkbox';
+            subCheck.id = 'zip-sub-folder-check';
+            subCheck.checked = true;
+            const subLabel = document.createElement('label');
+            subLabel.htmlFor = 'zip-sub-folder-check';
+            const baseName = archiveName.replace(/\.zip$/i, '');
+            subLabel.textContent = `Create subfolder "${baseName}"`;
+            subRow.appendChild(subCheck);
+            subRow.appendChild(subLabel);
+            body.appendChild(subRow);
+
+            const infoEl = document.createElement('div');
+            infoEl.className = 'zip-modal-info';
+            infoEl.textContent = `${count} file${count !== 1 ? 's' : ''} will be extracted.`;
+            body.appendChild(infoEl);
+
+            body._getValues = () => ({
+                dest: destInput.value.trim(),
+                createSub: subCheck.checked,
+                subName: baseName,
+            });
+
+            setTimeout(() => destInput.focus(), 0);
+        },
+        buttons: [
+            { label: 'Cancel' },
+            {
+                label: 'Extract',
+                primary: true,
+                onClick: async (close, modal) => {
+                    const { dest, createSub, subName } = modal.querySelector('.zip-modal-body')._getValues();
+                    close();
+
+                    const destNode = await _fsResolve(dest.replace(/\/+$/, '') || '/');
+                    if (!destNode || destNode.type !== 'folder') {
+                        spawnError(`Destination not found: ${dest}`);
+                        return;
+                    }
+
+                    let targetId = destNode.id;
+                    if (createSub) {
+                        const kids = await idbGetAllByIndex('parentId', targetId);
+                        const ex = kids.find(n => n.name === subName && n.type === 'folder');
+                        if (ex) {
+                            targetId = ex.id;
+                        } else {
+                            const now = Date.now();
+                            const nid = crypto.randomUUID();
+                            await idbAdd({ id: nid, name: subName, type: 'folder', parentId: targetId, createdAt: now, updatedAt: now });
+                            targetId = nid;
+                        }
+                    }
+
+                    const progress = showFsProgress(`Extracting — ${archiveName}`);
+                    try {
+                        await _zipExtractToVFS(zip, fileEntries, targetId, progress);
+                    } catch (err) {
+                        progress.close();
+                        spawnError(`Extraction failed: ${err.message}`);
+                        return;
+                    }
+                    progress.close();
+
+                    for (const [wid, w] of Object.entries(windows)) {
+                        if (w.state?.currentFolderId) renderWindow(wid);
+                    }
+                },
+            },
+        ],
+    });
+}
+
+function spawnCompressDialog(ids, srcWindowId) {
+    const state = windows[srcWindowId]?.state;
+    const currentFolderId = state?.currentFolderId;
+    if (!currentFolderId) {
+        spawnError('Cannot determine destination folder.', 'error');
+        return;
+    }
+
+    _spawnZipModal({
+        title: 'Compress to ZIP',
+        buildBody(body) {
+            const nameRow = document.createElement('div');
+            nameRow.className = 'zip-modal-field';
+            const nameLabel = document.createElement('label');
+            nameLabel.textContent = 'Archive name:';
+            const nameInput = document.createElement('input');
+            nameInput.className = 'zip-modal-input';
+            nameInput.type = 'text';
+            nameInput.value = 'Archive.zip';
+            nameRow.appendChild(nameLabel);
+            nameRow.appendChild(nameInput);
+            body.appendChild(nameRow);
+
+            const infoEl = document.createElement('div');
+            infoEl.className = 'zip-modal-info';
+            infoEl.textContent = `${ids.length} item${ids.length !== 1 ? 's' : ''} selected.`;
+            body.appendChild(infoEl);
+
+            body._getValues = () => ({ name: nameInput.value.trim() });
+
+            setTimeout(() => { nameInput.focus(); nameInput.select(); }, 0);
+        },
+        buttons: [
+            { label: 'Cancel' },
+            {
+                label: 'Create',
+                primary: true,
+                onClick: async (close, modal) => {
+                    let { name } = modal.querySelector('.zip-modal-body')._getValues();
+                    if (!name) name = 'Archive.zip';
+                    if (!name.toLowerCase().endsWith('.zip')) name += '.zip';
+                    close();
+                    await _doCompress(ids, name, currentFolderId, srcWindowId);
+                },
+            },
+        ],
+    });
+}
+
+async function _doCompress(ids, zipName, destFolderId, srcWindowId) {
+    const progress = showFsProgress(`Compressing → ${zipName}`);
+    try {
+        const allItems = await _gatherItemsForZip(ids);
+        const fileItems = allItems.filter(i => i.node.type === 'file');
+        const total = fileItems.length;
+        let done = 0;
+
+        const jszip = new JSZip();
+        for (const { path, node } of fileItems) {
+            if (progress.cancelled) break;
+            while (progress.paused) await new Promise(r => setTimeout(r, 100));
+
+            const content = node.content instanceof ArrayBuffer
+                ? node.content
+                : typeof node.content === 'string'
+                    ? new TextEncoder().encode(node.content)
+                    : new Uint8Array(0);
+            jszip.file(path, content);
+            done++;
+            progress.update(done, total, node.name);
+            await new Promise(r => setTimeout(r, 0));
+        }
+
+        progress.update(total, total, 'Generating archive…');
+        const blob = await jszip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 },
+        });
+        const buf = await blob.arrayBuffer();
+        const now = Date.now();
+
+        const siblings = await idbGetAllByIndex('parentId', destFolderId);
+        const existing = siblings.find(n => n.name === zipName && n.type === 'file');
+        if (existing) {
+            await idbPut({ ...existing, content: buf, size: buf.byteLength, mime: 'application/zip', updatedAt: now });
+        } else {
+            await idbAdd({ id: crypto.randomUUID(), name: zipName, type: 'file', parentId: destFolderId, content: buf, size: buf.byteLength, mime: 'application/zip', createdAt: now, updatedAt: now });
+        }
+
+        progress.close();
+        if (srcWindowId && windows[srcWindowId]) renderWindow(srcWindowId);
+    } catch (err) {
+        progress.close();
+        spawnError(`Compression failed: ${err.message}`);
+    }
+}
+
+async function _buildZipBody(body, item, windowId) {
+    body.style.cssText = 'display:flex;flex-direction:column;height:100%;';
+
+    const tempCleanupIds = [];
+
+    async function _cleanupTempDirs() {
+        for (const id of tempCleanupIds) {
+            try {
+                const kids = await idbGetAllByIndex('parentId', id);
+                for (const k of kids) await idbDelete(k.id);
+                await idbDelete(id);
+            } catch (e) { }
+        }
+        tempCleanupIds.length = 0;
+    }
 
     const loader = document.createElement('div');
-    loader.style.cssText = 'flex:1;display:flex;align-items:center;justify-content:center;color:#888;font-size:13px;gap:10px;';
+    loader.className = 'zip-loader';
     loader.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;animation:spin 1s linear infinite;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Loading archive…`;
     body.appendChild(loader);
 
@@ -4717,17 +5110,32 @@ async function _buildZipBody(body, item) {
         const data = item.content instanceof ArrayBuffer ? item.content : new TextEncoder().encode(item.content).buffer;
         zip = await JSZip.loadAsync(data);
     } catch (err) {
-        loader.innerHTML = `<span style="color:#f87171;">Failed to read archive: ${err.message}</span>`;
+        loader.innerHTML = `<span class="zip-error">Failed to read archive: ${_escHtml(err.message)}</span>`;
         return;
     }
 
     loader.remove();
 
-    const allFiles = Object.values(zip.files);
+    // Hook close button to clean up any temp-extracted files
+    if (windowId) {
+        const winEl = document.getElementById(windowId);
+        const closeBtn = winEl?.querySelector('.window-close-button');
+        if (closeBtn) {
+            const origClose = closeBtn.onclick;
+            closeBtn.onclick = async () => {
+                await _cleanupTempDirs();
+                if (origClose) origClose();
+            };
+        }
+    }
 
+    const allFiles = Object.values(zip.files);
     let currentPath = '';
     let sortCol = 'name';
     let sortAsc = true;
+    let selectedPaths = new Set();
+    let anchorIdx = -1;
+    let lastRendered = [];
 
     const toolbar = document.createElement('div');
     toolbar.className = 'zip-toolbar';
@@ -4742,12 +5150,18 @@ async function _buildZipBody(body, item) {
     pathEl.className = 'zip-path';
     pathEl.textContent = '/';
 
-    const extractAllBtn = document.createElement('button');
-    extractAllBtn.textContent = 'Extract All';
+    const extractVfsBtn = document.createElement('button');
+    extractVfsBtn.textContent = 'Extract to VFS…';
+    extractVfsBtn.title = 'Extract all files to the virtual file system';
+
+    const downloadAllBtn = document.createElement('button');
+    downloadAllBtn.textContent = 'Download All';
+    downloadAllBtn.title = 'Download all files to your computer';
 
     toolbar.appendChild(upBtn);
     toolbar.appendChild(pathEl);
-    toolbar.appendChild(extractAllBtn);
+    toolbar.appendChild(extractVfsBtn);
+    toolbar.appendChild(downloadAllBtn);
     body.appendChild(toolbar);
 
     const listEl = document.createElement('div');
@@ -4758,16 +5172,16 @@ async function _buildZipBody(body, item) {
     statusBar.className = 'zip-statusbar';
     body.appendChild(statusBar);
 
+    /* ---- helpers ---- */
+
     function entriesInDir(dirPath) {
         const prefix = dirPath === '' ? '' : dirPath + '/';
         const seen = new Set();
         const results = [];
-
         for (const f of allFiles) {
             if (!f.name.startsWith(prefix)) continue;
             const rest = f.name.slice(prefix.length);
             if (rest === '') continue;
-
             const slash = rest.indexOf('/');
             if (slash === -1) {
                 if (!seen.has(rest)) { seen.add(rest); results.push(f); }
@@ -4797,14 +5211,12 @@ async function _buildZipBody(body, item) {
         return [...entries].sort((a, b) => {
             const aDir = entryIsDir(a), bDir = entryIsDir(b);
             if (aDir !== bDir) return aDir ? -1 : 1;
-
             let av, bv;
             if (sortCol === 'name') {
                 av = entryDisplayName(a).toLowerCase();
                 bv = entryDisplayName(b).toLowerCase();
             } else if (sortCol === 'size') {
-                av = a._cachedSize ?? 0;
-                bv = b._cachedSize ?? 0;
+                av = a._cachedSize ?? 0; bv = b._cachedSize ?? 0;
             } else if (sortCol === 'date') {
                 av = a.date ? new Date(a.date).getTime() : 0;
                 bv = b.date ? new Date(b.date).getTime() : 0;
@@ -4814,36 +5226,49 @@ async function _buildZipBody(body, item) {
         });
     }
 
+    function getAllFileEntriesUnder(dirPath) {
+        const prefix = dirPath.endsWith('/') ? dirPath : dirPath + '/';
+        return allFiles.filter(f => !entryIsDir(f) && f.name.startsWith(prefix));
+    }
+
+    function updateStatusBar() {
+        const selCount = selectedPaths.size;
+        if (selCount > 0) {
+            statusBar.innerHTML = `<span>${selCount} of ${lastRendered.length} selected</span><span style="margin-left:auto;">Ctrl+click to multi-select · Right-click for options</span>`;
+        } else {
+            const fc = lastRendered.filter(e => !entryIsDir(e)).length;
+            const dc = lastRendered.filter(e => entryIsDir(e)).length;
+            const tb = lastRendered.filter(e => !entryIsDir(e)).reduce((s, e) => s + (e._cachedSize ?? 0), 0);
+            statusBar.innerHTML = `<span>${fc} file${fc !== 1 ? 's' : ''}${dc ? ', ' + dc + ' folder' + (dc !== 1 ? 's' : '') : ''}</span><span>${formatBytes(tb)} visible</span><span style="margin-left:auto;">Double-click to open · Right-click for options</span>`;
+        }
+    }
+
     async function renderDir(dirPath) {
         currentPath = dirPath;
         pathEl.textContent = '/' + dirPath;
         upBtn.disabled = dirPath === '';
+        selectedPaths.clear();
+        anchorIdx = -1;
 
         const entries = entriesInDir(dirPath);
         const sorted = sortEntries(entries);
 
-        const sizeCacheJobs = sorted.filter(e => !entryIsDir(e) && e._cachedSize === undefined).map(async e => {
-            try {
-                const buf = await e.async('arraybuffer');
-                e._cachedSize = buf.byteLength;
-            } catch { e._cachedSize = 0; }
-        });
-        await Promise.all(sizeCacheJobs);
+        await Promise.all(
+            sorted.filter(e => !entryIsDir(e) && e._cachedSize === undefined).map(async e => {
+                try { e._cachedSize = (await e.async('arraybuffer')).byteLength; }
+                catch { e._cachedSize = 0; }
+            })
+        );
 
         const re_sorted = sortEntries(entries);
+        lastRendered = re_sorted;
 
         listEl.innerHTML = '';
-
         const table = document.createElement('table');
 
         const thead = document.createElement('thead');
         const headRow = document.createElement('tr');
-        const cols = [
-            { key: 'name', label: 'Name', w: '55%' },
-            { key: 'size', label: 'Size', w: '15%' },
-            { key: 'date', label: 'Modified', w: '30%' },
-        ];
-        for (const col of cols) {
+        for (const col of [{ key: 'name', label: 'Name', w: '55%' }, { key: 'size', label: 'Size', w: '15%' }, { key: 'date', label: 'Modified', w: '30%' }]) {
             const th = document.createElement('th');
             th.textContent = col.label;
             th.style.width = col.w;
@@ -4859,70 +5284,138 @@ async function _buildZipBody(body, item) {
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        for (const entry of re_sorted) {
+        re_sorted.forEach((entry, idx) => {
             const isDir = entryIsDir(entry);
             const name = entryDisplayName(entry);
             const tr = document.createElement('tr');
+            if (selectedPaths.has(entry.name)) tr.classList.add('selected');
 
             const nameTd = document.createElement('td');
             const iconSpan = document.createElement('span');
-            iconSpan.className = 'zi';
-            iconSpan.style.color = isDir ? '#93c5fd' : '#888';
+            iconSpan.className = isDir ? 'zi zi-dir' : 'zi';
             iconSpan.innerHTML = isDir ? ZIP_SVG.folder : ZIP_SVG.file;
             nameTd.appendChild(iconSpan);
             const nameSpan = document.createElement('span');
+            nameSpan.className = isDir ? 'zip-entry-dir' : '';
             nameSpan.textContent = name;
-            if (isDir) nameSpan.style.color = '#93c5fd';
             nameTd.appendChild(nameSpan);
             tr.appendChild(nameTd);
 
             const sizeTd = document.createElement('td');
-            sizeTd.style.color = '#888';
+            sizeTd.className = 'zip-td-meta';
             sizeTd.style.textAlign = 'right';
             sizeTd.textContent = isDir ? '—' : formatBytes(entry._cachedSize ?? 0);
             tr.appendChild(sizeTd);
 
             const dateTd = document.createElement('td');
-            dateTd.style.color = '#888';
+            dateTd.className = 'zip-td-meta';
             dateTd.textContent = entry.date ? new Date(entry.date).toLocaleString() : '—';
             tr.appendChild(dateTd);
 
-            tr.onclick = () => {
-                tbody.querySelectorAll('tr').forEach(r => r.classList.remove('selected'));
-                tr.classList.add('selected');
-            };
-            tr.ondblclick = () => {
-                if (isDir) {
-                    const newPath = entry.name.endsWith('/') ? entry.name.slice(0, -1) : entry.name;
-                    renderDir(newPath);
+            tr.onclick = (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (selectedPaths.has(entry.name)) selectedPaths.delete(entry.name);
+                    else selectedPaths.add(entry.name);
+                    anchorIdx = idx;
+                } else if (e.shiftKey && anchorIdx >= 0) {
+                    const lo = Math.min(anchorIdx, idx), hi = Math.max(anchorIdx, idx);
+                    for (let i = lo; i <= hi; i++) selectedPaths.add(re_sorted[i].name);
                 } else {
-                    extractEntry(entry);
+                    selectedPaths.clear();
+                    selectedPaths.add(entry.name);
+                    anchorIdx = idx;
+                }
+                tbody.querySelectorAll('tr').forEach((r, i) => {
+                    r.classList.toggle('selected', selectedPaths.has(re_sorted[i].name));
+                });
+                updateStatusBar();
+            };
+
+            tr.ondblclick = async (e) => {
+                e.preventDefault();
+                if (isDir) {
+                    renderDir(entry.name.endsWith('/') ? entry.name.slice(0, -1) : entry.name);
+                } else {
+                    const tmpId = await _getTmpId();
+                    if (tmpId) {
+                        const tempDirId = crypto.randomUUID();
+                        const now = Date.now();
+                        await idbAdd({ id: tempDirId, name: tempDirId, type: 'folder', parentId: tmpId, createdAt: now, updatedAt: now });
+                        tempCleanupIds.push(tempDirId);
+                        const buf = await entry.async('arraybuffer');
+                        const fileName = entryDisplayName(entry);
+                        const ext = fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : '';
+                        const fileId = crypto.randomUUID();
+                        await idbAdd({ id: fileId, name: fileName, type: 'file', parentId: tempDirId, content: buf, size: buf.byteLength, mime: _guessMimeFromExt(ext), createdAt: now, updatedAt: now });
+                        openFile(await idbGet(fileId));
+                    } else {
+                        downloadEntry(entry);
+                    }
                 }
             };
 
+            tr.oncontextmenu = (e) => {
+                e.preventDefault();
+                if (!selectedPaths.has(entry.name)) {
+                    selectedPaths.clear();
+                    selectedPaths.add(entry.name);
+                    anchorIdx = idx;
+                    tbody.querySelectorAll('tr').forEach((r, i) => {
+                        r.classList.toggle('selected', selectedPaths.has(re_sorted[i].name));
+                    });
+                    updateStatusBar();
+                }
+
+                const selEntries = re_sorted.filter(en => selectedPaths.has(en.name));
+                const multi = selEntries.length > 1;
+
+                let extractableFiles = selEntries
+                    .filter(en => !entryIsDir(en))
+                    .concat(
+                        selEntries.filter(en => entryIsDir(en))
+                            .flatMap(en => getAllFileEntriesUnder(en.name))
+                    );
+                // deduplicate
+                const seen = new Set();
+                extractableFiles = extractableFiles.filter(f => seen.has(f.name) ? false : seen.add(f.name));
+
+                const selLabel = multi ? `${selEntries.length} items` : `"${entryDisplayName(entry)}"`;
+
+                buildMenu(e.clientX, e.clientY, [
+                    !isDir ? {
+                        label: 'Download',
+                        icon: 'download',
+                        action: () => downloadEntry(entry),
+                    } : null,
+                    {
+                        label: multi ? `Extract ${selLabel} to VFS…` : (isDir ? `Extract Folder to VFS…` : `Extract to VFS…`),
+                        icon: 'paste',
+                        action: () => _showZipExtractDialog(zip, allFiles, extractableFiles, item.name),
+                    },
+                ]);
+            };
+
             tbody.appendChild(tr);
-        }
+        });
         table.appendChild(tbody);
         listEl.appendChild(table);
-
-        const fileCount = re_sorted.filter(e => !entryIsDir(e)).length;
-        const dirCount = re_sorted.filter(e => entryIsDir(e)).length;
-        const totalBytes = re_sorted.filter(e => !entryIsDir(e)).reduce((s, e) => s + (e._cachedSize ?? 0), 0);
-        statusBar.innerHTML = `<span>${fileCount} file${fileCount !== 1 ? 's' : ''}${dirCount ? ', ' + dirCount + ' folder' + (dirCount !== 1 ? 's' : '') : ''}</span><span>${formatBytes(totalBytes)} visible</span><span style="margin-left:auto;color:#555">Double-click to extract</span>`;
+        updateStatusBar();
     }
 
-    async function extractEntry(entry) {
+    async function downloadEntry(entry) {
         try {
             const buf = await entry.async('arraybuffer');
-            const name = entryDisplayName(entry);
             const blob = new Blob([buf]);
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = name;
-            document.body.appendChild(a); a.click(); a.remove();
+            a.href = url;
+            a.download = entryDisplayName(entry);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
             setTimeout(() => URL.revokeObjectURL(url), 2000);
         } catch (err) {
-            alert('Failed to extract: ' + err.message);
+            spawnError('Failed to download: ' + err.message);
         }
     }
 
@@ -4933,26 +5426,33 @@ async function _buildZipBody(body, item) {
         renderDir(parts.join('/'));
     };
 
-    extractAllBtn.onclick = async () => {
-        extractAllBtn.disabled = true;
-        extractAllBtn.textContent = 'Extracting…';
+    extractVfsBtn.onclick = () => {
+        const fileEntries = allFiles.filter(f => !entryIsDir(f));
+        _showZipExtractDialog(zip, allFiles, fileEntries, item.name);
+    };
+
+    downloadAllBtn.onclick = async () => {
+        downloadAllBtn.disabled = true;
+        downloadAllBtn.textContent = 'Downloading…';
         try {
             for (const f of allFiles) {
                 if (!f.dir && !f.name.endsWith('/')) {
                     const buf = await f.async('arraybuffer');
-                    const name = f.name.split('/').pop();
                     const blob = new Blob([buf]);
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
-                    a.href = url; a.download = name;
-                    document.body.appendChild(a); a.click(); a.remove();
+                    a.href = url;
+                    a.download = f.name.split('/').pop();
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
                     URL.revokeObjectURL(url);
                     await new Promise(r => setTimeout(r, 30));
                 }
             }
         } finally {
-            extractAllBtn.disabled = false;
-            extractAllBtn.textContent = 'Extract All';
+            downloadAllBtn.disabled = false;
+            downloadAllBtn.textContent = 'Download All';
         }
     };
 
@@ -4968,10 +5468,9 @@ function openFile(item) {
         spawnApp('video', item);
     } else if (AUDIO_EXTS.has(ext) || item.mime?.startsWith('audio/')) {
         spawnApp('audio', item);
-        //} else if (ZIP_EXTS.has(ext) || item.mime === 'application/zip') {
-        //    spawnApp('zip', item);
-    } else if (ext === 'zip' || ext === 'iso') {
-        // Build absolute path from the node's parent chain
+    } else if (ZIP_EXTS.has(ext) || item.mime === 'application/zip') {
+        spawnApp('zip', item);
+    } else if (ext === 'iso') {
         (async () => {
             const parts = [item.name];
             let walkId = item.parentId;
@@ -5046,14 +5545,14 @@ const CTX_ICONS = {
     paste: "edit-paste.png",
     eject: "media-eject.png",
     restore: "edit-undo.png",
-    paintBrush: "gtk-edit.png"
+    paintBrush: "gtk-edit.png",
+    compress: "edit-copy.png",
 };
 
 function getIconPath(name) {
     const theme = shouldIconsBeLight ? "light" : "dark";
     return `/usr/share/icons/actions/${theme}/${name}`;
 }
-
 
 async function buildMenu(x, y, entries) {
     if (menuEl) menuEl.remove();
@@ -5111,7 +5610,7 @@ async function showContextMenu(x, y, item, windowId) {
     const ids = state ? [...state.selectedIds] : [item.id];
     const multi = ids.length > 1;
 
-    const tmpId = await _getTmpId();
+    const tmpId = await _getTrashId();
     const inTrash = item.parentId === tmpId;
 
     if (inTrash) {
@@ -5148,7 +5647,11 @@ async function showContextMenu(x, y, item, windowId) {
                 ? { label: 'Download', icon: 'download', action: () => downloadItem(item.id) }
                 : null,
             null,
-            !multi ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) } : null,
+            { label: multi ? `Compress ${ids.length} items…` : 'Compress…', icon: 'compress', action: () => spawnCompressDialog(ids, windowId) },
+            null,
+            !multi
+                ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) }
+                : { label: `Properties (${ids.length} items)`, icon: 'properties', action: () => spawnMultiPropertiesWindow(ids) },
         ]);
     }
 }
@@ -5178,6 +5681,21 @@ function showOpenWithMenu(x, y, item) {
     }
     if (isZip) {
         entries.push({ label: 'Archive Viewer', icon: 'open', action: () => spawnApp('zip', item) });
+        entries.push({
+            label: 'Mount as Drive', icon: 'drive', action: () => {
+                (async () => {
+                    const parts = [item.name];
+                    let walkId = item.parentId;
+                    while (walkId && walkId !== 'root') {
+                        const parent = await idbGet(walkId);
+                        if (!parent) break;
+                        parts.unshift(parent.name);
+                        walkId = parent.parentId;
+                    }
+                    await mountImageFile('/' + parts.join('/'));
+                })();
+            }
+        });
     }
     if (isWriterDoc) {
         entries.push({ label: 'Writer', icon: 'open', action: () => spawnWriter(item) });
@@ -5194,7 +5712,7 @@ async function showFolderBgContextMenu(x, y, windowId) {
     const isAtRoot = state?.currentFolderId === 'root';
     const hasPaste = fsClipboard.mode && fsClipboard.ids.length > 0;
 
-    const tmpId = await _getTmpId();
+    const tmpId = await _getTrashId();
     const inTrash = state?.currentFolderId === tmpId || state?.currentFolderId === 'virt:trash';
 
     if (inTrash) {
@@ -5251,7 +5769,9 @@ function showDesktopContextMenu(x, y, item, deskState) {
             ? { label: 'Download', icon: 'download', action: () => downloadItem(item.id) }
             : null,
         null,
-        !multi ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) } : null,
+        !multi
+            ? { label: 'Properties', icon: 'properties', action: () => spawnPropertiesWindow(item) }
+            : { label: `Properties (${ids.length} items)`, icon: 'properties', action: () => spawnMultiPropertiesWindow(ids) },
     ]);
 }
 
@@ -5297,10 +5817,11 @@ function spawnTerminal(startPath) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _tw, h: _th } = _clampWinSize(720, 480);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = '720px';
-    win.style.height = '480px';
+    win.style.width = _tw + 'px';
+    win.style.height = _th + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
@@ -6008,6 +6529,108 @@ async function spawnPropertiesWindow(item) {
     return _spawnPropsWindow(item);
 }
 
+async function spawnMultiPropertiesWindow(ids) {
+    const items = (await Promise.all(ids.map(id => idbGet(id)))).filter(Boolean);
+    if (!items.length) return;
+
+    const fileCount = items.filter(i => i.type === 'file').length;
+    const folderCount = items.filter(i => i.type === 'folder').length;
+    const title = items.length + ' Items';
+    const subtitle = [fileCount && fileCount + ' file' + (fileCount !== 1 ? 's' : ''), folderCount && folderCount + ' folder' + (folderCount !== 1 ? 's' : '')].filter(Boolean).join(', ');
+
+    const { windowId, body } = _makePropsShell(title, 380, 420);
+
+    const iconRow = document.createElement('div');
+    iconRow.className = 'props-icon-row';
+    const iconEl = document.createElement('div');
+    iconEl.className = 'props-big-icon';
+    iconEl.style.color = '#94a3b8';
+    iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4H8a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2z"/><path d="M14 2H6a2 2 0 00-2 2v12" opacity=".4"/></svg>';
+    const nameBlock = document.createElement('div');
+    nameBlock.innerHTML = '<div class="props-name">' + title + '</div><div class="props-kind">' + subtitle + '</div>';
+    iconRow.appendChild(iconEl);
+    iconRow.appendChild(nameBlock);
+    body.appendChild(iconRow);
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    body.appendChild(fileInput);
+
+    const iconActions = document.createElement('div');
+    iconActions.className = 'props-icon-actions';
+
+    const changeBtn = document.createElement('button');
+    changeBtn.className = 'props-icon-btn';
+    changeBtn.textContent = 'Change Icon for All ' + items.length + '…';
+    changeBtn.onclick = () => fileInput.click();
+    iconActions.appendChild(changeBtn);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'props-icon-btn props-icon-btn-remove';
+    removeBtn.textContent = 'Remove Custom Icons';
+    removeBtn.onclick = async () => {
+        for (const it of items) {
+            delete it.customIcon;
+            it.updatedAt = Date.now();
+            await idbPut(it);
+        }
+        renderAllWindows();
+    };
+    iconActions.appendChild(removeBtn);
+    body.appendChild(iconActions);
+
+    fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const buf = await file.arrayBuffer();
+        for (const it of items) {
+            it.customIcon = buf.slice(0);
+            it.updatedAt = Date.now();
+            await idbPut(it);
+        }
+        renderAllWindows();
+    };
+
+    const table = document.createElement('div');
+    table.className = 'props-table';
+
+    const fmt = (ts) => ts ? new Date(ts).toLocaleString() : '—';
+    const createdDates = items.map(i => i.createdAt).filter(Boolean);
+    const modifiedDates = items.map(i => i.updatedAt).filter(Boolean);
+    const earliestCreated = createdDates.length ? Math.min(...createdDates) : null;
+    const latestModified = modifiedDates.length ? Math.max(...modifiedDates) : null;
+
+    let totalSize = 0;
+    for (const it of items) {
+        if (it.type === 'file') {
+            totalSize += it.size || (it.content ? (typeof it.content === 'string' ? new Blob([it.content]).size : it.content.byteLength) : 0);
+        }
+    }
+
+    table.innerHTML =
+        _propsRow('Items', '' + items.length) +
+        _propsRow('Contents', subtitle) +
+        _propsRow('Total Size', '<span style="color:#888">Calculating…</span>') +
+        _propsRow('Earliest Created', fmt(earliestCreated)) +
+        _propsRow('Last Modified', fmt(latestModified));
+    body.appendChild(table);
+
+    let runningSize = totalSize;
+    const sizeEl = table.querySelectorAll('.pv')[2];
+    for (const it of items) {
+        if (it.type === 'folder') {
+            const stats = await getFolderStats(it.id);
+            runningSize += stats.size;
+            sizeEl.textContent = formatBytes(runningSize) + ' (calculating…)';
+        }
+    }
+    sizeEl.textContent = formatBytes(runningSize) + (runningSize ? ' (' + runningSize.toLocaleString() + ' bytes)' : '');
+
+    return windowId;
+}
+
 async function spawnDriveProperties() {
     return _spawnDriveWindow();
 }
@@ -6021,7 +6644,8 @@ function _makePropsShell(title, w, h) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
-    win.style.cssText = `left:${left}px;top:${top}px;width:${w}px;height:${h}px;`;
+    const { w: _pw, h: _ph } = _clampWinSize(w, h);
+    win.style.cssText = `left:${left}px;top:${top}px;width:${_pw}px;height:${_ph}px;`;
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     win.innerHTML = `
@@ -6384,7 +7008,7 @@ async function deleteItem(id, windowId) {
     if (menuEl) { menuEl.remove(); menuEl = null; }
     const node = await idbGet(id);
     if (!node) return;
-    const tmpId = await _getTmpId();
+    const tmpId = await _getTrashId();
     if (node.parentId === tmpId) {
         // Already in Recycle Bin — permanently delete
         spawnWarning(`Permanently delete "${node.name}"?\n\nThis cannot be undone.`, [
@@ -6611,12 +7235,12 @@ const SYSTEM_DESKTOP_ICONS = [
         id: 'system-trash',
         label: () => 'Recycle Bin',
         iconPathFn: async () => {
-            const tmpId = await _getTmpId();
+            const tmpId = await _getTrashId();
             if (tmpId) {
                 const items = await idbGetAllByIndex('parentId', tmpId);
                 return items.length > 0
                     ? { fsPath: '/usr/share/icons/16/trash-full.svg', webPath: 'icons/16/trash-full.svg' }
-                    : { fsPath: '/usr/share/icons/16/trash.svg',      webPath: 'icons/16/trash.svg' };
+                    : { fsPath: '/usr/share/icons/16/trash.svg', webPath: 'icons/16/trash.svg' };
             }
             return { fsPath: '/usr/share/icons/16/trash.svg', webPath: 'icons/16/trash.svg' };
         },
@@ -6890,10 +7514,11 @@ function spawnAbout() {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _abw, h: _abh } = _clampWinSize(240, 320);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = '240px';
-    win.style.height = '320px';
+    win.style.width = _abw + 'px';
+    win.style.height = _abh + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
@@ -6957,10 +7582,11 @@ function spawnGame(gameName) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _gw, h: _gh } = _clampWinSize(800, 600);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = '800px';
-    win.style.height = '600px';
+    win.style.width = _gw + 'px';
+    win.style.height = _gh + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
@@ -7060,10 +7686,11 @@ function spawnError(text, type = 'error', buttons = null) {
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
+    const { w: _ew, h: _eh } = _clampWinSize(420, 220);
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = '420px';
-    win.style.height = '220px';
+    win.style.width = _ew + 'px';
+    win.style.height = _eh + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
@@ -7495,6 +8122,8 @@ async function startMenuAction(action) {
             req.onerror = () => { alert('Failed to wipe storage.'); };
             req.onblocked = () => { location.reload(); };
         }
+    } else if (action === 'logout') {
+        logout();
     } else if (action === 'reboot') {
         reboot();
     } else if (action === 'shutdown') {
@@ -7630,6 +8259,9 @@ window.addEventListener('message', (e) => {
             case 'getVersion':
                 result = { version: VERSION };
                 break;
+            case 'getTheme':
+                result = { theme: currentTheme };
+                break;
             default:
                 throw new Error('Unknown OS action: ' + action);
         }
@@ -7697,6 +8329,10 @@ async function init() {
 
         document.getElementById('virtualDesktop').style.visibility = 'visible';
         document.getElementById('taskbar').style.visibility = 'visible';
+        requestAnimationFrame(() => {
+            const tbEl = document.getElementById('taskbar');
+            if (tbEl) document.documentElement.style.setProperty('--taskbar-h', tbEl.offsetHeight + 'px');
+        });
 
         if (setupResult && setupResult.freshInstall) {
             // Fresh install already completed via setup — just open home
@@ -7755,6 +8391,9 @@ async function ensureDefaultFolders() {
     for (const name of rootDirs) {
         await ensureFolder(name, 'root');
     }
+
+    const sysId = (byParent['root'] || []).find(n => n.name === 'sys' && n.type === 'folder')?.id;
+    if (sysId) await ensureFolder('.trash', sysId);
 
     const homeIdReal = (await idbGetAllByIndex('parentId', 'root')).find(n => n.name === 'home')?.id;
     const savedUser = getUsername();
@@ -8041,6 +8680,34 @@ const THEMES = THEME_REGISTRY.map(t => t.id);
 
 let currentTheme = localStorage.getItem('edog_theme') || 'dark';
 
+function _snapshotThemeVars() {
+    const vars = {};
+    const root = document.documentElement;
+    for (const sheet of document.styleSheets) {
+        try {
+            for (const rule of sheet.cssRules) {
+                if (!(rule instanceof CSSStyleRule) || !rule.selectorText) continue;
+                try { if (!root.matches(rule.selectorText)) continue; } catch { continue; }
+                for (const prop of rule.style) {
+                    if (prop.startsWith('--')) vars[prop] = rule.style.getPropertyValue(prop).trim();
+                }
+            }
+        } catch { /* cross-origin sheet */ }
+    }
+    for (const prop of root.style) {
+        if (prop.startsWith('--')) vars[prop] = root.style.getPropertyValue(prop).trim();
+    }
+    return vars;
+}
+
+function _broadcastThemeToCustomApps() {
+    const vars = _snapshotThemeVars();
+    for (const wObj of Object.values(windows)) {
+        if (wObj?.state?.type !== 'customapp' || !wObj.iframe?.contentWindow) continue;
+        wObj.iframe.contentWindow.postMessage({ channel: 'edogtheme', vars, theme: currentTheme }, '*');
+    }
+}
+
 async function applyTheme(theme) {
     currentTheme = theme;
     localStorage.setItem('edog_theme', theme);
@@ -8059,6 +8726,8 @@ async function applyTheme(theme) {
             document.documentElement.style.setProperty(prop, val);
         }
     }
+
+    requestAnimationFrame(() => _broadcastThemeToCustomApps());
 
     const themeEntry = THEME_REGISTRY.find(t => t.id === theme);
     const wallpaperPath = themeEntry?.wallpaper ?? null;
@@ -8085,6 +8754,8 @@ async function applyTheme(theme) {
     setTimeout(() => {
         const picker = document.getElementById('themePicker');
         if (picker) picker.classList.remove('open');
+        const tbEl = document.getElementById('taskbar');
+        if (tbEl) document.documentElement.style.setProperty('--taskbar-h', tbEl.offsetHeight + 'px');
     }, 300);
 }
 
@@ -8151,8 +8822,10 @@ window.startMenuAction = startMenuAction;
 window.startOpenFolder = startOpenFolder;
 window.applyTheme = applyTheme;
 window.toggleThemePicker = toggleThemePicker;
+window.logout = logout;
 window.reboot = reboot;
 window.shutdown = shutdown;
+window.spawnCompressDialog = spawnCompressDialog;
 window.waitForIdle = waitForIdle;
 window.restoreItem = restoreItem;
 window.emptyTrash = emptyTrash;
@@ -8160,6 +8833,7 @@ window.SYSTEM_DESKTOP_ICONS = SYSTEM_DESKTOP_ICONS;
 window._setDesktopIconVisibility = _setDesktopIconVisibility;
 window._isDesktopIconVisible = _isDesktopIconVisible;
 window.showBSOD = showBSOD;
+window.panicError = panicError;
 
 if (useDriveLight) {
     driveLight.style.display = "block";
@@ -8167,15 +8841,75 @@ if (useDriveLight) {
     driveLight.style.display = "none";
 }
 
-// error handling
+// ============================================================
+// Global error handling
+// ============================================================
+
+// Throw this (or set err.fatal = true) to force a BSOD instead
+// of the normal error dialog. Use for errors that make the OS
+// unable to continue operating (IDB down, storage full, etc.).
+function panicError(message, bsodCode, bsodName) {
+    const err = new Error(message);
+    err.fatal = true;
+    if (bsodCode) err.bsodCode = bsodCode;
+    if (bsodName) err.bsodName = bsodName;
+    throw err;
+}
+
+
+// Sliding window: if >= 5 uncaught errors arrive within 3 s,
+// the OS is in a feedback loop — escalate to BSOD.
+const _recentErrors = [];
+const _ERROR_CASCADE_COUNT = 5;
+const _ERROR_CASCADE_WINDOW = 3000;
+
+function _trackErrorRate() {
+    const now = Date.now();
+    while (_recentErrors.length && now - _recentErrors[0] > _ERROR_CASCADE_WINDOW) {
+        _recentErrors.shift();
+    }
+    _recentErrors.push(now);
+    return _recentErrors.length;
+}
+
+// Returns 'fatal' or 'minor'.
+function _classifyError(error) {
+    if (!error) return 'minor';
+    if (error.fatal) return 'fatal';
+    // Storage quota exhausted — IDB writes will silently fail from here on.
+    if (error.name === 'QuotaExceededError') return 'fatal';
+    // Security policy blocked IDB (e.g. third-party cookie restrictions).
+    if (error.name === 'SecurityError') return 'fatal';
+    return 'minor';
+}
+
 window.onerror = function (message, source, lineno, colno, error) {
-    console.error("Global Error:", message, source, lineno, colno, error);
-    if (!_shuttingDown) spawnError(message);
+    console.error('Global Error:', message, source, lineno, colno, error);
+    if (_shuttingDown) return;
+    if (_classifyError(error) === 'fatal') {
+        showBSOD(error?.bsodCode, error?.bsodName);
+        return;
+    }
+    if (_trackErrorRate() >= _ERROR_CASCADE_COUNT) {
+        showBSOD('0x000000EF', 'CRITICAL_PROCESS_DIED');
+        return;
+    }
+    spawnError(message);
 };
 
 window.onunhandledrejection = function (event) {
-    console.error("Unhandled Promise Rejection:", event.reason);
-    if (!_shuttingDown) spawnError(event.reason);
+    console.error('Unhandled Promise Rejection:', event.reason);
+    if (_shuttingDown) return;
+    const error = event.reason instanceof Error ? event.reason : null;
+    if (_classifyError(error) === 'fatal') {
+        showBSOD(error?.bsodCode, error?.bsodName);
+        return;
+    }
+    if (_trackErrorRate() >= _ERROR_CASCADE_COUNT) {
+        showBSOD('0x000000EF', 'CRITICAL_PROCESS_DIED');
+        return;
+    }
+    spawnError(error?.message || String(event.reason));
 };
 
 // window.addEventListener("offline", async (e) => {

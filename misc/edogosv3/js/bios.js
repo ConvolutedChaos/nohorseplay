@@ -3,7 +3,7 @@
    Replace your existing bios.js with this
 ============================================================ */
 
-const BIOS_VERSION = 'BIOS 1.1';
+const BIOS_VERSION = '';
 const INSTALLED_DB = 'VirtualFS_v2';
 const LIVE_DB = 'VirtualFS_LIVE';
 
@@ -80,7 +80,7 @@ function showBiosPost(onComplete) {
         lines.appendChild(el);
     }
 
-    addLine(BIOS_VERSION, '#fff', true);
+    addLine("BIOS_VERSION", '#fff', true);
 
     setTimeout(() => onComplete(overlay, addLine), 1200);
 }
@@ -324,13 +324,14 @@ async function liveShutdown() {
 /* ---- Installer ---- */
 function spawnInstaller() {
     const windowId = 'win_' + (++winCount);
-    const left = Math.round((window.innerWidth - 600) / 2);
-    const top = Math.round((window.innerHeight - 500) / 2);
+    const { w: _bW, h: _bH } = _clampWinSize(600, 500);
+    const left = Math.round((window.innerWidth - _bW) / 2);
+    const top = Math.round((window.innerHeight - _bH) / 2);
 
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
-    win.style.cssText = `left:${left}px;top:${top}px;width:600px;height:500px;`;
+    win.style.cssText = `left:${left}px;top:${top}px;width:${_bW}px;height:${_bH}px;`;
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     win.innerHTML = `
@@ -741,17 +742,279 @@ async function runInstallerWizard(body, windowId) {
     render();
 }
 
+/* ---- BIOS Setup Screen ---- */
+function showBiosSetup(onExit) {
+    const overlay = document.createElement('div');
+    overlay.id = 'biosSetupOverlay';
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 9999999;
+        background: #000080; color: #ffffff;
+        font-family: 'Courier New', monospace;
+        font-size: 14px; display: flex; flex-direction: column;
+        user-select: none; outline: none;
+    `;
+    overlay.tabIndex = -1;
+    document.body.appendChild(overlay);
+
+    const MENUS = [
+        {
+            name: 'Main',
+            items: [
+                { type: 'info',   label: 'BIOS Version',   getValue: () => BIOS_VERSION },
+                { type: 'info',   label: 'System Date',    getValue: () => new Date().toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' }) },
+                { type: 'info',   label: 'System Time',    getValue: () => new Date().toTimeString().slice(0, 8) },
+                { type: 'sep' },
+                { type: 'info',   label: 'OS Version',     getValue: () => (typeof VERSION !== 'undefined' ? VERSION : 'E-Dog OS') },
+                { type: 'info',   label: 'Username',       getValue: () => localStorage.getItem('edog_username') || 'user' },
+                { type: 'info',   label: 'Computer Name',  getValue: () => localStorage.getItem('edog_computername') || 'edog-pc' },
+            ]
+        },
+        {
+            name: 'Hardware',
+            items: [
+                { type: 'info', label: 'Processor',       getValue: () => 'E-Dog x86_64 @ 3.2GHz' },
+                { type: 'info', label: 'Logical Cores',   getValue: () => String(navigator.hardwareConcurrency || 4) },
+                { type: 'info', label: 'System Memory',   getValue: () => '16384 MB' },
+                { type: 'sep' },
+                { type: 'info', label: 'Primary Storage', getValue: () => 'VirtualFS_v2  10.0 GB' },
+                { type: 'info', label: 'Display',         getValue: () => `${window.screen.width} x ${window.screen.height}` },
+            ]
+        },
+        {
+            name: 'Security',
+            items: [
+                { type: 'info',   label: 'Login Password',       getValue: () => localStorage.getItem('edog_password') ? '[Set]' : '[Not Set]' },
+                { type: 'action', label: 'Clear Login Password', id: 'clearPw' },
+                { type: 'sep' },
+                { type: 'action', label: 'Factory Reset  (Clear All Data)', id: 'factoryReset', danger: true },
+            ]
+        },
+        {
+            name: 'Exit',
+            items: [
+                { type: 'action', label: 'Exit BIOS Setup', id: 'exit' },
+            ]
+        },
+    ];
+
+    let menuIdx = 0;
+    let itemIdx  = 0;
+
+    function selectables(mIdx) {
+        return MENUS[mIdx].items
+            .map((item, i) => ({ item, i }))
+            .filter(({ item }) => item.type === 'action');
+    }
+
+    function clampItem(mIdx) {
+        const s = selectables(mIdx);
+        if (s.length === 0) return 0;
+        const cur = s.findIndex(({ i }) => i === itemIdx);
+        return cur >= 0 ? itemIdx : s[0].i;
+    }
+
+    function render() {
+        overlay.innerHTML = '';
+
+        // Header bar
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'background:#00aaaa;color:#000080;padding:3px 10px;display:flex;justify-content:space-between;font-weight:700;font-size:13px;';
+        hdr.innerHTML = '<span>E-Dog BIOS Setup Utility &mdash; Version 1.1</span><span>Press ESC to Exit</span>';
+        overlay.appendChild(hdr);
+
+        // Menu tab bar
+        const tabs = document.createElement('div');
+        tabs.style.cssText = 'display:flex;padding:4px 8px 0;background:#000080;border-bottom:1px solid #00aaaa;gap:2px;';
+        MENUS.forEach((menu, mi) => {
+            const tab = document.createElement('div');
+            const active = mi === menuIdx;
+            tab.style.cssText = `padding:3px 18px;cursor:pointer;font-size:13px;${active ? 'background:#aaaaaa;color:#000080;' : 'color:#ffffff;'}`;
+            tab.textContent = menu.name;
+            tab.onclick = () => { menuIdx = mi; itemIdx = clampItem(mi); render(); };
+            tabs.appendChild(tab);
+        });
+        overlay.appendChild(tabs);
+
+        // Body
+        const body = document.createElement('div');
+        body.style.cssText = 'flex:1;display:flex;overflow:hidden;';
+
+        // Left: item list
+        const list = document.createElement('div');
+        list.style.cssText = 'flex:1;padding:14px 24px;overflow-y:auto;';
+
+        MENUS[menuIdx].items.forEach((item, i) => {
+            if (item.type === 'sep') {
+                const sep = document.createElement('div');
+                sep.style.cssText = 'height:1px;background:#00aaaa;opacity:0.35;margin:8px 0;';
+                list.appendChild(sep);
+                return;
+            }
+            const isSelected = (item.type === 'action') && (i === itemIdx);
+            const row = document.createElement('div');
+            row.style.cssText = `
+                display:flex;justify-content:space-between;
+                padding:4px 8px;margin:1px 0;
+                ${isSelected ? 'background:#00aaaa;color:#000080;' : ''}
+                ${item.danger && !isSelected ? 'color:#ff8888;' : ''}
+                ${item.type === 'action' ? 'cursor:pointer;' : ''}
+            `;
+            const lbl = document.createElement('span');
+            lbl.textContent = item.label;
+            row.appendChild(lbl);
+            if (item.getValue) {
+                const val = document.createElement('span');
+                val.style.color = isSelected ? '#000080' : '#ffff55';
+                val.textContent = item.getValue();
+                row.appendChild(val);
+            }
+            if (item.type === 'action') {
+                row.onclick = () => { itemIdx = i; render(); activateItem(item); };
+            }
+            list.appendChild(row);
+        });
+        body.appendChild(list);
+
+        // Right: help sidebar
+        const side = document.createElement('div');
+        side.style.cssText = 'width:200px;padding:14px 12px;border-left:1px solid #00aaaa;font-size:12px;color:#aaaaaa;flex-shrink:0;';
+        side.innerHTML = `
+            <div style="color:#ffff55;margin-bottom:10px;">Navigation Keys</div>
+            <div style="margin-bottom:4px;">&#8592; &#8594; &nbsp;Select Menu</div>
+            <div style="margin-bottom:4px;">&#8593; &#8595; &nbsp;Select Item</div>
+            <div style="margin-bottom:4px;">Enter &nbsp;&nbsp;Confirm</div>
+            <div style="margin-bottom:4px;">Esc &nbsp;&nbsp;&nbsp;&nbsp;Exit</div>
+        `;
+        body.appendChild(side);
+        overlay.appendChild(body);
+
+        // Footer
+        const ftr = document.createElement('div');
+        ftr.style.cssText = 'background:#00aaaa;color:#000080;padding:3px 8px;text-align:center;font-size:12px;';
+        ftr.textContent = '← → : Menu  ↑ ↓ : Item  Enter : Select  Esc : Exit';
+        overlay.appendChild(ftr);
+
+        overlay.focus();
+    }
+
+    function activateItem(item) {
+        if (!item || item.type !== 'action') return;
+        if (item.id === 'exit') { cleanup(); return; }
+        if (item.id === 'clearPw') {
+            if (confirm('Clear the login password?')) {
+                localStorage.removeItem('edog_password');
+                render();
+            }
+            return;
+        }
+        if (item.id === 'factoryReset') {
+            if (confirm('WARNING: This will erase all saved data and reset E-Dog OS to factory defaults. Continue?')) {
+                localStorage.clear();
+                const del = (name) => new Promise(r => { const q = indexedDB.deleteDatabase(name); q.onsuccess = r; q.onerror = r; q.onblocked = r; });
+                del('VirtualFS_v2').then(() => del('VirtualFS_LIVE')).then(() => location.reload());
+            }
+            return;
+        }
+    }
+
+    function cleanup() {
+        document.removeEventListener('keydown', onKey);
+        overlay.remove();
+        onExit();
+    }
+
+    function onKey(e) {
+        if (e.key === 'Escape') { e.preventDefault(); cleanup(); return; }
+
+        if (e.key === 'ArrowRight' || e.key === 'Tab') {
+            e.preventDefault();
+            menuIdx = (menuIdx + 1) % MENUS.length;
+            itemIdx = clampItem(menuIdx);
+            render(); return;
+        }
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            menuIdx = (menuIdx - 1 + MENUS.length) % MENUS.length;
+            itemIdx = clampItem(menuIdx);
+            render(); return;
+        }
+
+        const s = selectables(menuIdx);
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!s.length) return;
+            const cur = s.findIndex(({ i }) => i === itemIdx);
+            itemIdx = s[(cur + 1) % s.length].i;
+            render(); return;
+        }
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (!s.length) return;
+            const cur = s.findIndex(({ i }) => i === itemIdx);
+            itemIdx = s[(cur - 1 + s.length) % s.length].i;
+            render(); return;
+        }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const item = MENUS[menuIdx].items[itemIdx];
+            if (item) activateItem(item);
+        }
+    }
+
+    document.addEventListener('keydown', onKey);
+    render();
+}
+
 /* ---- Wire into the boot sequence ---- */
 window.__bootAndLogin = async function (onReady) {
-    // Live preview / installer path is not active yet.
-    // All the infrastructure (checkInstalled, bootLiveSession, spawnInstaller, etc.)
-    // is preserved above and can be wired back in when ready.
-
-    // Always do the normal boot for now.
-    runBootSequence(() => {
-        window.__setupComplete.then(result => {
-            if (result && result.freshInstall) return;
-            showLoginScreen(onReady);
+    function continueBootSequence() {
+        runBootSequence(() => {
+            window.__setupComplete.then(result => {
+                if (result && result.freshInstall) return;
+                showLoginScreen(onReady);
+            });
         });
-    });
+    }
+
+    // Show brief POST screen; intercept DEL / Backspace to enter BIOS setup
+    const post = document.createElement('div');
+    post.style.cssText = `
+        position: fixed; inset: 0; z-index: 999999;
+        background: #000; color: #aaa;
+        font-family: 'Courier New', monospace;
+        font-size: 13px; padding: 24px;
+        display: flex; flex-direction: column; gap: 4px;
+    `;
+    post.innerHTML = `
+        <div style="color:#fff;font-weight:700;">${BIOS_VERSION}</div>
+        <div style="margin-top:auto;color:#666;font-size:12px;">
+            Press <span style="color:#fff;">DEL</span> or
+            <span style="color:#fff;">Backspace</span> to enter BIOS Setup
+        </div>
+    `;
+    document.body.appendChild(post);
+
+    let done = false;
+
+    function proceed() {
+        if (done) return;
+        done = true;
+        document.removeEventListener('keydown', onKey);
+        post.remove();
+        continueBootSequence();
+    }
+
+    function onKey(e) {
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            e.preventDefault();
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            document.removeEventListener('keydown', onKey);
+            post.remove();
+            showBiosSetup(continueBootSequence);
+        }
+    }
+    document.addEventListener('keydown', onKey);
+    const timer = setTimeout(proceed, 2000);
 };

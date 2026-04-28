@@ -363,7 +363,7 @@
             document.head.appendChild(s);
         }
 
-        const W = 860, H = 580;
+        const { w: W, h: H } = _clampWinSize(860, 580);
         const windowId = 'win_' + (++winCount);
         const offset = (winCount - 1) * 28;
         const left = Math.min(60 + offset, window.innerWidth - W - 20);

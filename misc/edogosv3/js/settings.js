@@ -348,13 +348,14 @@ window.addEventListener('load', () => setTimeout(_applyWallpaperOverride, 600));
 function spawnSettings(initialSection = 'appearance') {
     const windowId = 'win_' + (++winCount);
     const offset = (winCount - 1) * 28;
-    const left = Math.min(100 + offset, window.innerWidth - 700);
-    const top = Math.min(60 + offset, window.innerHeight - 530);
+    const { w: _stW, h: _stH } = _clampWinSize(680, 510);
+    const left = Math.min(100 + offset, window.innerWidth - _stW);
+    const top = Math.min(60 + offset, window.innerHeight - _stH);
 
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
-    win.style.cssText = `left:${left}px;top:${top}px;width:680px;height:510px;`;
+    win.style.cssText = `left:${left}px;top:${top}px;width:${_stW}px;height:${_stH}px;`;
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
     win.innerHTML = `

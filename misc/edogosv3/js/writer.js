@@ -257,16 +257,17 @@ const WR_SVG = {
 function spawnWriter(item) {
     const windowId = 'win_' + (++winCount);
     const offset = (winCount - 1) * 28;
-    const left = Math.min(40 + offset, window.innerWidth - 920);
-    const top = Math.min(40 + offset, window.innerHeight - 680);
+    const { w: _wrW, h: _wrH } = _clampWinSize(900, 660);
+    const left = Math.min(40 + offset, window.innerWidth - _wrW);
+    const top = Math.min(40 + offset, window.innerHeight - _wrH);
 
     const win = document.createElement('div');
     win.className = 'app-window';
     win.id = windowId;
     win.style.left = left + 'px';
     win.style.top = top + 'px';
-    win.style.width = '900px';
-    win.style.height = '660px';
+    win.style.width = _wrW + 'px';
+    win.style.height = _wrH + 'px';
 
     win.addEventListener('mousedown', () => focusWindow(windowId));
 
