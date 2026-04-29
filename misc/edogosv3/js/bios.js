@@ -980,16 +980,15 @@ window.__bootAndLogin = async function (onReady) {
     const post = document.createElement('div');
     post.style.cssText = `
         position: fixed; inset: 0; z-index: 999999;
-        background: #000; color: #aaa;
-        font-family: 'Courier New', monospace;
+        background: #000; color: #ffffff;
+        font-family: 'biosfont', 'Courier New', monospace;
         font-size: 13px; padding: 24px;
         display: flex; flex-direction: column; gap: 4px;
     `;
     post.innerHTML = `
-        <div style="color:#fff;font-weight:700;">${BIOS_VERSION}</div>
-        <div style="margin-top:auto;color:#666;font-size:12px;">
-            Press <span style="color:#fff;">DEL</span> or
-            <span style="color:#fff;">Backspace</span> to enter BIOS Setup
+        <div style="color:#fff;font-weight:700;font-family:'biosfont';">${BIOS_VERSION}</div>
+        <div style="margin-top:auto;color:#666;font-size:16px;">
+            Press DEL or Backspace to enter BIOS Setup
         </div>
     `;
     document.body.appendChild(post);

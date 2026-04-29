@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'biosfont';
+    src: url('../biosfont.woff2') format('woff2'),
+        url('../biosfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 /* ============================================================
            THEME SYSTEM — CSS custom properties
            Two themes: "dark" (default) and "aero2010"
@@ -651,8 +660,7 @@
 
 /* Desktop: rich blue Vista-style sky gradient */
 :root.theme-aeroglass body {
-    background: var(--desktop-bg)
-        linear-gradient(180deg, #3a8ae8 0%, #2d89ef 35%, #1a6abf 65%, #144fa0 100%);
+    background: var(--desktop-bg) linear-gradient(180deg, #3a8ae8 0%, #2d89ef 35%, #1a6abf 65%, #144fa0 100%);
 }
 
 /* Window: frosted glass */
@@ -898,15 +906,74 @@ body {
     position: absolute;
     z-index: 100;
 }
-.resize-handle.rh-n  { top: 0;    left: 8px;   right: 8px;  height: 5px; cursor: n-resize; }
-.resize-handle.rh-s  { bottom: 0; left: 8px;   right: 8px;  height: 5px; cursor: s-resize; }
-.resize-handle.rh-e  { right: 0;  top: 8px;    bottom: 8px; width: 5px;  cursor: e-resize; }
-.resize-handle.rh-w  { left: 0;   top: 8px;    bottom: 8px; width: 5px;  cursor: w-resize; }
-.resize-handle.rh-ne { top: 0;    right: 0;    width: 12px; height: 12px; cursor: ne-resize; }
-.resize-handle.rh-nw { top: 0;    left: 0;     width: 12px; height: 12px; cursor: nw-resize; }
-.resize-handle.rh-se { bottom: 0; right: 0;    width: 12px; height: 12px; cursor: se-resize; }
-.resize-handle.rh-sw { bottom: 0; left: 0;     width: 12px; height: 12px; cursor: sw-resize; }
-.app-window.maximized .resize-handle { display: none; }
+
+.resize-handle.rh-n {
+    top: 0;
+    left: 8px;
+    right: 8px;
+    height: 5px;
+    cursor: n-resize;
+}
+
+.resize-handle.rh-s {
+    bottom: 0;
+    left: 8px;
+    right: 8px;
+    height: 5px;
+    cursor: s-resize;
+}
+
+.resize-handle.rh-e {
+    right: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 5px;
+    cursor: e-resize;
+}
+
+.resize-handle.rh-w {
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 5px;
+    cursor: w-resize;
+}
+
+.resize-handle.rh-ne {
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    cursor: ne-resize;
+}
+
+.resize-handle.rh-nw {
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    cursor: nw-resize;
+}
+
+.resize-handle.rh-se {
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    cursor: se-resize;
+}
+
+.resize-handle.rh-sw {
+    bottom: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    cursor: sw-resize;
+}
+
+.app-window.maximized .resize-handle {
+    display: none;
+}
 
 .app-icon-title-bar {
     width: 16px;
@@ -1227,7 +1294,8 @@ body {
     object-fit: contain;
 }
 
-img.preview-thumb, canvas.preview-thumb {
+img.preview-thumb,
+canvas.preview-thumb {
     max-width: calc(var(--img-size));
     max-height: calc(var(--img-size));
     width: auto;
@@ -1815,13 +1883,33 @@ img.preview-thumb, canvas.preview-thumb {
 }
 
 /* Theme-specific folder color overrides */
-:root.theme-light { --zip-folder-color: #2563eb; }
-:root.theme-aero2010 { --zip-folder-color: #1a6aab; }
-:root.theme-aeroglass { --zip-folder-color: #3b82f6; }
-:root.theme-nord { --zip-folder-color: #88c0d0; }
-:root.theme-midnight { --zip-folder-color: #818cf8; }
-:root.theme-sunrise { --zip-folder-color: #ea580c; }
-:root.theme-nature { --zip-folder-color: #16a34a; }
+:root.theme-light {
+    --zip-folder-color: #2563eb;
+}
+
+:root.theme-aero2010 {
+    --zip-folder-color: #1a6aab;
+}
+
+:root.theme-aeroglass {
+    --zip-folder-color: #3b82f6;
+}
+
+:root.theme-nord {
+    --zip-folder-color: #88c0d0;
+}
+
+:root.theme-midnight {
+    --zip-folder-color: #818cf8;
+}
+
+:root.theme-sunrise {
+    --zip-folder-color: #ea580c;
+}
+
+:root.theme-nature {
+    --zip-folder-color: #16a34a;
+}
 
 #virtualDesktop {
     position: fixed;
@@ -4311,17 +4399,20 @@ img.preview-thumb, canvas.preview-thumb {
     flex-direction: column;
     overflow: hidden;
 }
+
 .fs-progress-accent-bar {
     height: 3px;
     background: var(--sidebar-item-active, #3b82f6);
     flex-shrink: 0;
 }
+
 .fs-progress-header {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 14px 18px 6px;
 }
+
 .fs-progress-op-title {
     flex: 1;
     font-size: 13px;
@@ -4331,12 +4422,18 @@ img.preview-thumb, canvas.preview-thumb {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.fs-progress-controls { display: flex; gap: 6px; flex-shrink: 0; }
+
+.fs-progress-controls {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
 .fs-progress-btn {
     padding: 3px 11px;
     border-radius: 4px;
-    border: 1px solid rgba(127,127,127,0.28);
-    background: rgba(127,127,127,0.07);
+    border: 1px solid rgba(127, 127, 127, 0.28);
+    background: rgba(127, 127, 127, 0.07);
     color: var(--desktop-text);
     font-size: 11px;
     font-family: var(--font-ui);
@@ -4345,9 +4442,19 @@ img.preview-thumb, canvas.preview-thumb {
     line-height: 1.7;
     user-select: none;
 }
-.fs-progress-btn:hover { background: rgba(127,127,127,0.17); }
-.fsp-cancel { color: #f87171 !important; border-color: rgba(248,113,113,0.32) !important; }
-.fsp-cancel:hover { background: rgba(248,113,113,0.1) !important; }
+
+.fs-progress-btn:hover {
+    background: rgba(127, 127, 127, 0.17);
+}
+
+.fsp-cancel {
+    color: #f87171 !important;
+    border-color: rgba(248, 113, 113, 0.32) !important;
+}
+
+.fsp-cancel:hover {
+    background: rgba(248, 113, 113, 0.1) !important;
+}
 
 .fs-progress-pct-row {
     display: flex;
@@ -4355,6 +4462,7 @@ img.preview-thumb, canvas.preview-thumb {
     gap: 6px;
     padding: 4px 18px 0;
 }
+
 .fs-progress-pct {
     font-size: 36px;
     font-weight: 300;
@@ -4364,19 +4472,22 @@ img.preview-thumb, canvas.preview-thumb {
     letter-spacing: -1px;
     min-width: 3.5ch;
 }
+
 .fs-progress-pct-sub {
     font-size: 12px;
     color: var(--desktop-text);
     opacity: 0.45;
 }
+
 .fs-progress-bar-wrap {
     margin: 8px 18px 0;
     height: 3px;
-    background: rgba(127,127,127,0.14);
+    background: rgba(127, 127, 127, 0.14);
     border-radius: 2px;
     overflow: hidden;
     position: relative;
 }
+
 .fs-progress-fill {
     height: 100%;
     background: var(--sidebar-item-active, #3b82f6);
@@ -4384,27 +4495,37 @@ img.preview-thumb, canvas.preview-thumb {
     transition: width 0.2s linear;
     position: relative;
 }
+
 .fs-progress-fill.indeterminate {
     width: 30% !important;
     position: absolute;
     animation: fs-prog-slide 1.4s ease-in-out infinite;
 }
+
 @keyframes fs-prog-slide {
-    0%   { left: -30%; }
-    100% { left: 100%; }
+    0% {
+        left: -30%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
+
 .fs-progress-graph-section {
     position: relative;
     margin: 10px 18px 0;
     border-radius: 4px;
     overflow: hidden;
 }
+
 .fs-progress-canvas {
     display: block;
     width: 100%;
     height: 80px;
-    background: rgba(0,0,0,0.13);
+    background: rgba(0, 0, 0, 0.13);
 }
+
 .fs-progress-speed-lbl {
     position: absolute;
     top: 6px;
@@ -4414,14 +4535,16 @@ img.preview-thumb, canvas.preview-thumb {
     font-variant-numeric: tabular-nums;
     color: var(--sidebar-item-active, #3b82f6);
     pointer-events: none;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
+
 .fs-progress-details {
     padding: 8px 18px 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
+
 .fs-progress-filename {
     font-size: 12px;
     color: var(--desktop-text);
@@ -4431,6 +4554,7 @@ img.preview-thumb, canvas.preview-thumb {
     text-overflow: ellipsis;
     min-height: 16px;
 }
+
 .fs-progress-meta-row {
     display: flex;
     justify-content: space-between;
@@ -4438,11 +4562,13 @@ img.preview-thumb, canvas.preview-thumb {
     gap: 8px;
     min-height: 15px;
 }
+
 .fs-progress-count {
     font-size: 11px;
     color: var(--desktop-text);
     opacity: 0.42;
 }
+
 .fs-progress-time {
     font-size: 11px;
     color: var(--desktop-text);
