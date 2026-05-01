@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="A game of checkers.">
+	<title>Checkers</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=JetBrains+Mono:wght@400;600&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div class="app">
+		<main>
+			<div class="board-shell">
+				<div class="board-coords top">
+					<span>a</span><span>b</span><span>c</span><span>d</span>
+					<span>e</span><span>f</span><span>g</span><span>h</span>
+				</div>
+				<div class="board-coords bottom">
+					<span>a</span><span>b</span><span>c</span><span>d</span>
+					<span>e</span><span>f</span><span>g</span><span>h</span>
+				</div>
+				<div class="board-coords left">
+					<span>8</span><span>7</span><span>6</span><span>5</span>
+					<span>4</span><span>3</span><span>2</span><span>1</span>
+				</div>
+				<div class="board-coords right">
+					<span>8</span><span>7</span><span>6</span><span>5</span>
+					<span>4</span><span>3</span><span>2</span><span>1</span>
+				</div>
+				<div class="board" id="board">
+					<!-- 64 squares injected here -->
+					<div class="pieces-layer" id="pieces-layer"></div>
+				</div>
+			</div>
+
+			<aside class="panel">
+				<div class="panel-title">Status</div>
+				<div class="status" id="status">Your move.</div>
+
+				<div class="captures">
+					<div class="capture-card you">
+						<div class="capture-label">You took</div>
+						<div class="capture-value" id="you-took">0</div>
+					</div>
+					<div class="capture-card them">
+						<div class="capture-label">They took</div>
+						<div class="capture-value" id="they-took">0</div>
+					</div>
+				</div>
+
+				<div class="difficulty">
+					<div class="panel-title">Difficulty</div>
+					<div class="pill-group" role="tablist" id="difficulty-group">
+						<button class="pill active" data-level="easy">Easy</button>
+						<button class="pill" data-level="medium">Medium</button>
+						<button class="pill" data-level="hard">Hard</button>
+					</div>
+				</div>
+
+				<div class="hints-toggle">
+					<label class="check-row">
+						<input type="checkbox" id="hints-checkbox" />
+						<span class="check-mark"></span>
+						<span class="check-text">Show hints</span>
+					</label>
+				</div>
+
+				<button class="new-game" id="new-game">New Game</button>
+			</aside>
+		</main>
+	</div>
+
+	<div class="modal-backdrop" id="modal">
+		<div class="modal">
+			<div class="modal-decor">❦ · ❦</div>
+			<div class="modal-title" id="modal-title">Game Over</div>
+			<div class="modal-message" id="modal-message">…</div>
+			<div class="modal-buttons">
+				<button id="modal-rematch" class="primary">Rematch</button>
+				<button id="modal-close">Close</button>
+			</div>
+		</div>
+	</div>
+
+	<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+		<symbol id="crown" viewBox="0 0 24 24">
+			<!-- Five-pointed crown shape -->
+			<path d="M3 18 L4 8 L8 12 L12 6 L16 12 L20 8 L21 18 Z" fill="currentColor" stroke="rgba(0,0,0,0.4)"
+				stroke-width="0.6" stroke-linejoin="round" />
+			<rect x="4" y="18" width="16" height="2" rx="0.5" fill="currentColor" stroke="rgba(0,0,0,0.4)"
+				stroke-width="0.6" />
+			<circle cx="4" cy="8" r="1" fill="currentColor" />
+			<circle cx="12" cy="6" r="1" fill="currentColor" />
+			<circle cx="20" cy="8" r="1" fill="currentColor" />
+		</symbol>
+	</svg>
+
+	<script>
+		// Piece codes
+		const EMPTY = 0;
+		const CREAM = 1;       // Player (bottom, moves up)
+		const CRIMSON = 2;     // AI (top, moves down)
+		const CREAM_K = 3;
+		const CRIMSON_K = 4;
+
+		// Side helpers
+		const sideOf = p =>
+			(p === CREAM || p === CREAM_K) ? 1 :
+				(p === CRIMSON || p === CRIMSON_K) ? 2 : 0;
+		const isKing = p => p === CREAM_K || p === CRIMSON_K;
+		const inB = (r, c) => r >= 0 && r < 8 && c >= 0 && c < 8;
+
+		const dirsOf = p => {
+			if (p === CREAM) return [[-1, -1], [-1, 1]];
+			if (p === CRIMSON) return [[1, -1], [1, 1]];
+			if (p === CREAM_K || p === CRIMSON_K) return [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+			return [];
+		};
+
+		function newBoard() {
+			const b = Array.from({ length: 8 }, () => Array(8).fill(EMPTY));
+			for (let r = 0; r < 3; r++)
+				for (let c = 0; c < 8; c++)
+					if ((r + c) % 2 === 1) b[r][c] = CRIMSON;
+			for (let r = 5; r < 8; r++)
+				for (let c = 0; c < 8; c++)
+					if ((r + c) % 2 === 1) b[r][c] = CREAM;
+			return b;
+		}
+
+		// ---------- Move generation ----------
+		// Move: { from:[r,c], to:[r,c], path:[[r,c],...], captured:[[r,c],...] }
+
+		function getJumpsForPiece(board, sr, sc) {
+			const startPiece = board[sr][sc];
+			if (!startPiece) return [];
+			const side = sideOf(startPiece);
+			const results = [];
+
+			function explore(state, r, c, piece, path, captured) {
+				for (const [dr, dc] of dirsOf(piece)) {
+					const mr = r + dr, mc = c + dc;
+					const lr = r + 2 * dr, lc = c + 2 * dc;
+					if (!inB(lr, lc)) continue;
+					const mp = state[mr][mc];
+					if (!mp || sideOf(mp) === side) continue;
+					if (state[lr][lc] !== EMPTY) continue;
+					if (captured.some(([cr, cc]) => cr === mr && cc === mc)) continue;
+
+					const ns = state.map(row => row.slice());
+					ns[r][c] = EMPTY;
+					ns[mr][mc] = EMPTY;
+					let np = piece;
+					let promoted = false;
+					if (piece === CREAM && lr === 0) { np = CREAM_K; promoted = true; }
+					if (piece === CRIMSON && lr === 7) { np = CRIMSON_K; promoted = true; }
+					ns[lr][lc] = np;
+
+					const newPath = [...path, [lr, lc]];
+					const newCap = [...captured, [mr, mc]];
+
+					if (promoted) {
+						// American checkers: stop on king-promotion mid-jump
+						results.push({ from: [sr, sc], to: [lr, lc], path: newPath, captured: newCap, promoted: true });
+					} else {
+						const before = results.length;
+						explore(ns, lr, lc, np, newPath, newCap);
+						if (results.length === before) {
+							results.push({ from: [sr, sc], to: [lr, lc], path: newPath, captured: newCap, promoted: false });
+						}
+					}
+				}
+			}
+
+			explore(board, sr, sc, startPiece, [[sr, sc]], []);
+			return results;
+		}
+
+		function getSimpleMovesForPiece(board, r, c) {
+			const piece = board[r][c];
+			if (!piece) return [];
+			const out = [];
+			for (const [dr, dc] of dirsOf(piece)) {
+				const nr = r + dr, nc = c + dc;
+				if (!inB(nr, nc)) continue;
+				if (board[nr][nc] !== EMPTY) continue;
+				let promoted = false;
+				if (piece === CREAM && nr === 0) promoted = true;
+				if (piece === CRIMSON && nr === 7) promoted = true;
+				out.push({ from: [r, c], to: [nr, nc], path: [[r, c], [nr, nc]], captured: [], promoted });
+			}
+			return out;
+		}
+
+		// All legal moves for a side. The AI search uses standard checkers rules
+		// (forced jumps), the player UI uses { forceJumps: false } for free play.
+		function getAllMoves(board, side, opts) {
+			const forceJumps = opts && opts.forceJumps === false ? false : true;
+
+			const jumps = [];
+			for (let r = 0; r < 8; r++)
+				for (let c = 0; c < 8; c++)
+					if (sideOf(board[r][c]) === side)
+						jumps.push(...getJumpsForPiece(board, r, c));
+
+			if (forceJumps && jumps.length > 0) {
+				return { moves: jumps, mustJump: true };
+			}
+
+			const simples = [];
+			for (let r = 0; r < 8; r++)
+				for (let c = 0; c < 8; c++)
+					if (sideOf(board[r][c]) === side)
+						simples.push(...getSimpleMovesForPiece(board, r, c));
+
+			return { moves: [...jumps, ...simples], mustJump: false };
+		}
+
+		function applyMove(board, move) {
+			const nb = board.map(row => row.slice());
+			const [sr, sc] = move.from;
+			const [er, ec] = move.to;
+			let piece = nb[sr][sc];
+			nb[sr][sc] = EMPTY;
+			for (const [cr, cc] of move.captured) nb[cr][cc] = EMPTY;
+			if (piece === CREAM && er === 0) piece = CREAM_K;
+			if (piece === CRIMSON && er === 7) piece = CRIMSON_K;
+			nb[er][ec] = piece;
+			return nb;
+		}
+
+		// ---------- AI ----------
+		// Maximize for CRIMSON (AI = side 2). Positive = good for AI.
+
+		function evaluate(board) {
+			let score = 0;
+			for (let r = 0; r < 8; r++) {
+				for (let c = 0; c < 8; c++) {
+					const p = board[r][c];
+					if (!p) continue;
+					const centerDist = Math.abs(c - 3.5) + Math.abs(r - 3.5);
+					const centerBonus = (7 - centerDist) * 0.15;
+					if (p === CRIMSON) score += 10 + r * 0.4 + centerBonus;
+					else if (p === CRIMSON_K) score += 16 + centerBonus;
+					else if (p === CREAM) score -= 10 + (7 - r) * 0.4 + centerBonus;
+					else if (p === CREAM_K) score -= 16 + centerBonus;
+				}
+			}
+			return score;
+		}
+
+		function minimax(board, depth, alpha, beta, maximizing) {
+			const side = maximizing ? 2 : 1;
+			const { moves } = getAllMoves(board, side);
+			if (moves.length === 0) {
+				return maximizing ? -100000 + (10 - depth) : 100000 - (10 - depth);
+			}
+			if (depth === 0) return evaluate(board);
+
+			if (maximizing) {
+				let best = -Infinity;
+				for (const m of moves) {
+					const nb = applyMove(board, m);
+					const v = minimax(nb, depth - 1, alpha, beta, false);
+					if (v > best) best = v;
+					if (best > alpha) alpha = best;
+					if (beta <= alpha) break;
+				}
+				return best;
+			} else {
+				let best = Infinity;
+				for (const m of moves) {
+					const nb = applyMove(board, m);
+					const v = minimax(nb, depth - 1, alpha, beta, true);
+					if (v < best) best = v;
+					if (best < beta) beta = best;
+					if (beta <= alpha) break;
+				}
+				return best;
+			}
+		}
+
+		function pickAIMove(board, difficulty) {
+			const { moves } = getAllMoves(board, 2);
+			if (moves.length === 0) return null;
+
+			if (difficulty === 'easy') {
+				if (Math.random() < 0.8) {
+					return moves[Math.floor(Math.random() * moves.length)];
+				}
+				let best = -Infinity, bestMove = moves[0];
+				for (const m of moves) {
+					const v = evaluate(applyMove(board, m));
+					if (v > best) { best = v; bestMove = m; }
+				}
+				return bestMove;
+			}
+
+			const depth = difficulty === 'medium' ? 4 : 7;
+			const shuffled = moves.slice().sort(() => Math.random() - 0.5);
+
+			let bestMove = shuffled[0];
+			let bestVal = -Infinity;
+			let alpha = -Infinity, beta = Infinity;
+			for (const m of shuffled) {
+				const nb = applyMove(board, m);
+				const v = minimax(nb, depth - 1, alpha, beta, false);
+				if (v > bestVal) { bestVal = v; bestMove = m; }
+				if (v > alpha) alpha = v;
+			}
+			return bestMove;
+		}
+
+		// Pick the move a strong player would make for the player's side (used for hints).
+		// Searches at depth 4 — fast and gives sound suggestions.
+		function pickHintMove(board) {
+			const { moves } = getAllMoves(board, 1, { forceJumps: false });
+			if (moves.length === 0) return null;
+			if (moves.length === 1) return moves[0];
+
+			let bestMove = moves[0];
+			let bestVal = Infinity;
+			let alpha = -Infinity, beta = Infinity;
+			const shuffled = moves.slice().sort(() => Math.random() - 0.5);
+			for (const m of shuffled) {
+				const nb = applyMove(board, m);
+				// AI moves next — maximizing.
+				const v = minimax(nb, 4, alpha, beta, true);
+				if (v < bestVal) { bestVal = v; bestMove = m; }
+				if (v < beta) beta = v;
+			}
+			return bestMove;
+		}
+
+		/* =========================================================================
+		   UI
+		   ========================================================================= */
+
+		const boardEl = document.getElementById('board');
+		const piecesLayer = document.getElementById('pieces-layer');
+		const statusEl = document.getElementById('status');
+		const youTookEl = document.getElementById('you-took');
+		const theyTookEl = document.getElementById('they-took');
+		const newGameBtn = document.getElementById('new-game');
+		const diffGroup = document.getElementById('difficulty-group');
+		const hintsCheckbox = document.getElementById('hints-checkbox');
+		const modal = document.getElementById('modal');
+		const modalTitle = document.getElementById('modal-title');
+		const modalMsg = document.getElementById('modal-message');
+		const modalRematchBtn = document.getElementById('modal-rematch');
+		const modalCloseBtn = document.getElementById('modal-close');
+
+		// State
+		let board = newBoard();
+		let turn = 1;
+		let difficulty = 'easy';
+		let selected = null;
+		let validMoves = [];
+		let captures = { you: 0, them: 0 };
+		let busy = false;
+		let gameOver = false;
+		let pieceIds = {};
+		let pieceSeq = 0;
+
+		// Hint state
+		let hintsEnabled = false;
+		let currentHint = null;
+
+		// ---------- Build squares ----------
+		function buildSquares() {
+			const layer = piecesLayer;
+			boardEl.innerHTML = '';
+			for (let r = 0; r < 8; r++) {
+				for (let c = 0; c < 8; c++) {
+					const sq = document.createElement('div');
+					sq.className = 'square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+					sq.dataset.r = r;
+					sq.dataset.c = c;
+					sq.addEventListener('click', () => onSquareClick(r, c));
+					boardEl.appendChild(sq);
+				}
+			}
+			boardEl.appendChild(layer);
+		}
+
+		// ---------- Pieces ----------
+		function rebuildPieces() {
+			piecesLayer.innerHTML = '';
+			pieceIds = {};
+
+			for (let r = 0; r < 8; r++) {
+				for (let c = 0; c < 8; c++) {
+					const p = board[r][c];
+					if (!p) continue;
+					const el = document.createElement('div');
+					const id = 'p' + (++pieceSeq);
+					el.id = id;
+					el.className = 'piece ' + (sideOf(p) === 1 ? 'cream' : 'crimson') + (isKing(p) ? ' king' : '');
+					el.style.transform = `translate(${c * 100}%, ${r * 100}%)`;
+
+					const inner = document.createElement('div');
+					inner.className = 'piece-inner';
+					el.appendChild(inner);
+
+					if (isKing(p)) {
+						inner.appendChild(makeCrown());
+					}
+
+					const pr = r, pc = c;
+					el.addEventListener('click', e => {
+						e.stopPropagation();
+						onPieceClick(pr, pc);
+					});
+
+					piecesLayer.appendChild(el);
+					pieceIds[r + ',' + c] = id;
+				}
+			}
+		}
+
+		function makeCrown() {
+			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('class', 'crown');
+			svg.setAttribute('viewBox', '0 0 24 24');
+			const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+			use.setAttribute('href', '#crown');
+			svg.appendChild(use);
+			return svg;
+		}
+
+		// Animate a move along its path; fade captured pieces.
+		async function animateMove(move) {
+			const fromKey = move.from[0] + ',' + move.from[1];
+			const id = pieceIds[fromKey];
+			const el = id ? document.getElementById(id) : null;
+			if (!el) return;
+
+			for (let i = 1; i < move.path.length; i++) {
+				const [r, c] = move.path[i];
+				el.style.transform = `translate(${c * 100}%, ${r * 100}%)`;
+				if (move.captured.length) {
+					const captured = move.captured[i - 1];
+					if (captured) {
+						const ck = captured[0] + ',' + captured[1];
+						const cid = pieceIds[ck];
+						const cel = cid ? document.getElementById(cid) : null;
+						if (cel) {
+							setTimeout(() => cel.classList.add('captured'), 180);
+							setTimeout(() => cel.remove(), 600);
+						}
+					}
+				}
+				await wait(450);
+			}
+
+			if (move.promoted) {
+				el.classList.add('king', 'promoting');
+				const inner = el.querySelector('.piece-inner');
+				if (inner && !inner.querySelector('.crown')) {
+					inner.appendChild(makeCrown());
+				}
+				setTimeout(() => el.classList.remove('promoting'), 700);
+			}
+		}
+
+		const wait = ms => new Promise(r => setTimeout(r, ms));
+
+		// ---------- Click handling ----------
+		function onPieceClick(r, c) {
+			if (busy || gameOver) return;
+			if (turn !== 1) return;
+			const p = board[r][c];
+			if (sideOf(p) !== 1) {
+				onSquareClick(r, c);
+				return;
+			}
+			selectPiece(r, c);
+		}
+
+		function onSquareClick(r, c) {
+			if (busy || gameOver) return;
+			if (turn !== 1) return;
+			if (!selected) return;
+			const move = validMoves.find(m => m.to[0] === r && m.to[1] === c);
+			if (move) {
+				executePlayerMove(move);
+			} else {
+				const p = board[r][c];
+				if (sideOf(p) === 1) selectPiece(r, c);
+				else clearSelection();
+			}
+		}
+
+		// Player can move ANY of their pieces — no forced-jump enforcement.
+		function selectPiece(r, c) {
+			const movesForThis = [
+				...getJumpsForPiece(board, r, c),
+				...getSimpleMovesForPiece(board, r, c)
+			];
+			if (movesForThis.length === 0) {
+				flashStatus("That piece has no moves.");
+				return;
+			}
+			selected = [r, c];
+			validMoves = movesForThis;
+			refreshHighlights();
+		}
+
+		function clearSelection() {
+			selected = null;
+			validMoves = [];
+			refreshHighlights();
+		}
+
+		function refreshHighlights() {
+			for (const sq of boardEl.querySelectorAll('.square')) {
+				sq.classList.remove('valid-move', 'hint-target');
+			}
+			for (const pe of piecesLayer.querySelectorAll('.piece')) {
+				pe.classList.remove('selected', 'hint');
+			}
+
+			// Show hint when nothing is selected and it's the player's move.
+			if (hintsEnabled && !gameOver && turn === 1 && !selected && currentHint) {
+				const [hr, hc] = currentHint.from;
+				const [tr, tc] = currentHint.to;
+				const id = pieceIds[hr + ',' + hc];
+				const el = id ? document.getElementById(id) : null;
+				if (el) el.classList.add('hint');
+				const sq = squareAt(tr, tc);
+				if (sq) sq.classList.add('hint-target');
+			}
+
+			if (selected) {
+				const [r, c] = selected;
+				const id = pieceIds[r + ',' + c];
+				const el = id ? document.getElementById(id) : null;
+				if (el) el.classList.add('selected');
+				for (const m of validMoves) {
+					const [tr, tc] = m.to;
+					const sq = squareAt(tr, tc);
+					if (sq) sq.classList.add('valid-move');
+				}
+			}
+		}
+
+		function squareAt(r, c) {
+			return boardEl.querySelector(`.square[data-r="${r}"][data-c="${c}"]`);
+		}
+
+		// ---------- Move execution ----------
+		async function executePlayerMove(move) {
+			busy = true;
+			clearSelection();
+			currentHint = null; // hint is stale after a move
+			if (move.captured.length) captures.you += move.captured.length;
+			await animateMoveAndApply(move);
+			refreshCaptures();
+			if (checkGameOver()) return;
+			turn = 2;
+			setStatus("Computer is thinking", true);
+			busy = false;
+			setTimeout(runAIMove, 350);
+		}
+
+		async function animateMoveAndApply(move) {
+			await animateMove(move);
+			board = applyMove(board, move);
+			rebuildPieces();
+		}
+
+		async function runAIMove() {
+			if (gameOver) return;
+			busy = true;
+			await wait(80);
+			let move = null;
+			try {
+				move = pickAIMove(board, difficulty);
+			} catch (e) {
+				console.error(e);
+			}
+			if (!move) {
+				return endGame('player', "Your opponent is out of moves. You win.");
+			}
+			if (move.captured.length) captures.them += move.captured.length;
+			await animateMoveAndApply(move);
+			refreshCaptures();
+			if (checkGameOver()) return;
+			turn = 1;
+			setStatus("Your move.");
+			busy = false;
+			refreshHighlights();
+			// Compute hint async so the UI stays responsive — clicks land
+			// immediately, and the hint glow appears a moment later.
+			setTimeout(() => {
+				if (turn !== 1 || gameOver || selected) return;
+				recomputeHint();
+				refreshHighlights();
+			}, 30);
+		}
+
+		// ---------- Hint computation ----------
+		function recomputeHint() {
+			if (!hintsEnabled || gameOver || turn !== 1) {
+				currentHint = null;
+				return;
+			}
+			try {
+				currentHint = pickHintMove(board);
+			} catch (e) {
+				console.error(e);
+				currentHint = null;
+			}
+		}
+
+		// ---------- Game-over checks ----------
+		function checkGameOver() {
+			const nextSide = (turn === 1) ? 2 : 1;
+			const all = getAllMoves(board, nextSide);
+			let creamCount = 0, crimsonCount = 0;
+			for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+				if (sideOf(board[r][c]) === 1) creamCount++;
+				else if (sideOf(board[r][c]) === 2) crimsonCount++;
+			}
+			if (creamCount === 0) return endGame('ai', "The computer wins.");
+			if (crimsonCount === 0) return endGame('player', "You've cleared the board. Victory.");
+			if (all.moves.length === 0) {
+				if (nextSide === 1) return endGame('ai', "You have no moves. Computer wins.");
+				else return endGame('player', "Computer has no moves. You win.");
+			}
+			return false;
+		}
+
+		function endGame(winner, message) {
+			gameOver = true;
+			busy = true;
+			currentHint = null;
+			if (winner === 'player') {
+				setStatus("You won.");
+				showModal("Victory", message + flairFor(winner));
+			} else {
+				setStatus("You lost.");
+				showModal("Defeat", message + flairFor(winner));
+			}
+			return true;
+		}
+
+		function flairFor(winner) {
+			if (winner === 'player') {
+				const lines = [
+					"",
+					" Nice one.",
+					" You are the checkers master.",
+					" Impressive."
+				];
+				return lines[Math.floor(Math.random() * lines.length)];
+			} else {
+				if (difficulty === 'hard') {
+					const lines = [
+						" Try Medium - you might not lose then.",
+						" This difficulty is just unfair, isn't it.",
+						" Maybe a difficulty level down?"
+					];
+					return lines[Math.floor(Math.random() * lines.length)];
+				} else if (difficulty === 'medium') {
+					return " Ouch.";
+				} else {
+					return " Easy beat you. Awkward.";
+				}
+			}
+		}
+
+		// ---------- Status / UI helpers ----------
+		function setStatus(text, thinking = false) {
+			statusEl.textContent = text;
+			statusEl.classList.toggle('thinking', thinking);
+		}
+
+		let flashTimeout = null;
+		function flashStatus(msg) {
+			setStatus(msg);
+			clearTimeout(flashTimeout);
+			flashTimeout = setTimeout(() => {
+				if (turn === 1 && !gameOver) setStatus("Your move.");
+			}, 1800);
+		}
+
+		function refreshCaptures() {
+			youTookEl.textContent = captures.you;
+			theyTookEl.textContent = captures.them;
+		}
+
+		function showModal(title, message) {
+			modalTitle.textContent = title;
+			modalMsg.textContent = message;
+			modal.classList.add('show');
+		}
+		function hideModal() { modal.classList.remove('show'); }
+
+		// ---------- Difficulty controls ----------
+		diffGroup.addEventListener('click', e => {
+			const btn = e.target.closest('.pill');
+			if (!btn) return;
+			for (const b of diffGroup.querySelectorAll('.pill')) b.classList.toggle('active', b === btn);
+			difficulty = btn.dataset.level;
+		});
+
+		// ---------- Hints toggle ----------
+		hintsCheckbox.addEventListener('change', () => {
+			hintsEnabled = hintsCheckbox.checked;
+			recomputeHint();
+			refreshHighlights();
+		});
+
+		// ---------- New game ----------
+		function startNewGame() {
+			board = newBoard();
+			turn = 1;
+			selected = null;
+			validMoves = [];
+			captures = { you: 0, them: 0 };
+			busy = false;
+			gameOver = false;
+			currentHint = null;
+			hideModal();
+			buildSquares();
+			rebuildPieces();
+			refreshCaptures();
+			setStatus("Your move.");
+			recomputeHint();
+			refreshHighlights();
+		}
+
+		newGameBtn.addEventListener('click', startNewGame);
+		modalRematchBtn.addEventListener('click', startNewGame);
+		modalCloseBtn.addEventListener('click', hideModal);
+
+		// Boot
+		startNewGame();
+	</script>
+</body>
+
+</html>

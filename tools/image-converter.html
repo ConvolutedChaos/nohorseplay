@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="wow-animation" lang="en">
+
+<head>
+    <title>Image Converter</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css"
+        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel,
+        html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="novi-background"><!-- IE panel-->
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
+                src="/img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
+                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+    </div><!-- Page-->
+    <div class="page text-center novi-background"><!-- Page Header-->
+        <header class="section page-head"
+            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
+            <div class="rd-navbar-wrap">
+                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
+                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
+                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
+                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
+                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
+                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
+                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
+                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
+                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
+                            <div class="rd-navbar-brand"><a class="brand-name" href="/"><img src="/img/logo-medium.png"
+                                        width="172" height="75" alt=""></a></div>
+                        </div>
+                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
+                            <ul class="rd-navbar-nav">
+                                <li><a href="/">Home page</a></li>
+                                <li><a href="/games.html">Games</a></li>
+                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
+                                    <ul class="rd-navbar-dropdown">
+                                        <li><a href="/misc/angry-birds-gallery.html">realistic angry birds</a></li>
+                                        <li><a href="/misc/scary-gallery.html">scary</a></li>
+                                        <!-- <ul class="rd-navbar-dropdown">
+												<li><a href="#">fresh</a></li>
+												<li><a href="#">archive</a></li>
+												<li><a href="404.html">404</a></li>
+											</ul> -->
+                                </li>
+                            </ul>
+                            </li>
+                            <li><a href="/stuff.html">Stuff</a></li>
+                            <li class="active"><a href="/tools.html">Tools</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <section class="section section-lg-122 section-65 bg-default novi-background"
+            data-preset='{"title":"Info 3","category":"info","reload":false,"id":"info-3"}'>
+            <div class="shell shell-wide">
+                <!-- <div class="page-counter page-counter-bottom-5"><img class="img-responsive center-block"
+                        src="images/links-01-543x353.png" alt="" width="543" height="353"></div> -->
+                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                    <div class="cell-xl-10">
+                        <h1>Image Converter</h1>
+                        <section class="section section-lg-122 section-65 bg-default novi-background">
+                            <div class="shell shell-wide">
+                                <div class="range range-xs-center offset-top-0 offset-md-top-26">
+                                    <div class="cell-xl-10">
+                                        <!-- HTML can go here... -->
+                                        <div id="converter">
+                                            <input type="file" id="imageInput" accept="image/*">
+                                            <br><br>
+
+                                            <label for="formatSelect">Convert to:</label>
+                                            <select id="formatSelect">
+                                                <option value="image/jpeg">JPG</option>
+                                                <option value="image/png">PNG</option>
+                                                <option value="image/webp">WebP</option>
+                                            </select>
+
+                                            <span id="qualityWrapper">
+                                                &nbsp;&nbsp;<label for="qualitySlider">Quality: <span
+                                                        id="qualityLabel">92</span>%</label>
+                                                <input type="range" id="qualitySlider" min="1" max="100" value="92">
+                                            </span>
+
+                                            <br><br>
+
+                                            <div id="previewArea" style="display:none;">
+                                                <table>
+                                                    <tr>
+                                                        <th>Original</th>
+                                                        <th>Converted</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <img id="originalPreview"
+                                                                style="max-width:300px; max-height:300px; display:block;">
+                                                            <small id="originalInfo"></small>
+                                                        </td>
+                                                        <td>
+                                                            <img id="convertedPreview"
+                                                                style="max-width:300px; max-height:300px; display:block;">
+                                                            <small id="convertedInfo"></small>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <br>
+                                                <a id="downloadLink" download>Download Converted Image</a>
+                                            </div>
+
+                                            <canvas id="workCanvas" style="display:none;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <script>
+                            (function () {
+                                const input = document.getElementById('imageInput');
+                                const formatSel = document.getElementById('formatSelect');
+                                const qualSlider = document.getElementById('qualitySlider');
+                                const qualLabel = document.getElementById('qualityLabel');
+                                const qualWrapper = document.getElementById('qualityWrapper');
+                                const origImg = document.getElementById('originalPreview');
+                                const convImg = document.getElementById('convertedPreview');
+                                const origInfo = document.getElementById('originalInfo');
+                                const convInfo = document.getElementById('convertedInfo');
+                                const dlLink = document.getElementById('downloadLink');
+                                const preview = document.getElementById('previewArea');
+                                const canvas = document.getElementById('workCanvas');
+                                const ctx = canvas.getContext('2d');
+
+                                let currentFile = null;
+
+                                const LOSSY = ['image/jpeg', 'image/webp'];
+                                const EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+
+                                function formatBytes(n) {
+                                    return n < 1024 ? n + ' B'
+                                        : n < 1048576 ? (n / 1024).toFixed(1) + ' KB'
+                                            : (n / 1048576).toFixed(2) + ' MB';
+                                }
+
+                                function updateQualityVisibility() {
+                                    qualWrapper.style.display = LOSSY.includes(formatSel.value) ? '' : 'none';
+                                }
+
+                                function convert() {
+                                    if (!currentFile) return;
+
+                                    const fmt = formatSel.value;
+                                    const quality = parseInt(qualSlider.value) / 100;
+                                    const img = new Image();
+
+                                    img.onload = function () {
+                                        canvas.width = img.naturalWidth;
+                                        canvas.height = img.naturalHeight;
+
+                                        // PNG needs a white background when converting from transparent sources to JPG
+                                        if (fmt === 'image/jpeg') {
+                                            ctx.fillStyle = '#ffffff';
+                                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                        } else {
+                                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                        }
+
+                                        ctx.drawImage(img, 0, 0);
+
+                                        const dataURL = canvas.toDataURL(fmt, quality);
+
+                                        convImg.src = dataURL;
+
+                                        // Estimate converted size from base64
+                                        const base64 = dataURL.split(',')[1];
+                                        const approxBytes = Math.round((base64.length * 3) / 4);
+                                        convInfo.textContent = `${canvas.width}×${canvas.height} · ~${formatBytes(approxBytes)}`;
+
+                                        const baseName = currentFile.name.replace(/\.[^.]+$/, '');
+                                        dlLink.href = dataURL;
+                                        dlLink.download = `${baseName}.${EXT[fmt]}`;
+
+                                        preview.style.display = '';
+                                    };
+
+                                    img.src = URL.createObjectURL(currentFile);
+                                    origImg.src = img.src;
+                                    origInfo.textContent = `${currentFile.name} · ${formatBytes(currentFile.size)}`;
+                                }
+
+                                input.addEventListener('change', function () {
+                                    currentFile = this.files[0] || null;
+                                    if (currentFile) convert();
+                                });
+
+                                formatSel.addEventListener('change', function () {
+                                    updateQualityVisibility();
+                                    convert();
+                                });
+
+                                qualSlider.addEventListener('input', function () {
+                                    qualLabel.textContent = this.value;
+                                });
+
+                                qualSlider.addEventListener('change', convert);
+
+                                updateQualityVisibility();
+                            })();
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section section-divider">
+            <div class="shell shell-wide inset-left-0 inset-right-0">
+                <hr class="divider-full">
+            </div>
+        </section><!-- Page Footer-->
+        <footer class="section page-footer novi-background"
+            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
+            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
+                <hr class="divider divider-default divider-vertical"><a href="/privacy.html">Privacy policy</a>
+            </div>
+        </footer>
+    </div><!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
+    <script src="/js/core.min.js"></script>
+    <script src="/js/script.js"></script>
+</body>
+
+</html>
