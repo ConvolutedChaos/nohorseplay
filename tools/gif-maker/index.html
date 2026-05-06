@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GIF maker</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<div>
+				<div class="logo">GIF maker</div>
+			</div>
+			<div class="status-bar">
+				<span class="status-led" id="status-led"></span>
+				<span id="status-text">INITIALIZING</span>
+			</div>
+		</header>
+
+		<div id="dropzone" class="dropzone">
+			<div class="dropzone-icon">▶</div>
+			<h2>DROP A VIDEO</h2>
+			<p>or click to browse</p>
+			<input type="file" id="file-input" hidden accept="video/*">
+		</div>
+
+		<div id="file-info" class="file-info hidden">
+			<div class="icon">▣</div>
+			<div>
+				<h3 id="file-name"></h3>
+				<div class="meta" id="file-meta"></div>
+			</div>
+			<button class="btn-clear" id="clear-btn">CLEAR</button>
+		</div>
+
+		<div id="converter-ui" class="hidden">
+			<div class="options">
+				<div class="option-group">
+					<span class="option-label">Quality</span>
+					<div class="option-buttons" id="quality-buttons">
+						<button class="option-btn" data-quality="low">Low</button>
+						<button class="option-btn active" data-quality="medium">Medium</button>
+						<button class="option-btn" data-quality="high">High</button>
+					</div>
+				</div>
+			</div>
+
+			<details class="custom-args">
+				<summary>CUSTOM</summary>
+				<input type="text" id="custom-args" placeholder='e.g.   -ss 00:00:10 -t 30 -vf fps=15,scale=480:-1'>
+			</details>
+
+			<button class="convert-btn" id="convert-btn" disabled>LOADING…</button>
+		</div>
+
+		<div id="progress-section" class="progress-section hidden">
+			<div class="progress-header">
+				<span id="progress-status">CONVERTING…</span>
+				<span class="progress-percent" id="progress-percent">0%</span>
+			</div>
+			<div class="progress-bar">
+				<div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+			</div>
+			<div class="log" id="log"></div>
+		</div>
+
+		<div id="result" class="result hidden">
+			<div class="result-header">
+				<div class="result-info">
+					<h3>READY</h3>
+					<div class="meta" id="result-meta"></div>
+				</div>
+				<a class="download-btn" id="download-btn" download>DOWNLOAD</a>
+			</div>
+			<div class="preview" id="preview"></div>
+		</div>
+	</div>
+
+	<div id="loading-overlay" class="loading-overlay">
+		<div class="spinner"></div>
+		<h2>LOADING CORE</h2>
+		<p id="loading-status">Loading ffmpeg-core.wasm…</p>
+		<p class="quip">~30 MB · cached after first load · worth it.</p>
+	</div>
+
+	<script src="./ffmpeg.js"></script>
+	<script src="./ffmpeg-util.js"></script>
+	<script>
+		'use strict';
+
+		// Palette-based GIF filters — much better color quality than a plain -vf
+		const GIF_QUALITY = {
+			low: 'fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+			medium: 'fps=15,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+			high: 'fps=24,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+		};
+
+		const state = {
+			ffmpeg: null,
+			file: null,
+			quality: 'medium',
+			converting: false,
+			lastOutputUrl: null,
+		};
+
+		const $ = (id) => document.getElementById(id);
+
+		function setStatus(kind, text) {
+			const led = $('status-led');
+			led.className = 'status-led ' + (kind || '');
+			$('status-text').textContent = text;
+		}
+
+		function addLog(msg, cls = '') {
+			const log = $('log');
+			const line = document.createElement('div');
+			line.className = 'line ' + cls;
+			line.textContent = msg;
+			log.appendChild(line);
+			log.scrollTop = log.scrollHeight;
+		}
+
+		function clearLog() { $('log').innerHTML = ''; }
+
+		function formatBytes(bytes) {
+			if (bytes < 1024) return bytes + ' B';
+			if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+			if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+			return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+		}
+
+		function getExt(name) {
+			const m = name.match(/\.([^.]+)$/);
+			return m ? m[1].toLowerCase() : 'bin';
+		}
+
+		function getBase(name) { return name.replace(/\.[^.]+$/, ''); }
+
+		// Tiny shell-arg parser. Handles 'single' and "double" quotes. No escapes.
+		function parseShellArgs(str) {
+			const args = [];
+			let current = '';
+			let inQuote = null;
+			let hasContent = false;
+			for (const ch of str) {
+				if (inQuote) {
+					if (ch === inQuote) { inQuote = null; }
+					else { current += ch; }
+				} else if (ch === '"' || ch === "'") {
+					inQuote = ch;
+					hasContent = true;
+				} else if (ch === ' ' || ch === '\t') {
+					if (hasContent) { args.push(current); current = ''; hasContent = false; }
+				} else {
+					current += ch;
+					hasContent = true;
+				}
+			}
+			if (hasContent) args.push(current);
+			return args;
+		}
+
+		async function fetchGzip(url, mimeType) {
+			const res = await fetch(url);
+			const ds = new DecompressionStream('gzip');
+			const decompressed = res.body.pipeThrough(ds);
+			const blob = await new Response(decompressed).blob();
+			return URL.createObjectURL(new Blob([await blob.arrayBuffer()], { type: mimeType }));
+		}
+
+		async function initFFmpeg() {
+			if (typeof FFmpegWASM === 'undefined' || typeof FFmpegUtil === 'undefined') {
+				setStatus('error', 'CDN BLOCKED');
+				$('loading-status').textContent = 'Could not load ffmpeg.wasm scripts. Check your network or ad blocker.';
+				return;
+			}
+
+			const { FFmpeg } = FFmpegWASM;
+			const ffmpeg = new FFmpeg();
+
+			ffmpeg.on('log', ({ type, message }) => {
+				if (state.converting) addLog(message, type === 'stderr' ? 'warn' : '');
+			});
+
+			ffmpeg.on('progress', ({ progress }) => {
+				if (!state.converting) return;
+				const clamped = Math.max(0, Math.min(1, progress));
+				const pct = Math.round(clamped * 100);
+				const fill = $('progress-fill');
+				fill.classList.remove('indeterminate');
+				fill.style.width = pct + '%';
+				$('progress-percent').textContent = pct + '%';
+			});
+
+			try {
+				$('loading-status').textContent = 'Loading ffmpeg-core.wasm (~30 MB, cached after first load)…';
+				const [coreURL, wasmURL] = await Promise.all([
+					fetchGzip('./ffmpeg-core.js.gz', 'application/javascript'),
+					fetchGzip('./ffmpeg-core.wasm.gz', 'application/wasm'),
+				]);
+
+				await ffmpeg.load({ coreURL, wasmURL });
+				state.ffmpeg = ffmpeg;
+				$('loading-overlay').classList.add('hidden');
+				setStatus('ready', 'READY');
+				updateConvertButton();
+			} catch (err) {
+				console.error(err);
+				$('loading-status').textContent = 'Failed: ' + (err && err.message ? err.message : err);
+				setStatus('error', 'LOAD FAILED');
+			}
+		}
+
+		function handleFile(file) {
+			if (state.lastOutputUrl) {
+				URL.revokeObjectURL(state.lastOutputUrl);
+				state.lastOutputUrl = null;
+			}
+			state.file = file;
+			$('dropzone').classList.add('hidden');
+			$('file-info').classList.remove('hidden');
+			$('converter-ui').classList.remove('hidden');
+			$('file-name').textContent = file.name;
+			$('file-meta').textContent = `${formatBytes(file.size)} · ${file.type || 'unknown type'}`;
+			$('result').classList.add('hidden');
+			$('progress-section').classList.add('hidden');
+			updateConvertButton();
+		}
+
+		function clearFile() {
+			state.file = null;
+			$('dropzone').classList.remove('hidden');
+			$('file-info').classList.add('hidden');
+			$('converter-ui').classList.add('hidden');
+			$('progress-section').classList.add('hidden');
+			$('result').classList.add('hidden');
+			$('file-input').value = '';
+			if (state.lastOutputUrl) {
+				URL.revokeObjectURL(state.lastOutputUrl);
+				state.lastOutputUrl = null;
+			}
+		}
+
+		function updateConvertButton() {
+			const btn = $('convert-btn');
+			const ready = state.file && state.ffmpeg && !state.converting;
+			btn.disabled = !ready;
+			if (state.converting) {
+				btn.textContent = 'WORKING…';
+			} else if (!state.ffmpeg) {
+				btn.textContent = 'LOADING…';
+			} else {
+				btn.textContent = 'MAKE GIF';
+			}
+		}
+
+		function buildArgs(inputName, outputName) {
+			const customArgs = $('custom-args').value.trim();
+			if (customArgs) {
+				return ['-i', inputName, ...parseShellArgs(customArgs), outputName];
+			}
+			return ['-i', inputName, '-vf', GIF_QUALITY[state.quality], outputName];
+		}
+
+		async function convert() {
+			if (!state.file || !state.ffmpeg || state.converting) return;
+
+			state.converting = true;
+			updateConvertButton();
+			setStatus('busy', 'PROCESSING');
+
+			const inputExt = getExt(state.file.name);
+			const ts = Date.now();
+			const inputName = `in_${ts}.${inputExt}`;
+			const outputName = `out_${ts}.gif`;
+			const finalName = `${getBase(state.file.name)}.gif`;
+
+			$('result').classList.add('hidden');
+			$('progress-section').classList.remove('hidden');
+			$('progress-fill').classList.add('indeterminate');
+			$('progress-fill').style.width = '0%';
+			$('progress-percent').textContent = '—';
+			$('progress-status').textContent = 'CONVERTING…';
+			clearLog();
+
+			const startTime = Date.now();
+
+			try {
+				const { fetchFile } = FFmpegUtil;
+				addLog(`> writing ${inputName} (${formatBytes(state.file.size)})`, 'cmd');
+				await state.ffmpeg.writeFile(inputName, await fetchFile(state.file));
+
+				const args = buildArgs(inputName, outputName);
+				addLog(`$ ffmpeg ${args.join(' ')}`, 'cmd');
+
+				await state.ffmpeg.exec(args);
+
+				addLog(`> reading ${outputName}`, 'cmd');
+				const data = await state.ffmpeg.readFile(outputName);
+				const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+				addLog(`✓ done in ${elapsed}s — ${formatBytes(data.length)}`, 'ok');
+
+				try { await state.ffmpeg.deleteFile(inputName); } catch (_) { }
+				try { await state.ffmpeg.deleteFile(outputName); } catch (_) { }
+
+				const blob = new Blob([data.buffer], { type: 'image/gif' });
+				if (state.lastOutputUrl) URL.revokeObjectURL(state.lastOutputUrl);
+				state.lastOutputUrl = URL.createObjectURL(blob);
+
+				$('progress-fill').classList.remove('indeterminate');
+				$('progress-fill').style.width = '100%';
+				$('progress-percent').textContent = '100%';
+				$('progress-status').textContent = 'COMPLETE';
+
+				$('result').classList.remove('hidden');
+				$('result-meta').textContent = `${finalName} · ${formatBytes(data.length)} · ${elapsed}s`;
+				const dl = $('download-btn');
+				dl.href = state.lastOutputUrl;
+				dl.download = finalName;
+
+				const preview = $('preview');
+				preview.innerHTML = '';
+				const img = document.createElement('img');
+				img.src = state.lastOutputUrl;
+				preview.appendChild(img);
+
+				setStatus('ready', 'READY');
+			} catch (err) {
+				console.error(err);
+				addLog('✗ ERROR: ' + (err && err.message ? err.message : err), 'err');
+				$('progress-status').textContent = 'FAILED';
+				$('progress-fill').classList.remove('indeterminate');
+				setStatus('error', 'ERROR');
+			} finally {
+				state.converting = false;
+				updateConvertButton();
+			}
+		}
+
+		function init() {
+			const dropzone = $('dropzone');
+			const fileInput = $('file-input');
+
+			dropzone.addEventListener('click', () => fileInput.click());
+			dropzone.addEventListener('dragover', e => {
+				e.preventDefault();
+				dropzone.classList.add('dragover');
+			});
+			dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+			dropzone.addEventListener('drop', e => {
+				e.preventDefault();
+				dropzone.classList.remove('dragover');
+				if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+			});
+
+			window.addEventListener('dragover', e => e.preventDefault());
+			window.addEventListener('drop', e => {
+				e.preventDefault();
+				if (state.file || !e.dataTransfer.files.length) return;
+				handleFile(e.dataTransfer.files[0]);
+			});
+
+			fileInput.addEventListener('change', e => {
+				if (e.target.files.length) handleFile(e.target.files[0]);
+			});
+
+			$('clear-btn').addEventListener('click', clearFile);
+
+			document.querySelectorAll('#quality-buttons .option-btn').forEach(btn => {
+				btn.addEventListener('click', () => {
+					state.quality = btn.dataset.quality;
+					document.querySelectorAll('#quality-buttons .option-btn').forEach(b =>
+						b.classList.toggle('active', b === btn));
+				});
+			});
+
+			$('convert-btn').addEventListener('click', convert);
+
+			setStatus('loading', 'LOADING CORE');
+			initFFmpeg();
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', init);
+		} else {
+			init();
+		}
+	</script>
+</body>
+
+</html>
