@@ -36,7 +36,7 @@
                 <button class="window-minimize-button" title="Minimize">—</button>
                 <button class="window-maximize-button" title="Maximize">□</button>
                 <span class="title-bar-text" id="ide-titlelabel-${windowId}">
-                    <img class="app-icon-title-bar" src="icons/16/text-editor.png"> IDE – New App
+                    <img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png"> IDE – New App
                 </span>
             </div>
             <div class="app-body" id="ide-body-${windowId}"
@@ -44,6 +44,7 @@
         `;
 
         document.getElementById('windowContainer').appendChild(win);
+        resolveIdbIcons(win);
 
         /* init state */
         ideStates[windowId] = {
@@ -74,7 +75,8 @@
         const tbBtn = document.createElement('button');
         tbBtn.className         = 'win-btn';
         tbBtn.dataset.winid     = windowId;
-        tbBtn.innerHTML         = '<img class="app-icon-title-bar" src="icons/16/text-editor.png"> IDE';
+        tbBtn.innerHTML         = '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png"> IDE';
+        resolveIdbIcons(tbBtn);
         tbBtn.onclick = () => {
             if (win.style.display === 'none') { win.style.display = ''; focusWindow(windowId); }
             else focusWindow(windowId);
@@ -362,8 +364,8 @@
         const fname  = st.filePath ? st.filePath.split('/').pop() : 'New App';
         const dirty  = st.dirty ? ' ●' : '';
         const title  = `IDE – ${fname}${dirty}`;
-        if (label) label.innerHTML = `<img class="app-icon-title-bar" src="icons/16/text-editor.png"> ${title}`;
-        if (tbBtn) tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/text-editor.png"> IDE`;
+        if (label) { label.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png"> ${title}`; resolveIdbIcons(label); }
+        if (tbBtn) { tbBtn.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png"> IDE`; resolveIdbIcons(tbBtn); }
     }
 
     /* ================================================================

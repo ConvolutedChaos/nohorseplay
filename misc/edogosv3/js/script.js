@@ -1,7 +1,7 @@
 ﻿/* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.2.3";
+const VERSION = "E-Dog OS 3.2.4";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -3121,12 +3121,12 @@ function spawnApp(type, item) {
     const top = Math.min(60 + offset, window.innerHeight - 540);
 
     const appMeta = {
-        editor: { title: `Text Editor — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/text-editor.png">', w: 700, h: 520 },
-        image: { title: `Image Viewer — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/media-player.png">', w: 700, h: 520 },
-        video: { title: `Video Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/media-player.png">', w: 760, h: 520 },
-        audio: { title: `Audio Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/media-player.png">', w: 400, h: 300 },
+        editor: { title: `Text Editor — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png">', w: 700, h: 520 },
+        image: { title: `Image Viewer — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/media-player.png">', w: 700, h: 520 },
+        video: { title: `Video Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/media-player.png">', w: 760, h: 520 },
+        audio: { title: `Audio Player — ${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/media-player.png">', w: 400, h: 300 },
         zip: { title: `Archive — ${item.name || "blank"}`, icon: '🗜️', w: 760, h: 540 },
-        markdown: { title: `${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" src="icons/16/text-editor.png">', w: 750, h: 560 }
+        markdown: { title: `${item.name || "blank"}`, icon: '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png">', w: 750, h: 560 }
     }[type];
 
     const win = document.createElement('div');
@@ -3151,6 +3151,7 @@ function spawnApp(type, item) {
             `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type, item } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -3166,6 +3167,7 @@ function spawnApp(type, item) {
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
     tbBtn.innerHTML = `${appMeta.icon} ${item.name}`;
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -3229,7 +3231,7 @@ function _buildEditorBody(body, item, windowId) {
     function setDirty(d) {
         isDirty = d;
         const tb = winEl?.querySelector('.title-bar-text');
-        if (tb) tb.innerHTML = `<img class="app-icon-title-bar" src="icons/16/text-editor.png"> ${d ? '● ' : ''}Text Editor — ${item.name || 'Untitled'}`;
+        if (tb) { tb.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/text-editor.png"> ${d ? '● ' : ''}Text Editor — ${item.name || 'Untitled'}`; resolveIdbIcons(tb); }
     }
 
     // ── Menubar ──────────────────────────────────────────────
@@ -5830,12 +5832,13 @@ function spawnTerminal(startPath) {
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
             <button class="window-maximize-button" title="Maximize">□</button>
-                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/terminal.png"> Terminal</span>
+                    <span class="title-bar-text"><img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/terminal.png"> Terminal</span>
                 </div>
                 <div class="app-body" style="height:calc(100% - 42px);overflow:hidden;display:flex;flex-direction:column;"></div>
             `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type: 'terminal' } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -5850,7 +5853,8 @@ function spawnTerminal(startPath) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = '<img class="app-icon-title-bar" src="icons/16/terminal.png"> Terminal';
+    tbBtn.innerHTML = '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/terminal.png"> Terminal';
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -7527,12 +7531,13 @@ function spawnAbout() {
                     <button class="window-close-button" title="Close">✕</button>
                     <button class="window-minimize-button" title="Minimize">—</button>
             <button class="window-maximize-button" title="Maximize">□</button>
-                    <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/info.png"> About</span>
+                    <span class="title-bar-text"><img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/info.png"> About</span>
                 </div>
                 <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
             `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type: 'about' } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -7547,7 +7552,8 @@ function spawnAbout() {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = '<img class="app-icon-title-bar" src="icons/16/info.png"> About';
+    tbBtn.innerHTML = '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/info.png"> About';
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -7595,12 +7601,13 @@ function spawnGame(gameName) {
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
             <button class="window-maximize-button" title="Maximize">□</button>
-            <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/applications-games.png"> ${gameName}</span>
+            <span class="title-bar-text"><img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/applications-games.png"> ${gameName}</span>
         </div>
         <div class="app-body" style="height: calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
     `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type: 'about' } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -7615,7 +7622,8 @@ function spawnGame(gameName) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/applications-games.png"> ${gameName}`;
+    tbBtn.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/applications-games.png"> ${gameName}`;
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -8811,7 +8819,6 @@ window.closeEditorIfBackdrop = closeEditorIfBackdrop;
 window.closeImageViewer = closeImageViewer;
 window.closeVideoPlayer = closeVideoPlayer;
 window.spawnWindow = spawnWindow;
-
 window.spawnTerminal = spawnTerminal;
 window.renameItem = renameItem;
 window.deleteItem = deleteItem;

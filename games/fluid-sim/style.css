@@ -1,0 +1,276 @@
+:root {
+    --bg: #000;
+    --panel: rgba(18, 20, 28, 0.82);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text: #f4f4f5;
+    --muted: #8b8d99;
+    --accent: #6ee7d4;
+    --accent-dim: rgba(110, 231, 212, 0.18);
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--bg);
+    height: 100%;
+    color: var(--text);
+}
+
+canvas {
+    display: block;
+}
+
+/* Top-left hint */
+#info {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 12px;
+    pointer-events: none;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    opacity: 0.85;
+    z-index: 5;
+}
+
+#info kbd {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: inherit;
+}
+
+/* Gear button */
+#settings-btn {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(20, 22, 30, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    display: grid;
+    place-items: center;
+    transition: background 0.15s ease, transform 0.3s ease;
+    z-index: 10;
+}
+
+#settings-btn:hover {
+    background: rgba(30, 32, 42, 0.75);
+}
+
+#settings-btn.open {
+    transform: rotate(90deg);
+}
+
+/* Slide-in panel */
+#settings-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 340px;
+    max-width: 90vw;
+    background: var(--panel);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-left: 1px solid var(--panel-border);
+    padding: 70px 26px 26px;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 9;
+    overflow-y: auto;
+    font-family: var(--sans);
+    box-sizing: border-box;
+}
+
+#settings-panel.open {
+    transform: translateX(0);
+}
+
+#settings-panel h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px;
+    font-weight: 500;
+}
+
+#settings-panel section {
+    margin-bottom: 28px;
+}
+
+#settings-panel section+section {
+    border-top: 1px solid var(--panel-border);
+    padding-top: 24px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.row label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.row .val {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+}
+
+.hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.45;
+}
+
+/* Quality preset buttons */
+.presets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.preset {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    padding: 9px 0;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.preset:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.preset.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Sliders */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    margin: 6px 0;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 12px var(--accent-dim);
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 12px var(--accent-dim);
+}
+
+/* Action buttons */
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.action {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 11px 0;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.action:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Toggle */
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.toggle input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 36px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    margin: 0;
+}
+
+.toggle input::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.18s ease;
+}
+
+.toggle input:checked {
+    background: var(--accent);
+}
+
+.toggle input:checked::before {
+    transform: translateX(16px);
+}

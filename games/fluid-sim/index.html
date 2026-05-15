@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="description" content="A customizable fluid simulation.">
+	<meta charset="UTF-8">
+	<title>Fluid Sim</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div id="info">
+		Click + drag to spawn fluid &nbsp;·&nbsp; <kbd>C</kbd> clear &nbsp;·&nbsp; <kbd>Space</kbd> splash
+	</div>
+
+	<button id="settings-btn" aria-label="Open settings">⚙</button>
+
+	<aside id="settings-panel" aria-label="Settings">
+
+		<section>
+			<h2>Quality</h2>
+			<div class="presets" id="quality-presets">
+				<button class="preset" data-q="verylow">Very Low</button>
+				<button class="preset" data-q="low">Low</button>
+				<button class="preset active" data-q="medium">Medium</button>
+				<button class="preset" data-q="high">High</button>
+				<button class="preset" data-q="veryhigh">Very High</button>
+				<button class="preset" data-q="ultra">Ultra</button>
+				<button class="preset" data-q="nasacomputer">NASA Computer</button>
+			</div>
+			<p class="hint">Higher settings look better but need a faster computer.</p>
+		</section>
+
+		<section>
+			<h2>Feel</h2>
+
+			<div class="row">
+				<label for="brush-size">Brush size</label>
+				<span class="val" id="brush-size-val">Medium</span>
+			</div>
+			<input type="range" id="brush-size" min="1" max="10" value="5">
+
+			<div class="row" style="margin-top: 16px;">
+				<label for="brush-strength">Brush strength</label>
+				<span class="val" id="brush-strength-val">Active</span>
+			</div>
+			<input type="range" id="brush-strength" min="1" max="10" value="6">
+
+			<div class="row" style="margin-top: 16px;">
+				<label for="color-trails">Color trails</label>
+				<span class="val" id="color-trails-val">Long</span>
+			</div>
+			<input type="range" id="color-trails" min="1" max="10" value="7">
+			<p class="hint">How long the colors stick around before fading.</p>
+
+			<div class="row" style="margin-top: 16px;">
+				<label for="liveliness">Liveliness</label>
+				<span class="val" id="liveliness-val">Strong</span>
+			</div>
+			<input type="range" id="liveliness" min="1" max="10" value="8">
+			<p class="hint">How long swirls keep moving on their own after you stop.</p>
+		</section>
+
+		<section>
+			<h2>Extras</h2>
+			<label class="toggle" style="margin-bottom: 6px;">
+				<span style="font-size: 14px;">Rainbow brush</span>
+				<input type="checkbox" id="rainbow-toggle">
+			</label>
+			<p class="hint">Cycles colors as you drag instead of one per click.</p>
+		</section>
+
+		<section>
+			<h2>Actions</h2>
+			<div class="actions">
+				<button class="action" id="clear-btn">Clear screen</button>
+				<button class="action" id="splash-btn">Random splash</button>
+			</div>
+		</section>
+
+	</aside>
+
+	<script src="three.min.js"></script>
+	<script>
+		// =====================================================================
+		// Stable Fluids on the GPU — Three.js + custom shaders
+		// =====================================================================
+
+		// fps
+		const fpsEl = document.createElement('div');
+		fpsEl.style.position = 'fixed';
+		fpsEl.style.bottom = '10px';
+		fpsEl.style.left = '10px';
+		fpsEl.style.color = 'white';
+		fpsEl.style.fontFamily = 'monospace';
+		document.body.appendChild(fpsEl);
+
+		let frames = 0;
+		let lastFpsTime = performance.now();
+
+		function updateFPS() {
+			frames++;
+			const now = performance.now();
+
+			if (now - lastFpsTime >= 1000) {
+				fpsEl.textContent = `FPS: ${frames}`;
+				frames = 0;
+				lastFpsTime = now;
+			}
+		}
+
+		const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: false });
+		renderer.setPixelRatio(1);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		const scene = new THREE.Scene();
+		const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+		// ---- Config (controlled by settings panel) -----------------------------
+		const config = {
+			SIM_RES: 128,
+			DYE_RES: 512,
+			PRESSURE_ITERATIONS: 25,
+			brushRadius: 0.0008,
+			brushStrength: 1200,
+			dyeDissipation: 0.992,
+			velDissipation: 0.995,
+			rainbow: false,
+		};
+
+		const QUALITY_PRESETS = {
+			verylow: { SIM_RES: 32, DYE_RES: 128, PRESSURE_ITERATIONS: 8 },
+			low: { SIM_RES: 64, DYE_RES: 256, PRESSURE_ITERATIONS: 15 },
+			medium: { SIM_RES: 128, DYE_RES: 512, PRESSURE_ITERATIONS: 25 },
+			high: { SIM_RES: 192, DYE_RES: 768, PRESSURE_ITERATIONS: 32 },
+			veryhigh: { SIM_RES: 256, DYE_RES: 1024, PRESSURE_ITERATIONS: 40 },
+			ultra: { SIM_RES: 512, DYE_RES: 2048, PRESSURE_ITERATIONS: 64 },
+			nasacomputer: { SIM_RES: 2048, DYE_RES: 8192, PRESSURE_ITERATIONS: 256 }
+		};
+
+		// ---- Render target helpers ---------------------------------------------
+		function createRT(size) {
+			return new THREE.WebGLRenderTarget(size, size, {
+				type: THREE.HalfFloatType,
+				format: THREE.RGBAFormat,
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter,
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				depthBuffer: false,
+				stencilBuffer: false,
+			});
+		}
+
+		function createPingPong(size) {
+			return {
+				read: createRT(size),
+				write: createRT(size),
+				swap() { const t = this.read; this.read = this.write; this.write = t; }
+			};
+		}
+
+		let velocity, pressure, divergence, dye;
+		let simTexel, dyeTexel;
+
+		function disposeRT(rt) { if (rt) rt.dispose(); }
+		function disposePingPong(pp) { if (pp) { disposeRT(pp.read); disposeRT(pp.write); } }
+
+		function rebuildBuffers() {
+			disposePingPong(velocity);
+			disposePingPong(pressure);
+			disposeRT(divergence);
+			disposePingPong(dye);
+
+			velocity = createPingPong(config.SIM_RES);
+			pressure = createPingPong(config.SIM_RES);
+			divergence = createRT(config.SIM_RES);
+			dye = createPingPong(config.DYE_RES);
+
+			simTexel = new THREE.Vector2(1 / config.SIM_RES, 1 / config.SIM_RES);
+			dyeTexel = new THREE.Vector2(1 / config.DYE_RES, 1 / config.DYE_RES);
+		}
+
+		// ---- Shaders -----------------------------------------------------------
+		const baseVert = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
+`;
+
+		const advectFrag = `
+  uniform sampler2D uVelocity;
+  uniform sampler2D uSource;
+  uniform float uDt;
+  uniform float uDissipation;
+  uniform vec2  uTexelSize;
+  varying vec2 vUv;
+  void main() {
+    vec2 vel = texture2D(uVelocity, vUv).xy;
+    vec2 coord = vUv - uDt * vel * uTexelSize;
+    vec4 result = texture2D(uSource, coord);
+    gl_FragColor = result * uDissipation;
+  }
+`;
+
+		const splatFrag = `
+  uniform sampler2D uTarget;
+  uniform vec2  uPoint;
+  uniform vec3  uColor;
+  uniform float uRadius;
+  uniform float uAspect;
+  varying vec2 vUv;
+  void main() {
+    vec2 p = vUv - uPoint;
+    p.x *= uAspect;
+    vec3 splat = exp(-dot(p, p) / uRadius) * uColor;
+    vec3 base = texture2D(uTarget, vUv).xyz;
+    gl_FragColor = vec4(base + splat, 1.0);
+  }
+`;
+
+		const divergenceFrag = `
+  uniform sampler2D uVelocity;
+  uniform vec2 uTexelSize;
+  varying vec2 vUv;
+  void main() {
+    float L = texture2D(uVelocity, vUv - vec2(uTexelSize.x, 0.0)).x;
+    float R = texture2D(uVelocity, vUv + vec2(uTexelSize.x, 0.0)).x;
+    float B = texture2D(uVelocity, vUv - vec2(0.0, uTexelSize.y)).y;
+    float T = texture2D(uVelocity, vUv + vec2(0.0, uTexelSize.y)).y;
+    float div = 0.5 * (R - L + T - B);
+    gl_FragColor = vec4(div, 0.0, 0.0, 1.0);
+  }
+`;
+
+		const pressureFrag = `
+  uniform sampler2D uPressure;
+  uniform sampler2D uDivergence;
+  uniform vec2 uTexelSize;
+  varying vec2 vUv;
+  void main() {
+    float L = texture2D(uPressure, vUv - vec2(uTexelSize.x, 0.0)).x;
+    float R = texture2D(uPressure, vUv + vec2(uTexelSize.x, 0.0)).x;
+    float B = texture2D(uPressure, vUv - vec2(0.0, uTexelSize.y)).x;
+    float T = texture2D(uPressure, vUv + vec2(0.0, uTexelSize.y)).x;
+    float div = texture2D(uDivergence, vUv).x;
+    float p = (L + R + B + T - div) * 0.25;
+    gl_FragColor = vec4(p, 0.0, 0.0, 1.0);
+  }
+`;
+
+		const gradientSubtractFrag = `
+  uniform sampler2D uPressure;
+  uniform sampler2D uVelocity;
+  uniform vec2 uTexelSize;
+  varying vec2 vUv;
+  void main() {
+    float L = texture2D(uPressure, vUv - vec2(uTexelSize.x, 0.0)).x;
+    float R = texture2D(uPressure, vUv + vec2(uTexelSize.x, 0.0)).x;
+    float B = texture2D(uPressure, vUv - vec2(0.0, uTexelSize.y)).x;
+    float T = texture2D(uPressure, vUv + vec2(0.0, uTexelSize.y)).x;
+    vec2 vel = texture2D(uVelocity, vUv).xy;
+    vel -= 0.5 * vec2(R - L, T - B);
+    gl_FragColor = vec4(vel, 0.0, 1.0);
+  }
+`;
+
+		const displayFrag = `
+  uniform sampler2D uDye;
+  varying vec2 vUv;
+  void main() {
+    vec3 color = texture2D(uDye, vUv).rgb;
+    float vig = 1.0 - 0.25 * length(vUv - 0.5);
+    gl_FragColor = vec4(color * vig, 1.0);
+  }
+`;
+
+		const clearFrag = `
+  uniform vec3 uColor;
+  void main() { gl_FragColor = vec4(uColor, 1.0); }
+`;
+
+		function makeMaterial(frag, uniforms) {
+			return new THREE.ShaderMaterial({
+				vertexShader: baseVert,
+				fragmentShader: frag,
+				uniforms,
+				depthTest: false,
+				depthWrite: false,
+			});
+		}
+
+		const advectMat = makeMaterial(advectFrag, {
+			uVelocity: { value: null }, uSource: { value: null },
+			uDt: { value: 0.016 }, uDissipation: { value: 1.0 },
+			uTexelSize: { value: new THREE.Vector2() },
+		});
+		const splatMat = makeMaterial(splatFrag, {
+			uTarget: { value: null }, uPoint: { value: new THREE.Vector2() },
+			uColor: { value: new THREE.Vector3() }, uRadius: { value: 0.001 },
+			uAspect: { value: 1 },
+		});
+		const divergenceMat = makeMaterial(divergenceFrag, {
+			uVelocity: { value: null }, uTexelSize: { value: new THREE.Vector2() },
+		});
+		const pressureMat = makeMaterial(pressureFrag, {
+			uPressure: { value: null }, uDivergence: { value: null },
+			uTexelSize: { value: new THREE.Vector2() },
+		});
+		const gradientSubtractMat = makeMaterial(gradientSubtractFrag, {
+			uPressure: { value: null }, uVelocity: { value: null },
+			uTexelSize: { value: new THREE.Vector2() },
+		});
+		const displayMat = makeMaterial(displayFrag, { uDye: { value: null } });
+		const clearMat = makeMaterial(clearFrag, { uColor: { value: new THREE.Vector3(0, 0, 0) } });
+
+		const quadGeo = new THREE.PlaneGeometry(2, 2);
+		const quad = new THREE.Mesh(quadGeo, displayMat);
+		scene.add(quad);
+
+		function blit(target, material) {
+			quad.material = material;
+			renderer.setRenderTarget(target);
+			renderer.render(scene, camera);
+		}
+
+		// ---- Input handling ----------------------------------------------------
+		const pointer = {
+			x: 0.5, y: 0.5, dx: 0, dy: 0,
+			down: false, color: [1, 0.4, 0.2], moved: false, hue: 0,
+		};
+
+		function hsvToRgb(h, s, v) {
+			const i = Math.floor(h * 6);
+			const f = h * 6 - i;
+			const p = v * (1 - s);
+			const q = v * (1 - f * s);
+			const t = v * (1 - (1 - f) * s);
+			switch (i % 6) {
+				case 0: return [v, t, p];
+				case 1: return [q, v, p];
+				case 2: return [p, v, t];
+				case 3: return [p, q, v];
+				case 4: return [t, p, v];
+				case 5: return [v, p, q];
+			}
+		}
+		const randomColor = () => hsvToRgb(Math.random(), 0.9, 1.0);
+
+		function updatePointer(clientX, clientY) {
+			const x = clientX / window.innerWidth;
+			const y = 1 - clientY / window.innerHeight;
+			pointer.dx = (x - pointer.x) * config.brushStrength;
+			pointer.dy = (y - pointer.y) * config.brushStrength;
+			pointer.x = x;
+			pointer.y = y;
+			pointer.moved = Math.abs(pointer.dx) > 0 || Math.abs(pointer.dy) > 0;
+		}
+
+		// Filter out events that started on the settings UI
+		function isOnUI(target) {
+			return target.closest && (target.closest('#settings-panel') || target.closest('#settings-btn'));
+		}
+
+		window.addEventListener('mousedown', (e) => {
+			if (isOnUI(e.target)) return;
+			pointer.down = true;
+			pointer.color = randomColor();
+			pointer.x = e.clientX / window.innerWidth;
+			pointer.y = 1 - e.clientY / window.innerHeight;
+		});
+		window.addEventListener('mousemove', (e) => {
+			if (pointer.down) updatePointer(e.clientX, e.clientY);
+		});
+		window.addEventListener('mouseup', () => { pointer.down = false; });
+
+		window.addEventListener('touchstart', (e) => {
+			if (isOnUI(e.target)) return;
+			e.preventDefault();
+			const t = e.touches[0];
+			pointer.down = true;
+			pointer.color = randomColor();
+			pointer.x = t.clientX / window.innerWidth;
+			pointer.y = 1 - t.clientY / window.innerHeight;
+		}, { passive: false });
+		window.addEventListener('touchmove', (e) => {
+			if (!pointer.down) return;
+			e.preventDefault();
+			updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+		}, { passive: false });
+		window.addEventListener('touchend', () => { pointer.down = false; });
+
+		window.addEventListener('keydown', (e) => {
+			if (e.target.tagName === 'INPUT') return;
+			if (e.key === 'c' || e.key === 'C') clearAll();
+			if (e.key === ' ') { e.preventDefault(); randomSplats(8); }
+		});
+
+		function clearAll() {
+			clearMat.uniforms.uColor.value.set(0, 0, 0);
+			blit(velocity.read, clearMat);
+			blit(velocity.write, clearMat);
+			blit(pressure.read, clearMat);
+			blit(pressure.write, clearMat);
+			blit(dye.read, clearMat);
+			blit(dye.write, clearMat);
+		}
+
+		function splat(x, y, dx, dy, color) {
+			const aspect = window.innerWidth / window.innerHeight;
+
+			splatMat.uniforms.uTarget.value = velocity.read.texture;
+			splatMat.uniforms.uPoint.value.set(x, y);
+			splatMat.uniforms.uColor.value.set(dx, dy, 0);
+			splatMat.uniforms.uRadius.value = config.brushRadius;
+			splatMat.uniforms.uAspect.value = aspect;
+			blit(velocity.write, splatMat);
+			velocity.swap();
+
+			splatMat.uniforms.uTarget.value = dye.read.texture;
+			splatMat.uniforms.uColor.value.set(color[0], color[1], color[2]);
+			blit(dye.write, splatMat);
+			dye.swap();
+		}
+
+		function randomSplats(n) {
+			for (let i = 0; i < n; i++) {
+				const x = Math.random();
+				const y = Math.random();
+				const dx = (Math.random() - 0.5) * 1500;
+				const dy = (Math.random() - 0.5) * 1500;
+				splat(x, y, dx, dy, randomColor());
+			}
+		}
+
+		// ---- Simulation step ---------------------------------------------------
+		function step(dt) {
+			// 1. Advect velocity
+			advectMat.uniforms.uVelocity.value = velocity.read.texture;
+			advectMat.uniforms.uSource.value = velocity.read.texture;
+			advectMat.uniforms.uDt.value = dt;
+			advectMat.uniforms.uDissipation.value = config.velDissipation;
+			advectMat.uniforms.uTexelSize.value = simTexel;
+			blit(velocity.write, advectMat);
+			velocity.swap();
+
+			// 2. Inject mouse force
+			if (pointer.down && pointer.moved) {
+				if (config.rainbow) {
+					pointer.hue = (pointer.hue + 0.012) % 1;
+					pointer.color = hsvToRgb(pointer.hue, 0.9, 1.0);
+				}
+				splat(pointer.x, pointer.y, pointer.dx, pointer.dy, pointer.color);
+				pointer.moved = false;
+			}
+			pointer.dx *= 0.5;
+			pointer.dy *= 0.5;
+
+			// 3. Divergence
+			divergenceMat.uniforms.uVelocity.value = velocity.read.texture;
+			divergenceMat.uniforms.uTexelSize.value = simTexel;
+			blit(divergence, divergenceMat);
+
+			// 4. Pressure solve
+			pressureMat.uniforms.uDivergence.value = divergence.texture;
+			pressureMat.uniforms.uTexelSize.value = simTexel;
+			for (let i = 0; i < config.PRESSURE_ITERATIONS; i++) {
+				pressureMat.uniforms.uPressure.value = pressure.read.texture;
+				blit(pressure.write, pressureMat);
+				pressure.swap();
+			}
+
+			// 5. Gradient subtract
+			gradientSubtractMat.uniforms.uPressure.value = pressure.read.texture;
+			gradientSubtractMat.uniforms.uVelocity.value = velocity.read.texture;
+			gradientSubtractMat.uniforms.uTexelSize.value = simTexel;
+			blit(velocity.write, gradientSubtractMat);
+			velocity.swap();
+
+			// 6. Advect dye
+			advectMat.uniforms.uVelocity.value = velocity.read.texture;
+			advectMat.uniforms.uSource.value = dye.read.texture;
+			advectMat.uniforms.uDissipation.value = config.dyeDissipation;
+			advectMat.uniforms.uTexelSize.value = simTexel;
+			blit(dye.write, advectMat);
+			dye.swap();
+		}
+
+		// ---- Main loop ---------------------------------------------------------
+		let lastTime = performance.now();
+		function animate() {
+			requestAnimationFrame(animate);
+			const now = performance.now();
+			const dt = Math.min((now - lastTime) / 1000, 0.016);
+			lastTime = now;
+
+			step(dt);
+
+			displayMat.uniforms.uDye.value = dye.read.texture;
+			quad.material = displayMat;
+			renderer.setRenderTarget(null);
+			renderer.render(scene, camera);
+
+			updateFPS();
+		}
+
+		window.addEventListener('resize', () => {
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		});
+
+		// =====================================================================
+		// Settings UI wiring
+		// =====================================================================
+		const settingsBtn = document.getElementById('settings-btn');
+		const settingsPanel = document.getElementById('settings-panel');
+
+		settingsBtn.addEventListener('click', () => {
+			const open = settingsPanel.classList.toggle('open');
+			settingsBtn.classList.toggle('open', open);
+			settingsBtn.textContent = open ? '×' : '⚙';
+		});
+
+		// Quality presets
+		document.querySelectorAll('.preset').forEach(btn => {
+			btn.addEventListener('click', () => {
+				document.querySelectorAll('.preset').forEach(b => b.classList.remove('active'));
+				btn.classList.add('active');
+				Object.assign(config, QUALITY_PRESETS[btn.dataset.q]);
+				rebuildBuffers();
+				randomSplats(4); // visual confirmation it switched
+			});
+		});
+
+		// Slider helpers
+		function pickLabel(v, labels) {
+			// map 1..10 → index 0..labels.length-1
+			return labels[Math.min(labels.length - 1, Math.floor((v - 1) * labels.length / 10))];
+		}
+
+		function bindSlider(id, valId, labels, onChange) {
+			const slider = document.getElementById(id);
+			const valEl = document.getElementById(valId);
+			const update = () => {
+				const v = parseInt(slider.value);
+				valEl.textContent = pickLabel(v, labels);
+				onChange(v / 10); // normalized 0.1 to 1.0
+			};
+			slider.addEventListener('input', update);
+			update();
+		}
+
+		const sizeLabels = ['Tiny', 'Small', 'Medium', 'Large', 'Huge'];
+		const tenLabels = ['Very low', 'Low', 'Mild', 'Light', 'Medium', 'Active', 'High', 'Strong', 'Very high', 'Max'];
+		const trailLabels = ['Vanishing', 'Short', 'Brief', 'Medium', 'Lasting', 'Long', 'Very long', 'Persistent', 'Lingering', 'Forever'];
+
+		// Brush size: 0.0001 to 0.004
+		bindSlider('brush-size', 'brush-size-val', sizeLabels, (n) => {
+			config.brushRadius = 0.0001 + n * 0.0039;
+		});
+
+		// Brush strength: 400 to 2400
+		bindSlider('brush-strength', 'brush-strength-val', tenLabels, (n) => {
+			config.brushStrength = 400 + n * 2000;
+		});
+
+		// Color trails: dye dissipation from 0.95 to 0.999
+		bindSlider('color-trails', 'color-trails-val', trailLabels, (n) => {
+			config.dyeDissipation = 0.95 + n * 0.049;
+		});
+
+		// Liveliness: velocity dissipation
+		bindSlider('liveliness', 'liveliness-val', tenLabels, (n) => {
+			config.velDissipation = 0.97 + n * 0.029;
+		});
+
+		// Rainbow toggle
+		document.getElementById('rainbow-toggle').addEventListener('change', (e) => {
+			config.rainbow = e.target.checked;
+		});
+
+		// Action buttons
+		document.getElementById('clear-btn').addEventListener('click', clearAll);
+		document.getElementById('splash-btn').addEventListener('click', () => randomSplats(8));
+
+		// =====================================================================
+		// Init
+		// =====================================================================
+		rebuildBuffers();
+		randomSplats(6);
+		animate();
+	</script>
+</body>
+
+</html>

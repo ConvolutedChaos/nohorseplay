@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boot.css">
     <link rel="stylesheet" href="css/startmenu.css">
+    <script>
+        if (!window.indexedDB) {
+            document.location.replace('not-supported.html');
+        }
+    </script>
     <script src="js/jszip.min.js"></script>
     <!-- <style> #main-cursor { width: 24px; height: 24px; position: fixed; top: 0; left: 0; z-index: 90000000; display: none; pointer-events: none; user-select: none; } </style> -->
 </head>

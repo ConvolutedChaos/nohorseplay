@@ -278,12 +278,13 @@ function spawnWriter(item) {
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
             <button class="window-maximize-button" title="Maximize">□</button>
-            <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/writer.png" onerror="this.onerror=null;this.replaceWith(document.createTextNode('📝'))"> ${titleName} — Writer</span>
+            <span class="title-bar-text"><img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/writer.png"> ${titleName} — Writer</span>
         </div>
         <div class="app-body" style="height:calc(100% - var(--titlebar-height));overflow:hidden;display:flex;flex-direction:column;"></div>
     `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type: 'writer', item } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -297,7 +298,8 @@ function spawnWriter(item) {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = `<img class="app-icon-title-bar" src="icons/16/writer.png" onerror="this.onerror=null;this.replaceWith(document.createTextNode('📝'))"> ${titleName}`;
+    tbBtn.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/writer.png"> ${titleName}`;
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -935,7 +937,8 @@ async function _wrSaveAs(wrState, page, winEl) {
     // Update title bar
     const title = winEl.querySelector('.title-bar-text');
     if (title) {
-        title.innerHTML = `<img class="app-icon-title-bar" src="icons/16/writer.png" onerror="this.onerror=null;this.replaceWith(document.createTextNode('📝'))"> ${wrState.fileName} — Writer`;
+        title.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/writer.png"> ${wrState.fileName} — Writer`;
+        resolveIdbIcons(title);
     }
 }
 
@@ -970,7 +973,8 @@ async function _wrOpen(wrState, page, winEl) {
 
         const title = winEl.querySelector('.title-bar-text');
         if (title) {
-            title.innerHTML = `<img class="app-icon-title-bar" src="icons/16/writer.png" onerror="this.onerror=null;this.replaceWith(document.createTextNode('📝'))"> ${wrState.fileName} — Writer`;
+            title.innerHTML = `<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/writer.png"> ${wrState.fileName} — Writer`;
+        resolveIdbIcons(title);
         }
     };
     input.click();

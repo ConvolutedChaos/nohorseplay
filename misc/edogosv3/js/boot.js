@@ -48,8 +48,8 @@ const BOOT_LINES = [
      */
 ];
 
-/* ---- Build & run boot screen ---- */
-function runBootSequence(onComplete) {
+/* ---- Build & run terminal boot (fallback) ---- */
+function runBootSequenceTerminal(onComplete) {
     const overlay = document.createElement('div');
     overlay.id = 'bootOverlay';
     overlay.innerHTML = `
@@ -60,7 +60,6 @@ function runBootSequence(onComplete) {
     document.body.appendChild(overlay);
 
     const terminal = overlay.querySelector('#bootTerminal');
-    let lineIdx = 0;
 
     function addLine(line) {
         const el = document.createElement('div');
@@ -71,7 +70,6 @@ function runBootSequence(onComplete) {
         if (line.text === '') {
             el.innerHTML = '&nbsp;';
         } else if (line.text.startsWith('[  OK  ]') || line.text.includes('[  OK  ]')) {
-            // Color the OK green, rest normal
             el.innerHTML = line.text
                 .replace('[  OK  ]', '<span class="boot-ok">[  OK  ]</span>');
         } else {
@@ -81,7 +79,6 @@ function runBootSequence(onComplete) {
         terminal.appendChild(el);
         terminal.scrollTop = terminal.scrollHeight;
 
-        // Animate in
         el.style.opacity = '0';
         el.style.transform = 'translateX(-4px)';
         requestAnimationFrame(() => {
@@ -92,24 +89,347 @@ function runBootSequence(onComplete) {
     }
 
     function scheduleLines() {
-        const base = performance.now();
         BOOT_LINES.forEach(line => {
             setTimeout(() => addLine(line), line.delay);
         });
 
         const totalDuration = BOOT_LINES[BOOT_LINES.length - 1].delay + 600;
         setTimeout(() => {
-            // // Fade out boot overlay
-            // overlay.style.transition = 'opacity 0.5s ease';
-            // overlay.style.opacity = '0';
-            // setTimeout(() => {
             overlay.remove();
             onComplete();
-            // }, 500);
         }, totalDuration);
     }
 
     scheduleLines();
+}
+
+/* ---- Build & run graphical boot (from /boot/grub/config.json) ---- */
+async function runBootSequenceGraphical(config, onComplete) {
+    const bootTime = ((config.bootTime ?? 3)) * 1000;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'bootOverlay';
+    overlay.classList.add('boot-graphical');
+    document.body.appendChild(overlay);
+
+    const scanlines = document.createElement('div');
+    scanlines.className = 'boot-scanlines';
+    overlay.appendChild(scanlines);
+
+    // Inject user CSS into <head> so it takes effect globally; remove on teardown
+    let injectedStyle = null;
+    if (config.css) {
+        injectedStyle = document.createElement('style');
+        injectedStyle.id = 'grubBootCSS';
+        injectedStyle.textContent = config.css;
+        document.head.appendChild(injectedStyle);
+    }
+
+    // Logo
+    if (config.icon) {
+        try {
+            const img = await imgFromFS(`/boot/grub/${config.icon}`);
+            img.className = 'boot-logo';
+            overlay.appendChild(img);
+        } catch (_) { /* icon missing — skip */ }
+    }
+
+    // Progress indicator
+    if (config.progressType === 'spinner') {
+        if (config.spinnerImage) {
+            try {
+                const img = await imgFromFS(`/boot/grub/${config.spinnerImage}`);
+                img.className = 'boot-spinner';
+                overlay.appendChild(img);
+            } catch (_) { /* spinner missing — skip */ }
+        }
+    } else {
+        // default: "bar"
+        const track = document.createElement('div');
+        track.className = 'boot-progress-track';
+        const fill = document.createElement('div');
+        fill.className = 'boot-progress-bar';
+        fill.style.width = '0%';
+        track.appendChild(fill);
+        overlay.appendChild(track);
+
+        // Trigger the fill animation on the next two frames so the 0% state is painted first
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            fill.style.transition = `width ${bootTime}ms linear`;
+            fill.style.width = '100%';
+        }));
+    }
+
+    setTimeout(() => {
+        overlay.remove();
+        if (injectedStyle) injectedStyle.remove();
+        onComplete();
+    }, bootTime);
+}
+
+/* ---- Detect whether an existing install is missing /boot/ ---- */
+function checkNeedsRecovery() {
+    return new Promise((resolve) => {
+        const req = indexedDB.open('VirtualFS_v2', 1);
+
+        req.onupgradeneeded = (e) => {
+            // DB was just created — fresh install, not a corrupted one
+            e.target.transaction.abort();
+            resolve(false);
+        };
+
+        req.onsuccess = () => {
+            const db = req.result;
+            try {
+                const tx = db.transaction('nodes', 'readonly');
+                const store = tx.objectStore('nodes');
+                const countReq = store.count();
+                countReq.onsuccess = () => {
+                    if (countReq.result <= 5) {
+                        // Essentially empty — first run, let setup.js handle it
+                        db.close();
+                        resolve(false);
+                        return;
+                    }
+                    // Populated DB: check for /boot/ directory under root
+                    const childReq = store.index('parentId').getAll('root');
+                    childReq.onsuccess = () => {
+                        db.close();
+                        const hasBootDir = childReq.result.some(
+                            n => n.name === 'boot' && n.type === 'folder'
+                        );
+                        resolve(!hasBootDir);
+                    };
+                    childReq.onerror = () => { db.close(); resolve(false); };
+                };
+                countReq.onerror = () => { db.close(); resolve(false); };
+            } catch { db.close(); resolve(false); }
+        };
+
+        req.onerror = () => resolve(false);
+    });
+}
+
+/* ---- Recovery screen ---- */
+function showRecoveryScreen(missingItems) {
+    const overlay = document.createElement('div');
+    overlay.id = 'recoveryOverlay';
+    document.body.appendChild(overlay);
+
+    // ---- Detection / options view ----
+    function renderDetect() {
+        overlay.innerHTML = `
+            <div class="recovery-header">
+                <span>Recovery Utility</span>
+                <span>Build Date: 05/13/2026</span>
+            </div>
+            <div class="recovery-body">
+                <div style="margin-bottom:18px;">
+                    <div class="recovery-section-title">Recovery</div>
+                    <div class="recovery-divider">&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;</div>
+                    <div style="color:#ffff55;margin-bottom:10px;line-height:1.7;">
+                        WARNING: One or more files are missing or<br>
+                        corrupted. Your system cannot boot normally.
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <div style="color:#aaaaaa;margin-bottom:6px;">Detected missing components:</div>
+                        ${missingItems.map(m =>
+            `<div style="color:#ff8888;">[FAIL] ${m}</div>`
+        ).join('')}
+                    </div>
+                    <div class="recovery-divider">&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;</div>
+                </div>
+                <div>
+                    <div class="recovery-section-title">RECOVERY OPTIONS</div>
+                    <div style="color:#aaaaaa;margin-bottom:10px;line-height:1.7;">
+                        Press Enter or click the option below to restore your system.
+                    </div>
+                    <button id="recov-restore-btn" class="recovery-action-btn" tabindex="0">
+                        &gt; REPAIR SYSTEM
+                    </button>
+                </div>
+            </div>
+            <div class="recovery-footer">
+                Enter : Attempt System Repair
+            </div>
+        `;
+
+        const btn = overlay.querySelector('#recov-restore-btn');
+        btn.focus();
+        btn.onclick = runRecovery;
+
+        function onKey(e) {
+            if (e.key === 'Enter') {
+                document.removeEventListener('keydown', onKey);
+                runRecovery();
+            }
+        }
+        document.addEventListener('keydown', onKey);
+    }
+
+    // ---- Progress view ----
+    function renderProgress() {
+        overlay.innerHTML = `
+            <div class="recovery-header">
+                <span>Recovery Utility</span>
+                <span>Build Date: 05/13/2026</span>
+            </div>
+            <div class="recovery-body">
+                <div style="margin-bottom:16px;">
+                    <div style="color:#ffff55;margin-bottom:16px;line-height:1.7;">
+                        Do not turn off your computer.
+                    </div>
+                    <div id="recov-status" style="color:#ffffff;margin-bottom:8px;font-size:13px;">Preparing&hellip;</div>
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+                        <div class="recovery-progress-outer">
+                            <div id="recov-bar" class="recovery-progress-inner"></div>
+                        </div>
+                        <span id="recov-pct" style="color:#ffff55;font-size:13px;min-width:40px;">0%</span>
+                    </div>
+                </div>
+                <div id="recov-log" class="recovery-log" style="display:none;"></div>
+            </div>
+            <div class="recovery-footer">
+                Recovery in progress &mdash; please wait
+            </div>
+        `;
+    }
+
+    // ---- Complete view ----
+    function renderComplete() {
+        overlay.innerHTML = `
+            <div class="recovery-header">
+                <span>Recovery Utility</span>
+                <span>Build Date: 05/13/2026</span>
+            </div>
+            <div class="recovery-body">
+                <div style="margin-top:32px;">
+                    <div class="recovery-section-title">RECOVERY SUCCESSFUL</div>
+                    <button id="recov-reboot-btn" class="recovery-action-btn" tabindex="0">
+                        &gt; REBOOT
+                    </button>
+                </div>
+            </div>
+            <div class="recovery-footer">
+                Enter : Reboot
+            </div>
+        `;
+
+        const btn = overlay.querySelector('#recov-reboot-btn');
+        btn.focus();
+        btn.onclick = doReboot;
+
+        function onKey(e) {
+            if (e.key === 'Enter') {
+                document.removeEventListener('keydown', onKey);
+                doReboot();
+            }
+        }
+        document.addEventListener('keydown', onKey);
+    }
+
+    // ---- Recovery runner ----
+    async function runRecovery() {
+        renderProgress();
+
+        const log = overlay.querySelector('#recov-log');
+        const bar = overlay.querySelector('#recov-bar');
+        const pctEl = overlay.querySelector('#recov-pct');
+        const status = overlay.querySelector('#recov-status');
+
+        function addLog(text, color) {
+            if (!log) return;
+            const line = document.createElement('div');
+            line.style.color = color || '#888888';
+            line.textContent = text;
+            log.appendChild(line);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function setProgress(pct, msg) {
+            if (bar) bar.style.width = Math.min(pct, 100) + '%';
+            if (pctEl) pctEl.textContent = Math.round(Math.min(pct, 100)) + '%';
+            if (msg && status) status.textContent = msg;
+        }
+
+        try {
+            addLog('Starting system recovery...');
+            setProgress(5, 'Connecting to update server...');
+
+            const resp = await fetch('setup/setup.zip');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status} — server unreachable`);
+
+            setProgress(20, 'Downloading system image...');
+            addLog('Downloading setup.zip...');
+            const buf = await resp.arrayBuffer();
+
+            setProgress(35, 'Unpacking system image...');
+            addLog('Unpacking archive...');
+            const zip = await JSZip.loadAsync(buf);
+
+            setProgress(40, 'Restoring system files...');
+            addLog('Writing system files to virtual disk...');
+
+            await _patchSystemFiles(zip, (pct, msg) => {
+                setProgress(40 + pct * 0.55, msg);
+            });
+
+            if (typeof SETUP_VERSION !== 'undefined') {
+                localStorage.setItem('edog_setup_version', SETUP_VERSION);
+            }
+
+            setProgress(100, 'Recovery complete.');
+            addLog('');
+            addLog('System files restored successfully.', '#55ff55');
+
+            await _sleep(800);
+            renderComplete();
+
+        } catch (err) {
+            addLog('');
+            addLog('ERROR: ' + err.message, '#ff8888');
+            addLog('Recovery failed. Check your network connection.', '#ff8888');
+            setProgress(0, 'Recovery failed.');
+            if (status) status.style.color = '#ff8888';
+
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'recovery-action-btn';
+            retryBtn.textContent = '> RETRY';
+            retryBtn.style.marginTop = '14px';
+            retryBtn.onclick = renderDetect;
+            if (log) log.appendChild(retryBtn);
+        }
+    }
+
+    function doReboot() {
+        overlay.style.transition = 'opacity 0.5s';
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.remove(); location.reload(); }, 500);
+    }
+
+    renderDetect();
+}
+
+/* ---- Boot entry point: try graphical config, fall back to terminal ---- */
+function runBootSequence(onComplete) {
+    (async () => {
+        // If the /boot/ directory is absent on an existing install, force recovery
+        if (await checkNeedsRecovery()) {
+            showRecoveryScreen(['/boot/  (boot configuration directory)']);
+            return; // page reloads after recovery — onComplete is never called here
+        }
+
+        try {
+            const file = await accessFile('/boot/grub/config.json');
+            const text = file.contentType === 'text'
+                ? file.text
+                : new TextDecoder().decode(file.buffer);
+            const config = JSON.parse(text);
+            await runBootSequenceGraphical(config, onComplete);
+        } catch (_) {
+            runBootSequenceTerminal(onComplete);
+        }
+    })();
 }
 
 /* ---- Build login screen ---- */

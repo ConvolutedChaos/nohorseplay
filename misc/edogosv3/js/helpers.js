@@ -286,6 +286,41 @@ async function loadIconImg(fsPath, webPath, sizeCss = 'width:100%;height:100%;ob
     return img;
 }
 
+// Finds all img[data-idb-icon] in container and loads each from IDB (falls back to web).
+// data-idb-fallback overrides the auto-derived web fallback path.
+async function resolveIdbIcons(container) {
+    const imgs = [...container.querySelectorAll('img[data-idb-icon]')];
+    await Promise.all(imgs.map(async img => {
+        const fsPath = img.dataset.idbIcon;
+        const webPath = img.dataset.idbFallback || 'icons/' + fsPath.replace('/usr/share/icons/', '');
+        if (!iconBlobCache.has(fsPath)) {
+            try {
+                const file = await accessFile(fsPath);
+                const blob = new Blob(
+                    [file.contentType === 'text' ? file.text : file.buffer],
+                    { type: file.mime || 'image/' + fsPath.split('.').pop() }
+                );
+                iconBlobCache.set(fsPath, blob);
+            } catch {
+                try {
+                    const r = await fetch(webPath);
+                    iconBlobCache.set(fsPath, r.ok ? await r.blob() : null);
+                } catch {
+                    iconBlobCache.set(fsPath, null);
+                }
+            }
+        }
+        const cached = iconBlobCache.get(fsPath);
+        if (cached) {
+            const url = URL.createObjectURL(cached);
+            img.onload = () => URL.revokeObjectURL(url);
+            img.src = url;
+        } else {
+            img.src = webPath;
+        }
+    }));
+}
+
 /**
  * Open a .app file from an absolute virtual filesystem path.
  *

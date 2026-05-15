@@ -81,37 +81,7 @@
 }
 
 .boot-scanlines {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 0, 0, 0.08) 2px,
-            rgba(0, 0, 0, 0.08) 4px);
-    pointer-events: none;
-    z-index: 2;
-    animation: boot-flicker 8s infinite;
-}
-
-@keyframes boot-flicker {
-
-    0%,
-    98%,
-    100% {
-        opacity: 1;
-    }
-
-    98.5% {
-        opacity: 0.9;
-    }
-
-    99% {
-        opacity: 1;
-    }
-
-    99.5% {
-        opacity: 0.85;
-    }
+    display: none;
 }
 
 .boot-terminal {
@@ -123,7 +93,6 @@
     font-size: 13px;
     line-height: 1.7;
     color: #a0ffa0;
-    text-shadow: 0 0 8px rgba(80, 255, 80, 0.4);
 }
 
 .boot-line {
@@ -134,7 +103,6 @@
 .boot-ok {
     color: #4ade80;
     font-weight: 700;
-    text-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
 }
 
 .boot-cursor {
@@ -146,7 +114,6 @@
     animation: boot-blink 1s step-end infinite;
     position: relative;
     z-index: 1;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
 }
 
 @keyframes boot-blink {
@@ -159,6 +126,153 @@
     50% {
         opacity: 0;
     }
+}
+
+/* ---- RECOVERY SCREEN ---- */
+#recoveryOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999998;
+    background: #000080;
+    color: #ffffff;
+    font-family: 'BiosFont', 'Courier New', monospace;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}
+
+.recovery-header {
+    background: #00aaaa;
+    color: #000080;
+    padding: 3px 10px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.recovery-body {
+    flex: 1;
+    padding: 24px 32px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.recovery-section-title {
+    color: #00aaaa;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+    font-size: 13px;
+}
+
+.recovery-divider {
+    color: #00aaaa;
+    opacity: 0.55;
+    margin-bottom: 14px;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.recovery-action-btn {
+    display: inline-block;
+    background: #00aaaa;
+    color: #000080;
+    padding: 3px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'BiosFont', 'Courier New', monospace;
+    font-size: 14px;
+    border: none;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+}
+
+.recovery-action-btn:focus {
+    outline: 2px solid #ffff55;
+    outline-offset: 2px;
+}
+
+.recovery-action-btn:hover {
+    background: #55ffff;
+}
+
+.recovery-footer {
+    background: #00aaaa;
+    color: #000080;
+    padding: 3px 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.recovery-progress-outer {
+    width: 420px;
+    height: 14px;
+    background: #000040;
+    border: 1px solid #00aaaa;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.recovery-progress-inner {
+    height: 100%;
+    background: #00aaaa;
+    width: 0%;
+    transition: width 0.2s linear;
+}
+
+.recovery-log {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 12px;
+    color: #888888;
+    margin-top: 10px;
+    min-height: 0;
+    max-height: 160px;
+}
+
+/* ---- GRAPHICAL BOOT (grub config mode) ---- */
+#bootOverlay.boot-graphical {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 32px;
+    padding: 0;
+}
+
+.boot-logo {
+    max-width: 220px;
+    max-height: 220px;
+    object-fit: contain;
+}
+
+.boot-progress-track {
+    width: 260px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.boot-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #4ade80;
+    border-radius: 3px;
+}
+
+.boot-spinner {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
 }
 
 /* ---- LOGIN OVERLAY ---- */

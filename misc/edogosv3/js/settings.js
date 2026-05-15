@@ -363,7 +363,7 @@ function spawnSettings(initialSection = 'appearance') {
             <button class="window-close-button" title="Close">✕</button>
             <button class="window-minimize-button" title="Minimize">—</button>
             <button class="window-maximize-button" title="Maximize">□</button>
-            <span class="title-bar-text"><img class="app-icon-title-bar" src="icons/16/settings.png"> Settings</span>
+            <span class="title-bar-text"><img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/settings.png"> Settings</span>
         </div>
         <div class="settings-layout" oncontextmenu="return false">
             <nav class="settings-nav" id="settings-nav-${windowId}"></nav>
@@ -372,6 +372,7 @@ function spawnSettings(initialSection = 'appearance') {
     `;
 
     document.getElementById('windowContainer').appendChild(win);
+    resolveIdbIcons(win);
     windows[windowId] = { el: win, state: { type: 'settings' } };
 
     win.querySelector('.title-bar').addEventListener('mousedown', e => {
@@ -385,7 +386,8 @@ function spawnSettings(initialSection = 'appearance') {
     const tbBtn = document.createElement('button');
     tbBtn.className = 'win-btn';
     tbBtn.dataset.winid = windowId;
-    tbBtn.innerHTML = '<img class="app-icon-title-bar" src="icons/16/settings.png"> Settings';
+    tbBtn.innerHTML = '<img class="app-icon-title-bar" data-idb-icon="/usr/share/icons/16/settings.png"> Settings';
+    resolveIdbIcons(tbBtn);
     tbBtn.onclick = () => {
         if (win.style.display === 'none') { win.style.display = 'block'; focusWindow(windowId); }
         else focusWindow(windowId);
@@ -404,7 +406,13 @@ function spawnSettings(initialSection = 'appearance') {
 
 /* ---- Navigation sidebar ---- */
 const _SETTINGS_SECTIONS = [
-    { id: 'appearance', label: 'Appearance', icon: '<img style="margin-top: 5px;" src="icons/16/settings-backgrounds.png">' },
+    { id: 'appearance', label: 'Appearance', icon: '',
+        iconInit: (span) => {
+            imgFromFS('/usr/share/icons/16/settings-backgrounds.png')
+                .then(img => { img.style.marginTop = '5px'; span.appendChild(img); })
+                .catch(() => { span.textContent = '🎨'; span.style.fontSize = '14px'; });
+        }
+    },
     { id: 'desktop',    label: 'Desktop',    icon: '',
         iconInit: (span) => {
             imgFromFS('/usr/share/icons/16/folder-desktop.svg')
@@ -412,9 +420,27 @@ const _SETTINGS_SECTIONS = [
                 .catch(() => { span.textContent = '🖥'; span.style.fontSize = '14px'; });
         }
     },
-    { id: 'system', label: 'System', icon: '<img style="margin-top: 5px;" src="icons/16/settings.png">' },
-    { id: 'experimental', label: 'Experimental', icon: '<img style="margin-top: 5px;" src="icons/16/terminal.png">' },
-    { id: 'about', label: 'About', icon: '<img style="margin-top: 5px;" src="icons/16/settings-about.png">' },
+    { id: 'system', label: 'System', icon: '',
+        iconInit: (span) => {
+            imgFromFS('/usr/share/icons/16/settings.png')
+                .then(img => { img.style.marginTop = '5px'; span.appendChild(img); })
+                .catch(() => { span.textContent = '⚙️'; span.style.fontSize = '14px'; });
+        }
+    },
+    { id: 'experimental', label: 'Experimental', icon: '',
+        iconInit: (span) => {
+            imgFromFS('/usr/share/icons/16/terminal.png')
+                .then(img => { img.style.marginTop = '5px'; span.appendChild(img); })
+                .catch(() => { span.textContent = '🧪'; span.style.fontSize = '14px'; });
+        }
+    },
+    { id: 'about', label: 'About', icon: '',
+        iconInit: (span) => {
+            imgFromFS('/usr/share/icons/16/settings-about.png')
+                .then(img => { img.style.marginTop = '5px'; span.appendChild(img); })
+                .catch(() => { span.textContent = 'ℹ️'; span.style.fontSize = '14px'; });
+        }
+    },
 ];
 
 function _buildSettingsNav(windowId, activeSection) {
@@ -1041,7 +1067,7 @@ function _buildAboutSection(el) {
     el.innerHTML = `
         <div class="settings-section-title">About</div>
         <div class="settings-about-card">
-            <div class="settings-about-logo"><img style="width:64px;height:64px;" src="../../../img/cheeky_man.png"></div>
+            <div class="settings-about-logo" id="sf-about-logo"></div>
             <div>
                 <div class="settings-about-name">${ver}</div>
                 <div class="settings-about-detail">A virtual desktop environment running entirely in your browser.</div>
@@ -1051,6 +1077,10 @@ function _buildAboutSection(el) {
         <div class="settings-group-label" style="margin-top:22px;">Environment</div>
         <div class="settings-about-env" id="sf-env-rows"></div>
     `;
+
+    imgFromFS('/usr/share/icons/edogos-logo.png')
+        .then(img => { img.style.cssText = 'width:64px;height:64px;object-fit:contain;'; el.querySelector('#sf-about-logo').appendChild(img); })
+        .catch(() => {});
 
     const env = el.querySelector('#sf-env-rows');
 

@@ -556,7 +556,7 @@ async function extractZipToIDB(zip, username, onProgress) {
     for (let i = 0; i < allEntries.length; i++) {
         const entry = allEntries[i];
 
-        let rawPath = entry.name.replace(new RegExp(PLACEHOLDER, 'g'), username);
+        let rawPath = entry.name.replace(new RegExp(`(?<=^|/)${PLACEHOLDER}(?=/|$)`, 'g'), username);
         if (rawPath.endsWith('/')) rawPath = rawPath.slice(0, -1);
         if (!rawPath) continue;
 

@@ -11,6 +11,153 @@
 		href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap"
 		rel="stylesheet">
 	<link rel="stylesheet" href="style.css">
+	<style>
+		/* ── Control grid ── */
+		.controls-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: 1px;
+			background: var(--border);
+			border: 1px solid var(--border);
+			margin-bottom: 16px;
+		}
+
+		.ctrl {
+			background: var(--surface);
+			padding: 14px 16px 12px;
+			display: flex;
+			flex-direction: column;
+			gap: 7px;
+		}
+
+		.ctrl label {
+			font-family: var(--mono);
+			font-size: 10px;
+			color: var(--text-dim);
+			text-transform: uppercase;
+			letter-spacing: 0.18em;
+			user-select: none;
+		}
+
+		.ctrl label span {
+			color: var(--text-faint);
+			font-size: 9px;
+			margin-left: 4px;
+		}
+
+		.ctrl input[type="number"],
+		.ctrl input[type="text"],
+		.ctrl select {
+			background: var(--bg);
+			border: 1px solid var(--border);
+			color: var(--text);
+			font-family: var(--mono);
+			font-size: 13px;
+			padding: 7px 10px;
+			width: 100%;
+			appearance: none;
+			-webkit-appearance: none;
+			transition: border-color 0.15s;
+		}
+
+		.ctrl input[type="number"]:focus,
+		.ctrl input[type="text"]:focus,
+		.ctrl select:focus {
+			outline: none;
+			border-color: var(--accent);
+		}
+
+		.ctrl input[type="number"]:hover,
+		.ctrl input[type="text"]:hover,
+		.ctrl select:hover {
+			border-color: var(--border-bright);
+		}
+
+		/* dim the placeholder */
+		.ctrl input::placeholder {
+			color: var(--text-faint);
+		}
+
+		/* custom select arrow */
+		.ctrl select {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5460'/%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-position: right 10px center;
+			padding-right: 28px;
+			cursor: pointer;
+		}
+
+		/* spin buttons */
+		.ctrl input[type="number"]::-webkit-inner-spin-button,
+		.ctrl input[type="number"]::-webkit-outer-spin-button {
+			opacity: 0.4;
+		}
+
+		/* hint text below */
+		.ctrl .hint {
+			font-family: var(--mono);
+			font-size: 9px;
+			color: var(--text-faint);
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			line-height: 1.4;
+		}
+
+		/* section divider label */
+		.ctrl-section {
+			grid-column: 1 / -1;
+			background: var(--surface-2);
+			padding: 6px 16px;
+			font-family: var(--mono);
+			font-size: 9px;
+			color: var(--text-faint);
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			border-bottom: 1px solid var(--border);
+		}
+
+		/* CUSTOM args */
+		.custom-args {
+			margin-bottom: 24px;
+		}
+
+		.custom-args summary {
+			font-family: var(--mono);
+			font-size: 11px;
+			color: var(--text-dim);
+			text-transform: uppercase;
+			letter-spacing: 0.15em;
+			cursor: pointer;
+			padding: 8px 0;
+			user-select: none;
+		}
+
+		.custom-args summary:hover {
+			color: var(--text);
+		}
+
+		.custom-args summary::after {
+			content: ' (overrides all above)';
+			color: var(--text-faint);
+			font-size: 9px;
+		}
+
+		.custom-args input {
+			width: 100%;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			color: var(--text);
+			font-family: var(--mono);
+			font-size: 12px;
+			padding: 12px 14px;
+			margin-top: 8px;
+		}
+
+		.custom-args input:focus {
+			outline: none;
+			border-color: var(--accent);
+		}
+	</style>
 </head>
 
 <body>
@@ -42,19 +189,90 @@
 		</div>
 
 		<div id="converter-ui" class="hidden">
-			<div class="options">
-				<div class="option-group">
-					<span class="option-label">Quality</span>
-					<div class="option-buttons" id="quality-buttons">
-						<button class="option-btn" data-quality="low">Low</button>
-						<button class="option-btn active" data-quality="medium">Medium</button>
-						<button class="option-btn" data-quality="high">High</button>
-					</div>
+
+			<div class="controls-grid">
+
+				<!-- Timing row -->
+				<div class="ctrl-section">Timing</div>
+
+				<div class="ctrl">
+					<label for="ctrl-ss">Start time <span>–ss</span></label>
+					<input type="text" id="ctrl-ss" placeholder="00:00:00" maxlength="12">
+					<div class="hint">HH:MM:SS or seconds</div>
 				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-t">Duration <span>–t</span></label>
+					<input type="text" id="ctrl-t" placeholder="full clip" maxlength="12">
+					<div class="hint">HH:MM:SS or seconds</div>
+				</div>
+
+				<!-- Output row -->
+				<div class="ctrl-section">Output</div>
+
+				<div class="ctrl">
+					<label for="ctrl-fps">Frame rate <span>fps</span></label>
+					<input type="number" id="ctrl-fps" value="15" min="1" max="50" step="1">
+					<div class="hint">1 – 50 fps</div>
+				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-width">Width <span>px</span></label>
+					<input type="number" id="ctrl-width" value="480" min="32" max="1920" step="8">
+					<div class="hint">Height is auto-scaled</div>
+				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-colors">Colors <span>palette</span></label>
+					<input type="number" id="ctrl-colors" value="256" min="2" max="256" step="1">
+					<div class="hint">2 – 256 (fewer = smaller)</div>
+				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-loop">Loop count</label>
+					<input type="number" id="ctrl-loop" value="0" min="0" max="65535" step="1">
+					<div class="hint">0 = infinite</div>
+				</div>
+
+				<!-- Quality row -->
+				<div class="ctrl-section">Quality</div>
+
+				<div class="ctrl">
+					<label for="ctrl-dither">Dither mode</label>
+					<select id="ctrl-dither">
+						<option value="sierra2_4a">Sierra2-4A (default)</option>
+						<option value="bayer">Bayer (sharp)</option>
+						<option value="floyd_steinberg">Floyd-Steinberg</option>
+						<option value="none">None (flat fills)</option>
+					</select>
+					<div class="hint">Affects edge smoothness</div>
+				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-scale-algo">Scale filter</label>
+					<select id="ctrl-scale-algo">
+						<option value="lanczos">Lanczos (best)</option>
+						<option value="bicubic">Bicubic (fast)</option>
+						<option value="bilinear">Bilinear (faster)</option>
+						<option value="neighbor">Nearest (pixel art)</option>
+					</select>
+					<div class="hint">Downscale algorithm</div>
+				</div>
+
+				<div class="ctrl">
+					<label for="ctrl-stats-mode">Palette stats</label>
+					<select id="ctrl-stats-mode">
+						<option value="diff">Diff (motion, default)</option>
+						<option value="full">Full (static/flat)</option>
+						<option value="single">Single pass</option>
+					</select>
+					<div class="hint">palettegen stats_mode</div>
+				</div>
+
 			</div>
 
 			<details class="custom-args">
-				<summary>CUSTOM</summary>
+				<summary>CUSTOM ARGS</summary>
 				<input type="text" id="custom-args" placeholder='e.g.   -ss 00:00:10 -t 30 -vf fps=15,scale=480:-1'>
 			</details>
 
@@ -96,17 +314,9 @@
 	<script>
 		'use strict';
 
-		// Palette-based GIF filters — much better color quality than a plain -vf
-		const GIF_QUALITY = {
-			low: 'fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
-			medium: 'fps=15,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
-			high: 'fps=24,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
-		};
-
 		const state = {
 			ffmpeg: null,
 			file: null,
-			quality: 'medium',
 			converting: false,
 			lastOutputUrl: null,
 		};
@@ -144,7 +354,6 @@
 
 		function getBase(name) { return name.replace(/\.[^.]+$/, ''); }
 
-		// Tiny shell-arg parser. Handles 'single' and "double" quotes. No escapes.
 		function parseShellArgs(str) {
 			const args = [];
 			let current = '';
@@ -174,6 +383,45 @@
 			const decompressed = res.body.pipeThrough(ds);
 			const blob = await new Response(decompressed).blob();
 			return URL.createObjectURL(new Blob([await blob.arrayBuffer()], { type: mimeType }));
+		}
+
+		/** Read all the control values and build ffmpeg args. */
+		function buildArgs(inputName, outputName) {
+			// Custom args override everything
+			const customArgs = $('custom-args').value.trim();
+			if (customArgs) {
+				return ['-i', inputName, ...parseShellArgs(customArgs), outputName];
+			}
+
+			const fps = Math.max(1, Math.min(50, parseInt($('ctrl-fps').value) || 15));
+			const width = Math.max(32, Math.min(1920, parseInt($('ctrl-width').value) || 480));
+			const colors = Math.max(2, Math.min(256, parseInt($('ctrl-colors').value) || 256));
+			const loop = Math.max(0, parseInt($('ctrl-loop').value) || 0);
+			const dither = $('ctrl-dither').value || 'sierra2_4a';
+			const scaleAlg = $('ctrl-scale-algo').value || 'lanczos';
+			const stats = $('ctrl-stats-mode').value || 'diff';
+
+			const ss = $('ctrl-ss').value.trim();
+			const t = $('ctrl-t').value.trim();
+
+			// Two-pass palette filter (palettegen + paletteuse for best color quality)
+			const vf = [
+				`fps=${fps}`,
+				`scale=${width}:-1:flags=${scaleAlg}`,
+				`split[s0][s1]`,
+				`[s0]palettegen=max_colors=${colors}:stats_mode=${stats}[p]`,
+				`[s1][p]paletteuse=dither=${dither}`,
+			].join(',');
+
+			const args = [];
+			if (ss) args.push('-ss', ss);         // seek BEFORE -i for speed
+			args.push('-i', inputName);
+			if (t) args.push('-t', t);
+			args.push('-loop', String(loop));
+			args.push('-vf', vf);
+			args.push(outputName);
+
+			return args;
 		}
 
 		async function initFFmpeg() {
@@ -260,14 +508,6 @@
 			} else {
 				btn.textContent = 'MAKE GIF';
 			}
-		}
-
-		function buildArgs(inputName, outputName) {
-			const customArgs = $('custom-args').value.trim();
-			if (customArgs) {
-				return ['-i', inputName, ...parseShellArgs(customArgs), outputName];
-			}
-			return ['-i', inputName, '-vf', GIF_QUALITY[state.quality], outputName];
 		}
 
 		async function convert() {
@@ -373,15 +613,6 @@
 			});
 
 			$('clear-btn').addEventListener('click', clearFile);
-
-			document.querySelectorAll('#quality-buttons .option-btn').forEach(btn => {
-				btn.addEventListener('click', () => {
-					state.quality = btn.dataset.quality;
-					document.querySelectorAll('#quality-buttons .option-btn').forEach(b =>
-						b.classList.toggle('active', b === btn));
-				});
-			});
-
 			$('convert-btn').addEventListener('click', convert);
 
 			setStatus('loading', 'LOADING CORE');
