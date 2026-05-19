@@ -1,6 +1,4 @@
-/* ============================================================
-    setup.js
-============================================================ */
+// setup.js
 function openSetupDB() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open('VirtualFS_v2', 1);
@@ -67,9 +65,6 @@ window.__setupComplete = (async function () {
     });
 })();
 
-/* ============================================================
-   UI Builder — 4 steps: Welcome, Username, Password, Installing
-============================================================ */
 function buildSetupUI(onComplete) {
     let progressBarFill = null;
     let statusText = null;
@@ -456,6 +451,8 @@ function buildSetupUI(onComplete) {
         if (window.__setupVersion !== undefined) {
             localStorage.setItem('edog_setup_version', window.__setupVersion);
         }
+        setProgress(97, 'Writing system files…');
+        await applyPostInstallFiles({ username: uname, password: pw, computername });
         setProgress(100, 'Almost there…');
         await sleep(300);
 
@@ -490,11 +487,6 @@ function buildSetupUI(onComplete) {
     }
 }
 
-
-/* ============================================================
-   ZIP → IndexedDB extractor
-   Replaces the placeholder username "edogos" in all paths.
-============================================================ */
 async function extractZipToIDB(zip, username, onProgress) {
     const PLACEHOLDER = 'edogos';
 
@@ -596,9 +588,6 @@ async function extractZipToIDB(zip, username, onProgress) {
     db.close();
 }
 
-/* ============================================================
-   Fallback: create default folders without the ZIP
-============================================================ */
 async function fallbackInstall(username) {
     const { db } = await openSetupDB();
 
@@ -639,11 +628,89 @@ async function fallbackInstall(username) {
     db.close();
 }
 
+const POST_INSTALL_FILES = [
+    {
+        path: '/etc/hostname',
+        content: ({ computername }) => computername,
+    },
+    {
+        path: '/etc/passwd',
+        content: ({ username }) =>
+            `root:x:0:0:root:/root:/bin/sh\n${username}:x:1000:1000::/home/${username}:/bin/sh\n`,
+    },
+    {
+        path: '/etc/os-release',
+        content: () => 'NAME="E-Dog OS"\nID=edogos\nPRETTY_NAME="E-Dog OS 3"\n',
+    },
+];
 
-/* ============================================================
-   Tiny helpers
-============================================================ */
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+async function idbWriteFile(db, absolutePath, text) {
+    const parts = absolutePath.replace(/^\//, '').split('/');
+    const fileName = parts.pop();
+
+    // Walk / create each directory segment
+    let parentId = 'root';
+    for (const seg of parts) {
+        const children = await new Promise((res, rej) => {
+            const req = db.transaction('nodes', 'readonly')
+                .objectStore('nodes').index('parentId').getAll(parentId);
+            req.onsuccess = e => res(e.target.result);
+            req.onerror = e => rej(e.target.error);
+        });
+        const existing = children.find(n => n.name === seg && n.type === 'folder');
+        if (existing) {
+            parentId = existing.id;
+        } else {
+            const id = crypto.randomUUID();
+            await new Promise((res, rej) => {
+                const req = db.transaction('nodes', 'readwrite').objectStore('nodes')
+                    .put({ id, name: seg, type: 'folder', parentId, createdAt: Date.now(), updatedAt: Date.now() });
+                req.onsuccess = () => res();
+                req.onerror = e => rej(e.target.error);
+            });
+            parentId = id;
+        }
+    }
+
+    // Check for existing file to reuse its id
+    const siblings = await new Promise((res, rej) => {
+        const req = db.transaction('nodes', 'readonly')
+            .objectStore('nodes').index('parentId').getAll(parentId);
+        req.onsuccess = e => res(e.target.result);
+        req.onerror = e => rej(e.target.error);
+    });
+    const existingFile = siblings.find(n => n.name === fileName && n.type === 'file');
+
+    const enc = new TextEncoder().encode(text).buffer;
+    const id = existingFile?.id ?? crypto.randomUUID();
+    await new Promise((res, rej) => {
+        const req = db.transaction('nodes', 'readwrite').objectStore('nodes').put({
+            id, name: fileName, type: 'file', parentId,
+            content: enc, size: enc.byteLength,
+            mime: guessMime(fileName),
+            createdAt: existingFile?.createdAt ?? Date.now(),
+            updatedAt: Date.now(),
+        });
+        req.onsuccess = () => res();
+        req.onerror = e => rej(e.target.error);
+    });
+}
+
+async function applyPostInstallFiles(vars) {
+    const { db } = await openSetupDB();
+    for (const entry of POST_INSTALL_FILES) {
+        try {
+            await idbWriteFile(db, entry.path, entry.content(vars));
+        } catch (err) {
+            console.warn(`[Setup] Could not write ${entry.path}:`, err);
+        }
+    }
+    db.close();
+}
+
+function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
 
 function guessMime(name) {
     const ext = (name.split('.').pop() || '').toLowerCase();

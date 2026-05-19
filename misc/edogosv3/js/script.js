@@ -1,7 +1,7 @@
 ﻿/* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.2.4";
+const VERSION = "E-Dog OS 3.2.5";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -4387,7 +4387,7 @@ function _parseAppFile(raw) {
     return JSON.parse(raw);
 }
 
-function spawnCustomApp(item) {
+function spawnCustomApp(item, openItem = null) {
     let config;
     try {
         const text = item.content instanceof ArrayBuffer
@@ -4435,7 +4435,7 @@ function spawnCustomApp(item) {
     `;
 
     document.getElementById('windowContainer').appendChild(win);
-    windows[windowId] = { el: win, state: { type: 'customapp', item } };
+    windows[windowId] = { el: win, state: { type: 'customapp', item, openItem } };
 
     _loadCustomAppIcon(customIcon, icon, win.querySelector(`.ca-tb-icon-${windowId}`));
 
@@ -4537,6 +4537,12 @@ function spawnCustomApp(item) {
                 getVersion:   ()                     => _call('getVersion',   {}),
                 // Get the current theme name (e.g. 'dark', 'light', 'nord', ...)
                 getTheme:     ()                     => _call('getTheme',     {}),
+                // Get the file this app was opened with (null if launched without a file)
+                getOpenFile:  ()                     => _call('getOpenFile',  {}),
+                // Get the current window size: { width, height }
+                getSize:      ()                     => _call('getSize',      {}),
+                // Resize the window to the given pixel dimensions
+                setSize:      (width, height)        => _call('setSize',      { width, height }),
             };
         })();
         <\/script>
@@ -5489,7 +5495,7 @@ function openFile(item) {
     } else if (ext === 'app') {
         spawnCustomApp(item);
     } else if (ext === 'edoc') {
-        spawnWriter(item);
+        openCustomAppFromPath('/usr/bin/writer.app', item);
     } else if (MD_EXTS.has(ext)) {
         spawnApp('markdown', item);
     } else {
@@ -5673,7 +5679,7 @@ function showOpenWithMenu(x, y, item) {
 
     if (isImage) {
         entries.push({ label: 'Image Viewer', icon: 'open', action: () => spawnApp('image', item) });
-        entries.push({ label: 'Paint', icon: 'open', action: () => spawnPaint(item) });
+        entries.push({ label: 'Paint', icon: 'open', action: () => openCustomAppFromPath('/usr/bin/paint.app', item) });
     }
     if (isAudio) {
         entries.push({ label: 'Audio Player', icon: 'open', action: () => spawnApp('audio', item) });
@@ -5700,7 +5706,10 @@ function showOpenWithMenu(x, y, item) {
         });
     }
     if (isWriterDoc) {
-        entries.push({ label: 'Writer', icon: 'open', action: () => spawnWriter(item) });
+        entries.push({ label: 'Writer', icon: 'open', action: () => openCustomAppFromPath('/usr/bin/writer.app', item) });
+    }
+    if (HTML_EXTS.has(ext)) {
+        entries.push({ label: 'Bacon Explorer', icon: 'open', action: () => openCustomAppFromPath('/usr/bin/baconexplorer.app', item) });
     }
     if (isMarkdown) {
         entries.push({ label: 'Markdown Viewer', icon: 'open', action: () => spawnApp('markdown', item) });
@@ -8270,6 +8279,40 @@ window.addEventListener('message', (e) => {
             case 'getTheme':
                 result = { theme: currentTheme };
                 break;
+            case 'getOpenFile': {
+                const winEntry = Object.entries(windows).find(([, w]) => w.iframe?.contentWindow === source);
+                const openItem = winEntry?.[1]?.state?.openItem ?? null;
+                if (!openItem) { result = null; break; }
+                const raw = openItem.content;
+                if (raw instanceof ArrayBuffer) {
+                    try {
+                        result = { name: openItem.name, mime: openItem.mime || '', text: new TextDecoder('utf-8', { fatal: true }).decode(raw), base64: null };
+                    } catch {
+                        result = { name: openItem.name, mime: openItem.mime || '', text: null, base64: _arrayBufferToBase64(raw) };
+                    }
+                } else {
+                    result = { name: openItem.name, mime: openItem.mime || '', text: String(raw ?? ''), base64: null };
+                }
+                break;
+            }
+            case 'getSize': {
+                const winEntry = Object.entries(windows).find(([, w]) => w.iframe?.contentWindow === source);
+                const winEl = winEntry?.[1]?.el;
+                if (!winEl) throw new Error('Window not found');
+                result = { width: winEl.offsetWidth, height: winEl.offsetHeight };
+                break;
+            }
+            case 'setSize': {
+                const winEntry = Object.entries(windows).find(([, w]) => w.iframe?.contentWindow === source);
+                const winEl = winEntry?.[1]?.el;
+                if (!winEl) throw new Error('Window not found');
+                const w = Math.min(window.innerWidth, Math.max(120, Math.round(Number(args.width))));
+                const h = Math.min(window.innerHeight, Math.max(60, Math.round(Number(args.height))));
+                winEl.style.width = w + 'px';
+                winEl.style.height = h + 'px';
+                result = { ok: true };
+                break;
+            }
             default:
                 throw new Error('Unknown OS action: ' + action);
         }

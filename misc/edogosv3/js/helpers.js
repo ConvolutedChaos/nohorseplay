@@ -333,7 +333,7 @@ async function resolveIdbIcons(container) {
  * @example
  *   await openCustomAppFromPath("/usr/bin/calc.app");
  */
-async function openCustomAppFromPath(path) {
+async function openCustomAppFromPath(path, openItem = null) {
     try {
         const file = await accessFile(path);
 
@@ -352,7 +352,7 @@ async function openCustomAppFromPath(path) {
                            : file.buffer,
         };
 
-        return spawnCustomApp(item);
+        return spawnCustomApp(item, openItem);
     } catch (err) {
         console.error(`openCustomAppFromPath: failed to open "${path}":`, err);
         spawnError(`Cannot open ${path}: ${err.message}`);

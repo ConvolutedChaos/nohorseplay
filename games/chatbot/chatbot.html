@@ -1,271 +1,637 @@
 <!DOCTYPE html>
-<html class="wow-animation" lang="en">
+<html lang="en">
 
 <head>
-    <title>Chatbot</title>
-    <meta name="format-detection" content="telephone=no">
-    <meta name="viewport"
-        content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css"
-        href="//fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:300,300italic,400,600,700,900">
-    <link rel="stylesheet" href="../../css/style.css">
-    <style>
-        .ie-panel {
-            display: none;
-            background: #212121;
-            padding: 10px 0;
-            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
-            clear: both;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatbot</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link
+		href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap"
+		rel="stylesheet">
+	<style>
+		*,
+		*::before,
+		*::after {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
 
-        html.ie-10 .ie-panel,
-        html.lt-ie-10 .ie-panel {
-            display: block;
-        }
-    </style>
+		:root {
+			--bg: #0f1117;
+			--surface: #181c27;
+			--border: #252a38;
+			--text: #dde1ec;
+			--text-dim: #5c6478;
+			--text-muted: #383f52;
+			--accent: #4fffb0;
+			--accent2: #00c47a;
+			--danger: #ff5f5f;
+			--warn: #ffb84d;
+			--radius: 18px;
+			--mono: 'IBM Plex Mono', monospace;
+			--sans: 'Inter', sans-serif;
+		}
+
+		html,
+		body {
+			height: 100%;
+			background: var(--bg);
+			color: var(--text);
+			font-family: var(--sans);
+			font-size: 14px;
+			line-height: 1.6;
+			overflow: hidden;
+		}
+
+		#app {
+			display: grid;
+			grid-template-rows: auto 3px auto auto 1fr auto auto;
+			height: 100vh;
+			max-width: 760px;
+			margin: 0 auto;
+		}
+
+		header { grid-row: 1; }
+		#progress-wrap { grid-row: 2; }
+		#thread-warn { grid-row: 3; }
+		#error-banner { grid-row: 4; }
+		#messages { grid-row: 5; }
+		#settings-row { grid-row: 6; }
+		#input-area { grid-row: 7; }
+
+		/* ── Header ── */
+		header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 13px 20px;
+			border-bottom: 1px solid var(--border);
+			background: var(--surface);
+		}
+
+		.logo {
+			font-family: var(--mono);
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--accent);
+			letter-spacing: .04em;
+		}
+
+		.logo span {
+			color: var(--text-dim);
+			font-weight: 400;
+		}
+
+		/* ── Progress ── */
+		#progress-wrap {
+			height: 3px;
+			background: var(--border);
+			overflow: hidden;
+			transition: opacity .6s;
+		}
+
+		#progress-bar {
+			height: 100%;
+			width: 0%;
+			background: linear-gradient(90deg, var(--accent2), var(--accent));
+			transition: width .3s ease;
+			box-shadow: 0 0 8px var(--accent);
+		}
+
+		/* ── Error banner ── */
+		#error-banner {
+			display: none;
+			margin: 14px 20px 0;
+			padding: 12px 16px;
+			background: rgba(255, 95, 95, .08);
+			border: 1px solid rgba(255, 95, 95, .25);
+			border-radius: 10px;
+			color: var(--danger);
+			font-family: var(--mono);
+			font-size: 12px;
+			white-space: pre-wrap;
+		}
+
+		/* ── Messages ── */
+		#messages {
+			overflow-y: auto;
+			padding: 20px 16px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			scroll-behavior: smooth;
+		}
+
+		#messages::-webkit-scrollbar {
+			width: 4px;
+		}
+
+		#messages::-webkit-scrollbar-thumb {
+			background: var(--border);
+			border-radius: 99px;
+		}
+
+		/* Chat bubble rows */
+		.msg {
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+			animation: fadeUp .18s ease both;
+			max-width: 78%;
+		}
+
+		.msg.user {
+			align-self: flex-end;
+			align-items: flex-end;
+		}
+
+		.msg.assistant {
+			align-self: flex-start;
+			align-items: flex-start;
+		}
+
+		@keyframes fadeUp {
+			from {
+				opacity: 0;
+				transform: translateY(6px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.msg-label {
+			font-family: var(--mono);
+			font-size: 10px;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			padding: 0 6px;
+		}
+
+		.msg.user .msg-label {
+			color: var(--accent2);
+		}
+
+		.msg-body {
+			padding: 10px 14px;
+			font-size: 14px;
+			white-space: pre-wrap;
+			word-break: break-word;
+			line-height: 1.65;
+			border-radius: var(--radius);
+		}
+
+		/* User bubble: filled accent-tinted */
+		.msg.user .msg-body {
+			background: #1a2e28;
+			border: 1px solid #1f4035;
+			border-bottom-right-radius: 4px;
+			color: #c6f0df;
+		}
+
+		/* Assistant bubble: subtle surface */
+		.msg.assistant .msg-body {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-bottom-left-radius: 4px;
+			color: var(--text);
+		}
+
+		.cursor {
+			display: inline-block;
+			width: 7px;
+			height: 13px;
+			background: var(--accent);
+			vertical-align: middle;
+			animation: blink .7s step-end infinite;
+			border-radius: 1px;
+			margin-left: 2px;
+		}
+
+		/* ── Splash ── */
+		#splash {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			height: 100%;
+			color: var(--text-dim);
+			text-align: center;
+			padding: 40px;
+		}
+
+		#splash .big {
+			font-size: 13px;
+			font-family: var(--mono);
+			color: var(--text);
+		}
+
+		#splash .sub {
+			font-size: 12px;
+			max-width: 380px;
+			line-height: 1.7;
+		}
+
+		.spinner {
+			width: 28px;
+			height: 28px;
+			border: 2px solid var(--border);
+			border-top-color: var(--accent);
+			border-radius: 50%;
+			animation: spin .8s linear infinite;
+			margin-bottom: 4px;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		/* ── Settings row ── */
+		#settings-row {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			padding: 8px 16px;
+			background: var(--surface);
+			border-top: 1px solid var(--border);
+			flex-wrap: wrap;
+		}
+
+		.setting-group {
+			display: flex;
+			align-items: center;
+			gap: 7px;
+			font-size: 12px;
+			color: var(--text-dim);
+		}
+
+		.setting-group label {
+			white-space: nowrap;
+			font-weight: 500;
+		}
+
+		#creativity-label {
+			font-size: 12px;
+			color: var(--accent);
+			font-weight: 600;
+			min-width: 54px;
+		}
+
+		.setting-group input[type=range] {
+			width: 90px;
+			accent-color: var(--accent);
+			cursor: pointer;
+		}
+
+		.setting-group select {
+			background: var(--bg);
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			color: var(--text);
+			font-family: var(--sans);
+			font-size: 12px;
+			padding: 4px 8px;
+			outline: none;
+			cursor: pointer;
+		}
+
+		.setting-group select:focus {
+			border-color: var(--accent2);
+		}
+
+		.hidden {
+			display: none !important;
+		}
+
+		/* ── Input area ── */
+		#input-area {
+			padding: 10px 16px 14px;
+			background: var(--surface);
+			display: flex;
+			gap: 8px;
+			align-items: flex-end;
+		}
+
+		#prompt {
+			flex: 1;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			border-radius: 20px;
+			color: var(--text);
+			font-family: var(--sans);
+			font-size: 14px;
+			padding: 10px 16px;
+			resize: none;
+			min-height: 42px;
+			max-height: 140px;
+			overflow-y: auto;
+			outline: none;
+			line-height: 1.5;
+			transition: border-color .2s;
+		}
+
+		#prompt:focus {
+			border-color: var(--accent2);
+		}
+
+		#prompt::placeholder {
+			color: var(--text-muted);
+		}
+
+		#prompt:disabled {
+			opacity: .4;
+			cursor: not-allowed;
+		}
+
+		.btn {
+			height: 40px;
+			padding: 0 16px;
+			border: 1px solid transparent;
+			border-radius: 20px;
+			font-family: var(--sans);
+			font-size: 13px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all .15s;
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+
+		.btn-send {
+			background: var(--accent);
+			color: #000;
+			border-color: var(--accent);
+		}
+
+		.btn-send:hover:not(:disabled) {
+			background: var(--accent2);
+			border-color: var(--accent2);
+		}
+
+		.btn-send:disabled {
+			opacity: .35;
+			cursor: not-allowed;
+		}
+
+		.btn-stop {
+			background: transparent;
+			color: var(--danger);
+			border-color: var(--danger);
+		}
+
+		.btn-stop:hover {
+			background: rgba(255, 95, 95, .1);
+		}
+
+		.btn-clear {
+			background: transparent;
+			color: var(--text-dim);
+			border-color: var(--border);
+			font-size: 12px;
+			height: 32px;
+			border-radius: 16px;
+			padding: 0 12px;
+			margin-left: auto;
+		}
+
+		.btn-clear:hover {
+			border-color: var(--text-dim);
+			color: var(--text);
+		}
+	</style>
 </head>
 
-<body class="novi-background"><!-- IE panel-->
-    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
-                src="../../img/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820"
-                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
-    </div><!-- Page-->
-    <div class="page text-center novi-background"><!-- Page Header-->
-        <header class="section page-head"
-            data-preset='{"title":"Header","category":"main","reload":true,"id":"header"}'><!-- RD Navbar -->
-            <div class="rd-navbar-wrap">
-                <nav class="rd-navbar novi-background" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed"
-                    data-sm-device-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fullwidth"
-                    data-md-device-layout="rd-navbar-fullwidth" data-md-stick-up="true" data-md-stick-up-offset="115px"
-                    data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up="true"
-                    data-lg-stick-up-offset="71px" data-xl-layout="rd-navbar-static"
-                    data-xl-device-layout="rd-navbar-static" data-xl-stick-up="true" data-xl-stick-up-offset="133px">
-                    <div class="rd-navbar-inner"><!-- RD Navbar Panel-->
-                        <div class="rd-navbar-panel"><!-- RD Navbar Toggle--><button class="rd-navbar-toggle"
-                                data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button><!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a class="brand-name" href="/"><img
-                                        src="../../img/logo-medium.png" width="172" height="75" alt=""></a></div>
-                        </div>
-                        <div class="rd-navbar-nav-wrap"><!-- RD Navbar Nav-->
-                            <ul class="rd-navbar-nav">
-                                <li><a href="/">Home page</a></li>
-                                <li><a href="../../games.html">Games</a></li>
-                                <li><a href="javascript:void(0);">Gallery</a><!-- RD Navbar Dropdown-->
-                                    <ul class="rd-navbar-dropdown">
-                                        <li><a href="../../angry-birds-gallery.html">realistic angry birds</a></li>
-                                        <li><a href="../../scary-gallery.html">scary</a></li>
-                                        <!-- <ul class="rd-navbar-dropdown">
-												<li><a href="#">fresh</a></li>
-												<li><a href="#">archive</a></li>
-												<li><a href="404.html">404</a></li>
-											</ul> -->
-                                </li>
-                            </ul>
-                            </li>
-                            <li><a href="../../stuff.html">Stuff</a></li>
-                            <li><a href="../../tools.html">Tools</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </header>
-        <section class="section section-65 bg-default novi-background"
-            data-preset='{"title":"About us 3","category":"about","reload":false,"id":"about-us-3"}'>
-            <div class="shell shell-wide">
-                <div class="page-counter page-counter-bottom-5">
-                    <!-- <img class="img-responsive center-block"
-                        src="images/about-01-317x344.png" alt="" width="317" height="344"> -->
-                    <h1>Chatbot</h1>
-                    <h5>It's not real.</h5>
-                </div>
+<body>
+	<div id="app">
 
-            </div>
-        </section>
-        <section class="section section-80 section-md-122 section-title section-title-left bg-default novi-background"
-            data-preset='{"title":"About us 4","category":"about","reload":false,"id":"about-us-4"}'>
-            <div class="section-title-text">Chatbot</div>
+		<header>
+			<div class="logo">Chatbot</div>
+			<!-- <div id="status-pill">
+				<div class="dot"></div><span id="status-text">initializing…</span>
+			</div> -->
+		</header>
 
-        </section>
-        <section class="section section-92 section-lg-122 bg-default novi-background"
-            data-preset='{"title":"Team","category":"team","reload":true,"id":"team"}'>
-            <div class="shell shell-wide">
-                <style>
-                    #chat {
-                        width: 100%;
-                        max-width: 500px;
-                        background: white;
-                        border-radius: 12px;
-                        padding: 20px;
-                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                        overflow-y: auto;
-                        height: 400px;
-                        margin-bottom: 15px;
-                        display: flex;
-                        flex-direction: column;
-                    }
+		<div id="progress-wrap">
+			<div id="progress-bar"></div>
+		</div>
 
-                    .bubble {
-                        padding: 10px 15px;
-                        border-radius: 20px;
-                        margin: 10px 0;
-                        max-width: 80%;
-                        word-wrap: break-word;
-                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                    }
+		<div id="error-banner"></div>
 
-                    .user {
-                        background: #0078d7;
-                        color: white;
-                        align-self: flex-end;
-                        margin-left: auto;
-                        border-bottom-right-radius: 0px;
-                    }
+		<div id="messages">
+			<div id="splash">
+				<div class="spinner"></div>
+				<div class="big">Loading model.gguf…</div>
+				<div class="sub">The model is being fetched and initialized. This may take a minute depending on file
+					size.</div>
+			</div>
+		</div>
 
-                    .bot {
-                        background: #e4e6eb;
-                        color: #333;
-                        align-self: flex-start;
-                        margin-right: auto;
-                        border-bottom-left-radius: 0px;
-                    }
+		<div id="settings-row" class="hidden">
+			<div class="setting-group">
+				<label>Creativity</label>
+				<span id="creativity-label">Balanced</span>
+				<input type="range" id="temp-slider" min="0" max="2" step="0.05" value="0.7">
+			</div>
+			<div class="setting-group">
+				<label>Length</label>
+				<select id="n-predict">
+					<option value="128">Short</option>
+					<option value="512" selected>Medium</option>
+					<option value="1024">Long</option>
+					<option value="4096">Very long</option>
+				</select>
+			</div>
+			<button class="btn btn-clear" id="btn-clear">clear chat</button>
+		</div>
 
-                    #inputContainer {
-                        display: flex;
-                        width: 100%;
-                        max-width: 500px;
-                    }
+		<div id="input-area">
+			<textarea id="prompt" placeholder="Send a message…" disabled rows="1"></textarea>
+			<button class="btn btn-send" id="btn-send" disabled>Send</button>
+			<button class="btn btn-stop hidden" id="btn-stop">Stop</button>
+		</div>
 
-                    #message {
-                        flex: 1;
-                        padding: 10px;
-                        font-size: 16px;
-                        border-radius: 20px 0 0 20px;
-                        border: 1px solid #ccc;
-                        outline: none;
-                    }
+	</div>
+	<script type="module">
+		import { Wllama } from './index.js';
 
-                    #sendButton {
-                        padding: 10px 20px;
-                        font-size: 16px;
-                        border: none;
-                        background-color: #0078d7;
-                        color: white;
-                        border-radius: 0 20px 20px 0;
-                        cursor: pointer;
-                    }
+		const CONFIG_PATHS = { default: './model.wasm' };
 
-                    #sendButton:hover {
-                        background-color: #005fa3;
-                    }
-                </style>
-                <div class="container">
-                    <div id="chat"></div>
-                    
-                    <div id="inputContainer">
-                        <input type="text" id="message" placeholder="Type your message..." />
-                        <button id="sendButton" onclick="sendMessage()">Send</button>
-                    </div>
-                    
-                    <script src="rivescript.min.js"></script>
-                    
-                    <script>
-                        const bot = new RiveScript();
+		const $messages = document.getElementById('messages');
+		const $splash = document.getElementById('splash');
+		const $prompt = document.getElementById('prompt');
+		const $btnSend = document.getElementById('btn-send');
+		const $btnStop = document.getElementById('btn-stop');
+		const $btnClear = document.getElementById('btn-clear');
+		const $statusPill = document.getElementById('status-pill');
+		const $statusText = document.getElementById('status-text');
+		const $progressBar = document.getElementById('progress-bar');
+		const $progressWrap = document.getElementById('progress-wrap');
+		const $errorBanner = document.getElementById('error-banner');
+		const $settingsRow = document.getElementById('settings-row');
+		const $tempSlider = document.getElementById('temp-slider');
+		const $creLabel = document.getElementById('creativity-label');
+		const $nPredict = document.getElementById('n-predict');
 
-                        let typeSpeed = 6; // ms
+		let wllama = null, generating = false, stopRequested = false;
 
+		const SYSTEM_MSG = { role: 'system', content: 'You are a helpful, concise assistant.' };
+		const history = [{ ...SYSTEM_MSG }];
 
-                        bot.loadFile("bot.rive")
-                            .then(loading_done)
-                            .catch(loading_error);
+		const showError = msg => { $errorBanner.style.display = 'block'; $errorBanner.textContent = msg; };
 
-                        function loading_done() {
-                            console.log("Bot ready!");
-                            bot.sortReplies();
-                        }
+		const CREATIVITY_LABELS = [
+			[0, 0.2, 'Precise'],
+			[0.2, 0.5, 'Focused'],
+			[0.5, 0.9, 'Balanced'],
+			[0.9, 1.3, 'Creative'],
+			[1.3, 2.01, 'Wild'],
+		];
 
-                        function loading_error(error) {
-                            console.error("Error loading bot: ", error);
-                        }
+		$tempSlider.addEventListener('input', () => {
+			const v = parseFloat($tempSlider.value);
+			const entry = CREATIVITY_LABELS.find(([lo, hi]) => v >= lo && v < hi);
+			$creLabel.textContent = entry ? entry[2] : '';
+		});
 
-                        function sendMessage() {
-                            const input = document.getElementById("message");
-                            const chat = document.getElementById("chat");
-                            const msg = input.value.trim();
+		function appendMessage(role, text = '') {
+			const wrap = document.createElement('div');
+			wrap.className = `msg ${role}`;
+			wrap.innerHTML = `<div class="msg-label">${role === 'user' ? 'You' : 'Assistant'}</div><div class="msg-body"></div>`;
+			$messages.appendChild(wrap);
+			const body = wrap.querySelector('.msg-body');
+			body.textContent = text;
+			$messages.scrollTop = $messages.scrollHeight;
+			return body;
+		}
 
-                            if (msg === "") return;
+		function enableUI() {
+			$splash.remove();
+			$settingsRow.classList.remove('hidden');
+			$prompt.disabled = false;
+			$btnSend.disabled = false;
+			$progressWrap.style.opacity = '0';
+			setTimeout(() => $progressWrap.style.display = 'none', 600);
+		}
 
-                            // User bubble
-                            const userBubble = document.createElement("div");
-                            userBubble.className = "bubble user";
-                            userBubble.textContent = msg;
-                            chat.appendChild(userBubble);
-                            // chat.scrollTop = chat.scrollHeight;
+		async function generate(userText) {
+			if (generating || !wllama) return;
+			generating = true; stopRequested = false;
 
-                            // Bot thinking...
-                            bot.reply("local-user", msg).then(function (reply) {
-                                const botBubble = document.createElement("div");
-                                botBubble.className = "bubble bot";
-                                chat.appendChild(botBubble);
-                                typeText(botBubble, reply.replace(/\n/g, "<br>"), typeSpeed); // 💥 Magic here
-                            });
+			history.push({ role: 'user', content: userText });
+			appendMessage('user', userText);
 
-                            input.value = "";
-                            input.focus();
-                        }
+			const assistantBody = appendMessage('assistant', '');
+			const cursor = Object.assign(document.createElement('span'), { className: 'cursor' });
+			assistantBody.appendChild(cursor);
 
-                        // Typewriter effect that handles <br>
-                        function typeText(element, text, speed) {
-                            let i = 0;
-                            element.innerHTML = ""; // Start fresh
+			$prompt.disabled = true;
+			$btnSend.classList.add('hidden');
+			$btnStop.classList.remove('hidden');
 
-                            function type() {
-                                if (i < text.length) {
-                                    // If there's a <br> tag starting here, insert it all at once
-                                    if (text.substr(i, 4) === "<br>") {
-                                        element.innerHTML += "<br>";
-                                        i += 4;
-                                    } else {
-                                        element.innerHTML += text.charAt(i);
-                                        i++;
-                                    }
-                                    // element.scrollIntoView({ behavior: "smooth", block: "end" });
-                                    setTimeout(type, speed);
-                                }
-                            }
-                            type();
-                        }
+			let assembled = '';
+			try {
+				const stream = await wllama.createChatCompletion({
+					messages: history,
+					max_tokens: parseInt($nPredict.value, 10) || 512,
+					temperature: parseFloat($tempSlider.value),
+					top_k: 40,
+					frequency_penalty: 1.3,
+					stream: true,
+				});
 
+				for await (const chunk of stream) {
+					if (stopRequested) break;
+					const delta = chunk.choices[0]?.delta?.content ?? '';
+					assembled += delta;
+					assistantBody.textContent = assembled;
+					assistantBody.appendChild(cursor);
+					$messages.scrollTop = $messages.scrollHeight;
+				}
+			} catch (err) {
+				assembled = '[generation error: ' + err.message + ']';
+				assistantBody.textContent = assembled;
+				console.error(err);
+			}
 
-                        // Send on Enter
-                        document.getElementById("message").addEventListener("keydown", function (e) {
-                            if (e.key === "Enter") sendMessage();
-                        });
-                    </script>
-                </div>
-        </section>
+			cursor.remove();
+			const finalText = assembled.trim();
+			if (finalText) {
+				assistantBody.textContent = finalText;
+				history.push({ role: 'assistant', content: finalText });
+			} else if (!assembled) {
+				assistantBody.textContent = '[no output]';
+			}
 
-        <section class="section section-divider">
-            <div class="shell shell-wide inset-left-0 inset-right-0">
-                <hr class="divider-full">
-            </div>
-        </section><!-- Page Footer-->
-        <footer class="section page-footer novi-background"
-            data-preset='{"title":"Footer","category":"main","reload":false,"id":"footer"}'>
-            <div class="container"><span>&#169;</span> <span id="copyright-year"></span>
-                <hr class="divider divider-default divider-vertical"><a href="../../privacy.html">Privacy policy</a>
-            </div>
-        </footer>
-    </div><!-- Global Mailform Output-->
-    <div class="snackbars" id="form-output-global"></div><!-- Java script-->
-    <script src="../../js/core.min.js"></script>
-    <script src="../../js/script.js"></script>
+			generating = false;
+			$prompt.disabled = false;
+			$btnSend.classList.remove('hidden');
+			$btnStop.classList.add('hidden');
+			$prompt.focus();
+		}
+
+		$btnSend.addEventListener('click', () => {
+			const text = $prompt.value.trim();
+			if (!text) return;
+			$prompt.value = ''; $prompt.style.height = '';
+			generate(text);
+		});
+
+		$prompt.addEventListener('keydown', e => {
+			if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $btnSend.click(); }
+		});
+
+		$prompt.addEventListener('input', () => {
+			$prompt.style.height = 'auto';
+			$prompt.style.height = Math.min($prompt.scrollHeight, 140) + 'px';
+		});
+
+		$btnStop.addEventListener('click', () => {
+			stopRequested = true;
+			$btnStop.disabled = true;
+			$btnStop.textContent = 'Stopping…';
+		});
+
+		$btnClear.addEventListener('click', () => {
+			history.length = 0;
+			history.push({ ...SYSTEM_MSG });
+			[...$messages.querySelectorAll('.msg')].forEach(el => el.remove());
+		});
+
+		(async () => {
+			try {
+				wllama = new Wllama(CONFIG_PATHS, {
+					logger: { debug: () => { }, log: (...a) => console.log('[wllama]', ...a), warn: (...a) => console.warn('[wllama]', ...a), error: (...a) => console.error('[wllama]', ...a) }
+				});
+
+				const modelUrl = new URL('./model.gguf', window.location.href).href;
+
+				await wllama.loadModelFromUrl(modelUrl, {
+					progressCallback: ({ loaded, total }) => {
+						if (total > 0) {
+							const pct = Math.round((loaded / total) * 100);
+							$progressBar.style.width = pct + '%';
+							const big = $splash?.querySelector('.big');
+							if (big) big.textContent = `Loading… ${pct}% (${Math.round(loaded / 1048576)} / ${Math.round(total / 1048576)} MB)`;
+						}
+					},
+				});
+
+				enableUI();
+			} catch (err) {
+				console.error(err);
+				showError(`Failed to load model:\n${err.message}\n\nMake sure:\n  • Serving from HTTP (not file://)\n  • model.gguf is in the same folder\n  • Model is ≤ 2GB`);
+				$splash?.remove();
+			}
+		})();
+	</script>
 </body>
 
 </html>

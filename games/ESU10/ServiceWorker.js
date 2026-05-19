@@ -1,9 +1,9 @@
-const cacheName = "Nohorseplay-ESU10-1.6";
+const cacheName = "Nohorseplay-ESU10-1.7";
 const contentToCache = [
     "Build/ESU10.loader.js",
-    "Build/ESU10.framework.js",
-    "Build/ESU10.data",
-    "Build/ESU10.wasm",
+    "Build/ESU10.framework.js.unityweb",
+    "Build/ESU10.data.unityweb",
+    "Build/ESU10.wasm.unityweb",
     "TemplateData/style.css"
 
 ];

@@ -51,6 +51,16 @@
             emoji: '🖼️',
             zip: './apps/imgedit.zip',
         },
+        {
+            id: 'checkers',
+            name: 'Checkers',
+            version: '1.0',
+            description: 'Play checkers',
+            author: 'E-Dog',
+            category: 'games',
+            emoji: '🏁',
+            zip: './apps/checkers.zip',
+        },
     ];
 
     /* ============================================================
