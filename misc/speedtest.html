@@ -220,9 +220,10 @@
 
 	<script>
 		(function () {
-			var FILE_URL = '1mb.file';
-			var FILE_SIZE = 1 * 1024 * 1024;
+			var FILE_URL = '/tools/speedtest/20mb.file';
+			var FILE_SIZE = 20 * 1024 * 1024;
 			var RUNS = 3;
+			var TIMEOUT_MS = 30000;
 			var GAUGE_CIRC = 565;
 			var GAUGE_MAX_MBPS = 100;
 
@@ -267,12 +268,27 @@
 				xhr.open('GET', url, true);
 				xhr.responseType = 'blob';
 				var start = performance.now ? performance.now() : Date.now();
-				xhr.onprogress = function (e) {
-					var loaded = e.loaded || 0;
+				var done = false;
+				var lastLoaded = 0;
+
+				var timer = setTimeout(function () {
+					if (done) return;
+					done = true;
+					xhr.abort();
 					var elapsed = ((performance.now ? performance.now() : Date.now()) - start) / 1000;
-					if (elapsed > 0) onProgress(loaded, elapsed);
+					if (lastLoaded > 0 && elapsed > 0) cb(null, lastLoaded, elapsed);
+					else cb(new Error('Timeout with no data'));
+				}, TIMEOUT_MS);
+
+				xhr.onprogress = function (e) {
+					lastLoaded = e.loaded || 0;
+					var elapsed = ((performance.now ? performance.now() : Date.now()) - start) / 1000;
+					if (elapsed > 0) onProgress(lastLoaded, elapsed);
 				};
 				xhr.onload = function () {
+					if (done) return;
+					done = true;
+					clearTimeout(timer);
 					if (xhr.status < 200 || xhr.status >= 300) {
 						cb(new Error('HTTP ' + xhr.status));
 						return;
@@ -280,28 +296,52 @@
 					var elapsed = ((performance.now ? performance.now() : Date.now()) - start) / 1000;
 					cb(null, FILE_SIZE, elapsed);
 				};
-				xhr.onerror = function () { cb(new Error('Download failed')); };
+				xhr.onerror = function () {
+					if (done) return;
+					done = true;
+					clearTimeout(timer);
+					cb(new Error('Download failed'));
+				};
 				xhr.send();
 			}
 
 			function downloadFetch(url, onProgress, cb) {
 				var start = performance.now();
+				var done = false;
+				var received = 0;
+
+				var timer = setTimeout(function () {
+					if (done) return;
+					done = true;
+					var elapsed = (performance.now() - start) / 1000;
+					if (received > 0 && elapsed > 0) cb(null, received, elapsed);
+					else cb(new Error('Timeout with no data'));
+				}, TIMEOUT_MS);
+
 				fetch(url, { cache: 'no-store' }).then(function (res) {
 					if (!res.ok) {
+						if (done) return;
+						done = true;
+						clearTimeout(timer);
 						cb(new Error('HTTP ' + res.status));
 						return;
 					}
 					if (!res.body) {
 						return res.blob().then(function (b) {
+							if (done) return;
+							done = true;
+							clearTimeout(timer);
 							var elapsed = (performance.now() - start) / 1000;
 							cb(null, b.size, elapsed);
 						});
 					}
 					var reader = res.body.getReader();
-					var received = 0;
 					function pump() {
 						return reader.read().then(function (r) {
+							if (done) return;
 							if (r.done) {
+								done = true;
+								clearTimeout(timer);
 								var elapsed = (performance.now() - start) / 1000;
 								cb(null, received, elapsed);
 								return;
@@ -313,7 +353,12 @@
 						});
 					}
 					return pump();
-				}).catch(cb);
+				}).catch(function(e) {
+					if (done) return;
+					done = true;
+					clearTimeout(timer);
+					cb(e);
+				});
 			}
 
 			function runDownload(runIndex, onProgress, cb) {
