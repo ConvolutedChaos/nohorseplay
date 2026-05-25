@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e0e10">
+<title>Scriptorium</title>
+<style>
+/* ============================================================
+   THEME VARIABLES
+   ============================================================ */
+:root {
+  --bg: #0e0e10;
+  --panel: #16161a;
+  --panel-2: #1c1c22;
+  --surface: #1a1a1f;
+  --border: #2a2a32;
+  --border-strong: #3a3a44;
+  --text: #e7e7ea;
+  --text-dim: #a1a1aa;
+  --text-faint: #71717a;
+  --accent: #e8b07a;
+  --accent-dim: #8a6a4a;
+  --danger: #e57373;
+  --success: #7ab57a;
+  --selection: rgba(232, 176, 122, 0.25);
+
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", "Menlo", "Consolas", monospace;
+  --serif: "Iowan Old Style", "Palatino Linotype", "Charter", "Source Serif Pro", Georgia, "Times New Roman", serif;
+
+  --header-h: 48px;
+  --toolbar-h: 44px;
+  --statusbar-h: 28px;
+  --sidebar-w: 280px;
+
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root.light {
+  --bg: #f4f1ea;
+  --panel: #ffffff;
+  --panel-2: #ebe6dc;
+  --surface: #fdfcf8;
+  --border: #d8d2c4;
+  --border-strong: #b8b0a0;
+  --text: #1a1814;
+  --text-dim: #4a4640;
+  --text-faint: #7a756d;
+  --accent: #8a4a1a;
+  --accent-dim: #b8855a;
+  --danger: #b04040;
+  --success: #4a7a3a;
+  --selection: rgba(138, 74, 26, 0.18);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+::selection { background: var(--selection); }
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }
+
+input, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 6px 8px;
+}
+
+input:focus, select:focus { outline: 1px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+
+/* ============================================================
+   APP SHELL LAYOUT
+   ============================================================ */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: var(--header-h) var(--toolbar-h) 1fr var(--statusbar-h);
+  grid-template-areas:
+    "sidebar header"
+    "sidebar toolbar"
+    "sidebar editor"
+    "sidebar status";
+  height: 100dvh;
+  width: 100vw;
+}
+
+.sidebar { grid-area: sidebar; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.header  { grid-area: header;  background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+.toolbar { grid-area: toolbar; background: var(--panel-2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 2px; padding: 0 8px; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+.editor-wrap { grid-area: editor; overflow-y: auto; background: var(--bg); }
+.statusbar { grid-area: status; background: var(--panel); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 12px; gap: 12px; font-size: 11px; color: var(--text-faint); }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar-head {
+  height: var(--header-h);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 8px;
+  flex-shrink: 0;
+}
+.brand {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  flex: 1;
+}
+.brand::before { content: "▮ "; color: var(--text-dim); }
+
+.sidebar-actions { display: flex; flex-direction: column; padding: 8px; gap: 4px; flex-shrink: 0; }
+
+.btn-new {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  transition: filter 120ms;
+}
+.btn-new:hover { filter: brightness(1.1); }
+.btn-new:active { filter: brightness(0.9); }
+
+.search-input {
+  width: 100%;
+  font-size: 12px;
+  background: var(--surface);
+}
+
+.doc-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+
+.doc-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-left: 2px solid transparent;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 80ms;
+  position: relative;
+}
+.doc-item:hover { background: var(--panel-2); }
+.doc-item.active { background: var(--panel-2); border-left-color: var(--accent); }
+
+.doc-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.doc-meta {
+  font-size: 10px;
+  color: var(--text-faint);
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.doc-item-menu {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 24px; height: 24px;
+  display: none;
+  align-items: center; justify-content: center;
+  color: var(--text-faint);
+  border-radius: 2px;
+}
+.doc-item:hover .doc-item-menu, .doc-item.active .doc-item-menu { display: flex; }
+.doc-item-menu:hover { background: var(--border); color: var(--text); }
+
+.empty-state {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.menu-btn {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.menu-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.doc-title-input {
+  flex: 1;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 6px 8px;
+  min-width: 0;
+}
+.doc-title-input:hover { border-color: var(--border); }
+.doc-title-input:focus { border-color: var(--accent); background: var(--surface); }
+
+.header-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+}
+.icon-btn:hover { color: var(--accent); background: var(--surface); border-color: var(--border); }
+.icon-btn.active { color: var(--accent); background: var(--surface); border-color: var(--accent-dim); }
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+.toolbar::-webkit-scrollbar { height: 4px; }
+.toolbar::-webkit-scrollbar-track { background: transparent; }
+.toolbar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+.tb-btn {
+  height: 32px;
+  min-width: 36px;
+  padding: 0 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+  transition: all 80ms;
+}
+.tb-btn:hover { color: var(--text); background: var(--surface); border-color: var(--border); }
+.tb-btn.active { color: var(--accent); background: var(--surface); border-color: var(--accent-dim); }
+.tb-btn:disabled { color: var(--text-faint); opacity: 0.4; cursor: not-allowed; }
+
+.tb-btn svg { width: 16px; height: 16px; }
+
+.tb-sep {
+  width: 1px; height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.tb-select {
+  height: 32px;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tb-select:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* ============================================================
+   EDITOR
+   ============================================================ */
+.editor-wrap { padding: 32px 24px 80px; }
+.editor-paper {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 56px 64px;
+  min-height: calc(100dvh - 200px);
+  box-shadow: var(--shadow);
+}
+
+.editor {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+  outline: none;
+  min-height: 400px;
+  word-wrap: break-word;
+}
+.editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-faint);
+  font-style: italic;
+  pointer-events: none;
+}
+
+.editor h1 { font-size: 2em; margin: 0.6em 0 0.4em; line-height: 1.2; }
+.editor h2 { font-size: 1.5em; margin: 0.8em 0 0.4em; line-height: 1.3; }
+.editor h3 { font-size: 1.2em; margin: 0.8em 0 0.4em; line-height: 1.4; }
+.editor p  { margin: 0 0 0.8em; }
+.editor ul, .editor ol { margin: 0 0 0.8em; padding-left: 1.5em; }
+.editor li { margin-bottom: 0.3em; }
+.editor blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 3px solid var(--accent-dim);
+  color: var(--text-dim);
+  font-style: italic;
+}
+.editor code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--panel-2);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+}
+.editor pre {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  background: var(--panel-2);
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.editor a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.editor hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+.editor img { max-width: 100%; height: auto; }
+
+/* ============================================================
+   STATUSBAR
+   ============================================================ */
+.status-item { display: flex; align-items: center; gap: 6px; }
+.status-item.dim { color: var(--text-faint); }
+.status-spacer { flex: 1; }
+
+.save-indicator {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--text-faint);
+  transition: background 200ms;
+}
+.save-indicator.saving { background: var(--accent); animation: pulse 1s infinite; }
+.save-indicator.saved { background: var(--success); }
+.save-indicator.error { background: var(--danger); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ============================================================
+   MODAL / OVERLAY
+   ============================================================ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.modal-body { padding: 20px; }
+.modal-foot {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+
+.modal label { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+.modal input[type="text"], .modal input[type="url"], .modal textarea {
+  width: 100%; background: var(--surface);
+}
+.modal p { margin: 0 0 12px; color: var(--text-dim); line-height: 1.6; }
+
+.btn {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  background: transparent;
+}
+.btn:hover { color: var(--text); border-color: var(--text-dim); }
+.btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.1); color: var(--bg); }
+.btn-danger { color: var(--danger); border-color: var(--danger); }
+.btn-danger:hover { background: var(--danger); color: var(--bg); }
+
+/* ============================================================
+   POPUP MENU (export, settings)
+   ============================================================ */
+.popup {
+  position: absolute;
+  top: calc(var(--header-h) - 2px); right: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  min-width: 200px;
+  box-shadow: var(--shadow);
+  z-index: 50;
+  display: none;
+}
+.popup.open { display: block; }
+.popup-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.popup-item:last-child { border-bottom: none; }
+.popup-item:hover { background: var(--surface); color: var(--accent); }
+.popup-item svg { width: 14px; height: 14px; color: var(--text-faint); }
+.popup-item:hover svg { color: var(--accent); }
+.popup-divider { height: 1px; background: var(--border); }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast-wrap {
+  position: fixed;
+  bottom: calc(var(--statusbar-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  color: var(--text);
+  padding: 10px 16px;
+  font-size: 12px;
+  font-family: var(--mono);
+  box-shadow: var(--shadow);
+  animation: toast-in 200ms ease-out;
+  max-width: 90vw;
+}
+.toast.error { border-left-color: var(--danger); }
+.toast.success { border-left-color: var(--success); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   MOBILE LAYOUT
+   ============================================================ */
+@media (max-width: 768px) {
+  body { font-size: 14px; }
+
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "toolbar"
+      "editor"
+      "status";
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(280px, 85vw);
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform 200ms ease-out;
+    box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 89;
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+
+  .menu-btn { display: flex; }
+
+  .editor-wrap { padding: 16px 12px 100px; }
+  .editor-paper {
+    padding: 24px 20px;
+    border: none;
+    box-shadow: none;
+    background: var(--bg);
+    min-height: calc(100dvh - 160px);
+  }
+  .editor { font-size: 17px; } /* 16px+ keeps iOS from zooming */
+
+  .tb-btn { min-width: 40px; height: 36px; }
+  .tb-select { height: 36px; font-size: 12px; }
+
+  .toolbar { padding: 0 4px; }
+
+  /* respect notch + home indicator */
+  .header { padding-top: env(safe-area-inset-top); height: calc(var(--header-h) + env(safe-area-inset-top)); }
+  .statusbar { padding-bottom: env(safe-area-inset-bottom); height: calc(var(--statusbar-h) + env(safe-area-inset-bottom)); }
+
+  .doc-title-input { font-size: 14px; }
+
+  .icon-btn { width: 40px; height: 40px; }
+}
+
+@media (max-width: 380px) {
+  .statusbar { font-size: 10px; gap: 8px; padding: 0 8px; }
+  .header { gap: 4px; padding: 0 6px; }
+  .doc-title-input { font-size: 13px; }
+}
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--border-strong); }
+*::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">Scriptorium</div>
+      <button class="icon-btn" id="closeSidebarBtn" title="Close" aria-label="Close sidebar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+      </button>
+    </div>
+    <div class="sidebar-actions">
+      <button class="btn-new" id="newDocBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        New Document
+      </button>
+      <input class="search-input" id="searchInput" type="search" placeholder="Search documents…" autocomplete="off">
+    </div>
+    <div class="doc-list" id="docList"></div>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <button class="menu-btn" id="openSidebarBtn" aria-label="Open document list">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <input class="doc-title-input" id="docTitleInput" placeholder="Untitled" spellcheck="false">
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" id="menuBtn" title="More" aria-label="More options">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+      </button>
+    </div>
+
+    <!-- Popup menu -->
+    <div class="popup" id="menuPopup">
+      <button class="popup-item" data-action="export-html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export as HTML
+      </button>
+      <button class="popup-item" data-action="export-txt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Export as TXT
+      </button>
+      <button class="popup-item" data-action="export-md">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Export as Markdown
+      </button>
+      <div class="popup-divider"></div>
+      <button class="popup-item" data-action="print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        Print
+      </button>
+      <div class="popup-divider"></div>
+      <button class="popup-item" data-action="duplicate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Duplicate
+      </button>
+      <button class="popup-item" data-action="delete" style="color: var(--danger);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Delete Document
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       TOOLBAR
+       ============================================================ -->
+  <nav class="toolbar" id="toolbar">
+    <button class="tb-btn" data-cmd="undo" title="Undo (Ctrl+Z)" aria-label="Undo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="redo" title="Redo (Ctrl+Y)" aria-label="Redo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 15-6.7L21 13"/></svg>
+    </button>
+
+    <div class="tb-sep"></div>
+
+    <select class="tb-select" id="blockSelect" aria-label="Paragraph style">
+      <option value="p">Paragraph</option>
+      <option value="h1">Heading 1</option>
+      <option value="h2">Heading 2</option>
+      <option value="h3">Heading 3</option>
+      <option value="blockquote">Quote</option>
+      <option value="pre">Code Block</option>
+    </select>
+
+    <div class="tb-sep"></div>
+
+    <button class="tb-btn" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 4h-9M14 20H5M15 4L9 20"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="strikeThrough" title="Strikethrough" aria-label="Strikethrough">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4H9a3 3 0 0 0-2.83 4M14 12a4 4 0 0 1 0 8H6M4 12h16"/></svg>
+    </button>
+
+    <div class="tb-sep"></div>
+
+    <button class="tb-btn" data-cmd="insertUnorderedList" title="Bullet list" aria-label="Bullet list">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="insertOrderedList" title="Numbered list" aria-label="Numbered list">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6h11M10 12h11M10 18h11M4 6h1v4M4 10h2M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+    </button>
+
+    <div class="tb-sep"></div>
+
+    <button class="tb-btn" data-cmd="justifyLeft" title="Align left" aria-label="Align left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 10H3M21 6H3M21 14H3M17 18H3"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="justifyCenter" title="Align center" aria-label="Align center">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10H6M21 6H3M21 14H3M18 18H6"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="justifyRight" title="Align right" aria-label="Align right">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10H7M21 6H3M21 14H3M21 18H7"/></svg>
+    </button>
+
+    <div class="tb-sep"></div>
+
+    <button class="tb-btn" data-action="link" title="Insert link" aria-label="Insert link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    </button>
+    <button class="tb-btn" data-action="hr" title="Insert horizontal rule" aria-label="Insert horizontal rule">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+    </button>
+    <button class="tb-btn" data-cmd="removeFormat" title="Clear formatting" aria-label="Clear formatting">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M5 20h6M13 4L8 20M15 15l5 5M20 15l-5 5"/></svg>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       EDITOR
+       ============================================================ -->
+  <main class="editor-wrap">
+    <div class="editor-paper">
+      <div class="editor" id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start writing…"></div>
+    </div>
+  </main>
+
+  <!-- ============================================================
+       STATUS BAR
+       ============================================================ -->
+  <footer class="statusbar">
+    <span class="status-item"><span class="save-indicator" id="saveDot"></span><span id="saveLabel">Ready</span></span>
+    <span class="status-spacer"></span>
+    <span class="status-item dim"><span id="wordCount">0</span>&nbsp;words</span>
+    <span class="status-item dim"><span id="charCount">0</span>&nbsp;chars</span>
+  </footer>
+</div>
+
+<!-- ============================================================
+     MODAL: link
+     ============================================================ -->
+<div class="overlay" id="linkOverlay">
+  <div class="modal">
+    <div class="modal-head">Insert Link</div>
+    <div class="modal-body">
+      <label for="linkUrl">URL</label>
+      <input type="url" id="linkUrl" placeholder="https://example.com">
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="linkConfirm">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: confirm delete
+     ============================================================ -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal">
+    <div class="modal-head" id="confirmTitle">Confirm</div>
+    <div class="modal-body">
+      <p id="confirmMessage">Are you sure?</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close-modal>Cancel</button>
+      <button class="btn btn-danger" id="confirmYes">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   INDEXEDDB WRAPPER
+   ============================================================ */
+const DB_NAME = 'scriptorium';
+const DB_VERSION = 1;
+const STORE = 'documents';
+
+const db = {
+  _conn: null,
+  async open() {
+    if (this._conn) return this._conn;
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const conn = e.target.result;
+        if (!conn.objectStoreNames.contains(STORE)) {
+          const store = conn.createObjectStore(STORE, { keyPath: 'id' });
+          store.createIndex('updatedAt', 'updatedAt', { unique: false });
+        }
+      };
+      req.onsuccess = () => { this._conn = req.result; resolve(req.result); };
+      req.onerror = () => reject(req.error);
+    });
+  },
+  async tx(mode = 'readonly') {
+    const conn = await this.open();
+    return conn.transaction(STORE, mode).objectStore(STORE);
+  },
+  async put(doc) {
+    const store = await this.tx('readwrite');
+    return new Promise((res, rej) => {
+      const r = store.put(doc);
+      r.onsuccess = () => res(doc);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async get(id) {
+    const store = await this.tx();
+    return new Promise((res, rej) => {
+      const r = store.get(id);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async getAll() {
+    const store = await this.tx();
+    return new Promise((res, rej) => {
+      const r = store.getAll();
+      r.onsuccess = () => res(r.result || []);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async delete(id) {
+    const store = await this.tx('readwrite');
+    return new Promise((res, rej) => {
+      const r = store.delete(id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  currentId: null,
+  docs: [], // cache
+  saveTimer: null,
+  saveStatus: 'ready', // ready | saving | saved | error
+  searchQuery: '',
+  isDirty: false,
+};
+
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
+const $ = (id) => document.getElementById(id);
+const editor = $('editor');
+const docList = $('docList');
+const titleInput = $('docTitleInput');
+const searchInput = $('searchInput');
+const blockSelect = $('blockSelect');
+const sidebar = $('sidebar');
+const sidebarBackdrop = $('sidebarBackdrop');
+const menuPopup = $('menuPopup');
+const saveDot = $('saveDot');
+const saveLabel = $('saveLabel');
+const wordCountEl = $('wordCount');
+const charCountEl = $('charCount');
+const toastWrap = $('toastWrap');
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function uid() {
+  return 'd_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+}
+
+function fmtRelative(ts) {
+  const diff = Date.now() - ts;
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + 'd ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function toast(message, type = 'info') {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type !== 'info' ? ' ' + type : '');
+  el.textContent = message;
+  toastWrap.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'opacity 200ms';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 200);
+  }, 2200);
+}
+
+function setSaveStatus(status) {
+  state.saveStatus = status;
+  saveDot.className = 'save-indicator ' + (status === 'ready' ? '' : status);
+  saveLabel.textContent = {
+    ready: 'Ready',
+    saving: 'Saving…',
+    saved: 'Saved',
+    error: 'Save failed'
+  }[status] || 'Ready';
+}
+
+/* ============================================================
+   DOCUMENT OPERATIONS
+   ============================================================ */
+async function loadDocs() {
+  state.docs = await db.getAll();
+  state.docs.sort((a, b) => b.updatedAt - a.updatedAt);
+  renderDocList();
+}
+
+async function createDoc(title = 'Untitled', content = '') {
+  const now = Date.now();
+  const doc = {
+    id: uid(),
+    title,
+    content,
+    createdAt: now,
+    updatedAt: now,
+  };
+  await db.put(doc);
+  state.docs.unshift(doc);
+  renderDocList();
+  return doc;
+}
+
+async function openDoc(id) {
+  // flush pending save before switching
+  if (state.isDirty && state.currentId) await saveNow();
+
+  const doc = await db.get(id);
+  if (!doc) {
+    toast('Document not found', 'error');
+    return;
+  }
+  state.currentId = id;
+  state.isDirty = false;
+  titleInput.value = doc.title;
+  editor.innerHTML = doc.content || '';
+  updateCounts();
+  updateBlockSelect();
+  setSaveStatus('ready');
+  renderDocList();
+
+  // Mobile: close sidebar
+  if (window.matchMedia('(max-width: 768px)').matches) closeSidebar();
+
+  editor.focus();
+}
+
+async function saveNow() {
+  if (!state.currentId) return;
+  try {
+    setSaveStatus('saving');
+    const doc = state.docs.find(d => d.id === state.currentId) || await db.get(state.currentId);
+    if (!doc) { setSaveStatus('error'); return; }
+    doc.title = titleInput.value.trim() || 'Untitled';
+    doc.content = editor.innerHTML;
+    doc.updatedAt = Date.now();
+    await db.put(doc);
+    // update cache
+    const idx = state.docs.findIndex(d => d.id === doc.id);
+    if (idx >= 0) state.docs[idx] = doc;
+    state.docs.sort((a, b) => b.updatedAt - a.updatedAt);
+    state.isDirty = false;
+    setSaveStatus('saved');
+    renderDocList();
+  } catch (err) {
+    console.error(err);
+    setSaveStatus('error');
+    toast('Failed to save: ' + err.message, 'error');
+  }
+}
+
+function scheduleSave() {
+  state.isDirty = true;
+  setSaveStatus('saving');
+  clearTimeout(state.saveTimer);
+  state.saveTimer = setTimeout(saveNow, 800);
+}
+
+async function deleteDoc(id) {
+  await db.delete(id);
+  state.docs = state.docs.filter(d => d.id !== id);
+  if (state.currentId === id) {
+    if (state.docs.length > 0) {
+      await openDoc(state.docs[0].id);
+    } else {
+      const doc = await createDoc();
+      await openDoc(doc.id);
+    }
+  }
+  renderDocList();
+  toast('Document deleted');
+}
+
+async function duplicateDoc(id) {
+  const src = await db.get(id);
+  if (!src) return;
+  if (state.isDirty) await saveNow();
+  const copy = await createDoc(src.title + ' (copy)', src.content);
+  await openDoc(copy.id);
+  toast('Duplicated');
+}
+
+/* ============================================================
+   RENDER SIDEBAR
+   ============================================================ */
+function renderDocList() {
+  const q = state.searchQuery.toLowerCase().trim();
+  const filtered = q
+    ? state.docs.filter(d => d.title.toLowerCase().includes(q) || stripHtml(d.content).toLowerCase().includes(q))
+    : state.docs;
+
+  if (filtered.length === 0) {
+    docList.innerHTML = q
+      ? '<div class="empty-state">No documents match.</div>'
+      : '<div class="empty-state">No documents yet.<br>Hit "New Document" to start.</div>';
+    return;
+  }
+
+  docList.innerHTML = filtered.map(d => `
+    <div class="doc-item ${d.id === state.currentId ? 'active' : ''}" data-id="${d.id}">
+      <div class="doc-title">${escapeHtml(d.title || 'Untitled')}</div>
+      <div class="doc-meta">
+        <span>${fmtRelative(d.updatedAt)}</span>
+        <span>${countWords(stripHtml(d.content))} w</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  return tmp.textContent || '';
+}
+
+function countWords(text) {
+  text = text.trim();
+  if (!text) return 0;
+  return text.split(/\s+/).length;
+}
+
+function updateCounts() {
+  const text = stripHtml(editor.innerHTML);
+  wordCountEl.textContent = countWords(text);
+  charCountEl.textContent = text.length;
+}
+
+/* ============================================================
+   EDITOR COMMANDS
+   ============================================================ */
+function exec(cmd, value = null) {
+  editor.focus();
+  document.execCommand(cmd, false, value);
+  updateToolbarState();
+  updateCounts();
+  scheduleSave();
+}
+
+function setBlock(tag) {
+  editor.focus();
+  // execCommand formatBlock needs angle brackets in some browsers
+  const val = tag === 'p' ? 'P' : tag.toUpperCase();
+  document.execCommand('formatBlock', false, '<' + val + '>');
+  updateToolbarState();
+  scheduleSave();
+}
+
+function updateToolbarState() {
+  const commands = ['bold', 'italic', 'underline', 'strikeThrough',
+    'insertUnorderedList', 'insertOrderedList',
+    'justifyLeft', 'justifyCenter', 'justifyRight'];
+  commands.forEach(cmd => {
+    const btn = document.querySelector(`[data-cmd="${cmd}"]`);
+    if (!btn) return;
+    try {
+      if (document.queryCommandState(cmd)) btn.classList.add('active');
+      else btn.classList.remove('active');
+    } catch (e) { /* ignore */ }
+  });
+  updateBlockSelect();
+}
+
+function updateBlockSelect() {
+  try {
+    let block = document.queryCommandValue('formatBlock').toLowerCase();
+    // some browsers return 'blockquote' or 'h1' etc.
+    if (!['p', 'h1', 'h2', 'h3', 'blockquote', 'pre'].includes(block)) block = 'p';
+    blockSelect.value = block;
+  } catch (e) { /* ignore */ }
+}
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+function download(filename, content, mime = 'text/plain') {
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+function safeFilename(name) {
+  return (name || 'document').replace(/[^\w\s\-]/g, '').trim().replace(/\s+/g, '_') || 'document';
+}
+
+function exportHTML() {
+  const title = titleInput.value || 'Untitled';
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${escapeHtml(title)}</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #222; }
+  h1, h2, h3 { line-height: 1.3; }
+  blockquote { border-left: 3px solid #ccc; margin: 1em 0; padding-left: 1em; color: #555; font-style: italic; }
+  code { background: #f4f4f4; padding: 2px 6px; font-family: ui-monospace, monospace; font-size: 0.9em; }
+  pre { background: #f4f4f4; padding: 12px; overflow-x: auto; font-family: ui-monospace, monospace; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+<h1>${escapeHtml(title)}</h1>
+${editor.innerHTML}
+</body>
+</html>`;
+  download(safeFilename(title) + '.html', html, 'text/html');
+  toast('Exported HTML', 'success');
+}
+
+function exportTXT() {
+  const title = titleInput.value || 'Untitled';
+  const text = stripHtml(editor.innerHTML);
+  download(safeFilename(title) + '.txt', text, 'text/plain');
+  toast('Exported TXT', 'success');
+}
+
+function exportMD() {
+  const title = titleInput.value || 'Untitled';
+  // Minimal HTML -> Markdown conversion
+  const md = htmlToMarkdown(editor.innerHTML);
+  const out = `# ${title}\n\n${md}`;
+  download(safeFilename(title) + '.md', out, 'text/markdown');
+  toast('Exported Markdown', 'success');
+}
+
+function htmlToMarkdown(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+
+  function walk(node, listDepth = 0) {
+    let out = '';
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3) { out += n.textContent; return; }
+      if (n.nodeType !== 1) return;
+      const tag = n.tagName.toLowerCase();
+      const inner = walk(n, listDepth);
+      switch (tag) {
+        case 'h1': out += '\n# ' + inner + '\n\n'; break;
+        case 'h2': out += '\n## ' + inner + '\n\n'; break;
+        case 'h3': out += '\n### ' + inner + '\n\n'; break;
+        case 'p': case 'div': out += inner + '\n\n'; break;
+        case 'br': out += '\n'; break;
+        case 'strong': case 'b': out += '**' + inner + '**'; break;
+        case 'em': case 'i': out += '*' + inner + '*'; break;
+        case 'u': out += inner; break;
+        case 'strike': case 's': case 'del': out += '~~' + inner + '~~'; break;
+        case 'code': out += '`' + inner + '`'; break;
+        case 'pre': out += '\n```\n' + n.textContent + '\n```\n\n'; break;
+        case 'blockquote': out += '\n> ' + inner.trim().replace(/\n/g, '\n> ') + '\n\n'; break;
+        case 'a': out += '[' + inner + '](' + (n.getAttribute('href') || '') + ')'; break;
+        case 'ul': {
+          let li = '';
+          n.childNodes.forEach(c => {
+            if (c.nodeType === 1 && c.tagName.toLowerCase() === 'li') {
+              li += '  '.repeat(listDepth) + '- ' + walk(c, listDepth + 1).trim() + '\n';
+            }
+          });
+          out += '\n' + li + '\n';
+          break;
+        }
+        case 'ol': {
+          let i = 1, li = '';
+          n.childNodes.forEach(c => {
+            if (c.nodeType === 1 && c.tagName.toLowerCase() === 'li') {
+              li += '  '.repeat(listDepth) + (i++) + '. ' + walk(c, listDepth + 1).trim() + '\n';
+            }
+          });
+          out += '\n' + li + '\n';
+          break;
+        }
+        case 'hr': out += '\n---\n\n'; break;
+        case 'img': out += '![' + (n.alt || '') + '](' + (n.src || '') + ')'; break;
+        default: out += inner;
+      }
+    });
+    return out;
+  }
+
+  return walk(tmp).replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('[data-close-modal]').forEach(b => {
+  b.addEventListener('click', (e) => {
+    const overlay = e.target.closest('.overlay');
+    if (overlay) overlay.classList.remove('open');
+  });
+});
+
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', (e) => {
+    if (e.target === o) o.classList.remove('open');
+  });
+});
+
+let savedSelection = null;
+function saveSelection() {
+  const sel = window.getSelection();
+  if (sel.rangeCount > 0) savedSelection = sel.getRangeAt(0).cloneRange();
+}
+function restoreSelection() {
+  if (!savedSelection) return;
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(savedSelection);
+}
+
+function promptLink() {
+  saveSelection();
+  $('linkUrl').value = '';
+  openModal('linkOverlay');
+  setTimeout(() => $('linkUrl').focus(), 50);
+}
+
+$('linkConfirm').addEventListener('click', () => {
+  const url = $('linkUrl').value.trim();
+  closeModal('linkOverlay');
+  if (!url) return;
+  editor.focus();
+  restoreSelection();
+  exec('createLink', url);
+});
+
+$('linkUrl').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('linkConfirm').click(); }
+});
+
+function confirmAction(title, message, onYes, danger = true) {
+  $('confirmTitle').textContent = title;
+  $('confirmMessage').textContent = message;
+  const yes = $('confirmYes');
+  yes.className = 'btn ' + (danger ? 'btn-danger' : 'btn-primary');
+  const handler = () => {
+    yes.removeEventListener('click', handler);
+    closeModal('confirmOverlay');
+    onYes();
+  };
+  yes.addEventListener('click', handler);
+  openModal('confirmOverlay');
+}
+
+/* ============================================================
+   SIDEBAR (mobile)
+   ============================================================ */
+function openSidebar() {
+  sidebar.classList.add('open');
+  sidebarBackdrop.classList.add('open');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  sidebarBackdrop.classList.remove('open');
+}
+
+$('openSidebarBtn').addEventListener('click', openSidebar);
+$('closeSidebarBtn').addEventListener('click', closeSidebar);
+sidebarBackdrop.addEventListener('click', closeSidebar);
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function loadTheme() {
+  const saved = localStorage.getItem('scriptorium.theme');
+  if (saved === 'light') document.documentElement.classList.add('light');
+}
+function toggleTheme() {
+  document.documentElement.classList.toggle('light');
+  const isLight = document.documentElement.classList.contains('light');
+  localStorage.setItem('scriptorium.theme', isLight ? 'light' : 'dark');
+  document.querySelector('meta[name="theme-color"]').setAttribute(
+    'content', isLight ? '#f4f1ea' : '#0e0e10'
+  );
+}
+$('themeBtn').addEventListener('click', toggleTheme);
+
+/* ============================================================
+   POPUP MENU
+   ============================================================ */
+$('menuBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  menuPopup.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!menuPopup.contains(e.target) && e.target !== $('menuBtn')) {
+    menuPopup.classList.remove('open');
+  }
+});
+
+menuPopup.addEventListener('click', (e) => {
+  const btn = e.target.closest('.popup-item');
+  if (!btn) return;
+  menuPopup.classList.remove('open');
+  const action = btn.dataset.action;
+  switch (action) {
+    case 'export-html': exportHTML(); break;
+    case 'export-txt': exportTXT(); break;
+    case 'export-md': exportMD(); break;
+    case 'print': window.print(); break;
+    case 'duplicate':
+      if (state.currentId) duplicateDoc(state.currentId);
+      break;
+    case 'delete':
+      if (state.currentId) {
+        const doc = state.docs.find(d => d.id === state.currentId);
+        const name = doc ? (doc.title || 'this document') : 'this document';
+        confirmAction('Delete Document', `Delete "${name}"? This cannot be undone.`, () => deleteDoc(state.currentId));
+      }
+      break;
+  }
+});
+
+/* ============================================================
+   TOOLBAR WIRING
+   ============================================================ */
+document.querySelectorAll('[data-cmd]').forEach(btn => {
+  btn.addEventListener('mousedown', (e) => e.preventDefault()); // don't lose selection
+  btn.addEventListener('click', () => exec(btn.dataset.cmd));
+});
+
+document.querySelectorAll('[data-action]').forEach(btn => {
+  if (btn.classList.contains('popup-item')) return; // handled above
+  btn.addEventListener('mousedown', (e) => e.preventDefault());
+  btn.addEventListener('click', () => {
+    const a = btn.dataset.action;
+    if (a === 'link') promptLink();
+    else if (a === 'hr') exec('insertHorizontalRule');
+  });
+});
+
+blockSelect.addEventListener('change', () => {
+  setBlock(blockSelect.value);
+});
+
+/* ============================================================
+   EDITOR EVENTS
+   ============================================================ */
+editor.addEventListener('input', () => {
+  updateCounts();
+  scheduleSave();
+});
+
+editor.addEventListener('keyup', updateToolbarState);
+editor.addEventListener('mouseup', updateToolbarState);
+editor.addEventListener('focus', updateToolbarState);
+
+// Paste as plain text by default to avoid junk styles from other apps
+editor.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+});
+
+// Title input
+titleInput.addEventListener('input', () => { scheduleSave(); });
+titleInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); editor.focus(); }
+});
+
+/* ============================================================
+   DOC LIST CLICKS
+   ============================================================ */
+docList.addEventListener('click', (e) => {
+  const item = e.target.closest('.doc-item');
+  if (!item) return;
+  const id = item.dataset.id;
+  if (id !== state.currentId) openDoc(id);
+});
+
+/* ============================================================
+   NEW DOC
+   ============================================================ */
+$('newDocBtn').addEventListener('click', async () => {
+  if (state.isDirty) await saveNow();
+  const doc = await createDoc();
+  await openDoc(doc.id);
+  // focus title for quick rename
+  titleInput.focus();
+  titleInput.select();
+});
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+searchInput.addEventListener('input', () => {
+  state.searchQuery = searchInput.value;
+  renderDocList();
+});
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+  const mod = e.ctrlKey || e.metaKey;
+  if (!mod) return;
+  // Don't override when typing in title/search/link inputs (browser handles undo etc.)
+  if (e.target === titleInput || e.target === searchInput || e.target === $('linkUrl')) return;
+
+  if (e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    saveNow().then(() => toast('Saved', 'success'));
+  } else if (e.key.toLowerCase() === 'n' && e.shiftKey) {
+    // Ctrl+Shift+N — new doc (Ctrl+N is hijacked by browser)
+    e.preventDefault();
+    $('newDocBtn').click();
+  } else if (e.key.toLowerCase() === 'k') {
+    // Ctrl+K — link
+    e.preventDefault();
+    promptLink();
+  }
+  // Native: Ctrl+B/I/U handled by execCommand automatically inside contenteditable
+});
+
+/* ============================================================
+   FLUSH ON UNLOAD
+   ============================================================ */
+window.addEventListener('beforeunload', (e) => {
+  if (state.isDirty) {
+    // best-effort sync flush; IndexedDB is async, so this won't always complete,
+    // but the scheduled save usually runs within 800ms so people are normally safe
+    saveNow();
+  }
+});
+
+// Visibility — save when tab loses focus
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && state.isDirty) saveNow();
+});
+
+/* ============================================================
+   RELATIVE TIME REFRESH
+   ============================================================ */
+setInterval(() => {
+  // only re-render if any item is within last hour (to keep "Xm ago" fresh)
+  const needsRefresh = state.docs.some(d => Date.now() - d.updatedAt < 60 * 60 * 1000);
+  if (needsRefresh) renderDocList();
+}, 30000);
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function init() {
+  loadTheme();
+  try {
+    await db.open();
+    await loadDocs();
+    if (state.docs.length === 0) {
+      const welcomeContent = `
+<h1>Welcome to Scriptorium</h1>
+<p>This is a fully offline word processor. Everything you write is stored in your browser's IndexedDB — no servers, no accounts, no telemetry. Close the tab, come back later, your work is still here.</p>
+<h2>What's wired up</h2>
+<ul>
+  <li><strong>Auto-save</strong> — every change persists within a second of you stopping typing.</li>
+  <li><strong>Rich text</strong> — bold, italic, underline, strikethrough, headings, lists, quotes, code blocks, links, alignment.</li>
+  <li><strong>Multiple documents</strong> — manage them from the sidebar (tap the menu icon on mobile).</li>
+  <li><strong>Export</strong> — HTML, plain text, or Markdown via the ⋮ menu.</li>
+  <li><strong>Search</strong> — filter your documents by title or content from the sidebar.</li>
+  <li><strong>Dark / light</strong> — toggle in the header. Both themes are properly designed, not afterthoughts.</li>
+</ul>
+<h2>Keyboard shortcuts</h2>
+<ul>
+  <li><code>Ctrl/Cmd + B / I / U</code> — bold, italic, underline</li>
+  <li><code>Ctrl/Cmd + S</code> — force save (auto-save handles it anyway)</li>
+  <li><code>Ctrl/Cmd + K</code> — insert link</li>
+  <li><code>Ctrl/Cmd + Shift + N</code> — new document</li>
+  <li><code>Ctrl/Cmd + Z / Y</code> — undo / redo</li>
+</ul>
+<p>Delete this document whenever you want — it'll come right back if you ever clear all your docs. Now go write something.</p>`;
+      const doc = await createDoc('Welcome', welcomeContent);
+      await openDoc(doc.id);
+    } else {
+      // Reopen the most recent doc
+      const lastId = localStorage.getItem('scriptorium.lastDoc');
+      const target = lastId && state.docs.find(d => d.id === lastId) ? lastId : state.docs[0].id;
+      await openDoc(target);
+    }
+  } catch (err) {
+    console.error('init failed', err);
+    toast('Failed to load: ' + err.message, 'error');
+  }
+}
+
+// Remember last opened doc
+const _openDoc = openDoc;
+openDoc = async function(id) {
+  await _openDoc(id);
+  localStorage.setItem('scriptorium.lastDoc', id);
+};
+
+init();
+
+</script>
+</body>
+</html>
