@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="description" content="A speedtest app.">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Speedtest</title>
+
+	<style>
+		:root {
+			--bg: #0e0e0f;
+			--bg-card: #18181a;
+			--bg-card-hover: #1e1e21;
+			--border: #2a2a2e;
+			--text: #f0f0f0;
+			--text-muted: #888;
+			--text-dim: #444;
+			--accent: #7c6cfa;
+			--accent-dim: #3a3060;
+			--radius: 10px;
+			--mono: 'Courier New', Courier, monospace;
+		}
+
+		@media (prefers-color-scheme: light) {
+			:root {
+				--bg: #f4f4f5;
+				--bg-card: #ffffff;
+				--bg-card-hover: #f8f8f9;
+				--border: #dddde0;
+				--text: #111;
+				--text-muted: #777;
+				--text-dim: #bbb;
+				--accent: #5b4ee8;
+				--accent-dim: #e0dcfd;
+			}
+		}
+
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		body {
+			background: var(--bg);
+			color: var(--text);
+			font-family: var(--mono);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#wrap {
+			width: 100%;
+			max-width: 420px;
+			padding: 2.5rem 1.5rem;
+			text-align: center;
+		}
+
+		#label {
+			font-size: 11px;
+			color: var(--text-dim);
+			letter-spacing: 0.18em;
+			text-transform: uppercase;
+			margin-bottom: 2rem;
+		}
+
+		#gauge-wrap {
+			position: relative;
+			width: 200px;
+			height: 200px;
+			margin: 0 auto 2rem;
+		}
+
+		#gauge-svg {
+			width: 200px;
+			height: 200px;
+			transform: rotate(-90deg);
+		}
+
+		#gauge-bg {
+			fill: none;
+			stroke: var(--border);
+			stroke-width: 6;
+		}
+
+		#gauge-arc {
+			fill: none;
+			stroke: var(--accent);
+			stroke-width: 6;
+			stroke-linecap: round;
+			stroke-dasharray: 565;
+			stroke-dashoffset: 565;
+			transition: stroke-dashoffset 0.15s ease;
+		}
+
+		#gauge-center {
+			position: absolute;
+			top: 0; left: 0; right: 0; bottom: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#speed-display {
+			font-size: 52px;
+			font-weight: 700;
+			color: var(--text);
+			line-height: 1;
+			letter-spacing: -0.02em;
+		}
+
+		#unit {
+			font-size: 12px;
+			color: var(--text-muted);
+			letter-spacing: 0.1em;
+			margin-top: 4px;
+			text-transform: uppercase;
+		}
+
+		#status {
+			font-size: 12px;
+			color: var(--text-muted);
+			letter-spacing: 0.06em;
+			margin-bottom: 1.5rem;
+			min-height: 1.5em;
+		}
+
+		#stats {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 8px;
+			margin-bottom: 2rem;
+		}
+
+		.stat {
+			background: var(--bg-card);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: 0.85rem 0.5rem;
+			transition: background 0.15s;
+		}
+
+		.stat:hover { background: var(--bg-card-hover); }
+
+		.stat-label {
+			font-size: 10px;
+			color: var(--text-dim);
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			margin-bottom: 6px;
+		}
+
+		.stat-val {
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--text);
+		}
+
+		#start-btn {
+			width: 100%;
+			padding: 14px;
+			font-family: var(--mono);
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: #fff;
+			background: var(--accent);
+			border: none;
+			border-radius: var(--radius);
+			cursor: pointer;
+			transition: opacity 0.15s, transform 0.1s;
+		}
+
+		#start-btn:hover:not(:disabled) { opacity: 0.88; }
+		#start-btn:active:not(:disabled) { transform: scale(0.98); }
+
+		#start-btn:disabled {
+			opacity: 0.35;
+			cursor: not-allowed;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div id="wrap">
+		<div id="label">download speed</div>
+
+		<div id="gauge-wrap">
+			<svg id="gauge-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+				<circle id="gauge-bg" cx="100" cy="100" r="90"/>
+				<circle id="gauge-arc" cx="100" cy="100" r="90"/>
+			</svg>
+			<div id="gauge-center">
+				<div id="speed-display">—</div>
+				<div id="unit">Mbps</div>
+			</div>
+		</div>
+
+		<div id="status">ready</div>
+
+		<div id="stats">
+			<div class="stat">
+				<div class="stat-label">peak</div>
+				<div class="stat-val" id="stat-peak">—</div>
+			</div>
+			<div class="stat">
+				<div class="stat-label">avg</div>
+				<div class="stat-val" id="stat-avg">—</div>
+			</div>
+			<div class="stat">
+				<div class="stat-label">latency</div>
+				<div class="stat-val" id="stat-ping">—</div>
+			</div>
+		</div>
+
+		<button id="start-btn">run test</button>
+	</div>
+
+	<script>
+		(function () {
+			var FILE_URL = '/tools/speedtest/1mb.file';
+			var FILE_SIZE = 1 * 1024 * 1024;
+			var RUNS = 3;
+			var GAUGE_CIRC = 565;
+			var GAUGE_MAX_MBPS = 100;
+
+			var btn = document.getElementById('start-btn');
+			var speedEl = document.getElementById('speed-display');
+			var arcEl = document.getElementById('gauge-arc');
+			var statusEl = document.getElementById('status');
+			var peakEl = document.getElementById('stat-peak');
+			var avgEl = document.getElementById('stat-avg');
+			var pingEl = document.getElementById('stat-ping');
+
+			function setStatus(s) { statusEl.textContent = s; }
+			function setSpeed(mbps) { speedEl.textContent = mbps >= 100 ? mbps.toFixed(1) : mbps.toFixed(2); }
+			function setArc(pct) {
+				var offset = GAUGE_CIRC - (Math.min(pct, 100) / 100) * GAUGE_CIRC;
+				arcEl.style.strokeDashoffset = offset;
+			}
+			function msToPing(ms) { return ms < 1000 ? ms.toFixed(0) + ' ms' : (ms / 1000).toFixed(2) + ' s'; }
+
+			function cacheBust(url) {
+				return url + '?_=' + Date.now() + Math.random().toString(36).slice(2);
+			}
+
+			function measurePing(cb) {
+				var url = cacheBust(FILE_URL);
+				var start = performance.now ? performance.now() : Date.now();
+				if (window.fetch) {
+					fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function () {
+						cb(null, performance.now() - start);
+					}).catch(function (e) { cb(e); });
+				} else {
+					var xhr = new XMLHttpRequest();
+					xhr.open('HEAD', url, true);
+					xhr.onload = function () { cb(null, (performance.now ? performance.now() : Date.now()) - start); };
+					xhr.onerror = function () { cb(new Error('xhr error')); };
+					xhr.send();
+				}
+			}
+
+			function downloadXHR(url, onProgress, cb) {
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', url, true);
+				xhr.responseType = 'blob';
+				var start = performance.now ? performance.now() : Date.now();
+				xhr.onprogress = function (e) {
+					var loaded = e.loaded || 0;
+					var elapsed = ((performance.now ? performance.now() : Date.now()) - start) / 1000;
+					if (elapsed > 0) onProgress(loaded, elapsed);
+				};
+				xhr.onload = function () {
+					if (xhr.status < 200 || xhr.status >= 300) {
+						cb(new Error('HTTP ' + xhr.status));
+						return;
+					}
+					var elapsed = ((performance.now ? performance.now() : Date.now()) - start) / 1000;
+					cb(null, FILE_SIZE, elapsed);
+				};
+				xhr.onerror = function () { cb(new Error('Download failed')); };
+				xhr.send();
+			}
+
+			function downloadFetch(url, onProgress, cb) {
+				var start = performance.now();
+				fetch(url, { cache: 'no-store' }).then(function (res) {
+					if (!res.ok) {
+						cb(new Error('HTTP ' + res.status));
+						return;
+					}
+					if (!res.body) {
+						return res.blob().then(function (b) {
+							var elapsed = (performance.now() - start) / 1000;
+							cb(null, b.size, elapsed);
+						});
+					}
+					var reader = res.body.getReader();
+					var received = 0;
+					function pump() {
+						return reader.read().then(function (r) {
+							if (r.done) {
+								var elapsed = (performance.now() - start) / 1000;
+								cb(null, received, elapsed);
+								return;
+							}
+							received += r.value.length;
+							var elapsed = (performance.now() - start) / 1000;
+							if (elapsed > 0) onProgress(received, elapsed);
+							return pump();
+						});
+					}
+					return pump();
+				}).catch(cb);
+			}
+
+			function runDownload(runIndex, onProgress, cb) {
+				var url = cacheBust(FILE_URL);
+				if (window.fetch && window.ReadableStream) {
+					downloadFetch(url, onProgress, cb);
+				} else {
+					downloadXHR(url, onProgress, cb);
+				}
+			}
+
+			function runTest() {
+				btn.disabled = true;
+				setStatus('measuring latency…');
+				setArc(0);
+				speedEl.textContent = '—';
+				peakEl.textContent = '—';
+				avgEl.textContent = '—';
+				pingEl.textContent = '—';
+
+				measurePing(function (err, pingMs) {
+					if (!err) {
+						pingEl.textContent = msToPing(pingMs);
+					}
+
+					var results = [];
+					var peakMbps = 0;
+
+					function doRun(i) {
+						if (i >= RUNS) {
+							var avg = results.reduce(function (a, b) { return a + b; }, 0) / results.length;
+							setSpeed(avg);
+							setArc((avg / GAUGE_MAX_MBPS) * 100);
+							avgEl.textContent = avg.toFixed(2);
+							peakEl.textContent = peakMbps.toFixed(2);
+							setStatus('done — ' + RUNS + ' runs averaged');
+							btn.disabled = false;
+							return;
+						}
+
+						setStatus('run ' + (i + 1) + ' of ' + RUNS + '…');
+
+						runDownload(i, function (loaded, elapsed) {
+							var mbps = (loaded * 8) / (elapsed * 1e6);
+							if (mbps > peakMbps) {
+								peakMbps = mbps;
+								peakEl.textContent = mbps.toFixed(2);
+							}
+							setSpeed(mbps);
+							var overallPct = ((i / RUNS) + (loaded / FILE_SIZE / RUNS)) * 100;
+							setArc(overallPct);
+						}, function (err, bytes, elapsed) {
+							if (err) {
+								setStatus('error: ' + (err.message || err));
+								btn.disabled = false;
+								return;
+							}
+							var mbps = (bytes * 8) / (elapsed * 1e6);
+							results.push(mbps);
+							doRun(i + 1);
+						});
+					}
+
+					doRun(0);
+				});
+			}
+
+			btn.addEventListener('click', runTest);
+		})();
+	</script>
+</body>
+
+</html>
