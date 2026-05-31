@@ -76,6 +76,24 @@
                     </div>
                 </div>
                 <div class="or">or</div>
+                <!-- ── Base64 text-file upload ── -->
+                <div>
+                    <div class="sl">Open Base64 Text File</div>
+                    <div class="b64dz" id="b64dz">
+                        <input type="file" id="b64fi" accept=".txt,.text,text/plain">
+                        <div class="b64dz-ico">📄</div>
+                        <div class="b64dz-txt">
+                            <div class="b64dz-hint">Choose a <code>.txt</code> file containing Base64-encoded ZIP</div>
+                            <div class="b64dz-name" id="b64dname"></div>
+                        </div>
+                        <div class="b64dz-arrow">
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 3l4 4-4 4"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="or">or</div>
                 <!-- ── Multi-chunk Base64 section ── -->
                 <div class="chunk-section">
                     <div class="chunk-section-header">
@@ -709,10 +727,31 @@
         const $er = document.getElementById('errtxt');
         let chosenFile = null;
 
+        /* ─── Base64 text-file state ─── */
+        const $b64fi = document.getElementById('b64fi');
+        const $b64dn = document.getElementById('b64dname');
+        let b64FileData = null;   // decoded Base64 string from .txt file
+        let b64FileName = '';     // derived archive name
+
+        /* ── Clear all three input sources ── */
+        function clearAllInputs() {
+            chosenFile = null;
+            $fi.value = '';
+            $dn.textContent = '';
+            b64FileData = null;
+            b64FileName = '';
+            $b64fi.value = '';
+            $b64dn.textContent = '';
+            clearChunks();
+            $er.textContent = '';
+        }
+
         $fi.addEventListener('change', () => {
             if ($fi.files[0]) {
                 chosenFile = $fi.files[0];
                 $dn.textContent = '✓ ' + chosenFile.name;
+                // Clear the other two sources
+                b64FileData = null; b64FileName = ''; $b64fi.value = ''; $b64dn.textContent = '';
                 clearChunks();
                 $er.textContent = '';
             }
@@ -722,13 +761,48 @@
         $dz.addEventListener('drop', e => {
             e.preventDefault(); $dz.classList.remove('over');
             const f = e.dataTransfer.files[0];
-            if (f) { chosenFile = f; $dn.textContent = '✓ ' + f.name; clearChunks(); $er.textContent = '' }
+            if (f) {
+                chosenFile = f;
+                $dn.textContent = '✓ ' + f.name;
+                b64FileData = null; b64FileName = ''; $b64fi.value = ''; $b64dn.textContent = '';
+                clearChunks();
+                $er.textContent = '';
+            }
         });
 
-        document.getElementById('clrBtn').addEventListener('click', () => {
-            chosenFile = null; $fi.value = ''; $dn.textContent = ''; $er.textContent = '';
-            clearChunks();
+        /* ── Base64 text-file input ── */
+        $b64fi.addEventListener('change', () => {
+            const file = $b64fi.files[0];
+            if (!file) return;
+            $b64dn.textContent = 'Reading…';
+            $er.textContent = '';
+            const reader = new FileReader();
+            reader.onload = e => {
+                const raw = e.target.result.trim().replace(/\s/g, '');
+                if (!raw) {
+                    $b64dn.textContent = '';
+                    $er.textContent = 'File appears to be empty.';
+                    $b64fi.value = '';
+                    return;
+                }
+                b64FileData = raw;
+                // Derive a sensible archive name: strip .txt/.text extension, add .zip
+                b64FileName = file.name.replace(/\.(txt|text)$/i, '') + '.zip';
+                const approxBytes = Math.round(raw.length * 0.75);
+                $b64dn.textContent = '✓ ' + file.name + ' (' + fmtSz(approxBytes) + ')';
+                // Clear the other two sources
+                chosenFile = null; $fi.value = ''; $dn.textContent = '';
+                clearChunks();
+            };
+            reader.onerror = () => {
+                $b64dn.textContent = '';
+                $er.textContent = 'Could not read file.';
+                $b64fi.value = '';
+            };
+            reader.readAsText(file);
         });
+
+        document.getElementById('clrBtn').addEventListener('click', clearAllInputs);
         document.getElementById('opnBtn').addEventListener('click', doLoad);
 
         async function doLoad() {
@@ -736,17 +810,31 @@
             let ab = null, name = 'archive.zip';
 
             if (chosenFile) {
+                /* ── Source 1: real ZIP file ── */
                 name = chosenFile.name;
                 ab = await chosenFile.arrayBuffer();
+
+            } else if (b64FileData) {
+                /* ── Source 2: Base64 text file ── */
+                name = b64FileName || 'archive.zip';
+                try {
+                    const b = atob(b64FileData);
+                    ab = new ArrayBuffer(b.length);
+                    const v = new Uint8Array(ab);
+                    for (let i = 0; i < b.length; i++) v[i] = b.charCodeAt(i);
+                } catch (e) {
+                    $er.textContent = 'Invalid Base64 in text file — check that the whole file was encoded correctly.';
+                    return;
+                }
+
             } else {
-                // Gather chunks
+                /* ── Source 3: pasted / potato chunks ── */
                 const chunks = getChunkData();
                 if (chunks.length === 0) {
                     $er.textContent = 'Please choose a file or paste Base64.';
                     return;
                 }
 
-                // Concatenate all chunk strings, then decode as one Base64 blob
                 const combined = chunks.join('');
                 try {
                     const b = atob(combined);
@@ -754,7 +842,6 @@
                     const v = new Uint8Array(ab);
                     for (let i = 0; i < b.length; i++) v[i] = b.charCodeAt(i);
                 } catch (e) {
-                    // Give a more useful error: which chunk is probably bad
                     if (chunks.length === 1) {
                         $er.textContent = 'Invalid Base64 data.';
                     } else {
@@ -1023,8 +1110,7 @@
             zip = null; tree = {}; selItem = null;
             document.getElementById('app').classList.remove('on');
             document.getElementById('ld').style.display = '';
-            $fi.value = ''; chosenFile = null; $dn.textContent = ''; $er.textContent = '';
-            clearChunks();
+            clearAllInputs();
         }
 
         /* ─── Sidebar resize/collapse ─── */
