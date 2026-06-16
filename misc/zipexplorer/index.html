@@ -87,8 +87,9 @@
                             <div class="b64dz-name" id="b64dname"></div>
                         </div>
                         <div class="b64dz-arrow">
-                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 3l4 4-4 4"/>
+                            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 3l4 4-4 4" />
                             </svg>
                         </div>
                     </div>
@@ -235,6 +236,7 @@
                             </svg>
                         </button>
                         <span class="vname" id="vname"></span>
+                        <button class="mbtn sec h" id="vtoggle" style="height:22px;font-size:11px">View Source</button>
                         <button class="mbtn sec" id="vsave" style="height:22px;font-size:11px">Save As…</button>
                     </div>
                     <div class="vbd">
@@ -253,6 +255,9 @@
                         <textarea id="txtv" readonly spellcheck="false"></textarea>
                         <div id="imgv" class="h"><img id="vimg" alt=""></div>
                         <div id="vidv" class="h"><video id="vvid" controls></video></div>
+                        <iframe id="pdfv" class="h" title="PDF preview"></iframe>
+                        <iframe id="htmlv" class="h" title="HTML preview"
+                            sandbox="allow-scripts allow-popups allow-forms allow-modals"></iframe>
                         <div id="hexv" class="h"></div>
                     </div>
                 </div>
@@ -1041,7 +1046,10 @@
             viewerIdx = viewerFiles.findIndex(f => f.name === name && f.node === node);
             updateArrows();
             document.getElementById('vname').textContent = name; showVw();
-            ['txtv', 'imgv', 'vidv', 'hexv'].forEach(id => document.getElementById(id).classList.add('h'));
+            ['txtv', 'imgv', 'vidv', 'pdfv', 'htmlv', 'hexv'].forEach(id => document.getElementById(id).classList.add('h'));
+            const tgl = document.getElementById('vtoggle');
+            tgl.classList.add('h'); tgl.onclick = null;
+            const ext = name.split('.').pop().toLowerCase();
             const t = ftype(name);
             if (t === 'image') {
                 const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
@@ -1052,6 +1060,26 @@
                 const url = URL.createObjectURL(await entry.async('blob')); objURLs.push(url);
                 document.getElementById('vvid').src = url;
                 document.getElementById('vidv').classList.remove('h');
+            } else if (t === 'pdf') {
+                const url = URL.createObjectURL(
+                    new Blob([await entry.async('uint8array')], { type: 'application/pdf' }));
+                objURLs.push(url);
+                document.getElementById('pdfv').src = url;
+                document.getElementById('pdfv').classList.remove('h');
+            } else if (ext === 'html' || ext === 'htm') {
+                let tx; try { tx = await entry.async('string'); } catch { tx = '(Could not decode as text)'; }
+                const frame = document.getElementById('htmlv');
+                frame.srcdoc = tx;
+                frame.classList.remove('h');
+                tgl.classList.remove('h'); tgl.textContent = 'View Source';
+                let src = false;
+                tgl.onclick = () => {
+                    src = !src;
+                    document.getElementById('txtv').value = tx;
+                    document.getElementById('txtv').classList.toggle('h', !src);
+                    frame.classList.toggle('h', src);
+                    tgl.textContent = src ? 'View Rendered' : 'View Source';
+                };
             } else if (t === 'text' || t === 'code') {
                 let tx; try { tx = await entry.async('string'); } catch { tx = '(Could not decode as text)'; }
                 document.getElementById('txtv').value = tx;
@@ -1086,6 +1114,8 @@
         function hideVw() {
             document.getElementById('vw').classList.remove('on');
             const v = document.getElementById('vvid'); v.pause(); v.src = '';
+            document.getElementById('pdfv').src = 'about:blank';
+            document.getElementById('htmlv').removeAttribute('srcdoc');
         }
 
         /* ─── Toolbar ─── */

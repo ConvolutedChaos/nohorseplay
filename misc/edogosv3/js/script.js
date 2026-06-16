@@ -1,7 +1,7 @@
 ﻿/* ============================================================
    IndexedDB helpers
 ============================================================ */
-const VERSION = "E-Dog OS 3.2.5";
+const VERSION = "E-Dog OS 3.2.6";
 const DB_NAME = 'VirtualFS_v2';
 const STORE = 'nodes';
 
@@ -8345,20 +8345,6 @@ const taskbarTray = document.getElementById("taskbar-tray");
 const dateTime = document.getElementById("date-time");
 
 async function initWiFiIcon() {
-    // let's remove this, it's bad
-    //
-    // if (navigator.onLine) {
-    //     document.getElementById("wifi-icon").remove();
-    //     let newIcon = await imgFromFS("/usr/share/icons/tray/network-100.png");
-    //     newIcon.title = "Internet Access";
-    //     dateTime.parentNode.insertBefore(newIcon, dateTime);
-    // } else {
-    //     document.getElementById("wifi-icon").remove();
-    //     let newIcon = await imgFromFS("/usr/share/icons/tray/network-offline.png");
-    //     newIcon.title = "Network Disconnected";
-    //     dateTime.parentNode.insertBefore(newIcon, dateTime);
-    // }
-    document.getElementById("wifi-icon").remove();
     let newIcon = await imgFromFS("/usr/share/icons/tray/network-100.png");
     newIcon.title = "Internet Access";
     newIcon.style.cssText = 'width:18px;height:18px;object-fit:contain;opacity:0.85;';
@@ -8455,8 +8441,6 @@ async function ensureDefaultFolders() {
         await ensureFolder(name, userDirId);
     }
 }
-
-
 
 /* ============================================================
    THEME SYSTEM
