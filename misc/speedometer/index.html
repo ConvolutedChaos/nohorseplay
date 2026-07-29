@@ -939,8 +939,9 @@
 			</div>
 			<input type="range" id="volRange" min="0" max="100" step="5" value="70">
 			<div class="row">
-				<p>Motion assist<small>Fuses the accelerometer for faster throttle response. Experimental — takes a
-						minute of riding to calibrate itself.</small></p>
+				<p>Motion assist<small>Fuses the 60 Hz accelerometer with GPS so speed and throttle move the
+						instant you do instead of waiting on the next fix. Status: <span class="mono"
+							id="motionState">off</span></small></p>
 				<button class="sw" id="swMotion" aria-pressed="false"></button>
 			</div>
 		</div>
@@ -1008,7 +1009,7 @@
 		const CFG = Object.assign({
 			unit: "mph", dialMax: 0 /*0 = auto*/, theme: "ice", panel: "trip",
 			limit: 0, vibrate: true, wake: true, damp: true, demo: false,
-			mode: "cruise", car: "v8", kv: 5, ka: 1.0, audio: false, vol: 70, motion: false
+			mode: "cruise", car: "v8", kv: 5, ka: 1.0, audio: false, vol: 70, motion: true
 		}, Store.read());
 		function save() { Store.write(CFG); }
 
@@ -1021,7 +1022,7 @@
 		   ========================================================================== */
 		const Engine = {
 			st: {
-				speed: 0, raw: 0, max: 0, dist: 0, movingMs: 0, heading: null, alt: null, acc: null,
+				speed: 0, vgps: 0, raw: 0, max: 0, dist: 0, movingMs: 0, heading: null, alt: null, acc: null,
 				fix: "init", lat: null, lon: null, t0: Date.now()
 			},
 			hist: [],                 // {t, v} 1 Hz-ish rolling history
@@ -1078,8 +1079,10 @@
 				if (!isFinite(v) || v < 0) v = 0;
 				if (v * U().k < 1.2) v = 0;                        // dead band: no phantom 2 mph while parked
 				this.st.raw = v;
-				this.st.speed = this.st.speed * 0.35 + v * 0.65;      // light smoothing; needle damping does the rest
-				if (this.st.speed > this.st.max) this.st.max = this.st.speed;
+				this.st.vgps = this.st.vgps * 0.35 + v * 0.65;         // light smoothing; needle damping does the rest
+				// Max stays on GPS alone — it's the honest number, and dead reckoning can overshoot.
+				if (this.st.vgps > this.st.max) this.st.max = this.st.vgps;
+				this.st.speed = Math.max(0, this.st.vgps + this._bias);
 				this.slope(v);
 				const t = Date.now();
 				if (!this.hist.length || t - this.hist[this.hist.length - 1].t > 900) {
@@ -1105,17 +1108,43 @@
 				const a = Math.abs(den) < 1e-6 ? 0 : (n * stv - st * sv) / den;
 				this.st.accel = Math.max(-8, Math.min(8, a));
 			},
-			/* GPS slope for the DC term, accelerometer for the transients, if it's on. */
+			/* Throttle input. GPS slope is a 3-second line fit, so it's honest but a
+			   second-plus late; the accelerometer is immediate. Cross-fade on how much
+			   we trust the motion axis. */
 			accelFused() {
 				const g = this.st.accel || 0;
-				return CFG.motion && Motion.ready ? Math.max(-9, Math.min(9, g + Motion.fast())) : g;
+				if (!(CFG.motion && Motion.ready)) return g;
+				const c = Motion.conf;
+				if (c <= 0) return g;
+				return Math.max(-9, Math.min(9, g * (1 - c) + Motion.a() * c));
+			},
+
+			/* Dead reckoning between fixes: integrate forward acceleration into a bias
+			   on top of the GPS speed, and bleed that bias away so GPS always wins in
+			   the end. This is what removes the lag on a launch — the digits move the
+			   moment you do, and the ~1 s of accumulated error is corrected by the next
+			   fix rather than surviving into a drift. */
+			_bias: 0, BIAS_MAX: 4,
+			tickFast(dt) {
+				const st = this.st;
+				if (!(CFG.motion && Motion.ready) || Motion.conf < 0.2) {
+					this._bias = 0; st.speed = st.vgps; return;
+				}
+				const a = Motion.a();
+				// 1.6 s bleed-off: long enough to cover the fix interval plus the chipset's
+				// own lag, short enough that a biased axis only ever buys a mph or two.
+				this._bias = (this._bias + a * dt) * Math.exp(-dt / 1.6);
+				if (st.vgps <= 0 && Math.abs(a) < 0.4) this._bias *= Math.exp(-dt / 0.3);   // parked: no phantom crawl
+				const m = this.BIAS_MAX;
+				this._bias = this._bias > m ? m : this._bias < -m ? -m : this._bias;
+				st.speed = Math.max(0, st.vgps + this._bias);
 			},
 
 			avg() { return this.st.movingMs > 4000 ? this.st.dist / (this.st.movingMs / 1000) : 0; },
 
 			reset() {
 				Object.assign(this.st, { max: 0, dist: 0, movingMs: 0, t0: Date.now() });
-				this.hist.length = 0; this._last = null; this.emit();
+				this.hist.length = 0; this._last = null; this._bias = 0; this.emit();
 			},
 
 			/* demo drive: accelerate, cruise, brake, repeat — enough to exercise the UI */
@@ -1145,43 +1174,124 @@
 		}
 
 		/* ==========================================================================
-		   MOTION — optional accelerometer assist.
-		   The phone doesn't know which way is "forward", so it learns the projection
-		   axis by least-mean-squares against the GPS slope. Give it a minute of
-		   riding. If it never finds a confident axis it stays out of the way.
+		   MOTION — accelerometer assist.
+		   GPS speed lands at 1 Hz and the chipset has already filtered it, so a real
+		   launch shows up on screen a second or two late. The accelerometer runs at
+		   ~60 Hz and can fill that gap — but it reports in *device* axes and has no
+		   idea which way forward is. Two ways to find out, best first:
+
+		     compass — rotate the reading into world axes with the orientation event,
+		               then project onto the GPS course. Usable in a second or two.
+		     learn   — no absolute orientation: fit a projection axis by
+		               least-mean-squares against the GPS slope. Needs a minute.
+
+		   Sign is a platform trap — Safari and Chrome disagree on whether
+		   accelerationIncludingGravity points up or down. Settle it by asking the
+		   orientation matrix where "up" is and seeing which way gravity reads, and
+		   keep a running agreement score against the GPS slope as a backstop that
+		   can still flip us.
 		   ========================================================================== */
 		const Motion = {
-			ready: false, g: [0, 0, 0], hor: [0, 0, 0], w: [0, 0, 0], val: 0, lp: 0, conf: 0,
+			ready: false, mode: null, conf: 0, val: 0,
+			flip: 1, sgn: 1, agree: 0, axisConf: 0, n: 0,
+			g: null, hor: [0, 0, 0], w: [0, 0, 0], _R: null, _mlp: 0,
+
 			enable() {
 				if (this.ready) return Promise.resolve(true);
 				const D = window.DeviceMotionEvent;
-				const go = () => { window.addEventListener("devicemotion", e => this.tick(e)); this.ready = true; return true; };
 				if (!D) return Promise.resolve(false);
+				const go = () => {
+					window.addEventListener("devicemotion", e => this.tick(e));
+					const oh = e => this.onOri(e);
+					if ("ondeviceorientationabsolute" in window)
+						window.addEventListener("deviceorientationabsolute", oh);
+					window.addEventListener("deviceorientation", oh);
+					this.ready = true; this.mode = "learn";
+					return true;
+				};
 				if (typeof D.requestPermission === "function")
 					return D.requestPermission().then(r => r === "granted" ? go() : false).catch(() => false);
 				return Promise.resolve(go());
 			},
+
+			/* Euler angles -> device-to-world (east, north, up), the spec's
+			   Rz(alpha)Rx(beta)Ry(gamma). iOS never fills in an absolute alpha but it
+			   does hand us a compass heading, which is the same information. */
+			onOri(e) {
+				let a = e.alpha;
+				if (typeof e.webkitCompassHeading === "number" && !isNaN(e.webkitCompassHeading))
+					a = 360 - e.webkitCompassHeading;
+				else if (e.absolute !== true) return;        // a relative alpha can't tell us north
+				if (a == null || e.beta == null || e.gamma == null) return;
+				const r = Math.PI / 180, A = a * r, B = e.beta * r, G = e.gamma * r;
+				const cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B),
+					sB = Math.sin(B), cG = Math.cos(G), sG = Math.sin(G);
+				this._R = [
+					cA * cG - sA * sB * sG, -sA * cB, cA * sG + sA * sB * cG,
+					sA * cG + cA * sB * sG, cA * cB, sA * sG - cA * sB * cG,
+					-cB * sG, sB, cB * cG
+				];
+			},
+
 			tick(e) {
-				const a = e.accelerationIncludingGravity; if (!a || a.x == null) return;
-				const raw = [a.x || 0, a.y || 0, a.z || 0];
+				const a0 = e.accelerationIncludingGravity;
+				if (!a0 || a0.x == null) return;
+				const raw = [a0.x || 0, a0.y || 0, a0.z || 0];
+				if (!this.g) this.g = raw.slice();
 				for (let i = 0; i < 3; i++) this.g[i] = this.g[i] * 0.985 + raw[i] * 0.015;   // gravity
-				const gm = Math.hypot(...this.g) || 9.81, gh = this.g.map(v => v / gm);
-				const lin = raw.map((v, i) => v - this.g[i]);
-				const up = lin[0] * gh[0] + lin[1] * gh[1] + lin[2] * gh[2];
-				const h = lin.map((v, i) => v - up * gh[i]);                          // horizontal only
-				for (let i = 0; i < 3; i++) this.hor[i] += (h[i] - this.hor[i]) * 0.12;       // ~4 Hz lowpass, kills deck buzz
-				// LMS: nudge w so that dot(w,hor) predicts the GPS slope
-				const pred = this.dot(this.w, this.hor), err = (Engine.st.accel || 0) - pred;
-				const p = this.dot(this.hor, this.hor) + 1;
-				for (let i = 0; i < 3; i++) this.w[i] += 0.02 * err * this.hor[i] / p;
-				const wm = Math.hypot(...this.w);
-				if (wm > 2) { for (let i = 0; i < 3; i++) this.w[i] *= 2 / wm; }              // can't run away
-				this.conf = Math.min(1, wm / 0.35);
-				this.val = this.dot(this.w, this.hor);
-				this.lp += (this.val - this.lp) * 0.02;                              // slow half of the complementary pair
+
+				const R = this._R;
+				if (R) {
+					const gu = this.g[0] * R[6] + this.g[1] * R[7] + this.g[2] * R[8];       // gravity along world-up
+					if (Math.abs(gu) > 4) this.flip = gu < 0 ? -1 : 1;
+				}
+
+				const la = e.acceleration;
+				let lin = (la && la.x != null) ? [la.x || 0, la.y || 0, la.z || 0]
+					: raw.map((v, i) => v - this.g[i]);
+				if (this.flip < 0) lin = lin.map(v => -v);
+
+				let fwd;
+				if (R && Engine.st.heading != null) {
+					const h = Engine.st.heading * Math.PI / 180;
+					const aE = R[0] * lin[0] + R[1] * lin[1] + R[2] * lin[2];
+					const aN = R[3] * lin[0] + R[4] * lin[1] + R[5] * lin[2];
+					fwd = aE * Math.sin(h) + aN * Math.cos(h);
+					this.mode = "compass";
+					this.n++;
+					this.axisConf = Math.min(1, this.n / 90);                              // ~1.5 s of samples
+				} else {
+					const gm = Math.hypot(...this.g) || 9.81, gh = this.g.map(v => v / gm);
+					const up = lin[0] * gh[0] + lin[1] * gh[1] + lin[2] * gh[2];
+					const hz = lin.map((v, i) => v - up * gh[i]);                          // horizontal only
+					for (let i = 0; i < 3; i++) this.hor[i] += (hz[i] - this.hor[i]) * 0.12;
+					// LMS: nudge w so that dot(w,hor) predicts the GPS slope
+					const pred = this.dot(this.w, this.hor), err = (Engine.st.accel || 0) - pred;
+					const p = this.dot(this.hor, this.hor) + 1;
+					for (let i = 0; i < 3; i++) this.w[i] += 0.02 * err * this.hor[i] / p;
+					const wm = Math.hypot(...this.w);
+					if (wm > 2) { for (let i = 0; i < 3; i++) this.w[i] *= 2 / wm; }        // can't run away
+					fwd = this.dot(this.w, this.hor);
+					this.mode = "learn";
+					this.axisConf = Math.min(1, wm / 0.35);
+				}
+
+				this.val += (this.sgn * fwd - this.val) * 0.25;                            // ~50 ms, kills deck buzz
+				// backstop: does our forward axis actually agree with the GPS slope?
+				this._mlp += (this.val - this._mlp) * 0.04;                                // match the slope's own lag
+				const gs = Engine.st.accel || 0;
+				if (Math.abs(gs) > 0.35 && Math.abs(this._mlp) > 0.2)
+					this.agree += ((this._mlp * gs > 0 ? 1 : -1) - this.agree) * 0.03;
+				if (this.agree < -0.3) { this.sgn = -this.sgn; this.agree = 0; this.val = 0; this._mlp = 0; }
+				this.conf = this.axisConf * (this.agree < -0.1 ? 0.35 : 1);
 			},
 			dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; },
-			fast() { return this.conf < 0.25 ? 0 : (this.val - this.lp) * this.conf; }
+			/* forward acceleration, m/s2, or 0 while we don't trust ourselves */
+			a() { return this.conf < 0.15 ? 0 : this.val; },
+			status() {
+				if (!this.ready) return "off";
+				return (this.mode === "compass" ? "compass" : "learning") + " · " + Math.round(this.conf * 100) + "%";
+			}
 		};
 
 		/* ==========================================================================
@@ -2106,7 +2216,8 @@ registerProcessor('engine', EngineProc);
 				if (CFG.motion) { CFG.motion = false; b.setAttribute("aria-pressed", "false"); save(); return; }
 				Motion.enable().then(ok => {
 					CFG.motion = ok; b.setAttribute("aria-pressed", String(ok)); save();
-					toast(ok ? "Motion assist calibrating — ride for a minute" : "No motion access");
+					toast(ok ? "Motion assist on" : "No motion access");
+					paintMotion();
 				});
 			};
 			$("#swMotion").setAttribute("aria-pressed", String(!!CFG.motion));
@@ -2176,6 +2287,26 @@ registerProcessor('engine', EngineProc);
 		}
 
 		let wasOver = false;
+		/* Android and desktop hand over devicemotion with no ceremony. iOS wants a
+		   user gesture before it will even ask, so arm the first tap. */
+		function startMotion() {
+			if (!CFG.motion) return;
+			Motion.enable().then(ok => {
+				if (ok) return paintMotion();
+				const retry = () => {
+					document.removeEventListener("pointerdown", retry);
+					Motion.enable().then(o => { paintMotion(); if (!o) { CFG.motion = false; save(); } });
+				};
+				document.addEventListener("pointerdown", retry);
+			});
+		}
+
+		function paintMotion() {
+			const el = $("#motionState");
+			if (el) el.textContent = CFG.motion ? Motion.status() : "off";
+			$("#swMotion").setAttribute("aria-pressed", String(!!(CFG.motion && Motion.ready)));
+		}
+
 		function paint() {
 			const s = Engine.st, u = U();
 			const v = Math.round(toU(s.speed));
@@ -2210,6 +2341,7 @@ registerProcessor('engine', EngineProc);
 							"Acquiring signal";
 
 			$("#limVal").textContent = CFG.limit ? `${CFG.limit} ${u.label}` : "off";
+			paintMotion();
 			paintSegs();
 			if (Panels.active && Panels.active.update) { try { Panels.active.update(s); } catch (e) { } }
 		}
@@ -2246,11 +2378,13 @@ registerProcessor('engine', EngineProc);
 
 			Engine.on(() => { });                      // paint runs on rAF instead of per fix
 			Engine.start();
+			startMotion();
 			if (CFG.wake) wakeOn();
 
 			let last = performance.now(), acc = 0;
 			(function loop(now) {
 				const dt = Math.min(0.05, (now - last) / 1000); last = now;
+				Engine.tickFast(dt);
 				if (CFG.mode === "engine") {
 					Sim.update(dt, Engine.st.speed, Engine.accelFused());
 					if (Sim.justShifted) {
