@@ -328,11 +328,311 @@
 			color: var(--accent)
 		}
 
-		#btnAudio {
+		/* ---------- cluster mode: two dials + a mechanical odometer ---------- */
+		#dialwrap2 {
+			display: none;
+			position: relative;
+			min-height: 0;
+			place-items: center;
+			padding: 6px
+		}
+
+		#dial2 {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%
+		}
+
+		#read2 {
+			position: relative;
+			text-align: center;
+			pointer-events: none
+		}
+
+		#gearno2 {
+			font-size: clamp(34px, 10vmin, 74px);
+			font-weight: 200;
+			line-height: .86;
+			letter-spacing: -.05em;
+			font-variant-numeric: tabular-nums;
+			text-shadow: 0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)
+		}
+
+		#gearno2.hot {
+			color: var(--warn);
+			text-shadow: 0 0 30px color-mix(in srgb, var(--warn) 65%, transparent)
+		}
+
+		#rpm2 {
+			font-family: var(--font-data);
+			font-size: 13px;
+			color: var(--dim);
+			margin-top: 3px
+		}
+
+		#rpm2 small {
+			font-size: 9px;
+			margin-left: 3px
+		}
+
+		#app[data-mode="cluster"] #dialwrap2 {
+			display: grid
+		}
+
+		#app[data-mode="cluster"] #gaugecol {
+			grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto auto
+		}
+
+		/* half-height dials, so the big cruise digits come down a size */
+		#app[data-mode="cluster"] #digits {
+			font-size: clamp(34px, 10vmin, 74px)
+		}
+
+		#app[data-mode="cluster"] #unit {
+			margin-top: 3px
+		}
+
+		/* Odometer. Digits live on drums that roll behind a slot, so a wheel sits
+		   mid-turn exactly like the geared original. */
+		#odo {
+			display: none;
+			gap: 10px;
+			padding: 7px var(--pad) 8px;
+			border-top: 1px solid var(--hair);
+			align-items: center;
+			justify-content: center
+		}
+
+		#app[data-mode="cluster"] #odo {
+			display: flex
+		}
+
+		/* label on top, wheels and unit beneath — keeps both plates narrow enough for
+		   a small phone in portrait. */
+		.odobox {
+			display: grid;
+			grid-template-columns: auto auto;
+			gap: 3px 6px;
+			align-items: center;
+			justify-items: center;
+			padding: 4px 8px 5px;
+			border: 1px solid var(--bezel);
+			border-radius: 8px;
+			background: color-mix(in srgb, var(--void) 60%, transparent)
+		}
+
+		.odobox>.lbl:first-child {
+			grid-column: 1 / -1
+		}
+
+		#odoTripBox:active {
+			border-color: var(--accent)
+		}
+
+		.odounit {
+			color: var(--dim)
+		}
+
+		.wheels {
+			display: flex;
+			gap: 1px;
+			--cell: 25px
+		}
+
+		.wheel {
+			position: relative;
+			width: 15px;
+			height: var(--cell);
+			overflow: hidden;
+			background: linear-gradient(to bottom, #000 0%, #1b1b1b 22%, #2a2a2a 50%, #1b1b1b 78%, #000 100%);
+			border-radius: 2px;
+			box-shadow: inset 0 0 3px rgba(0, 0, 0, .9)
+		}
+
+		.wheel.tenth {
+			background: linear-gradient(to bottom,
+					color-mix(in srgb, var(--accent-deep) 70%, #000) 0%,
+					var(--accent) 50%,
+					color-mix(in srgb, var(--accent-deep) 70%, #000) 100%)
+		}
+
+		.wheel.tenth .drum {
+			color: #05070a
+		}
+
+		.drum {
+			position: absolute;
+			inset: 0 0 auto 0;
+			will-change: transform;
+			font-family: var(--font-data);
+			font-size: 16px;
+			font-weight: 500;
+			color: #f2f5f8;
+			text-align: center
+		}
+
+		.drum span {
+			display: block;
+			height: var(--cell);
+			line-height: var(--cell)
+		}
+
+		/* the decimal point sits between the wheels, not on them */
+		.wheels .dot {
+			align-self: flex-end;
+			width: 4px;
+			height: var(--cell);
+			line-height: var(--cell);
+			color: var(--accent);
+			font-family: var(--font-data);
+			font-size: 16px;
+			text-align: center
+		}
+
+		@media (max-width:359px) {
+			.wheels {
+				--cell: 22px
+			}
+
+			.wheel {
+				width: 13px
+			}
+
+			.drum {
+				font-size: 14px
+			}
+		}
+
+		@media (orientation:landscape) {
+			#app[data-mode="cluster"] #gaugecol {
+				grid-template-columns: 1fr 1fr;
+				grid-template-rows: minmax(0, 1fr) auto auto
+			}
+
+			#app[data-mode="cluster"] #odo,
+			#app[data-mode="cluster"] #strip {
+				grid-column: 1 / -1
+			}
+
+			/* two dials need the whole width — the module column steps aside */
+			#app[data-mode="cluster"] #stage {
+				grid-template-columns: minmax(0, 1fr)
+			}
+
+			#app[data-mode="cluster"] #panelcol {
+				display: none
+			}
+
+			.wheels {
+				--cell: 21px
+			}
+
+			.wheel {
+				width: 13px
+			}
+
+			.drum,
+			.wheels .dot {
+				font-size: 14px
+			}
+		}
+
+		/* ---------- gas pedal ---------- */
+		#pedal {
+			display: none;
+			position: fixed;
+			right: calc(env(safe-area-inset-right) + 12px);
+			bottom: calc(env(safe-area-inset-bottom) + 54px);   /* clear the readout strip */
+			width: 66px;
+			height: 132px;
+			z-index: 15;                /* under the settings scrim and the toast */
+			border: 1px solid var(--bezel);
+			border-radius: 13px;
+			background: color-mix(in srgb, var(--face) 88%, transparent);
+			overflow: hidden;
+			touch-action: none;
+			transition: transform .09s ease, border-color .12s ease;
+			box-shadow: 0 6px 18px rgba(0, 0, 0, .45)
+		}
+
+		#app[data-mode="engine"] #pedal,
+		#app[data-mode="cluster"] #pedal {
+			display: block
+		}
+
+		#app[data-mode="cluster"] #pedal {
+			bottom: calc(env(safe-area-inset-bottom) + 100px)   /* clear the odometer too */
+		}
+
+		#pedal.down {
+			transform: translateY(2px) scale(.975);
+			border-color: var(--accent)
+		}
+
+		/* Fill rises from the bottom with pedal travel — scaleY is cheap enough to
+		   run every frame without touching layout. */
+		#pedalFill {
+			position: absolute;
+			inset: 0;
+			transform: scaleY(0);
+			transform-origin: 50% 100%;
+			background: linear-gradient(to top,
+					color-mix(in srgb, var(--accent) 62%, transparent),
+					color-mix(in srgb, var(--accent-deep) 70%, transparent));
+			will-change: transform
+		}
+
+		/* Tread plate, so it reads as a pedal and not a progress bar. */
+		#pedalTread {
+			position: absolute;
+			inset: 9px 12px 26px;
+			border-radius: 6px;
+			border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+			background: repeating-linear-gradient(to bottom,
+					color-mix(in srgb, var(--text) 11%, transparent) 0 2px,
+					transparent 2px 9px)
+		}
+
+		#pedalLabel {
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 8px;
+			text-align: center;
+			color: var(--text);
+			opacity: .55
+		}
+
+		#pedal.down #pedalLabel {
+			opacity: 1
+		}
+
+		@media (max-height:430px) {
+			#pedal {
+				width: 56px;
+				height: 104px;
+				bottom: calc(env(safe-area-inset-bottom) + 46px)
+			}
+
+			#pedalTread {
+				inset: 7px 10px 22px
+			}
+
+			#app[data-mode="cluster"] #pedal {
+				bottom: calc(env(safe-area-inset-bottom) + 84px)
+			}
+		}
+
+		#btnAudio,
+		#btnMuffler {
 			display: none
 		}
 
-		#app[data-mode="engine"] #btnAudio {
+		#app[data-mode="engine"] #btnAudio,
+		#app[data-mode="engine"] #btnMuffler,
+		#app[data-mode="cluster"] #btnAudio,
+		#app[data-mode="cluster"] #btnMuffler {
 			display: block
 		}
 
@@ -827,6 +1127,13 @@
 					<path d="M17 9.5a4 4 0 0 1 0 5" id="wave1" />
 				</svg>
 			</button>
+			<button class="railbtn" id="btnMuffler" title="Muffler" aria-label="Muffler" aria-pressed="true">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+					<rect x="3" y="8.5" width="12" height="7" rx="3.5" />
+					<path d="M15 12h6" />
+					<path d="M18.5 6.5c1.6 1.2 1.6 3.3 0 4.5" id="mufflerOpen" />
+				</svg>
+			</button>
 			<button class="railbtn" id="btnPanel" title="Next module" aria-label="Next module">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
 					<rect x="3" y="4" width="18" height="16" rx="2" />
@@ -841,6 +1148,12 @@
 				</svg>
 			</button>
 		</div>
+
+		<button id="pedal" aria-label="Gas pedal — hold to rev">
+			<span id="pedalFill"></span>
+			<span id="pedalTread"></span>
+			<span id="pedalLabel" class="lbl">Gas</span>
+		</button>
 
 		<div id="stage">
 			<div id="gaugecol">
@@ -858,6 +1171,29 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- cluster mode only: second dial (tach) and the mechanical odometer -->
+				<div id="dialwrap2">
+					<canvas id="dial2"></canvas>
+					<div id="read2">
+						<div class="lbl">Gear</div>
+						<div id="gearno2">1</div>
+						<div id="rpm2">0<small>rpm</small></div>
+					</div>
+				</div>
+				<div id="odo">
+					<div class="odobox" id="odoTotalBox">
+						<span class="lbl">Odometer</span>
+						<div class="wheels" id="odoTotal"></div>
+						<span class="lbl odounit">mi</span>
+					</div>
+					<button class="odobox" id="odoTripBox" title="Reset trip">
+						<span class="lbl">Trip A</span>
+						<div class="wheels" id="odoTrip"></div>
+						<span class="lbl odounit">mi</span>
+					</button>
+				</div>
+
 				<div id="strip">
 					<div class="cell">
 						<div class="lbl" id="l1">Trip</div>
@@ -907,7 +1243,10 @@
 		<div class="grp"><span class="lbl">Mode</span>
 			<div class="seg" id="segMode"></div>
 			<p class="hint" style="margin-top:9px">Cruise is the plain speedometer. Engine turns the dial into a
-				tachometer and runs a simulated V8 and automatic transmission off your real speed.</p>
+				tachometer and runs a simulated V8 and automatic transmission off your real speed. Cluster shows both
+				dials at once with a mechanical odometer under them — tap the trip drums to zero them. Hold the gas
+				pedal — bottom right, or the space bar — to rev it while you're stopped; drag down from where you
+				pressed to feather the throttle.</p>
 		</div>
 
 		<div class="grp"><span class="lbl">Engine · drivetrain</span>
@@ -933,6 +1272,11 @@
 			<div class="row">
 				<p>Engine sound<small>Starts on tap — browsers need a gesture before audio.</small></p>
 				<button class="sw" id="swAudio" aria-pressed="false"></button>
+			</div>
+			<div class="row">
+				<p>Muffler<small>On is a stock can — darker and quieter. Off is straight pipe: brighter, louder,
+						and it rasps under load.</small></p>
+				<button class="sw" id="swMuffler" aria-pressed="true"></button>
 			</div>
 			<div class="row" style="padding-bottom:0">
 				<p>Volume <span class="mono" id="volVal">70%</span></p>
@@ -974,6 +1318,14 @@
 
 		<div class="grp"><button class="dangerbtn" id="btnReset">Reset trip</button></div>
 		<div class="grp">
+			<div class="row" style="padding-top:0">
+				<p>Odometer<small>Lifetime total behind the number wheels in cluster mode. It keeps counting
+						across trips — including demo miles.</small></p>
+				<span class="mono" id="odoVal">0</span>
+			</div>
+			<button class="dangerbtn" id="btnOdoReset">Reset odometer</button>
+		</div>
+		<div class="grp">
 			<p class="hint">Velo reads speed straight from your device's GPS. Accuracy improves once you're moving and
 				have a clear view of the sky. Needs HTTPS (or localhost) to get a location fix.</p>
 		</div>
@@ -1009,13 +1361,16 @@
 		const CFG = Object.assign({
 			unit: "mph", dialMax: 0 /*0 = auto*/, theme: "ice", panel: "trip",
 			limit: 0, vibrate: true, wake: true, damp: true, demo: false,
-			mode: "cruise", car: "v8", kv: 5, ka: 1.0, audio: false, vol: 70, motion: true
+			mode: "cruise", car: "v8", kv: 5, ka: 1.0, audio: false, vol: 70, motion: true,
+			muffler: true, odo: 0 /*meters, lifetime — the odometer doesn't reset*/
 		}, Store.read());
 		function save() { Store.write(CFG); }
 
 		const U = () => UNITS[CFG.unit];
 		const toU = ms => ms * U().k;                 // m/s -> display speed
 		const toUD = m => m * U().distK;             // meters -> display distance
+		/* Modes that run the drivetrain sim: engine (tach only) and cluster (both dials). */
+		const revs = m => (m || CFG.mode) !== "cruise";
 
 		/* ==========================================================================
 		   ENGINE — position in, speed/trip out
@@ -1065,7 +1420,7 @@
 						if (v === null) v = (c.accuracy <= 40 && d > c.accuracy * 0.4) ? d / dt : 0;   // derive if the device won't say
 						// trip distance: ignore GPS jitter while parked
 						if (c.accuracy <= 45 && d > Math.max(1.5, c.accuracy * 0.25) && d / dt < 90) {
-							this.st.dist += d;
+							this.addDist(d);
 							this.st.movingMs += dt * 1000;
 						}
 					} else { v = (v === null) ? this.st.raw : v; }
@@ -1140,6 +1495,16 @@
 				st.speed = Math.max(0, st.vgps + this._bias);
 			},
 
+			/* Trip meters reset; the odometer never does. Writing localStorage on every
+			   fix is pointless, so the lifetime total lands every 100 m or so. */
+			_odoPend: 0,
+			addDist(m) {
+				this.st.dist += m;
+				CFG.odo += m;
+				this._odoPend += m;
+				if (this._odoPend > 100) { this._odoPend = 0; save(); }
+			},
+
 			avg() { return this.st.movingMs > 4000 ? this.st.dist / (this.st.movingMs / 1000) : 0; },
 
 			reset() {
@@ -1158,7 +1523,7 @@
 					this.st.acc = 4 + Math.random() * 3;
 					this.st.alt = 640 + Math.sin(t / 40) * 30;
 					this.st.heading = (this.st.heading == null ? 90 : (this.st.heading + (Math.random() - 0.5) * 6 + 360) % 360);
-					if (v > 1) { this.st.dist += v * 0.5; this.st.movingMs += 500; }
+					if (v > 1) { this.addDist(v * 0.5); this.st.movingMs += 500; }
 					this.push(Math.max(0, v));
 				}, 500);
 				this.emit();
@@ -1335,6 +1700,7 @@
 		const Sim = {
 			rpm: 600, gear: 1, load: 0, loadS: 0, slip: 1, locked: false, torque: 0, shifts: 0,
 			vsim: 0, asim: 0, _lock: 0, _shiftT: 0, _cut: 0, _lastGear: 1,
+			pedal: 0, freeRev: 600, revving: false, hitLimiter: false,
 
 			get v() { return VEHICLES[CFG.car] || VEHICLES.v8; },
 			turbine(v, gear) {                                   // wheel speed seen through the gearbox
@@ -1349,7 +1715,10 @@
 				return Math.max(0, t);
 			},
 
-			reset() { this.gear = 1; this.rpm = this.v.idle; this.shifts = 0; this._lock = 0; this.loadS = 0; },
+			reset() {
+				this.gear = 1; this.rpm = this.v.idle; this.shifts = 0; this._lock = 0; this.loadS = 0;
+				this.freeRev = this.v.idle;
+			},
 
 			update(dt, speed, accel) {
 				const V = this.v;
@@ -1369,6 +1738,7 @@
 				const need = Tw / (ratio * 0.9);
 				const cap = this.maxTorque(this.rpm) || 1;
 				let load = Math.max(0, Math.min(1, need / cap));
+				load = Math.max(load, this.pedal);            // your foot is a floor under the throttle
 				if (this._cut > 0) { this._cut -= dt; load = Math.min(load, 0.12); }   // torque cut mid-shift
 				this.load += (load - this.load) * Math.min(1, dt * 9);
 				this.torque = this.load * cap;
@@ -1396,12 +1766,91 @@
 				this.locked = v > V.lockV * 1.15 && this.load < 0.72 && this.gear >= 3 && this._lock <= 0;
 				if (this.locked) slip = 0;
 				this.slip += (slip - this.slip) * Math.min(1, dt * 4);
-				const target = Math.max(V.idle, turb + this.slip * (V.stall * (0.4 + 0.6 * this.load) - turb));
+				let target = Math.max(V.idle, turb + this.slip * (V.stall * (0.4 + 0.6 * this.load) - turb));
+
+				/* --- free rev. Standing still the driveline is doing nothing, so the pedal
+				   spins the engine against its own inertia and the converter never gets a
+				   say. Rolling, it can't: rpm belongs to the wheels, and a stab of throttle
+				   buys you a kickdown instead — which the shift schedule above handles. */
+				this.revving = this.pedal > 0.02 && v < 2;
+				this.hitLimiter = false;
+				if (this.revving) {
+					const want = V.idle + this.pedal * (V.redline * 0.99 - V.idle);
+					const up = V.redline * (0.5 + 1.0 * this.pedal), dn = V.redline;   // rpm/s
+					const d = want - this.freeRev;
+					this.freeRev += Math.max(-dn * dt, Math.min(up * dt, d));
+					if (this.freeRev >= V.redline * 0.995) {         // bounce off the limiter
+						this.freeRev = V.redline * 0.955; this._cut = 0.06; this.hitLimiter = true;
+					}
+					target = Math.max(target, this.freeRev);
+				} else this.freeRev = Math.max(V.idle, this.rpm);
+
 				this.rpm += (target - this.rpm) * Math.min(1, dt * (this._cut > 0 ? 7 : 12));
 				if (this.rpm > V.redline * 1.03) this.rpm = V.redline * 1.03;
 			},
 			shift(lock) { this._lock = lock || 1.4; this._cut = 0.22; this.shifts++; this.justShifted = true; },
 			hot() { return this.rpm >= this.v.redline * 0.93; }
+		};
+
+		/* ==========================================================================
+		   GAS PEDAL — hold to rev. Travel is sprung, not binary: a stab reads as a
+		   stab. Drag down from where you pressed to feather it.
+		   ========================================================================== */
+		const Pedal = {
+			el: null, fill: null, value: 0, target: 0, held: false, _y0: 0, _key: false,
+
+			init(el) {
+				this.el = el;
+				this.fill = el.querySelector("#pedalFill");
+
+				el.addEventListener("pointerdown", e => {
+					e.preventDefault();
+					try { el.setPointerCapture(e.pointerId); } catch (_) { }
+					this._y0 = e.clientY; this.press(1);
+				});
+				el.addEventListener("pointermove", e => {
+					if (!this.held) return;
+					// dragging below the press point lifts off; above it is still flat out
+					const t = 1 - (e.clientY - this._y0) / (el.clientHeight || 120);
+					this.target = Math.max(0, Math.min(1, t));
+				});
+				const up = e => { if (this.held) { e.preventDefault(); this.release(); } };
+				el.addEventListener("pointerup", up);
+				el.addEventListener("pointercancel", up);
+
+				/* Desktop: hold space. Keep it off the buttons so space still activates them. */
+				addEventListener("keydown", e => {
+					if (e.code !== "Space" || e.repeat || !revs()) return;
+					const t = e.target;
+					// let space keep activating whatever else has focus — except the pedal itself
+					if (t && t !== el && (t.tagName === "BUTTON" || t.tagName === "INPUT" || t.isContentEditable)) return;
+					e.preventDefault(); this._key = true; this.press(1);
+				});
+				addEventListener("keyup", e => {
+					if (e.code === "Space" && this._key) { this._key = false; this.release(); }
+				});
+				addEventListener("blur", () => { if (this.held) this.release(); });
+			},
+
+			press(t) {
+				this.held = true; this.target = t;
+				this.el.classList.add("down");
+				if (revs() && !EngineAudio.running && !EngineAudio.userOff) toggleAudio();
+			},
+			release() {
+				this.held = false; this.target = 0; this._key = false;
+				this.el.classList.remove("down");
+			},
+
+			/* Sprung travel, ~0.14 s down and ~0.11 s back. A real pedal isn't a switch,
+			   and neither is the throttle body behind it. */
+			tick(dt) {
+				const rate = this.target > this.value ? 7 : 9;
+				this.value += (this.target - this.value) * Math.min(1, dt * rate);
+				if (this.value < 0.004 && !this.held) this.value = 0;
+				Sim.pedal = this.value;
+				if (this.fill) this.fill.style.transform = `scaleY(${this.value.toFixed(3)})`;
+			}
 		};
 
 		/* ==========================================================================
@@ -1417,11 +1866,16 @@ class EngineProc extends AudioWorkletProcessor {
     this.phase=0; this.idx=[0,0]; this.env=[0,0]; this.lp=[0,0]; this.wp=[0,0];
     this.dl=[new Float32Array(4096), new Float32Array(4096)];
     this.n1=0; this.wph=0;
+    this.mtgt=1; this.mx=1; this.mf=0; this.mf2=0;   // muffler: 1 = fitted, 0 = straight pipe
     this.port.onmessage = e => {
       if(e.data.cfg) this.cfg = e.data.cfg;
       if(e.data.rpm != null) this.rpm = e.data.rpm;
       if(e.data.load != null) this.load = e.data.load;
       if(e.data.gain != null) this.gain = e.data.gain;
+      if(e.data.muffler != null){
+        this.mtgt = e.data.muffler ? 1 : 0;
+        if(!this.mset){ this.mx = this.mtgt; this.mset = true; }   // first word, no ramp
+      }
     };
   }
   process(_, outputs){
@@ -1451,13 +1905,23 @@ class EngineProc extends AudioWorkletProcessor {
         y += this.lp[b];
       }
       y *= c.tone * (nb>1 ? 0.75 : 1);
+      /* Muffler crossfade, per sample so a mid-drive toggle glides instead of clicking. */
+      this.mx += (this.mtgt - this.mx)*0.0009;
+      const open = 1 - this.mx;
       this.n1 += ((Math.random()*2-1) - this.n1)*0.22;
-      y += this.n1 * this.ls * 0.17 * Math.min(1, rpm/4200);
+      y += this.n1 * this.ls * 0.17 * Math.min(1, rpm/4200) * (1 + 0.7*open);
       if(c.whine > 0){
         this.wph = (this.wph + (rpm/60*c.whineMult)/sr) % 1;
         y += Math.sin(this.wph*6.2831853) * c.whine * (0.25 + 0.75*this.ls) * 0.45;
       }
-      out[i] = Math.tanh(y * c.drive) * this.gain;
+      /* Two one-pole lowpasses = the absorptive can. Cutoff opens up with load and
+         revs, so it still barks when you're on it. mx=0 makes k=1, a clean bypass. */
+      const cut = 0.13 + 0.13*this.ls + 0.10*Math.min(1, rpm/6500);
+      const k = cut + open*(1 - cut);
+      this.mf  += (y - this.mf)*k;
+      this.mf2 += (this.mf - this.mf2)*k;
+      const dr = c.drive * (1 + 0.6*open + 0.25*this.mx);   // makeup for what the can eats
+      out[i] = Math.tanh(this.mf2 * dr) * this.gain * (1 - 0.15*this.mx);
     }
     return true;
   }
@@ -1467,6 +1931,7 @@ registerProcessor('engine', EngineProc);
 
 		const EngineAudio = {
 			ctx: null, node: null, gain: null, mode: null, running: false, fb: null, _t: 0,
+			userOff: false,          // set when you kill the sound yourself, so the pedal respects it
 
 			async start() {
 				if (this.running) return true;
@@ -1520,14 +1985,20 @@ registerProcessor('engine', EngineProc);
 				this._t = now;
 				const V = Sim.v;
 				if (this.mode === "worklet") {
-					this.node.port.postMessage({ rpm: Sim.rpm, load: Sim.load, gain: CFG.vol / 100 });
+					this.node.port.postMessage({
+						rpm: Sim.rpm, load: Sim.load, gain: CFG.vol / 100, muffler: !!CFG.muffler
+					});
 				} else if (this.fb) {
 					const fire = Sim.rpm / 120 * V.cyl;                   // firing events per second
-					const t = this.ctx.currentTime;
+					const t = this.ctx.currentTime, m = CFG.muffler ? 1 : 0;
 					this.fb.o1.frequency.setTargetAtTime(Math.max(20, fire), t, 0.04);
 					this.fb.o2.frequency.setTargetAtTime(Math.max(10, fire / 2), t, 0.04);
-					this.fb.flt.frequency.setTargetAtTime(280 + Sim.rpm * 0.14 + Sim.load * 900, t, 0.05);
-					this.gain.gain.setTargetAtTime((0.12 + 0.88 * Sim.load) * (CFG.vol / 100) * 0.5, t, 0.06);
+					const cut = m ? 280 + Sim.rpm * 0.14 + Sim.load * 900
+						: 900 + Sim.rpm * 0.45 + Sim.load * 2400;
+					this.fb.flt.frequency.setTargetAtTime(cut, t, 0.05);
+					this.fb.flt.Q.setTargetAtTime(m ? 7 : 2.5, t, 0.05);
+					this.gain.gain.setTargetAtTime(
+						(0.12 + 0.88 * Sim.load) * (CFG.vol / 100) * (m ? 0.5 : 0.68), t, 0.06);
 				}
 			},
 			config() {
@@ -1578,18 +2049,21 @@ registerProcessor('engine', EngineProc);
 				return p[p.length - 1];
 			},
 
-			/* What the dial is showing right now — speed, or RPM in thousands. */
+			/* What this dial is showing right now — speed, or RPM in thousands. A dial
+			   with an explicit `kind` always shows that; the main one follows the mode,
+			   so in cluster mode it falls through to speed and the tach takes the revs. */
 			scale() {
-				if (CFG.mode === "engine") {
+				if (this.kind ? this.kind === "rpm" : CFG.mode === "engine") {
 					const V = Sim.v, top = Math.ceil((V.redline * 1.06) / 1000);
 					return {
 						value: Sim.rpm / 1000, max: top, maj: 1, min: top > 8 ? 0.5 : 0.25,
-						warn: V.redline / 1000, hot: Sim.hot(), label: v => String(Math.round(v))
+						warn: V.redline / 1000, hot: Sim.hot(), tach: true,
+						label: v => String(Math.round(v))
 					};
 				}
 				const max = this.max(), tp = this.tickPlan(max), v = toU(Engine.st.speed);
 				return {
-					value: v, max, maj: tp[0], min: tp[1],
+					value: v, max, maj: tp[0], min: tp[1], tach: false,
 					warn: CFG.limit > 0 ? CFG.limit : 0, hot: CFG.limit > 0 && v >= CFG.limit,
 					label: v => String(Math.round(v))
 				};
@@ -1641,7 +2115,7 @@ registerProcessor('engine', EngineProc);
 				// face
 				g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fillStyle = face; g.fill();
 				// outer bezel — doubles as the shift light on the tach
-				const flash = sc.hot && CFG.mode === "engine" && (Date.now() % 320 < 170);
+				const flash = sc.hot && sc.tach && (Date.now() % 320 < 170);
 				g.beginPath(); g.arc(cx, cy, R - 1 * d, 0, Math.PI * 2);
 				g.lineWidth = (flash ? 4 : 1.5) * d; g.strokeStyle = flash ? warn : bezel;
 				if (flash) { g.shadowBlur = 22 * d; g.shadowColor = warn; }
@@ -1703,6 +2177,61 @@ registerProcessor('engine', EngineProc);
 				g.lineWidth = 1.5 * d; g.strokeStyle = bezel; g.stroke();
 			}
 		};
+		/* Cluster mode's second dial. Same gauge, own needle state, pinned to revs. */
+		const Tach = Object.assign(Object.create(Gauge), {
+			cv: null, cx: null, pos: 0, vel: 0, target: 0, sweep: null, dpr: 1, kind: "rpm"
+		});
+
+		/* ==========================================================================
+		   ODOMETER — digits on drums. A wheel only turns once the one below it is
+		   coming up on nine, which is why a real odometer so often shows two digits
+		   caught mid-roll.
+		   ========================================================================== */
+		const Odo = {
+			/* n integer wheels plus one tenths wheel on the end. */
+			build(host, n) {
+				host.innerHTML = "";
+				const drums = [];
+				const wheel = tenth => {
+					const w = document.createElement("span");
+					w.className = "wheel" + (tenth ? " tenth" : "");
+					const d = document.createElement("span");
+					d.className = "drum";
+					// 0-9 plus a second 0, so the wrap from nine rolls forward instead of back
+					for (let i = 0; i <= 10; i++) {
+						const s = document.createElement("span");
+						s.textContent = String(i % 10);
+						d.appendChild(s);
+					}
+					w.appendChild(d); host.appendChild(w);
+					drums.push(d);
+					return d;
+				};
+				for (let i = 0; i < n; i++) wheel(false);
+				const dot = document.createElement("span");
+				dot.className = "dot"; dot.textContent = ".";
+				host.appendChild(dot);
+				wheel(true);
+				drums.reverse();                  // index 0 = tenths, counting up
+				return { drums, last: null };
+			},
+
+			/* value in display units (mi/km). Wheel i turns on the last tenth of the
+			   wheel below it — the geneva drive, in one line of arithmetic. */
+			set(o, value) {
+				if (!o) return;
+				const tenths = Math.max(0, value * 10);
+				if (o.last != null && Math.abs(tenths - o.last) < 0.002) return;
+				o.last = tenths;
+				for (let i = 0; i < o.drums.length; i++) {
+					const raw = tenths / Math.pow(10, i);
+					const d = Math.floor(raw) % 10, f = raw - Math.floor(raw);
+					const p = d + (i === 0 ? f : (f > 0.9 ? (f - 0.9) * 10 : 0));
+					o.drums[i].style.transform = `translateY(${(-p * 100 / 11).toFixed(3)}%)`;
+				}
+			}
+		};
+
 		const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
 		function hexA(hex, a) {
 			hex = hex.trim();
@@ -2134,6 +2663,7 @@ registerProcessor('engine', EngineProc);
 		   UI
 		   ========================================================================== */
 		const $ = s => document.querySelector(s);
+		const $$ = s => document.querySelectorAll(s);
 		let toastT;
 		function toast(msg) {
 			const t = $("#toast"); t.textContent = msg; t.classList.add("on");
@@ -2181,13 +2711,13 @@ registerProcessor('engine', EngineProc);
 			seg($("#segPanel"), Panels.list.map(m => ({ label: m.name, value: m.id })),
 				() => CFG.panel, v => Panels.mount(v));
 
-			seg($("#segMode"), [{ label: "Cruise", value: "cruise" }, { label: "Engine", value: "engine" }],
-				() => CFG.mode, v => setMode(v, true));
+			seg($("#segMode"), [{ label: "Cruise", value: "cruise" }, { label: "Engine", value: "engine" },
+			{ label: "Cluster", value: "cluster" }], () => CFG.mode, v => setMode(v, true));
 
 			seg($("#segCar"), Object.keys(VEHICLES).map(k => ({ label: VEHICLES[k].name, value: k })),
 				() => CFG.car, v => {
 					CFG.car = v; save(); Sim.reset(); EngineAudio.config();
-					if (CFG.mode === "engine") toast(VEHICLES[v].name);
+					if (revs()) toast(VEHICLES[v].name);
 				});
 
 			$("#limRange").oninput = e => {
@@ -2210,7 +2740,8 @@ registerProcessor('engine', EngineProc);
 					EngineAudio.gain.gain.setTargetAtTime(CFG.vol / 100, EngineAudio.ctx.currentTime, 0.05);
 			};
 
-			$("#swAudio").onclick = () => { if (CFG.mode !== "engine") setMode("engine", false); toggleAudio(); };
+			$("#swAudio").onclick = () => { if (!revs()) setMode("engine", false); toggleAudio(); };
+			$("#swMuffler").onclick = () => toggleMuffler(false);
 			$("#swMotion").onclick = () => {
 				const b = $("#swMotion");
 				if (CFG.motion) { CFG.motion = false; b.setAttribute("aria-pressed", "false"); save(); return; }
@@ -2233,6 +2764,11 @@ registerProcessor('engine', EngineProc);
 			sw("#swDemo", "demo", () => { Engine.start(); toast(CFG.demo ? "Demo mode on" : "Live GPS"); });
 
 			$("#btnReset").onclick = () => { Engine.reset(); toast("Trip reset"); };
+			$("#btnOdoReset").onclick = () => {
+				CFG.odo = 0; Engine._odoPend = 0; save();
+				if (OdoTotal) OdoTotal.last = null;         // force the drums to redraw at zero
+				toast("Odometer zeroed");
+			};
 
 			// keep the dial-range chips in sync when units change
 			$("#segUnit").addEventListener("click", () => setTimeout(() => { rebuildMax(); paint(); }, 0));
@@ -2258,13 +2794,16 @@ registerProcessor('engine', EngineProc);
 			CFG.mode = m; save();
 			$("#app").dataset.mode = m;
 			const chip = $("#modechip");
-			chip.textContent = m === "engine" ? "Engine" : "Cruise";
-			chip.classList.toggle("eng", m === "engine");
-			Gauge.pos = 0; Gauge.vel = 0; Gauge.sweep = { t: 0 };      // re-sweep the new scale
-			if (m === "engine") {
+			chip.textContent = m === "engine" ? "Engine" : m === "cluster" ? "Cluster" : "Cruise";
+			chip.classList.toggle("eng", m !== "cruise");
+			for (const G of [Gauge, Tach]) { G.pos = 0; G.vel = 0; G.sweep = { t: 0 }; }   // re-sweep
+			if (revs(m)) {
 				Sim.reset();
+				if (m === "cluster") Tach.size();        // it was display:none until a moment ago
 				if (announce) toast(EngineAudio.running ? Sim.v.name : "Tap the speaker to fire it up");
 			} else {
+				if (Pedal.el) Pedal.release();
+				Pedal.value = Pedal.target = Sim.pedal = 0;     // don't come back mid-rev
 				EngineAudio.stop(); CFG.audio = false; save(); paintAudioBtn();
 			}
 			paintSegs();
@@ -2275,12 +2814,27 @@ registerProcessor('engine', EngineProc);
 			b.querySelector("#wave1").style.opacity = EngineAudio.running ? 1 : 0.25;
 			$("#swAudio").setAttribute("aria-pressed", String(EngineAudio.running));
 		}
+		function paintMufflerBtn() {
+			const b = $("#btnMuffler"), on = !!CFG.muffler;
+			b.style.color = on ? "" : "var(--accent)";
+			b.querySelector("#mufflerOpen").style.opacity = on ? 0 : 1;
+			b.setAttribute("aria-pressed", String(on));
+			b.title = on ? "Muffler fitted" : "Straight pipe";
+			b.setAttribute("aria-label", b.title);
+			$("#swMuffler").setAttribute("aria-pressed", String(on));
+		}
+		function toggleMuffler(announce) {
+			CFG.muffler = !CFG.muffler; save();
+			paintMufflerBtn();
+			EngineAudio.push(true);                 // don't wait for the next 30 Hz tick
+			if (announce) toast(CFG.muffler ? "Muffler on" : "Straight pipe");
+		}
 		async function toggleAudio() {
-			if (EngineAudio.running) { EngineAudio.stop(); CFG.audio = false; }
+			if (EngineAudio.running) { EngineAudio.stop(); CFG.audio = false; EngineAudio.userOff = true; }
 			else {
 				const ok = await EngineAudio.start();
 				if (!ok) { toast("Audio blocked here — try it from a real page over HTTPS"); return; }
-				EngineAudio.config(); CFG.audio = true;
+				EngineAudio.config(); CFG.audio = true; EngineAudio.userOff = false;
 				toast(EngineAudio.mode === "worklet" ? Sim.v.name : Sim.v.name + " (simple synth)");
 			}
 			save(); paintAudioBtn(); paintSegs();
@@ -2319,6 +2873,17 @@ registerProcessor('engine', EngineProc);
 				$("#l2").textContent = "Throttle"; $("#v2").textContent = Math.round(Sim.load * 100) + "%";
 				$("#l3").textContent = "Converter";
 				$("#v3").textContent = Sim.locked ? "Locked" : Math.round(Sim.slip * 100) + "% slip";
+			} else if (CFG.mode === "cluster") {
+				// speed on the left dial, revs on the right, everything else in the strip
+				$("#digits").textContent = String(v);
+				$("#unit").textContent = u.label;
+				$("#gearno2").textContent = String(Sim.gear);
+				$("#gearno2").classList.toggle("hot", Sim.hot());
+				$("#rpm2").innerHTML = Math.round(Sim.rpm) + `<small>rpm</small>`;
+				$("#l1").textContent = "Throttle"; $("#v1").textContent = Math.round(Sim.load * 100) + "%";
+				$("#l2").textContent = "Max"; $("#v2").textContent = fmt.speed(s.max) + " " + u.label;
+				$("#l3").textContent = "Avg"; $("#v3").textContent = fmt.speed(Engine.avg()) + " " + u.label;
+				$$("#odo .odounit").forEach(e => e.textContent = u.dist);
 			} else {
 				$("#digits").textContent = String(v);
 				$("#unit").textContent = u.label;
@@ -2341,17 +2906,23 @@ registerProcessor('engine', EngineProc);
 							"Acquiring signal";
 
 			$("#limVal").textContent = CFG.limit ? `${CFG.limit} ${u.label}` : "off";
+			$("#odoVal").textContent = toUD(CFG.odo).toFixed(1) + " " + u.dist;
 			paintMotion();
 			paintSegs();
 			if (Panels.active && Panels.active.update) { try { Panels.active.update(s); } catch (e) { } }
 		}
 
 		/* ---------- boot ---------- */
+		let OdoTotal = null, OdoTrip = null;
 		function boot() {
 			document.documentElement.dataset.theme = CFG.theme;
 			$("#unit").textContent = U().label;
 			Panels.host = $("#panelbody");
 			Gauge.init($("#dial"));
+			Tach.init($("#dial2"));
+			OdoTotal = Odo.build($("#odoTotal"), 6);
+			OdoTrip = Odo.build($("#odoTrip"), 3);
+			$("#odoTripBox").onclick = () => { Engine.reset(); toast("Trip reset"); };
 			buildSettings();
 			$("#limRange").max = U().presets[U().presets.length - 1];
 			$("#limRange").value = CFG.limit;
@@ -2362,6 +2933,8 @@ registerProcessor('engine', EngineProc);
 			$("#volRange").value = CFG.vol; $("#volVal").textContent = CFG.vol + "%";
 			setMode(CFG.mode, false);
 			paintAudioBtn();
+			paintMufflerBtn();
+			Pedal.init($("#pedal"));
 			Sim.reset();
 
 			$("#btnSet").onclick = () => openSheet(true);
@@ -2369,9 +2942,15 @@ registerProcessor('engine', EngineProc);
 			$("#scrim").onclick = () => openSheet(false);
 			$("#btnPanel").onclick = () => Panels.next();
 			$("#panelnext").onclick = () => Panels.next();
-			$("#modechip").onclick = () => setMode(CFG.mode === "engine" ? "cruise" : "engine", true);
+			const MODES = ["cruise", "engine", "cluster"];
+			$("#modechip").onclick = () =>
+				setMode(MODES[(MODES.indexOf(CFG.mode) + 1) % MODES.length], true);
 			$("#btnAudio").onclick = () => toggleAudio();
+			$("#btnMuffler").onclick = () => toggleMuffler(true);
+			// last few hundred metres of the odometer, before the tab goes away
+			addEventListener("pagehide", () => { Engine._odoPend = 0; save(); });
 			document.addEventListener("visibilitychange", () => {
+				if (document.hidden) { Engine._odoPend = 0; save(); }
 				if (document.hidden && EngineAudio.running && EngineAudio.ctx) EngineAudio.ctx.suspend().catch(() => { });
 				else if (!document.hidden && EngineAudio.running && EngineAudio.ctx) EngineAudio.ctx.resume().catch(() => { });
 			});
@@ -2381,19 +2960,30 @@ registerProcessor('engine', EngineProc);
 			startMotion();
 			if (CFG.wake) wakeOn();
 
-			let last = performance.now(), acc = 0;
+			let last = performance.now(), acc = 0, lastBuzz = 0;
 			(function loop(now) {
 				const dt = Math.min(0.05, (now - last) / 1000); last = now;
 				Engine.tickFast(dt);
-				if (CFG.mode === "engine") {
+				if (revs()) {
+					Pedal.tick(dt);
 					Sim.update(dt, Engine.st.speed, Engine.accelFused());
 					if (Sim.justShifted) {
 						Sim.justShifted = false;
 						if (CFG.vibrate && navigator.vibrate) navigator.vibrate(18);
 					}
+					// limiter buzz, rate-limited — it bounces every few frames while you hold it
+					if (Sim.hitLimiter && CFG.vibrate && navigator.vibrate && now - lastBuzz > 140) {
+						lastBuzz = now; navigator.vibrate(9);
+					}
 					EngineAudio.push(false);
 				}
 				Gauge.frame(dt);
+				if (CFG.mode === "cluster") {
+					Tach.frame(dt);
+					// drums roll every frame — at 60 mph the tenths wheel turns once every 6 s
+					Odo.set(OdoTotal, toUD(CFG.odo) % 1e6);      // six wheels, then it rolls over
+					Odo.set(OdoTrip, toUD(Engine.st.dist) % 1e3);
+				}
 				if (Panels.active && Panels.active.frame) { try { Panels.active.frame(dt); } catch (e) { } }
 				acc += dt; if (acc > 0.2) { acc = 0; paint(); }
 				requestAnimationFrame(loop);
@@ -2412,7 +3002,7 @@ registerProcessor('engine', EngineProc);
 		/* public hook for your own modules */
 		window.Velo = {
 			registerPanel: m => Panels.register(m), Engine, Gauge, Panels, CFG, UNITS,
-			Sim, VEHICLES, EngineAudio, Motion, setMode
+			Sim, VEHICLES, EngineAudio, Motion, setMode, Pedal, Tach, Odo
 		};
 
 		document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();

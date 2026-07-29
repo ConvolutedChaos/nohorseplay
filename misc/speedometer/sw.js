@@ -1,6 +1,6 @@
 /* Velo service worker — caches the app shell so the speedometer works with no signal.
    Bump CACHE when you change any file, or the old copy keeps getting served. */
-const CACHE = "velo-v2";
+const CACHE = "velo-v4";
 const SHELL = [
 	"./",
 	"./index.html",
