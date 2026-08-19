@@ -1,0 +1,3129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>iOS 9.3.5</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div id="stage">
+		<div id="device">
+			<div class="hw power" id="btnPower" title="Sleep/Wake"></div>
+			<div class="hw volup" id="btnVolUp" title="Volume Up"></div>
+			<div class="hw voldn" id="btnVolDn" title="Volume Down"></div>
+			<div id="glass">
+				<div class="cam"></div>
+				<div id="home">
+					<div class="sq"></div>
+				</div>
+				<div id="screen">
+
+					<div id="homescreen">
+						<div id="wallpaper"></div>
+						<div class="hs-status" id="hsStatus">
+							<div class="sb-left"><span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="hsClock">8:39 AM</div>
+							<div class="sb-right" id="hsBatt"></div>
+						</div>
+						<div class="hs-pages" id="hsPages">
+							<div class="hs-page">
+								<div class="grid" id="hsGrid1"></div>
+							</div>
+							<div class="hs-page">
+								<div class="grid" id="hsGrid2"></div>
+							</div>
+						</div>
+						<div class="hs-dots" id="hsDots"></div>
+						<div class="hs-dock" id="hsDock"></div>
+					</div>
+					<div id="app">
+						<div id="statusbar">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="clock">8:11 AM</div>
+							<div class="sb-right" id="appBatt"></div>
+						</div>
+
+						<div id="stack">
+
+							<!-- ============ CONVERSATION LIST ============ -->
+							<div class="page active" id="p-list">
+								<div class="nav" id="listNav">
+									<div class="btn" id="editBtn">Edit</div>
+									<div class="title">Messages</div>
+									<div class="btn right" id="composeBtn">
+										<svg width="24" height="24" viewBox="0 0 24 24" style="margin-top:2px">
+											<path d="M3.5 6.5h9.4M3.5 6.5v13.2h13.2v-8.6" fill="none" stroke="#007AFF"
+												stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M9.6 15.5l1.4-3.3 7.8-7.8 1.9 1.9-7.8 7.8z" fill="none"
+												stroke="#007AFF" stroke-width="1.7" stroke-linejoin="round" />
+										</svg>
+									</div>
+								</div>
+								<div class="searchwrap" id="searchWrap">
+									<div class="searchfield" id="searchField">
+										<svg width="13" height="13" viewBox="0 0 16 16" style="flex:0 0 auto">
+											<circle cx="6.6" cy="6.6" r="5.2" fill="none" stroke="#8E8E93"
+												stroke-width="1.6" />
+											<path d="M10.6 10.6 15 15" stroke="#8E8E93" stroke-width="1.8"
+												stroke-linecap="round" />
+										</svg>
+										<span id="searchText">Search</span>
+									</div>
+									<div class="scancel" id="searchCancel">Cancel</div>
+								</div>
+								<div class="listwrap" id="listWrap">
+									<div class="list" id="convList"></div>
+									<div class="dimmer" id="dimmer"></div>
+								</div>
+								<div class="edittoolbar" id="editBar" style="display:none">
+									<div id="readBtn">Read All</div>
+									<div id="delBtn" class="dim">Delete</div>
+								</div>
+								<div class="kbwrap nopred" id="kb3"></div>
+							</div>
+
+							<!-- ============ THREAD ============ -->
+							<div class="page" id="p-thread">
+								<div class="nav">
+									<div class="btn back" id="backBtn">
+										<svg width="12" height="20" viewBox="0 0 12 20">
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#007AFF"
+												stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+										<span>Messages</span>
+									</div>
+									<div class="title" id="threadTitle">Janae</div>
+									<div class="btn right" id="detailsBtn">Details</div>
+								</div>
+								<div class="sendbar" id="sendbar"></div>
+								<div class="thread" id="threadBody"></div>
+								<div class="toolbar">
+									<svg width="26" height="22" viewBox="0 0 28 24" style="flex:0 0 auto">
+										<rect x="1" y="5" width="26" height="18" rx="3" fill="none" stroke="#9A9AA0"
+											stroke-width="1.8" />
+										<path d="M9 5 11 1.5h6L19 5" fill="none" stroke="#9A9AA0" stroke-width="1.8"
+											stroke-linejoin="round" />
+										<circle cx="14" cy="14" r="5.2" fill="none" stroke="#9A9AA0"
+											stroke-width="1.8" />
+									</svg>
+									<div class="field" id="msgField"></div>
+									<div id="rightBtn"></div>
+								</div>
+								<div class="kbwrap" id="kb1"></div>
+								<div class="dictwrap" id="dictWrap">
+									<div class="dict">
+										<div class="wave" id="wave"></div>
+										<div class="done" id="dictDone">Done</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ============ DETAILS ============ -->
+							<div class="page" id="p-details">
+								<div class="nav">
+									<div class="btn back" id="detailsBack">
+										<svg width="12" height="20" viewBox="0 0 12 20">
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#007AFF"
+												stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+										<span id="detailsBackLbl">Janae</span>
+									</div>
+									<div class="title">Details</div>
+								</div>
+								<div class="settings" id="detailsBody"></div>
+							</div>
+
+							<!-- ============ NEW MESSAGE (modal) ============ -->
+							<div class="page modal" id="p-new">
+								<div class="nav">
+									<div class="title">New Message</div>
+									<div class="btn right" id="cancelNew">Cancel</div>
+								</div>
+								<div class="torow">
+									<span class="lbl">To:</span>
+									<span class="val" id="toVal"><span class="caret"></span></span>
+									<span class="plus">+</span>
+								</div>
+								<div class="sugs" id="sugList"></div>
+								<div class="toolbar">
+									<svg width="26" height="22" viewBox="0 0 28 24" style="flex:0 0 auto">
+										<rect x="1" y="5" width="26" height="18" rx="3" fill="none" stroke="#9A9AA0"
+											stroke-width="1.8" />
+										<path d="M9 5 11 1.5h6L19 5" fill="none" stroke="#9A9AA0" stroke-width="1.8"
+											stroke-linejoin="round" />
+										<circle cx="14" cy="14" r="5.2" fill="none" stroke="#9A9AA0"
+											stroke-width="1.8" />
+									</svg>
+									<div class="field"><span class="plc"></span></div>
+									<div class="send">Send</div>
+								</div>
+								<div class="kbwrap nopred up" id="kb2"></div>
+							</div>
+
+						</div>
+					</div><!-- /#app -->
+
+					<!-- ============ FACETIME ============ -->
+					<div id="ftapp">
+						<div id="ftstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="ftClock">7:55 AM</div>
+							<div class="sb-right" id="ftBatt"></div>
+						</div>
+
+						<div class="ftpage" id="ft-signin">
+							<div class="ft-scroll" id="ftScroll">
+								<div class="ft-title">FaceTime</div>
+								<div class="ft-sub">Sign in with your Apple ID<br>to activate FaceTime.</div>
+								<div class="ft-link" id="ftLearn">Learn more about FaceTime</div>
+
+								<div class="ft-form">
+									<div class="ft-row" data-f="id">
+										<span class="ft-lbl">Apple ID</span>
+										<span class="ft-val" id="ftIdVal"></span>
+									</div>
+									<div class="ft-row" data-f="pw">
+										<span class="ft-lbl">Password</span>
+										<span class="ft-val" id="ftPwVal"></span>
+									</div>
+								</div>
+
+								<div class="ft-go off" id="ftSignIn">
+									<span class="spin" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+									<span id="ftGoLbl">Sign In</span>
+								</div>
+
+								<div class="ft-link" id="ftForgot">Forgot Apple ID or Password?</div>
+								<div class="ft-link" id="ftCreate">Create New Apple ID</div>
+								<div class="ft-pad"></div>
+							</div>
+							<div class="kbwrap nopred" id="kb4"></div>
+						</div>
+
+						<div class="ft-alertwrap" id="ftAlert">
+							<div class="ft-alert">
+								<div class="ft-atitle" id="ftATitle"></div>
+								<div class="ft-amsg" id="ftAMsg"></div>
+								<div class="ft-abtns"><div class="ft-abtn" id="ftAOk">OK</div></div>
+							</div>
+						</div>
+					</div><!-- /#ftapp -->
+
+					<!-- ============ CLOCK ============ -->
+					<div id="ckapp">
+						<div id="ckstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="ckClock">6:18 PM</div>
+							<div class="sb-right" id="ckBatt"></div>
+						</div>
+
+						<div id="ckstack">
+
+							<!-- ---- root: nav + the four panes + tab bar ---- -->
+							<div class="page active" id="ck-root">
+								<div class="nav">
+									<div class="btn" id="ckEdit">Edit</div>
+									<div class="title" id="ckTitle">World Clock</div>
+									<div class="btn right ck-plus" id="ckAdd">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<path d="M13 3.2v19.6M3.2 13h19.6" stroke="currentColor" stroke-width="2.6"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+								</div>
+
+								<div class="ck-body">
+									<div class="ck-pane on" id="pane-world">
+										<div class="wc-list" id="wcList"></div>
+									</div>
+
+									<div class="ck-pane" id="pane-alarm">
+										<div class="al-list" id="alList"></div>
+									</div>
+
+									<div class="ck-pane" id="pane-sw">
+										<div class="sw-face">
+											<div class="sw-lap" id="swLap">00:00.00</div>
+											<div class="sw-big" id="swBig">00:00.00</div>
+										</div>
+										<div class="ck-pad sw-btns">
+											<div class="ck-btn left off" id="swLapBtn">Lap</div>
+											<div class="ck-btn right green" id="swGoBtn">Start</div>
+											<div class="sw-laps" id="swLaps"></div>
+										</div>
+									</div>
+
+									<div class="ck-pane" id="pane-timer">
+										<div class="tm-pick">
+											<div class="pk" id="tmPicker">
+												<div class="pk-band"></div>
+												<div class="pk-lbl hours">hours</div>
+												<div class="pk-lbl mins">min</div>
+												<div class="pk-col" id="tmHours"></div>
+												<div class="pk-col" id="tmMins"></div>
+											</div>
+											<div class="tm-run" id="tmRun">
+												<div class="tm-big" id="tmBig">00:00</div>
+											</div>
+										</div>
+										<div class="tm-when" id="tmWhen">
+											<span class="grow">When Timer Ends</span>
+											<span class="val" id="tmTone">Radar</span>
+											<svg class="chev" width="9" height="15" viewBox="0 0 9 15">
+												<path d="M1 1l6.4 6.5L1 14" fill="none" stroke="#C7C7CC" stroke-width="2"
+													stroke-linecap="round" stroke-linejoin="round" />
+											</svg>
+										</div>
+										<div class="ck-pad tm-btns">
+											<div class="ck-btn left off" id="tmPauseBtn">Pause</div>
+											<div class="ck-btn right green" id="tmGoBtn">Start</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="ck-tabs" id="ckTabs"></div>
+							</div>
+
+							<!-- ---- choose a city (modal) ---- -->
+							<div class="page modal" id="ck-city">
+								<div class="cy-head" id="cyHead">
+									<div class="cy-title">Choose a City.</div>
+									<div class="cy-srow">
+										<div class="cy-field" id="cyField">
+											<svg width="13" height="13" viewBox="0 0 16 16" style="flex:0 0 auto">
+												<circle cx="6.6" cy="6.6" r="5.2" fill="none" stroke="#8E8E93"
+													stroke-width="1.6" />
+												<path d="M10.6 10.6 15 15" stroke="#8E8E93" stroke-width="1.8"
+													stroke-linecap="round" />
+											</svg>
+											<span id="cyText">Search</span>
+										</div>
+										<div class="cy-cancel" id="cyCancel">Cancel</div>
+									</div>
+								</div>
+								<div class="cy-list" id="cyList"></div>
+								<div class="cy-index" id="cyIndex"></div>
+								<div class="kbwrap nopred" id="kb6"></div>
+							</div>
+
+							<!-- ---- add / edit alarm (modal) ---- -->
+							<div class="page modal" id="ck-alarm">
+								<div class="nav">
+									<div class="btn" id="aaCancel">Cancel</div>
+									<div class="title" id="aaTitle">Add Alarm</div>
+									<div class="btn right" id="aaSave">Save</div>
+								</div>
+								<div class="aa-pick">
+									<div class="pk" id="aaPicker">
+										<div class="pk-band"></div>
+										<div class="pk-col" id="aaHour"></div>
+										<div class="pk-col" id="aaMin"></div>
+										<div class="pk-col" id="aaAp"></div>
+									</div>
+								</div>
+								<div class="aa-gap"></div>
+								<div class="aa-rest" id="aaRest"></div>
+							</div>
+
+							<!-- ---- repeat / label / sound, pushed over the sheet ---- -->
+							<div class="page" id="ck-repeat">
+								<div class="nav">
+									<div class="btn back" id="rpBack">
+										<svg width="12" height="20" viewBox="0 0 12 20">
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30" stroke-width="2.4"
+												stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+										<span>Back</span>
+									</div>
+									<div class="title">Repeat</div>
+								</div>
+								<div class="settings" id="rpBody"></div>
+							</div>
+
+							<div class="page" id="ck-label">
+								<div class="nav">
+									<div class="btn back" id="lbBack">
+										<svg width="12" height="20" viewBox="0 0 12 20">
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30" stroke-width="2.4"
+												stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+										<span>Back</span>
+									</div>
+									<div class="title">Label</div>
+								</div>
+								<div class="settings">
+									<div style="height:36px"></div>
+									<div class="sect">
+										<div class="cell" id="lbCell">
+											<span class="grow" id="lbVal" style="font-weight:400"></span>
+											<span class="lbl-clear" id="lbClear">
+												<svg width="11" height="11" viewBox="0 0 12 12">
+													<path d="M3 3l6 6M9 3l-6 6" stroke="#fff" stroke-width="1.7"
+														stroke-linecap="round" />
+												</svg>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="kbwrap" id="kb5"></div>
+							</div>
+
+							<div class="page" id="ck-tone">
+								<div class="nav" id="toneNav"></div>
+								<div class="settings" id="toneBody"></div>
+							</div>
+
+							<div class="page" id="ck-classic">
+								<div class="nav" id="clsNav"></div>
+								<div class="settings" id="clsBody"></div>
+							</div>
+
+						</div><!-- /#ckstack -->
+					</div><!-- /#ckapp -->
+
+					<!-- alarms and timers ring wherever you are, so this lives
+					     outside the app window, over the lock screen too -->
+					<div class="ck-alertwrap" id="ckAlert">
+						<div class="ck-alert">
+							<div class="ck-atitle" id="ckATitle"></div>
+							<div class="ck-amsg" id="ckAMsg"></div>
+							<div class="ck-abtns" id="ckABtns"></div>
+						</div>
+					</div>
+
+					<!-- ============ LOCK SCREEN ============ -->
+					<div id="lock">
+						<div class="lk-wall"></div>
+						<div class="lk-blur" id="lkBlur"></div>
+
+						<div id="lkStatus">
+							<div class="sb-left"><span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-right" id="lkBatt"></div>
+						</div>
+
+						<div id="lkMain">
+							<div class="lk-grab top"></div>
+							<div class="lk-clock" id="lkClock">9:20</div>
+							<div class="lk-date" id="lkDate">Saturday, December 27</div>
+							<div class="lk-slide">
+								<svg class="lk-chev" width="10" height="23" viewBox="0 0 10 23" aria-hidden="true">
+									<path d="M1.2 1.3 8.7 11.5 1.2 21.7" fill="none" stroke="#C67510"
+										stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+								<span class="lk-shine">slide to unlock</span>
+							</div>
+							<div class="lk-grab bot"></div>
+							<div id="lkCam">
+								<svg width="28" height="21" viewBox="0 0 28 21" aria-hidden="true">
+									<path fill-rule="evenodd" d="M9.2 0h9.6l1.8 4H25a3 3 0 013 3v11a3 3 0 01-3 3H3a3
+										3 0 01-3-3V7a3 3 0 013-3h4.4zM20.3 12.5a6.3 6.3 0 10-12.6 0 6.3 6.3 0 1012.6
+										0zM18.8 12.5a4.8 4.8 0 11-9.6 0 4.8 4.8 0 019.6 0z" />
+								</svg>
+							</div>
+						</div>
+
+						<div id="lkPass">
+							<div class="lk-ptitle">Enter Passcode</div>
+							<div class="lk-dots" id="lkDots"></div>
+							<div class="lk-fail" id="lkFail"></div>
+							<div id="lkKeys"></div>
+							<div class="lk-cancel" id="lkCancel">Cancel</div>
+						</div>
+					</div><!-- /#lock -->
+
+					<div id="ccShade"></div>
+
+					<div id="nc">
+						<div class="nc-bg"></div>
+						<div class="nc-status" id="ncStatus">
+							<div class="sb-left"><span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="ncClock">9:05 AM</div>
+							<div class="sb-right" id="ncBatt"></div>
+						</div>
+						<div class="nc-tabs">
+							<div class="nc-seg" id="ncSeg">
+								<div class="on" data-t="today">Today</div>
+								<div data-t="notif">Notifications</div>
+							</div>
+						</div>
+						<div class="nc-scroll" id="ncScroll"></div>
+						<div class="nc-foot">
+							<svg width="34" height="10" viewBox="0 0 34 10">
+								<path d="M2 8 15.4 2.6a4 4 0 013.2 0L32 8" fill="none" stroke="rgba(255,255,255,.62)"
+									stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+					</div>
+
+					<div id="cc">
+						<div class="cc-sec cc-head">
+							<div class="cc-hint" id="ccHint"><svg width="30" height="9" viewBox="0 0 34 10">
+									<path d="M2 2.5 15.4 7.9a4 4 0 003.2 0L32 2.5" fill="none"
+										stroke="rgba(255,255,255,.85)" stroke-width="3.2" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg></div>
+							<div class="cc-toggles" id="ccToggles"></div>
+						</div>
+						<div class="cc-sec cc-bright">
+							<svg width="15" height="15" viewBox="0 0 24 24" class="sun">
+								<circle cx="12" cy="12" r="4.4" fill="#1b1b1d" />
+								<g stroke="#1b1b1d" stroke-width="1.8" stroke-linecap="round">
+									<path
+										d="M12 1.6v2.6M12 19.8v2.6M1.6 12h2.6M19.8 12h2.6M4.7 4.7 6.5 6.5M17.5 17.5l1.8 1.8M19.3 4.7 17.5 6.5M6.5 17.5l-1.8 1.8" />
+								</g>
+							</svg>
+							<div class="cc-slider" id="ccBright">
+								<div class="trk"></div>
+								<div class="fil"></div>
+								<div class="knb"></div>
+							</div>
+							<svg width="21" height="21" viewBox="0 0 24 24" class="sun">
+								<circle cx="12" cy="12" r="5.2" fill="#1b1b1d" />
+								<g stroke="#1b1b1d" stroke-width="1.9" stroke-linecap="round">
+									<path
+										d="M12 .8v3.2M12 20v3.2M.8 12h3.2M20 12h3.2M4.1 4.1l2.3 2.3M17.6 17.6l2.3 2.3M19.9 4.1l-2.3 2.3M6.4 17.6l-2.3 2.3" />
+								</g>
+							</svg>
+						</div>
+						<div class="cc-sec cc-music">
+							<div class="cc-mtitle">Music</div>
+							<div class="cc-tr">
+								<div><svg width="30" height="19" viewBox="0 0 32 20">
+										<path d="M15 1v18L1.5 10z" />
+										<path d="M31 1v18L17.5 10z" />
+									</svg></div>
+								<div><svg width="18" height="21" viewBox="0 0 18 22">
+										<path d="M1.5 1v20L17 11z" />
+									</svg></div>
+								<div><svg width="30" height="19" viewBox="0 0 32 20">
+										<path d="M1 1v18l13.5-9z" />
+										<path d="M17 1v18l13.5-9z" />
+									</svg></div>
+							</div>
+							<div class="cc-vol">
+								<svg width="16" height="16" viewBox="0 0 20 20">
+									<path d="M10 2.4 5.2 6.6H1.6v6.8h3.6L10 17.6z" />
+								</svg>
+								<div class="cc-slider" id="ccVol">
+									<div class="trk"></div>
+									<div class="fil"></div>
+									<div class="knb"></div>
+								</div>
+								<svg width="22" height="18" viewBox="0 0 26 20">
+									<path d="M9.4 2.4 4.6 6.6H1v6.8h3.6l4.8 4.2z" />
+									<path d="M13.2 6.4a5.4 5.4 0 010 7.2" fill="none" stroke="#1b1b1d"
+										stroke-width="1.8" stroke-linecap="round" />
+									<path d="M16.6 3.6a10 10 0 010 12.8" fill="none" stroke="#1b1b1d" stroke-width="1.8"
+										stroke-linecap="round" />
+								</svg>
+							</div>
+						</div>
+						<div class="cc-sec cc-air">
+							<svg width="26" height="26" viewBox="0 0 28 28">
+								<circle cx="14" cy="16" r="4" />
+								<circle cx="14" cy="16" r="8.4" />
+								<circle cx="14" cy="16" r="12.8" />
+							</svg>
+							<span>AirDrop</span>
+						</div>
+						<div class="cc-sec cc-short" id="ccShort"></div>
+					</div>
+
+					<div id="brightmask"></div>
+
+					<div class="volhud" id="volHud">
+						<div class="vh-title">Volume</div>
+						<svg class="vh-icon" width="66" height="54" viewBox="0 0 66 54">
+							<path d="M4 19h10L28 6.5v41L14 35H4z" fill="#6E7277" />
+							<path d="M35.5 15.5a17 17 0 010 23" fill="none" stroke="#6E7277" stroke-width="4.4"
+								stroke-linecap="round" />
+							<path d="M43.5 9a26 26 0 010 36" fill="none" stroke="#6E7277" stroke-width="4.4"
+								stroke-linecap="round" />
+							<path d="M51.5 2.5a35 35 0 010 49" fill="none" stroke="#6E7277" stroke-width="4.4"
+								stroke-linecap="round" />
+						</svg>
+						<div class="vh-bar" id="volBar"></div>
+					</div>
+					<div id="sleepmask"></div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ============ FOURTH WALL: power controls, outside the device ============ -->
+	<div id="fourthwall">
+		<div class="fw-head">
+			<svg width="11" height="15" viewBox="0 0 7 11" aria-hidden="true">
+				<path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor" />
+			</svg>
+			<span>Power</span>
+		</div>
+		<div class="fw-read">
+			<span id="fwPct">100%</span>
+			<span class="fw-state" id="fwState">Charging</span>
+		</div>
+		<div class="fw-gauge">
+			<i id="fwBar"></i>
+		</div>
+		<button type="button" id="fwPlug">Unplug</button>
+		<label class="fw-lbl" for="fwCond">Battery Condition</label>
+		<select id="fwCond"></select>
+	</div>
+
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+		<defs>
+			<clipPath id="squircle" clipPathUnits="objectBoundingBox">
+				<path id="squirclePath" d="M0,0" />
+			</clipPath>
+		</defs>
+	</svg>
+	<input type="file" id="photoPicker" accept="image/*">
+	<script>
+		(function () {
+			"use strict";
+
+			let $ = function (id) { return document.getElementById(id); };
+			function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+			/* ------------------------------------------------------------------ */
+			/* SCALE + CLOCK                                                      */
+			/* ------------------------------------------------------------------ */
+			let stage = $('stage');
+			function fit() {
+				let s = Math.min((window.innerWidth - 20) / 376, (window.innerHeight - 30) / 791);
+				stage.style.transform = 'scale(' + s + ')';
+			}
+			window.addEventListener('resize', fit); fit();
+
+			var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+			var MONS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+				'August', 'September', 'October', 'November', 'December'];
+
+			function tick() {
+				let d = new Date(), h = d.getHours(), m = d.getMinutes();
+				let ap = h >= 12 ? 'PM' : 'AM';
+				h = h % 12; if (h === 0) h = 12;
+				let txt = h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+				$('clock').textContent = txt; $('hsClock').textContent = txt;
+				$('ncClock').textContent = txt; $('ftClock').textContent = txt;
+				$('ckClock').textContent = txt;
+				lkTick();
+				if (ckReady) ckTick();
+			}
+			tick(); setInterval(tick, 5000);
+
+			/* ------------------------------------------------------------------ */
+			/* BATTERY                                                            */
+			/* ------------------------------------------------------------------ */
+			/* drain is %/second while unplugged -- a worse cell empties faster */
+			var CONDITIONS = [
+				{ n: 'Excellent — 100%', drain: 0.10 },
+				{ n: 'Good — 91%', drain: 0.30 },
+				{ n: 'Fair — 78%', drain: 0.90 },
+				{ n: 'Poor — 62%', drain: 2.50 },
+				{ n: 'Needs Service — 31%', drain: 8 },
+				{ n: 'Broken — 4%', drain: 25 },
+				{ n: 'Just gone — 0%', drain: 1e9 }
+			];
+			var CHARGE_RATE = 1;                     /* %/second on the charger */
+			var batt = { level: 100, charging: true, cond: CONDITIONS[0], dead: false };
+
+			/* set by the Clock app further down; declared here because the status
+			   bars and the 5-second tick both read them before it has run */
+			var ckReady = false, ckAlarmOn = false;
+
+			/* One geometry for every status bar, traced pixel-for-pixel off the lock
+			   screen photograph (ref_pic/IMG_2446.PNG, 2x). In points:
+			     frame  27.0 x 11.0, solid 0.5 stroke, corners ~1.2
+			     fill   inset 1.0 all round -> 25.0 x 9.0 at full charge
+			     nub    1.5 x 5.0, starting 0.5 past the frame, vertically centred
+			     bolt   6.0 x 10.0, sitting 3.0 after the nub  (see .sb-right gap) */
+			var BATT_STD = {
+				w: 29, h: 11, vb: '0 0 29 11',
+				body: { x: .25, y: .25, w: 26.5, h: 10.5, rx: 1.2, sw: .5, so: 1 },
+				fill: { x: 1, y: 1, w: 25, h: 9, rx: .6 },
+				nub: '<rect x="27.5" y="3" width="1.5" height="5" rx=".7" fill="currentColor"/>'
+			};
+			var BOLT_STD = '<svg width="6" height="10" viewBox="0 0 6.6 11" aria-hidden="true"><path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor"/></svg>';
+
+			function battSVG(s, pct, charging) {
+				var f = s.fill;
+				var fw = Math.max(0, Math.min(100, pct)) / 100 * f.w;
+				/* iOS: red when low, green on the charger, otherwise the bar's own ink */
+				var col = pct <= 20 ? '#FF3B30' : (charging ? '#4CD964' : 'currentColor');
+				return '<svg width="' + s.w + '" height="' + s.h + '" viewBox="' + s.vb + '" aria-hidden="true">' +
+					'<rect x="' + s.body.x + '" y="' + s.body.y + '" width="' + s.body.w + '" height="' + s.body.h +
+					'" rx="' + s.body.rx + '" fill="none" stroke="currentColor" stroke-width="' + s.body.sw +
+					'" stroke-opacity="' + s.body.so + '"/>' +
+					(fw > 0.35 ? '<rect x="' + f.x + '" y="' + f.y + '" width="' + fw.toFixed(2) +
+						'" height="' + f.h + '" rx="' + Math.min(f.rx, fw / 2).toFixed(2) +
+						'" fill="' + col + '"/>' : '') +
+					s.nub + '</svg>';
+			}
+
+			/* the little clock face iOS parks left of the battery while an alarm
+			   is armed -- 12 pt wide, traced off ref_pic/Clock/Alarm/IMG_2493 */
+			var ALARM_STD = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" style="margin-right:1px">' +
+				'<circle cx="6" cy="6.7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.1"/>' +
+				'<path d="M6 4.3v2.5h1.8" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>' +
+				'<path d="M2.2 1 3.7 2.4M9.8 1 8.3 2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+
+			var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt'];
+			function renderBatteries() {
+				var std = (ckAlarmOn ? ALARM_STD : '') +
+					battSVG(BATT_STD, batt.level, batt.charging) + (batt.charging ? BOLT_STD : '');
+				for (var i = 0; i < STD_BARS.length; i++) $(STD_BARS[i]).innerHTML = std;
+			}
+
+			/* ------------------------------------------------------------------ */
+			/* ADAPTIVE STATUS BAR INK                                            */
+			/* ------------------------------------------------------------------ */
+			/* How light the thing sitting behind each status bar is, 0=black 1=white.
+			   Update these if a wallpaper changes and the ink will follow. */
+			var BG_LUMA = {
+				home: 0.12,      /* wallpaper is nearly black across the top */
+				app: 0.97,      /* #F7F7F7 nav bar */
+				ck: 0.97,      /* Clock's nav bar, same grey */
+				ft: 0.02,      /* FaceTime is black */
+				nc: 0.16,      /* blurred + darkened wallpaper */
+				lockMain: 0.87,      /* #FFEC6D */
+				lockPass: 0.31       /* #595317 */
+			};
+			var INK_FLIP = 0.45;    /* backdrops darker than this get light ink */
+			var ccP = 0;            /* how far Control Center is open, 0..1 */
+
+			/* t: 0 = dark ink, 1 = light ink. darkA is the dark end's alpha. */
+			function inkCss(t, darkA) {
+				var v = Math.round(255 * t);
+				return 'rgba(' + v + ',' + v + ',' + v + ',' + (darkA + (1 - darkA) * t).toFixed(3) + ')';
+			}
+			function inkT(luma) { return luma > INK_FLIP ? 0 : 1; }
+
+			function refreshInk() {
+				var dim = ccP ? 1 - CC_DIM * ccP : 1;      /* CC darkens whatever is under it */
+				$('hsStatus').style.color = inkCss(inkT(BG_LUMA.home * dim), 1);
+				$('statusbar').style.color = inkCss(inkT(BG_LUMA.app * dim), 1);
+				$('ckstatus').style.color = inkCss(inkT(BG_LUMA.ck * dim), 1);
+				$('ftstatus').style.color = inkCss(inkT(BG_LUMA.ft * dim), 1);
+				$('ncStatus').style.color = inkCss(inkT(BG_LUMA.nc), 1);
+				/* the lock bar rides the passcode slide continuously instead of flipping */
+				$('lkStatus').style.color = inkCss(lkP || 0, 0.7);
+			}
+
+			/* ------------------------------------------------------------------ */
+			/* FOURTH WALL: the charger lives outside the device                  */
+			/* ------------------------------------------------------------------ */
+			function paintFW() {
+				var lvl = Math.round(batt.level), st = $('fwState');
+				$('fwPct').textContent = lvl + '%';
+				var bar = $('fwBar');
+				bar.style.width = Math.max(0, batt.level).toFixed(1) + '%';
+				bar.className = (!batt.charging && lvl <= 20) ? 'low' : '';
+				if (batt.dead) { st.textContent = 'Dead'; st.className = 'fw-state low'; }
+				else if (batt.charging) { st.textContent = 'Charging'; st.className = 'fw-state'; }
+				else if (lvl <= 20) { st.textContent = 'Low'; st.className = 'fw-state low'; }
+				else { st.textContent = 'On battery'; st.className = 'fw-state draining'; }
+				$('fwPlug').textContent = batt.charging ? 'Unplug' : 'Plug In';
+				$('fwPlug').classList.toggle('unplugged', !batt.charging);
+			}
+
+			var battShown = -1, chgShown = null, almShown = null;
+			function battSync() {
+				var l = Math.round(batt.level);
+				if (l !== battShown || batt.charging !== chgShown || ckAlarmOn !== almShown) {
+					battShown = l; chgShown = batt.charging; almShown = ckAlarmOn;
+					renderBatteries();
+				}
+				paintFW();
+			}
+
+			(function () {
+				var sel = $('fwCond');
+				sel.innerHTML = CONDITIONS.map(function (c, i) {
+					return '<option value="' + i + '">' + esc(c.n) + '</option>';
+				}).join('');
+				sel.selectedIndex = 0;
+				sel.addEventListener('change', function () { batt.cond = CONDITIONS[+sel.value]; });
+				$('fwPlug').addEventListener('click', function () {
+					batt.charging = !batt.charging;
+					battSync();
+				});
+
+				var last = Date.now();
+				setInterval(function () {
+					var now = Date.now(), dt = Math.min(1, (now - last) / 1000);
+					last = now;
+					if (batt.charging) batt.level = Math.min(100, batt.level + CHARGE_RATE * dt);
+					else batt.level = Math.max(0, batt.level - batt.cond.drain * dt);
+
+					if (batt.level <= 0 && !batt.charging) {
+						if (!batt.dead) { batt.dead = true; setSleep(true); }   /* it powers off */
+					} else if (batt.dead && batt.level >= 1) {
+						batt.dead = false;
+					}
+					battSync();
+				}, 200);
+			})();
+
+			renderBatteries(); paintFW(); refreshInk();
+
+			/* ------------------------------------------------------------------ */
+			/* DATA                                                               */
+			/* ------------------------------------------------------------------ */
+			let PHOTOS = {};   // pid -> dataURL
+
+			let convs = [
+				{
+					id: 'parker', name: 'Parker', title: 'Parker', date: '8/6/25',
+					preview: 'hello', service: 'imessage', wide: true,
+					people: [{ name: 'Parker', pid: 'av3' }],
+					msgs: [
+						{ stamp: 'Wed, Aug 6, 12:14 PM' },
+						{ d: 'out', text: 'hi' },
+						{ d: 'in', text: 'hello' }
+					]
+				}
+			];
+
+			/* Contacts for the New Message autocomplete.
+			   Janae's four entries come straight off the screenshot; the rest reuse
+			   numbers already visible in the thread list. */
+			let CONTACTS = [
+				{ first: 'Janae', last: 'Griebel', label: 'home', value: '(308) 440-2158' },
+				{ first: 'Janae', last: 'Griebel', label: 'work', value: '(308) 872-8327' },
+				{ first: 'Janae', last: 'Griebel', label: 'home', value: 'jgriebel@gmail.com' },
+				{ first: 'Janae', last: 'Griebel', group: ' & +1 (402) 910-5452' },
+				{ first: 'Parker', last: '', label: 'mobile', value: '(308) 830-0332' },
+				{ first: 'Marcus', last: '', label: 'mobile', value: '(308) 215-0334' },
+				{ first: 'Joel', last: '', label: 'mobile', value: '(402) 910-5452' }
+			];
+
+			/* ------------------------------------------------------------------ */
+			/* PAGE STACK                                                         */
+			/* ------------------------------------------------------------------ */
+			let pList = $('p-list'), pThread = $('p-thread'), pDetails = $('p-details'), pNew = $('p-new');
+
+			function push(from, to) { from.classList.remove('active'); from.classList.add('behind'); to.classList.add('active'); }
+			function pop(from, to) { from.classList.remove('active'); to.classList.remove('behind'); to.classList.add('active'); }
+
+			/* ------------------------------------------------------------------ */
+			/* SVG BITS                                                           */
+			/* ------------------------------------------------------------------ */
+			let CHEV = '<svg class="chev" width="9" height="15" viewBox="0 0 9 15"><path d="M1 1l6.4 6.5L1 14" fill="none" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			let CHECK = '<svg width="13" height="11" viewBox="0 0 13 11"><path d="M1.2 5.6 4.7 9.3 11.6 1.6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			let QMARK = '<span class="qbox">?</span>';
+			let MICWHITE = '<svg width="11" height="17" viewBox="0 0 14 22"><rect x="4" y="1" width="6" height="12" rx="3" fill="#fff"/><path d="M1.6 10.4c0 3 2.4 5.4 5.4 5.4s5.4-2.4 5.4-5.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M7 15.8v4.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+			let CAMICON = '<svg width="26" height="22" viewBox="0 0 28 24"><rect x="1" y="5" width="26" height="18" rx="3" fill="none" stroke="#9B9BA0" stroke-width="1.6"/><path d="M9 5 11 1.5h6L19 5" fill="none" stroke="#9B9BA0" stroke-width="1.6" stroke-linejoin="round"/><circle cx="14" cy="14" r="5" fill="none" stroke="#9B9BA0" stroke-width="1.6"/></svg>';
+
+			/* ------------------------------------------------------------------ */
+			/* CONVERSATION LIST                                                  */
+			/* ------------------------------------------------------------------ */
+			let listEl = $('convList'), editing = false, picked = {}, searching = false, query = '';
+
+			function visibleConvs() {
+				if (!searching || !query) return convs;
+				let q = query.toLowerCase();
+				return convs.filter(function (c) {
+					return c.name.toLowerCase().indexOf(q) > -1 || c.preview.toLowerCase().indexOf(q) > -1;
+				});
+			}
+
+			function renderList() {
+				let rows = visibleConvs();
+				if (!rows.length) { listEl.innerHTML = '<div class="noresults">No Results</div>'; return; }
+				listEl.innerHTML = rows.map(function (c) {
+					return '<div class="row' + (picked[c.id] ? ' picked' : '') + '" data-id="' + c.id + '">' +
+						'<div class="sel">' + (picked[c.id] ? CHECK : '') + '</div>' +
+						'<div class="txt"><div class="name">' + esc(c.name) + '</div>' +
+						'<div class="prev">' + esc(c.preview) + '</div></div>' +
+						'<div class="meta">' + esc(c.date) + CHEV + '</div></div>';
+				}).join('');
+			}
+			renderList();
+
+			listEl.addEventListener('click', function (e) {
+				let row = e.target.closest('.row'); if (!row) return;
+				if (editing) {
+					picked[row.dataset.id] = !picked[row.dataset.id];
+					renderList(); updateEditBar();
+				} else {
+					if (searching) exitSearch();
+					openThread(row.dataset.id);
+				}
+			});
+
+			let editBtn = $('editBtn'), composeBtn = $('composeBtn'), editBar = $('editBar'),
+				searchWrap = $('searchWrap'), readBtn = $('readBtn'), delBtn = $('delBtn');
+
+			function setEditing(on) {
+				editing = on; picked = {};
+				listEl.classList.toggle('editing', on);
+				editBar.style.display = on ? 'flex' : 'none';
+				searchWrap.classList.toggle('disabled', on);
+				editBtn.textContent = on ? 'Cancel' : 'Edit';
+				composeBtn.style.visibility = on ? 'hidden' : 'visible';
+				renderList(); updateEditBar();
+			}
+			function updateEditBar() {
+				let any = Object.keys(picked).some(function (k) { return picked[k]; });
+				readBtn.textContent = any ? 'Read' : 'Read All';
+				readBtn.className = any ? 'dim' : '';
+				delBtn.className = any ? '' : 'dim';
+			}
+			editBtn.addEventListener('click', function () { setEditing(!editing); });
+			delBtn.addEventListener('click', function () {
+				if (delBtn.className === 'dim') return;
+				convs = convs.filter(function (c) { return !picked[c.id]; });
+				setEditing(false);
+			});
+
+			/* ------------------------------------------------------------------ */
+			/* SEARCH MODE                                                        */
+			/* ------------------------------------------------------------------ */
+			function enterSearch() {
+				if (editing) return;
+				searching = true; query = '';
+				searchWrap.classList.add('searching');
+				$('listNav').style.display = 'none';
+				$('listWrap').classList.add('dim');
+				syncSearch(); renderList();
+				openKB(kb3);
+			}
+			function exitSearch() {
+				searching = false; query = '';
+				searchWrap.classList.remove('searching');
+				$('listNav').style.display = 'flex';
+				$('listWrap').classList.remove('dim');
+				closeKB(kb3); syncSearch(); renderList();
+			}
+			function syncSearch() {
+				let t = $('searchText');
+				if (searching && query) {
+					t.innerHTML = '<span class="q">' + esc(query) + '</span><span class="caret"></span>';
+					$('listWrap').classList.remove('dim');
+				} else if (searching) {
+					t.innerHTML = '<span class="caret" style="height:17px"></span>Search';
+					t.style.color = '#B9B9BE';
+					$('listWrap').classList.add('dim');
+				} else {
+					t.textContent = 'Search'; t.style.color = '';
+				}
+				if (kb3) { kb3.retDim = !query; drawKeys(kb3); }
+			}
+			$('searchField').addEventListener('click', enterSearch);
+			$('searchCancel').addEventListener('click', exitSearch);
+
+			/* ------------------------------------------------------------------ */
+			/* THREAD                                                             */
+			/* ------------------------------------------------------------------ */
+			let threadBody = $('threadBody'), threadTitle = $('threadTitle'), current = null, sending = false;
+
+			function photoHTML(pid, cls) {
+				if (PHOTOS[pid]) return '<img src="' + PHOTOS[pid] + '" alt="">';
+				return '<div class="ph js-photo" data-pid="' + pid + '">' + CAMICON +
+					'<span>tap to load<br>your own photo</span></div>';
+			}
+
+			function renderThread() {
+				let html = '';
+				current.msgs.forEach(function (m, i) {
+					if (m.stamp) {
+						let parts = m.stamp.split(/,\s(?=\d)/);
+						let line;
+						if (/^Today|^Yesterday/.test(m.stamp)) {
+							let bits = m.stamp.split(' ');
+							line = '<b>' + esc(bits.shift()) + '</b> ' + esc(bits.join(' '));
+						} else {
+							line = '<b>' + esc(parts[0]) + '</b>' + (parts[1] ? ', ' + esc(parts[1]) : '');
+						}
+						html += '<div class="stamp">' +
+							(m.service ? '<span class="svc">' + esc(m.service) + '</span>' : '') +
+							line + '</div>';
+						return;
+					}
+					let smsCls = m.sms ? ' sms' : '';
+					html += '<div class="grp ' + m.d + '">';
+					if (m.who) html += '<div class="sender">' + esc(m.who) + '</div>';
+					html += '<div class="line">';
+					if (m.failed) html += '<div class="badge">!</div>';
+					if (m.kind === 'photo') html += '<div class="bub media">' + photoHTML(m.pid) + '</div>';
+					else if (m.kind === 'missing') html += '<div class="bub missing">' + QMARK + '</div>';
+					else html += '<div class="bub' + smsCls + '">' + esc(m.text) + '</div>';
+					html += '</div>';
+					if (m.receipt) html += '<div class="receipt' + (m.failed ? ' fail' : '') + '">' + esc(m.receipt) + '</div>';
+					html += '</div>';
+				});
+				html += '<div class="spacer"></div>';
+				threadBody.innerHTML = html;
+				threadBody.classList.toggle('wide', !!current.wide);
+				threadBody.scrollTop = threadBody.scrollHeight;
+			}
+
+			function openThread(id) {
+				current = convs.filter(function (c) { return c.id === id; })[0];
+				threadTitle.textContent = current.title;
+				buffer = ''; syncField();
+				closeKB(kb1); closeDict();
+				renderThread();
+				push(pList, pThread);
+				setTimeout(function () { threadBody.scrollTop = threadBody.scrollHeight; }, 40);
+			}
+			$('backBtn').addEventListener('click', function () { closeKB(kb1); closeDict(); pop(pThread, pList); });
+
+			/* photo picker */
+			let picker = $('photoPicker'), pendingPid = null;
+			document.addEventListener('click', function (e) {
+				let ph = e.target.closest('.js-photo, .js-att, .js-avatar');
+				if (ph) { pendingPid = ph.dataset.pid; picker.click(); }
+			});
+			threadBody.addEventListener('click', function (e) {
+				if (!e.target.closest('.js-photo')) { closeKB(kb1); closeDict(); syncField(); }
+			});
+			picker.addEventListener('change', function () {
+				let f = picker.files[0]; if (!f || !pendingPid) return;
+				let r = new FileReader();
+				r.onload = function () {
+					PHOTOS[pendingPid] = r.result;
+					if (current) renderThread();
+					if (pDetails.classList.contains('active')) renderDetails();
+					picker.value = '';
+				};
+				r.readAsDataURL(f);
+			});
+
+			/* ------------------------------------------------------------------ */
+			/* DETAILS                                                            */
+			/* ------------------------------------------------------------------ */
+			let dnd = {};
+
+			function renderDetails() {
+				let c = current, h = '';
+				h += '<div class="sect">';
+				c.people.forEach(function (p) {
+					let av = PHOTOS[p.pid]
+						? '<img class="avatar" src="' + PHOTOS[p.pid] + '" alt="">'
+						: '<div class="avatar js-avatar" data-pid="' + p.pid + '">' + esc(p.name.charAt(0)) + '</div>';
+					h += '<div class="cell person">' + av +
+						'<span class="grow">' + esc(p.name) + '</span>' +
+						'<span class="iBtn">i</span></div>';
+				});
+				h += '</div>';
+
+				h += '<div class="hdr">LOCATION</div><div class="sect">' +
+					'<div class="cell blue">Send My Current Location</div>' +
+					'<div class="cell blue">Share My Location</div></div>';
+
+				h += '<div class="hdr">&nbsp;</div><div class="sect">' +
+					'<div class="cell"><span class="grow" style="font-weight:400">Do Not Disturb</span>' +
+					'<span class="sw' + (dnd[c.id] ? ' on' : '') + '" id="dndSw"><i></i></span></div></div>' +
+					'<div class="ftr">Mute notifications for this conversation.</div>';
+
+				let pids = c.msgs.filter(function (m) { return m.kind === 'photo'; }).map(function (m) { return m.pid; });
+				while (pids.length && pids.length < 6) pids = pids.concat(pids);
+				pids = pids.slice(0, 6);
+				if (pids.length) {
+					h += '<div class="hdr">ATTACHMENTS</div><div class="attgrid">';
+					pids.forEach(function (pid, i) {
+						h += '<div class="att' + (i === 0 ? ' big' : '') + (PHOTOS[pid] ? '' : ' js-att') + '" data-pid="' + pid + '">' +
+							(PHOTOS[pid] ? '<img src="' + PHOTOS[pid] + '" alt="">' : CAMICON) + '</div>';
+					});
+					h += '</div>';
+				}
+				h += '<div style="height:24px"></div>';
+				$('detailsBody').innerHTML = h;
+
+				let sw = $('dndSw');
+				if (sw) sw.addEventListener('click', function () {
+					dnd[c.id] = !dnd[c.id];
+					sw.classList.toggle('on', !!dnd[c.id]);
+				});
+			}
+			$('detailsBtn').addEventListener('click', function () {
+				if (!current) return;
+				closeKB(kb1); closeDict();
+				$('detailsBackLbl').textContent = current.title;
+				renderDetails();
+				push(pThread, pDetails);
+			});
+			$('detailsBack').addEventListener('click', function () { pop(pDetails, pThread); });
+
+			/* ------------------------------------------------------------------ */
+			/* KEYBOARD                                                           */
+			/* ------------------------------------------------------------------ */
+			let LETTERS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+			let NUMBERS = ['1234567890', '-/:;()$&@"', ".,?!'"];
+			let SYMBOLS = ['[]{}#%^*+=', '_\\|~<>\u20AC\u00A3\u00A5\u2022', ".,?!'"];
+
+			let SHIFT_OFF = '<svg width="20" height="19" viewBox="0 0 22 21"><path d="M11 1.6 20 10h-4.6v8.4H6.6V10H2z" fill="none" stroke="#000" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+			let SHIFT_ON = '<svg width="20" height="19" viewBox="0 0 22 21"><path d="M11 1.6 20 10h-4.6v8.4H6.6V10H2z" fill="#000"/></svg>';
+			let SHIFT_CAP = '<svg width="20" height="21" viewBox="0 0 22 24"><path d="M11 1.6 20 10h-4.6v6.4H6.6V10H2z" fill="#000"/><rect x="6.6" y="18.6" width="8.8" height="3.4" fill="#000"/></svg>';
+			let BKSP = '<svg width="26" height="19" viewBox="0 0 28 20"><path d="M9 1h17a1.6 1.6 0 011.6 1.6v14.8A1.6 1.6 0 0126 19H9L1 10z" fill="#000"/><path d="M13.5 6.6 20 13.4M20 6.6l-6.5 6.8" stroke="#ADB3BC" stroke-width="1.7" stroke-linecap="round"/></svg>';
+			let GLOBE = '<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.4" fill="none" stroke="#000" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="4.4" ry="10.4" fill="none" stroke="#000" stroke-width="1.5"/><path d="M1.9 8.4h20.2M1.9 15.6h20.2" stroke="#000" stroke-width="1.5"/></svg>';
+			let MICKEY = '<svg width="12" height="21" viewBox="0 0 14 24"><rect x="3.6" y="0.9" width="6.8" height="13.4" rx="3.4" fill="#000"/><path d="M1 11.4c0 3.3 2.7 6 6 6s6-2.7 6-6" fill="none" stroke="#000" stroke-width="1.7" stroke-linecap="round"/><path d="M7 17.4v5.2" stroke="#000" stroke-width="1.7" stroke-linecap="round"/></svg>';
+
+			let WORDS = ('the be to of and a in that have i it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us is are was were been has had did going got really something someone sorry sure school tomorrow tonight today yeah yes okay thanks thank please maybe probably definitely awesome cute pretty crazy little never always still right left need feel tell ask call text send wait stop start stay let put keep help play game games phone ipod music video photo photos picture pictures morning night week weekend friday saturday sunday monday though through thing things thought three truck trucks').split(' ');
+
+			function buildKeyboard(el, opts) {
+				let st = {
+					layout: 'letters', shift: opts.nocap ? 'off' : 'on', el: el, pred: !opts.nopred,
+					nocap: !!opts.nocap,
+					target: opts.target, retLabel: opts.retLabel || 'return', retDim: !!opts.retDim,
+					retGo: !!opts.retGo
+				};
+				el.innerHTML = (st.pred ? '<div class="pred"><div class="slot"></div><div class="slot"></div><div class="slot"></div></div>' : '') +
+					'<div class="keys"></div>';
+				st.keysEl = el.querySelector('.keys');
+				st.predEl = el.querySelector('.pred');
+				drawKeys(st);
+				el.addEventListener('click', function (e) { handleKey(e, st); });
+				return st;
+			}
+
+			function drawKeys(st) {
+				let rows = st.layout === 'letters' ? LETTERS : (st.layout === 'numbers' ? NUMBERS : SYMBOLS);
+				let up = st.layout === 'letters' && st.shift !== 'off';
+				let sm = st.layout !== 'letters' ? ' small' : '';
+				let h = '';
+
+				h += '<div class="krow">' + rows[0].split('').map(function (c) {
+					return '<div class="key' + sm + '" data-c="' + c + '">' + (up ? c.toUpperCase() : c) + '</div>';
+				}).join('') + '</div>';
+
+				h += '<div class="krow' + (st.layout === 'letters' ? ' mid' : '') + '">' + rows[1].split('').map(function (c) {
+					return '<div class="key' + sm + '" data-c="' + c.replace(/"/g, '&quot;') + '">' + (up ? c.toUpperCase() : c) + '</div>';
+				}).join('') + '</div>';
+
+				let left, lbl;
+				if (st.layout === 'letters') { left = 'shift'; lbl = st.shift === 'caps' ? SHIFT_CAP : (st.shift === 'on' ? SHIFT_ON : SHIFT_OFF); }
+				else if (st.layout === 'numbers') { left = 'sym'; lbl = '#+='; }
+				else { left = 'num'; lbl = '123'; }
+
+				h += '<div class="krow">' +
+					'<div class="key alt wide15' + (st.layout === 'letters' && st.shift !== 'off' ? ' lit' : '') + (left !== 'shift' ? ' k123' : '') + '" data-a="' + left + '">' + lbl + '</div>' +
+					rows[2].split('').map(function (c) {
+						return '<div class="key' + sm + '" data-c="' + c.replace(/'/g, '&#39;') + '">' + (up ? c.toUpperCase() : c) + '</div>';
+					}).join('') +
+					'<div class="key alt wide15" data-a="bksp">' + BKSP + '</div></div>';
+
+				h += '<div class="krow">' +
+					'<div class="key alt k123" data-a="' + (st.layout === 'letters' ? 'num' : 'abc') + '">' + (st.layout === 'letters' ? '123' : 'ABC') + '</div>' +
+					'<div class="key alt kglobe" data-a="globe">' + GLOBE + '</div>' +
+					'<div class="key alt kmic" data-a="mic">' + MICKEY + '</div>' +
+					'<div class="key kspace" data-c=" ">space</div>' +
+					'<div class="key alt kreturn' + (st.retDim ? ' off' : '') + (st.retGo ? ' go' : '') +
+					'" data-a="ret">' + st.retLabel + '</div></div>';
+
+				st.keysEl.innerHTML = h;
+			}
+
+			let buffer = '', toText = '';
+
+			function getText(st) {
+				if (st.target === 'ft') return ftFocus === 'pw' ? ftPw : ftId;
+				if (st.target === 'label') return aaDraft.lbl;
+				if (st.target === 'city') return cyQuery;
+				return st.target === 'to' ? toText : (st.target === 'search' ? query : buffer);
+			}
+			function setText(st, v) {
+				if (st.target === 'ft') { if (ftFocus === 'pw') ftPw = v; else ftId = v; syncFT(); }
+				else if (st.target === 'label') { aaDraft.lbl = v; lbSync(); }
+				else if (st.target === 'city') { cyQuery = v; cySync(); }
+				else if (st.target === 'to') { toText = v; syncTo(); }
+				else if (st.target === 'search') { query = v; syncSearch(); renderList(); }
+				else { buffer = v; syncField(); }
+				autoShift(st); updatePred(st);
+			}
+			function insert(ch, st) { setText(st, getText(st) + ch); }
+			function backspace(st) { setText(st, getText(st).slice(0, -1)); }
+
+			function autoShift(st) {
+				if (st.layout !== 'letters' || st.shift === 'caps') return;
+				/* email / password fields never auto-capitalise */
+				if (st.nocap) { if (st.shift === 'on') { st.shift = 'off'; drawKeys(st); } return; }
+				let t = getText(st);
+				let want = (t.length === 0 || /(^|[.!?]\s|\n)$/.test(t)) ? 'on' : 'off';
+				if (st.shift !== want) { st.shift = want; drawKeys(st); }
+			}
+
+			function handleKey(e, st) {
+				let slot = e.target.closest('.slot');
+				if (slot && st.pred && slot.dataset.w) { acceptPrediction(slot.dataset.w, st); return; }
+				let k = e.target.closest('.key'); if (!k) return;
+				let c = k.dataset.c, a = k.dataset.a;
+				if (c !== undefined) {
+					let ch = (st.layout === 'letters' && st.shift !== 'off') ? c.toUpperCase() : c;
+					insert(ch, st);
+					if (st.shift === 'on') { st.shift = 'off'; drawKeys(st); }
+					return;
+				}
+				switch (a) {
+					case 'shift': st.shift = st.shift === 'off' ? 'on' : (st.shift === 'on' ? 'caps' : 'off'); drawKeys(st); break;
+					case 'num': st.layout = 'numbers'; drawKeys(st); break;
+					case 'sym': st.layout = 'symbols'; drawKeys(st); break;
+					case 'abc': st.layout = 'letters'; drawKeys(st); break;
+					case 'bksp': backspace(st); break;
+					case 'ret':
+						if (st.target === 'search') { /* Search key */ }
+						else if (st.target === 'ft') ftReturn();
+						else if (st.target === 'label') lbDone();
+						else if (st.target === 'city') cyBlur();
+						else insert('\n', st);
+						break;
+					case 'mic':
+						if (st === kb1) openDict();
+						break;
+					case 'globe': break;
+				}
+			}
+
+			function updatePred(st) {
+				if (!st.pred) return;
+				let t = getText(st), m = t.match(/[A-Za-z']+$/), word = m ? m[0] : '', out;
+				if (!word) {
+					out = t.length === 0 ? ['I', 'The', 'I\u2019m'] : ['I', 'the', 'and'];
+				} else {
+					let lw = word.toLowerCase(), hits = [];
+					for (let i = 0; i < WORDS.length && hits.length < 2; i++) {
+						if (WORDS[i].indexOf(lw) === 0 && WORDS[i] !== lw) hits.push(WORDS[i]);
+					}
+					out = ['\u201C' + word + '\u201D'].concat(hits);
+				}
+				for (let j = 0; j < 3; j++) {
+					let v = out[j] || '';
+					st.predEl.children[j].textContent = v;
+					st.predEl.children[j].dataset.w = v;
+				}
+			}
+			function acceptPrediction(w, st) {
+				let raw = w.replace(/[\u201C\u201D]/g, '');
+				setText(st, getText(st).replace(/[A-Za-z']*$/, raw) + ' ');
+			}
+
+			function openKB(st) { st.el.classList.add('up'); autoShift(st); updatePred(st); }
+			function closeKB(st) { st.el.classList.remove('up'); }
+
+			let kb1 = buildKeyboard($('kb1'), { target: 'msg' });
+			let kb2 = buildKeyboard($('kb2'), { target: 'to', nopred: true });
+			let kb3 = buildKeyboard($('kb3'), { target: 'search', nopred: true, retLabel: 'Search', retDim: true });
+			let kb4 = buildKeyboard($('kb4'), { target: 'ft', nopred: true, nocap: true, retLabel: 'Next', retDim: true });
+			let kb5 = buildKeyboard($('kb5'), { target: 'label', retLabel: 'Done', retGo: true });
+			let kb6 = buildKeyboard($('kb6'), { target: 'city', nopred: true, nocap: true, retLabel: 'Search', retDim: true });
+
+			/* ------------------------------------------------------------------ */
+			/* DICTATION                                                          */
+			/* ------------------------------------------------------------------ */
+			let waveEl = $('wave'), waveTimer = null, BARS = 68;
+			(function () {
+				let h = '';
+				for (let i = 0; i < BARS; i++) h += '<i></i>';
+				waveEl.innerHTML = h;
+			})();
+			function openDict() {
+				closeKB(kb1);
+				$('dictWrap').classList.add('up');
+				let t = 0, bars = waveEl.children;
+				waveTimer = setInterval(function () {
+					t += 0.35;
+					for (let i = 0; i < BARS; i++) {
+						let d = Math.abs(i - BARS / 2) / (BARS / 2);
+						let env = Math.max(0, 1 - d * 1.15);
+						let a = Math.sin(i * 0.9 + t) * Math.sin(i * 0.31 - t * 1.7);
+						let hgt = 2 + env * (10 + Math.abs(a) * 52) * (0.5 + Math.random() * 0.5);
+						bars[i].style.height = hgt.toFixed(1) + 'px';
+					}
+				}, 55);
+			}
+			function closeDict() {
+				$('dictWrap').classList.remove('up');
+				if (waveTimer) { clearInterval(waveTimer); waveTimer = null; }
+			}
+			$('dictDone').addEventListener('click', function () { closeDict(); openKB(kb1); syncField(); });
+
+			/* ------------------------------------------------------------------ */
+			/* COMPOSER                                                           */
+			/* ------------------------------------------------------------------ */
+			let msgField = $('msgField'), rightBtn = $('rightBtn');
+
+			function syncField() {
+				let im = current && current.service === 'imessage';
+				let kbUp = kb1.el.classList.contains('up') || $('dictWrap').classList.contains('up');
+				if (buffer === '') {
+					msgField.innerHTML = (kbUp ? '<span class="caret"></span>' : '') +
+						'<span class="plc">' + (im ? 'iMessage' : 'Text Message') + '</span>';
+					rightBtn.className = im ? 'micbtn' : 'send';
+					rightBtn.innerHTML = im ? MICWHITE : 'Send';
+				} else {
+					msgField.innerHTML = esc(buffer).replace(/\n/g, ' ') + '<span class="caret"></span>';
+					rightBtn.className = 'send ' + (im ? 'im' : 'sms');
+					rightBtn.innerHTML = 'Send';
+				}
+			}
+
+			msgField.addEventListener('click', function (e) {
+				e.stopPropagation();
+				closeDict(); openKB(kb1); syncField();
+				setTimeout(function () { threadBody.scrollTop = threadBody.scrollHeight; }, 290);
+			});
+
+			rightBtn.addEventListener('click', function () {
+				if (rightBtn.classList.contains('micbtn')) return;   // audio message: not implemented
+				if (!buffer.trim() || sending) return;
+				let im = current.service === 'imessage';
+				current.msgs.forEach(function (m) { if (m.receipt === 'Delivered') delete m.receipt; });
+				let msg = { d: 'out', text: buffer, sms: !im };
+				current.msgs.push(msg);
+				current.preview = buffer;
+				current.date = $('clock').textContent;
+				buffer = ''; syncField(); autoShift(kb1); updatePred(kb1);
+				renderThread(); renderList();
+
+				/* "Sending..." + green progress bar */
+				sending = true;
+				threadTitle.textContent = 'Sending\u2026';
+				let bar = $('sendbar');
+				bar.classList.add('go'); bar.style.width = '0';
+				requestAnimationFrame(function () { bar.style.width = '88%'; });
+				setTimeout(function () {
+					bar.style.width = '100%';
+					setTimeout(function () {
+						bar.classList.remove('go'); bar.style.width = '0';
+						threadTitle.textContent = current.title;
+						msg.receipt = 'Delivered';
+						sending = false;
+						renderThread();
+					}, 220);
+				}, 900);
+			});
+
+			/* ------------------------------------------------------------------ */
+			/* NEW MESSAGE + CONTACT SUGGESTIONS                                  */
+			/* ------------------------------------------------------------------ */
+			let toVal = $('toVal'), sugList = $('sugList');
+
+			function syncTo() {
+				toVal.innerHTML = esc(toText) + '<span class="caret"></span>';
+				renderSugs();
+			}
+			function boldMatch(name, q) {
+				if (!q) return esc(name);
+				return name.toLowerCase().indexOf(q) === 0 ? '<b>' + esc(name) + '</b>' : esc(name);
+			}
+			function renderSugs() {
+				let q = toText.trim().toLowerCase();
+				if (!q) { sugList.innerHTML = '<div class="blank"></div>'; return; }
+				let hits = CONTACTS.filter(function (c) {
+					return c.first.toLowerCase().indexOf(q) === 0 || (c.last && c.last.toLowerCase().indexOf(q) === 0);
+				});
+				if (!hits.length) { sugList.innerHTML = '<div class="blank"></div>'; return; }
+				sugList.innerHTML = hits.map(function (c) {
+					let nm = boldMatch(c.first, q) + (c.last ? ' ' + boldMatch(c.last, q) : '');
+					if (c.group) {
+						return '<div class="sug grouprow"><div class="l1">' + nm + esc(c.group) + '</div><span class="iBtn">i</span></div>';
+					}
+					return '<div class="sug"><div class="l1">' + nm + '</div>' +
+						'<div class="l2"><b>' + esc(c.label) + '</b>&nbsp;&nbsp;' + esc(c.value) + '</div></div>';
+				}).join('');
+			}
+			composeBtn.addEventListener('click', function () {
+				if (editing) return;
+				toText = ''; kb2.layout = 'letters'; kb2.shift = 'on'; drawKeys(kb2);
+				syncTo(); pNew.classList.add('active');
+			});
+			$('cancelNew').addEventListener('click', function () { pNew.classList.remove('active'); });
+
+			/* ------------------------------------------------------------------ */
+			/* FACETIME  (sign-in / activation screen only)                       */
+			/* ------------------------------------------------------------------ */
+			let ftId = '', ftPw = '', ftFocus = null, ftAlertCb = null;
+			let ftGo = $('ftSignIn'), ftGoLbl = $('ftGoLbl'), ftScroll = $('ftScroll');
+
+			function syncFT() {
+				let kbUp = kb4.el.classList.contains('up');
+				let car = '<span class="caret"></span>';
+				let idCar = (kbUp && ftFocus === 'id') ? car : '';
+				let pwCar = (kbUp && ftFocus === 'pw') ? car : '';
+
+				$('ftIdVal').innerHTML = ftId === ''
+					? idCar + '<span class="plc">example@icloud.com</span>'
+					: esc(ftId) + idCar;
+				$('ftPwVal').innerHTML = ftPw === ''
+					? pwCar + '<span class="plc">required</span>'
+					: new Array(ftPw.length + 1).join(String.fromCharCode(0x2022)) + pwCar;
+
+				let ready = ftId.trim() !== '' && ftPw !== '';
+				if (!ftGo.classList.contains('busy')) ftGo.classList.toggle('off', !ready);
+
+				kb4.retLabel = ftFocus === 'pw' ? 'Go' : 'Next';
+				kb4.retDim = ftFocus === 'pw' ? !ready : !ftId.trim();
+				drawKeys(kb4);
+			}
+
+			/* lift the form clear of the keyboard; the browser clamps if it can't scroll */
+			function ftReveal() { if (kb4.el.classList.contains('up')) ftScroll.scrollTop = 100; }
+			kb4.el.addEventListener('transitionend', ftReveal);
+
+			function ftFocusField(f) {
+				ftFocus = f;
+				openKB(kb4);
+				syncFT();
+				ftReveal();
+				setTimeout(ftReveal, 320);
+			}
+			function ftBlur() { closeKB(kb4); ftFocus = null; syncFT(); }
+
+			/* an Apple ID is an e-mail address or a phone number */
+			function ftValidId(v) {
+				v = v.trim();
+				return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || /^\+?[\d][\d\s()\-.]{6,}$/.test(v);
+			}
+
+			function ftAlert(title, msg, cb) {
+				$('ftATitle').textContent = title;
+				$('ftAMsg').textContent = msg;
+				ftAlertCb = cb || null;
+				$('ftAlert').classList.add('up');
+			}
+			$('ftAOk').addEventListener('click', function () {
+				$('ftAlert').classList.remove('up');
+				let f = ftAlertCb; ftAlertCb = null;
+				if (f) f();
+			});
+
+			function ftSignIn() {
+				if (ftGo.classList.contains('busy') || ftGo.classList.contains('off')) return;
+				ftBlur();
+				ftGo.classList.add('busy');
+				ftGoLbl.textContent = 'Signing In' + String.fromCharCode(0x2026);
+				setTimeout(function () {
+					ftGo.classList.remove('busy');
+					ftGoLbl.textContent = 'Sign In';
+					syncFT();
+					let retry = function () { ftPw = ''; ftFocusField('pw'); };
+					if (!ftValidId(ftId)) {
+						ftAlert('Verification Failed', 'This Apple ID is not valid.', retry);
+					} else if (ftPw.length < 8) {
+						ftAlert('Verification Failed', 'Your Apple ID or password was incorrect.', retry);
+					} else {
+						ftAlert('Verification Failed',
+							'There was an error connecting to the server. Check your network connection and try again.',
+							retry);
+					}
+				}, 1900);
+			}
+
+			function ftReturn() {
+				if (ftFocus === 'id') { if (ftId.trim()) ftFocusField('pw'); }
+				else ftSignIn();
+			}
+
+			let OFFLINE = ['Cannot Open Page',
+				'Safari cannot open the page because iPod touch is not connected to the Internet.'];
+
+			ftScroll.addEventListener('click', function (e) {
+				let row = e.target.closest('.ft-row');
+				if (row) { ftFocusField(row.dataset.f); return; }
+				if (e.target.closest('.ft-go')) return;
+				let link = e.target.closest('.ft-link');
+				if (link) { ftBlur(); ftAlert(OFFLINE[0], OFFLINE[1]); return; }
+				ftBlur();
+			});
+			ftGo.addEventListener('click', ftSignIn);
+			syncFT();
+
+			/* ------------------------------------------------------------------ */
+			/* LOCK SCREEN                                                        */
+			/* ------------------------------------------------------------------ */
+			var PASSCODE = '1234';          /* <- the four digits that unlock it */
+
+			var lockEl = $('lock'), lkMain = $('lkMain'), lkPass = $('lkPass'), lkBlur = $('lkBlur'),
+				lkStatus = $('lkStatus'), lkDots = $('lkDots'), lkFail = $('lkFail'), lkCancel = $('lkCancel');
+			var locked = false, lkP = 0, lkCode = '', lkFails = 0;
+
+			var LK_KEYS = [['1', ''], ['2', 'ABC'], ['3', 'DEF'], ['4', 'GHI'], ['5', 'JKL'],
+			['6', 'MNO'], ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'], ['0', '']];
+			var LK_COLX = [65, 160, 255], LK_ROWY = [200, 288, 376, 464];
+			$('lkKeys').innerHTML = LK_KEYS.map(function (k, i) {
+				var col = i === 9 ? 1 : i % 3, row = i === 9 ? 3 : (i / 3) | 0;
+				return '<div class="lk-key" data-d="' + k[0] + '" style="left:' + (LK_COLX[col] - 37.5) +
+					'px;top:' + (LK_ROWY[row] - 37.5) + 'px"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
+			}).join('');
+			lkDots.innerHTML = [105, 141.5, 178, 214.5].map(function (x) {
+				return '<i style="left:' + (x - 6) + 'px"></i>';
+			}).join('');
+
+			/* ---- the two-page slider: 0 = lock screen, 1 = passcode ---- */
+			function lkPaint(p) {
+				lkP = p;
+				lkMain.style.transform = 'translateX(' + (p * 320) + 'px)';
+				lkPass.style.transform = 'translateX(' + (-320 + p * 320) + 'px)';
+				lkBlur.style.opacity = p;
+				refreshInk();          /* status ink rides the slide, black -> white */
+			}
+			function lkAnim(on) {
+				var t = on ? 'transform .32s cubic-bezier(.32,.72,0,1)' : 'none';
+				var o = on ? 'opacity .32s cubic-bezier(.32,.72,0,1)' : 'none';
+				lkMain.style.transition = t; lkPass.style.transition = t;
+				lkBlur.style.transition = o;
+				/* while dragging, the ink is set per-frame, so kill its own transition */
+				lkStatus.classList.toggle('nofade', !on);
+			}
+			function lkGo(p) { lkAnim(true); lkPaint(p); if (!p) lkClear(); }
+
+			/* ---- passcode ---- */
+			function lkDrawDots() {
+				var d = lkDots.children;
+				for (var i = 0; i < 4; i++) d[i].className = i < lkCode.length ? 'f' : '';
+				lkCancel.textContent = lkCode.length ? 'Delete' : 'Cancel';
+			}
+			function lkClear() { lkCode = ''; lkDrawDots(); }
+			function lkBack() { if (lkCode.length) { lkCode = lkCode.slice(0, -1); lkDrawDots(); } }
+
+			function lkPress(d) {
+				if (lkCode.length >= 4) return;
+				lkCode += d;
+				lkDrawDots();
+				if (lkCode.length === 4) setTimeout(lkCheck, 140);
+			}
+			function lkCheck() {
+				if (lkCode === PASSCODE) { lkUnlock(); return; }
+				lkFails++;
+				lkFail.textContent = lkFails + ' Failed Passcode Attempt' + (lkFails > 1 ? 's' : '');
+				lkFail.classList.add('on');
+				lkDots.classList.remove('bad');
+				void lkDots.offsetWidth;                 /* restart the shake */
+				lkDots.classList.add('bad');
+				setTimeout(lkClear, 420);
+			}
+
+			/* idempotent: sleeping again also settles a half-lifted camera peek
+			   and drops the passcode pad back off-screen */
+			function lkLock() {
+				locked = true;
+				lockEl.style.transition = 'none';
+				lockEl.style.transform = 'none';
+				lockEl.style.opacity = '';
+				lkAnim(false); lkPaint(0); lkClear();
+				lkFails = 0; lkFail.classList.remove('on');
+				lockEl.classList.add('on');
+				lkTick();
+			}
+			function lkUnlock() {
+				locked = false;
+				lockEl.style.transition = 'opacity .34s ease-out, transform .34s ease-out';
+				lockEl.style.transform = 'scale(1.06)';
+				lockEl.style.opacity = '0';
+				setTimeout(function () {
+					if (locked) return;
+					lockEl.classList.remove('on');
+					lockEl.style.transition = 'none';
+					lockEl.style.transform = 'none';
+					lockEl.style.opacity = '';
+					lkAnim(false); lkPaint(0); lkClear();
+					lkFails = 0; lkFail.classList.remove('on');
+				}, 360);
+			}
+
+			function lkTick() {
+				var d = new Date(), h = d.getHours(), m = d.getMinutes();
+				h = h % 12; if (h === 0) h = 12;
+				$('lkClock').textContent = h + ':' + (m < 10 ? '0' : '') + m;
+				$('lkDate').textContent = DAYS[d.getDay()] + ', ' + MONS[d.getMonth()] + ' ' + d.getDate();
+			}
+
+			$('lkKeys').addEventListener('click', function (e) {
+				var k = e.target.closest('.lk-key');
+				if (k && !lkSwallow) lkPress(k.dataset.d);
+			});
+			lkCancel.addEventListener('click', function () {
+				if (lkSwallow) return;
+				if (lkCode.length) lkBack(); else lkGo(0);
+			});
+
+			/* ---- swipe right: drag the passcode pad in from the left ---- */
+			var lkDrag = null, lkSwallow = false;
+
+			lockEl.addEventListener('pointerdown', function (e) {
+				if (!locked || asleep) return;
+				if (e.target.closest('#lkCam, .lk-key, .lk-cancel')) return;
+				var r = screenEl.getBoundingClientRect(), y = (e.clientY - r.top) / scaleNow();
+				if (y < 16 || y > 552) return;         /* leave the NC / CC edges alone */
+				lkDrag = { x0: e.clientX, y0: e.clientY, from: lkP, live: false };
+			});
+			window.addEventListener('pointermove', function (e) {
+				if (!lkDrag) return;
+				var sc = scaleNow();
+				var dx = (e.clientX - lkDrag.x0) / sc, dy = (e.clientY - lkDrag.y0) / sc;
+				if (!lkDrag.live) {
+					if (Math.abs(dx) < 9) { if (Math.abs(dy) > 12) lkDrag = null; return; }
+					if (Math.abs(dy) > Math.abs(dx)) { lkDrag = null; return; }
+					lkDrag.live = true; lkSwallow = true; lkAnim(false);
+				}
+				if (e.cancelable) e.preventDefault();
+				lkPaint(Math.max(0, Math.min(1, lkDrag.from + dx / 320)));
+			}, { passive: false });
+			window.addEventListener('pointerup', function (e) {
+				if (!lkDrag) return;
+				var live = lkDrag.live, dx = (e.clientX - lkDrag.x0) / scaleNow();
+				lkDrag = null;
+				if (!live) return;
+				setTimeout(function () { lkSwallow = false; }, 0);
+				if (dx > 55) lkGo(1);
+				else if (dx < -55) lkGo(0);
+				else lkGo(lkP > .5 ? 1 : 0);
+			});
+
+			/* ---- camera handle: lifts the lock screen, then springs back ---- */
+			var camDrag = null;
+			function camLift(px) { lockEl.style.transform = px ? 'translateY(' + (-px) + 'px)' : 'none'; }
+			function camSpring() { lockEl.style.transition = 'transform .44s cubic-bezier(.22,.9,.3,1.15)'; camLift(0); }
+
+			$('lkCam').addEventListener('pointerdown', function (e) {
+				if (!locked || lkP > 0) return;
+				camDrag = { y0: e.clientY, live: false };
+			});
+			window.addEventListener('pointermove', function (e) {
+				if (!camDrag) return;
+				var dy = (e.clientY - camDrag.y0) / scaleNow();
+				if (!camDrag.live) {
+					if (dy > -8) return;
+					camDrag.live = true; lkSwallow = true;
+					lockEl.style.transition = 'none';
+				}
+				if (e.cancelable) e.preventDefault();
+				camLift(Math.min(150, Math.max(0, -dy) * 0.55));
+			}, { passive: false });
+			window.addEventListener('pointerup', function () {
+				if (!camDrag) return;
+				var live = camDrag.live;
+				camDrag = null;
+				if (live) { setTimeout(function () { lkSwallow = false; }, 0); camSpring(); return; }
+				/* a tap just bounces it, the way iOS does when there is nowhere to go */
+				lockEl.style.transition = 'transform .16s ease-out';
+				camLift(30);
+				setTimeout(camSpring, 170);
+			});
+
+			/* ------------------------------------------------------------------ */
+			/* PHYSICAL KEYBOARD                                                  */
+			/* ------------------------------------------------------------------ */
+			document.addEventListener('keydown', function (e) {
+				if (asleep) return;
+				if (locked) {
+					if (lkP < .5) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lkGo(1); } return; }
+					if (/^[0-9]$/.test(e.key)) { e.preventDefault(); lkPress(e.key); }
+					else if (e.key === 'Backspace') { e.preventDefault(); lkBack(); }
+					else if (e.key === 'Escape') lkGo(0);
+					return;
+				}
+				let st = (openAppId === 'facetime') ? (kb4.el.classList.contains('up') ? kb4 : null)
+					: (openAppId === 'clock') ? (kb5.el.classList.contains('up') ? kb5
+						: (kb6.el.classList.contains('up') ? kb6 : null))
+						: (pNew.classList.contains('active') ? kb2
+							: (searching ? kb3
+								: (kb1.el.classList.contains('up') ? kb1 : null)));
+				if (!st) return;
+				if (e.key === 'Backspace') { e.preventDefault(); backspace(st); }
+				else if (e.key === 'Enter') {
+					e.preventDefault();
+					if (st === kb4) ftReturn();
+					else if (st === kb5) lbDone();
+					else if (st === kb6) cyBlur();
+					else if (st === kb1 && buffer.trim()) rightBtn.click();
+				}
+				else if (e.key === 'Escape') {
+					if (st === kb4) ftBlur();
+					else if (st === kb5) lbDone();
+					else if (st === kb6) cyCancelSearch();
+					else if (searching) exitSearch();
+					else { closeKB(kb1); closeDict(); syncField(); }
+				}
+				else if (e.key.length === 1) { e.preventDefault(); setText(st, getText(st) + e.key); }
+			});
+
+
+			/* ------------------------------------------------------------------ */
+			/* HOME SCREEN                                                        */
+			/* ------------------------------------------------------------------ */
+
+			/* iOS squircle: superellipse |x|^5 + |y|^5 = 1, as an objectBoundingBox clip */
+			(function () {
+				let N = 180, n = 5, pts = [];
+				for (let i = 0; i <= N; i++) {
+					let t = i / N * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
+					let sx = c < 0 ? -1 : 1, sy = s < 0 ? -1 : 1;
+					let x = sx * Math.pow(Math.abs(c), 2 / n), y = sy * Math.pow(Math.abs(s), 2 / n);
+					pts.push((x * 0.5 + 0.5).toFixed(4) + ',' + (y * 0.5 + 0.5).toFixed(4));
+				}
+				$('squirclePath').setAttribute('d', 'M' + pts.join('L') + 'Z');
+			})();
+
+			let MSGICON = '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="45" rx="37" ry="27.5" fill="#fff"/><path d="M33 61C32 71.5 25.5 79.5 15.2 84.2c-1.5.7-.9 2.7.8 2.4C31.5 84 42 76.5 46.5 68.5Z" fill="#fff"/></svg>';
+
+			/* img = file in icons/ ; leave it off and the tile falls back to the grey placeholder */
+			let PAGE1 = [
+				{ n: 'FaceTime', img: 'facetime.png', app: 'facetime' }, { n: 'Clock', img: 'clock.png', app: 'clock' }, { n: 'Weather', img: 'weather.png' }, { n: 'Photos', img: 'photos.png' },
+				{ n: 'Maps', img: 'maps.png' }, { n: 'Camera', img: 'camera.png' }, { n: 'Videos', img: 'videos.png' }, { n: 'Notes', img: 'notes.png' },
+				{ n: 'Reminders', img: 'reminders.png', badge: 2 }, { n: 'Settings', img: 'settings.png' }, { n: 'Shopping', folder: 2, badge: 1 }, { n: 'Calendar', img: 'calendar.png' },
+				{ n: 'Games', folder: 6 }, { n: 'Safari', img: 'safari.png' }
+			];
+			/* page 2 is a guess -- I have no screenshot of it */
+			let PAGE2 = [
+				{ n: 'App Store' }, { n: 'iTunes Store' }, { n: 'Podcasts' }, { n: 'Contacts' },
+				{ n: 'Voice Memos' }, { n: 'Compass' }, { n: 'Stocks' }, { n: 'Tips' }
+			];
+			let DOCK = [
+				{ n: 'Messages', app: 'messages', img: 'messages.png' }, 
+				{ n: 'Music', img: 'music.png' }, { n: 'App Store', img: 'app-store.png' },
+				{ n: 'Voice Memos', img: 'voice-memos.png' }
+			];
+
+			function folderHTML(count) {
+				let h = '';
+				for (let i = 0; i < 9; i++) h += '<u class="' + (i < count ? 'f' : '') + '"></u>';
+				return h;
+			}
+			function iconHTML(a) {
+				let cls = 'tile' + (a.img ? ' art' : (a.app === 'messages' ? ' messages' : '')) + (a.folder ? ' folder' : '');
+				let inner = a.img ? '<img src="icons/' + a.img + '" alt="" draggable="false">'
+					: (a.app === 'messages' ? MSGICON : (a.folder ? folderHTML(a.folder) : ''));
+				return '<div class="icon" data-app="' + (a.app || '') + '">' +
+					'<div class="' + cls + '">' + inner + '</div>' +
+					(a.badge ? '<div class="badge">' + a.badge + '</div>' : '') +
+					'<div class="lbl">' + esc(a.n) + '</div></div>';
+			}
+			$('hsGrid1').innerHTML = PAGE1.map(iconHTML).join('');
+			$('hsGrid2').innerHTML = PAGE2.map(iconHTML).join('');
+			$('hsDock').innerHTML = DOCK.map(iconHTML).join('');
+			$('hsDots').innerHTML = '<i class="on"></i><i></i>';
+
+			/* ---- paging ---- */
+			let page = 0, PAGES = 2;
+			function setPage(p) {
+				page = Math.max(0, Math.min(PAGES - 1, p));
+				$('hsPages').style.transition = 'transform .32s cubic-bezier(.32,.72,0,1)';
+				$('hsPages').style.transform = 'translateX(' + (-320 * page) + 'px)';
+				let d = $('hsDots').children;
+				for (let i = 0; i < d.length; i++) d[i].className = i === page ? 'on' : '';
+			}
+			(function () {
+				let x0 = null, dx = 0, moved = false, pages = $('hsPages');
+				function down(e) {
+					if (openAppId || asleep) return;
+					x0 = (e.touches ? e.touches[0].clientX : e.clientX); dx = 0; moved = false;
+					pages.style.transition = 'none';
+				}
+				function move(e) {
+					if (x0 === null) return;
+					let x = (e.touches ? e.touches[0].clientX : e.clientX);
+					dx = (x - x0) / (parseFloat(stage.style.transform.replace(/[^0-9.]/g, '')) || 1);
+					if (Math.abs(dx) > 8) moved = true;
+					if (moved && e.cancelable) e.preventDefault();
+					let off = -320 * page + dx;
+					if (off > 0 || off < -320 * (PAGES - 1)) off = -320 * page + dx * 0.32;
+					pages.style.transform = 'translateX(' + off + 'px)';
+				}
+				function up() {
+					if (x0 === null) return;
+					x0 = null;
+					if (moved && Math.abs(dx) > 55) setPage(page + (dx < 0 ? 1 : -1));
+					else setPage(page);
+					setTimeout(function () { moved = false; }, 0);
+				}
+				pages.addEventListener('mousedown', down);
+				pages.addEventListener('touchstart', down, { passive: true });
+				window.addEventListener('mousemove', move);
+				pages.addEventListener('touchmove', move, { passive: false });
+				window.addEventListener('mouseup', up);
+				pages.addEventListener('touchend', up);
+				$('hsDots').addEventListener('click', function (e) {
+					let i = Array.prototype.indexOf.call($('hsDots').children, e.target);
+					if (i > -1) setPage(i);
+				});
+				$('homescreen').addEventListener('click', function (e) {
+					if (moved) return;
+					let ic = e.target.closest('.icon'); if (!ic) return;
+					if (ic.dataset.app) openApp(ic, ic.dataset.app);
+				});
+			})();
+
+			/* ---- open / close with the zoom-into-icon transition ---- */
+			let openAppId = null, hsEl = $('homescreen');
+			let APPS = { messages: $('app'), facetime: $('ftapp'), clock: $('ckapp') };
+			let EASE = 'cubic-bezier(.32,.06,.16,1)', DUR = 400;
+
+			function originOf(iconEl) {
+				if (!iconEl) return '50% 50%';           /* app not on the home screen */
+				let t = iconEl.querySelector('.tile').getBoundingClientRect();
+				let s = $('screen').getBoundingClientRect();
+				let cx = (t.left + t.width / 2 - s.left) / s.width * 100;
+				let cy = (t.top + t.height / 2 - s.top) / s.height * 100;
+				return cx.toFixed(2) + '% ' + cy.toFixed(2) + '%';
+			}
+			function iconFor(appId) {
+				return document.querySelector('#homescreen .icon[data-app="' + appId + '"]');
+			}
+
+			function openApp(iconEl, id) {
+				let appEl = APPS[id];
+				if (openAppId || !appEl) return;
+				let o = originOf(iconEl);
+				openAppId = id;
+				appEl.style.transition = 'none';
+				appEl.style.transformOrigin = o;
+				appEl.style.transform = 'scale(.055)';
+				appEl.classList.add('on');
+				appEl.style.opacity = '0';
+				hsEl.style.transition = 'none';
+				hsEl.style.transformOrigin = o;
+				hsEl.style.transform = 'scale(1)';
+				hsEl.style.opacity = '1';
+				appEl.offsetHeight;                      /* reflow */
+				appEl.style.transition = 'transform ' + DUR + 'ms ' + EASE + ',opacity ' + (DUR * 0.55) + 'ms ease-out';
+				hsEl.style.transition = 'transform ' + DUR + 'ms ' + EASE + ',opacity ' + (DUR * 0.7) + 'ms ease-out';
+				appEl.style.transform = 'scale(1)';
+				appEl.style.opacity = '1';
+				hsEl.style.transform = 'scale(1.32)';
+				hsEl.style.opacity = '0';
+			}
+
+			function closeApp() {
+				if (!openAppId) return;
+				let id = openAppId, appEl = APPS[id];
+				openAppId = null;
+				if (id === 'facetime') { ftBlur(); $('ftAlert').classList.remove('up'); ftAlertCb = null; }
+				if (id === 'clock') ckReset();
+				let o = originOf(iconFor(id));
+				appEl.style.transformOrigin = o;
+				hsEl.style.transformOrigin = o;
+				appEl.style.transition = 'transform ' + DUR + 'ms ' + EASE + ',opacity ' + (DUR * 0.8) + 'ms ease-in';
+				hsEl.style.transition = 'transform ' + DUR + 'ms ' + EASE + ',opacity ' + (DUR * 0.6) + 'ms ease-out';
+				appEl.style.transform = 'scale(.055)';
+				appEl.style.opacity = '0';
+				hsEl.style.transform = 'scale(1)';
+				hsEl.style.opacity = '1';
+				setTimeout(function () { if (openAppId !== id) appEl.classList.remove('on'); }, DUR);
+			}
+
+			/* ------------------------------------------------------------------ */
+			/* HARDWARE BUTTONS                                                   */
+			/* ------------------------------------------------------------------ */
+			let VOL_STEPS = 16, vol = 12, volTimer = null, asleep = false;
+
+			(function () {
+				let h = '';
+				for (let i = 0; i < VOL_STEPS; i++) h += '<i></i>';
+				$('volBar').innerHTML = h;
+			})();
+
+			function drawVol() {
+				let bars = $('volBar').children;
+				for (let i = 0; i < VOL_STEPS; i++) bars[i].className = i < vol ? 'on' : '';
+			}
+			function showVolHud() {
+				drawVol();
+				$('volHud').classList.add('show');
+				clearTimeout(volTimer);
+				volTimer = setTimeout(function () { $('volHud').classList.remove('show'); }, 1600);
+			}
+			function bumpVol(d) {
+				if (asleep) return;
+				vol = Math.max(0, Math.min(VOL_STEPS, vol + d));
+				showVolHud();
+			}
+
+			function setSleep(on) {
+				if (!on && batt.dead) return;      /* a flat battery will not wake up */
+				asleep = on;
+				$('sleepmask').classList.toggle('on', on);
+				if (on) {
+					$('volHud').classList.remove('show');
+					lkLock();              /* sleeping locks it, so waking lands on the lock screen */
+				}
+			}
+
+			function goHome() {
+				if (asleep) { setSleep(false); return; }
+				if (ccOpen) { setCC(false); return; }
+				if (ncOpen) { setNC(false); return; }
+				if (locked) { if (lkP > .5) lkGo(0); return; }
+				if (openAppId) { closeApp(); return; }
+				if (page !== 0) setPage(0);
+			}
+
+			function wireBtn(el, fn) {
+				let down = function (e) { e.preventDefault(); el.classList.add('pressed'); fn(); };
+				let up = function () { el.classList.remove('pressed'); };
+				el.addEventListener('mousedown', down);
+				el.addEventListener('touchstart', down, { passive: false });
+				el.addEventListener('mouseup', up);
+				el.addEventListener('mouseleave', up);
+				el.addEventListener('touchend', up);
+			}
+			wireBtn($('btnVolUp'), function () { bumpVol(1); });
+			wireBtn($('btnVolDn'), function () { bumpVol(-1); });
+			wireBtn($('btnPower'), function () { setSleep(!asleep); });
+			wireBtn($('home'), goHome);
+
+			drawVol();
+			syncField();
+
+			/* ------------------------------------------------------------------ */
+			/* CONTROL CENTER + NOTIFICATION CENTER                               */
+			/* ------------------------------------------------------------------ */
+			let screenEl = $('screen'), ccEl = $('cc'), ncEl = $('nc'), ccShade = $('ccShade');
+			let CC_H = 427, NC_H = 568;
+			let ccOpen = false, ncOpen = false;
+			let SPRING = 'transform .34s cubic-bezier(.32,.72,0,1)';
+
+			/* ---- toggles ---- */
+			let TOGGLES = [
+				{ k: 'air', n: 'Airplane Mode', on: false, svg: '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 15.2 13.6 10V3.8a1.6 1.6 0 10-3.2 0V10L2 15.2v2.2l8.4-2.6v4.4l-2.6 1.7v1.5l4.2-1.1 4.2 1.1v-1.5l-2.6-1.7v-4.4l8.4 2.6z"/></svg>' },
+				{ k: 'wifi', n: 'Wi-Fi', on: true, svg: '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 19.6 9.3 16.7a4 4 0 015.4 0z"/><path d="M5.6 11.6a9.4 9.4 0 0112.8 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M2.2 7.7a14.4 14.4 0 0119.6 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' },
+				{ k: 'bt', n: 'Bluetooth', on: false, svg: '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M11 2v8.2L6.6 6.4 5.3 7.9l5.4 4.6-5.4 4.6 1.3 1.5L11 14.8V23l6.9-5.9-4.5-4.6 4.5-4.6zm2 4.4 1.9 1.6L13 9.7zm0 9.2 1.9 1.6L13 18.9z"/></svg>' },
+				{ k: 'dnd', n: 'Do Not Disturb', on: false, svg: '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M21 15.2A9.4 9.4 0 018.9 3.1 9.4 9.4 0 1021 15.2z"/></svg>' },
+				{ k: 'rot', n: 'Portrait Orientation Lock', on: false, svg: '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 2.2a9.8 9.8 0 00-8.2 4.4V3.4H2v5.9h5.9V7.9H4.6A8.2 8.2 0 1112 20.2v1.6a9.8 9.8 0 000-19.6z"/><path d="M9.6 11.4v-1.2a2.4 2.4 0 014.8 0v1.2H16v5.4H8v-5.4zm1.6 0h1.6v-1.2a.8.8 0 00-1.6 0z"/></svg>' }
+			];
+			$('ccToggles').innerHTML = TOGGLES.map(function (t, i) {
+				return '<div class="ccT' + (t.on ? ' on' : '') + '" data-i="' + i + '" style="color:' + (t.on ? '#000' : 'rgba(0,0,0,.72)') + '">' + t.svg + '</div>';
+			}).join('');
+			let ccHint = $('ccHint'), hintTimer = null;
+			let GRABBER = '<svg width="30" height="9" viewBox="0 0 34 10"><path d="M2 2.5 15.4 7.9a4 4 0 003.2 0L32 2.5" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			function ccSay(txt) {
+				ccHint.textContent = txt;
+				clearTimeout(hintTimer);
+				hintTimer = setTimeout(function () { ccHint.innerHTML = GRABBER; }, 1700);
+			}
+			$('ccToggles').addEventListener('click', function (e) {
+				let el = e.target.closest('.ccT'); if (!el) return;
+				let t = TOGGLES[+el.dataset.i];
+				t.on = !t.on;
+				el.classList.toggle('on', t.on);
+				el.style.color = t.on ? '#000' : 'rgba(0,0,0,.72)';
+				ccSay(t.n + ': ' + (t.on ? 'On' : 'Off'));
+			});
+
+			/* ---- shortcuts ---- */
+			let SHORTS = [
+				{ k: 'torch', svg: '<svg width="30" height="34" viewBox="0 0 30 34"><path d="M9 1h12v3.6l-2.6 3.4v3H11.6v-3L9 4.6z"/><rect x="12.4" y="12" width="5.2" height="14" rx="2.6"/><rect x="12.4" y="27.4" width="5.2" height="5.6" rx="1.4"/></svg>' },
+				{ k: 'timer', svg: '<svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="18" r="14" fill="none" stroke="#141416" stroke-width="2.6"/><circle cx="17" cy="18" r="9.4"/><path d="M13.6 1.4h6.8v3h-6.8z"/></svg>' },
+				{ k: 'calc', svg: '<svg width="28" height="34" viewBox="0 0 28 34"><rect x="0" y="0" width="28" height="34" rx="2.6"/><rect x="3.4" y="3.4" width="21.2" height="6.4" rx="1" fill="#fff"/><g fill="#fff"><rect x="3.4" y="12.8" width="4.4" height="4.4" rx="1"/><rect x="11.8" y="12.8" width="4.4" height="4.4" rx="1"/><rect x="20.2" y="12.8" width="4.4" height="4.4" rx="1"/><rect x="3.4" y="19.6" width="4.4" height="4.4" rx="1"/><rect x="11.8" y="19.6" width="4.4" height="4.4" rx="1"/><rect x="20.2" y="19.6" width="4.4" height="4.4" rx="1"/><rect x="3.4" y="26.4" width="4.4" height="4.4" rx="1"/><rect x="11.8" y="26.4" width="4.4" height="4.4" rx="1"/><rect x="20.2" y="26.4" width="4.4" height="4.4" rx="1"/></g></svg>' },
+				{ k: 'cam', svg: '<svg width="34" height="28" viewBox="0 0 34 28"><path d="M11 1.6h12l2.2 3.6H31A3 3 0 0134 8.2v16.4a3 3 0 01-3 3H3a3 3 0 01-3-3V8.2a3 3 0 013-3h5.8z"/><circle cx="17" cy="16" r="6.6" fill="#fff"/></svg>' }
+			];
+			$('ccShort').innerHTML = SHORTS.map(function (x) {
+				return '<div class="ccS" data-k="' + x.k + '">' + x.svg + '</div>';
+			}).join('');
+			$('ccShort').addEventListener('click', function (e) {
+				let el = e.target.closest('.ccS'); if (!el) return;
+				if (el.dataset.k === 'torch') el.classList.toggle('on');
+			});
+
+			/* ---- sliders ---- */
+			function paintSlider(el, p) {
+				el.querySelector('.fil').style.width = (p * 100) + '%';
+				el.querySelector('.knb').style.left = (p * 100) + '%';
+			}
+			function makeSlider(el, onChange) {
+				function upd(clientX) {
+					let r = el.getBoundingClientRect();
+					onChange(Math.max(0, Math.min(1, (clientX - r.left) / r.width)));
+				}
+				el.addEventListener('pointerdown', function (e) {
+					e.stopPropagation(); el.setPointerCapture(e.pointerId); upd(e.clientX);
+				});
+				el.addEventListener('pointermove', function (e) {
+					if (el.hasPointerCapture(e.pointerId)) upd(e.clientX);
+				});
+			}
+			let bright = 1.00;
+			function setBright(p) {
+				bright = Math.max(0.06, p);
+				paintSlider($('ccBright'), bright);
+				$('brightmask').style.opacity = ((1 - bright) * 0.68).toFixed(3);
+			}
+			makeSlider($('ccBright'), setBright);
+			setBright(bright);
+
+			makeSlider($('ccVol'), function (p) {
+				vol = Math.round(p * VOL_STEPS);
+				paintSlider($('ccVol'), vol / VOL_STEPS);
+				drawVol();
+			});
+			function syncCCVol() { paintSlider($('ccVol'), vol / VOL_STEPS); }
+
+			/* ---- notification center content ---- */
+			let ICO_CAL = '<svg viewBox="0 0 26 26"><rect width="26" height="26" fill="#fff"/><rect width="26" height="7" fill="#F04A3F"/><g fill="#c9c9cf"><rect x="3" y="10" width="20" height="1.2"/><rect x="3" y="14" width="20" height="1.2"/><rect x="3" y="18" width="20" height="1.2"/></g><g fill="#7a7a80"><rect x="4" y="11.6" width="2" height="2"/><rect x="9" y="11.6" width="2" height="2"/><rect x="14" y="11.6" width="2" height="2"/><rect x="4" y="15.6" width="2" height="2"/><rect x="9" y="15.6" width="2" height="2"/></g></svg>';
+			let ICO_REM = '<svg viewBox="0 0 26 26"><rect width="26" height="26" fill="#fff"/><circle cx="5" cy="7" r="1.9" fill="#F04A3F"/><circle cx="5" cy="12" r="1.9" fill="#2FA8E0"/><circle cx="5" cy="17" r="1.9" fill="#4CD964"/><circle cx="5" cy="22" r="1.9" fill="#B05CD6"/><g fill="#c9c9cf"><rect x="9" y="6.2" width="14" height="1.5"/><rect x="9" y="11.2" width="14" height="1.5"/><rect x="9" y="16.2" width="14" height="1.5"/><rect x="9" y="21.2" width="14" height="1.5"/></g></svg>';
+			let ICO_STK = '<svg viewBox="0 0 26 26"><rect width="26" height="26" fill="#17171a"/><path d="M1 17l4-6 4 3 4-9 4 7 4-4 4 5" fill="none" stroke="#fff" stroke-width="1.6"/><g stroke="#3a3a40" stroke-width=".8"><path d="M4 2v22M9 2v22M14 2v22M19 2v22"/></g></svg>';
+
+			let STOCKS = [
+				['NASDAQ', '16,609.91', -0.76], ['NYSE', '17,899.59', 0.26], ['DOW J', '38,164.57', 0.14],
+				['AAPL', '191.63', 0.18], ['SBUX', '79.61', 1.08], ['NKE', '93.29', -0.17], ['YHOO', '', null]
+			];
+			function ord(d) { return (d % 10 === 1 && d !== 11) ? 'st' : (d % 10 === 2 && d !== 12) ? 'nd' : (d % 10 === 3 && d !== 13) ? 'rd' : 'th'; }
+
+			function ncToday() {
+				let d = new Date();
+				let h = '<div class="nc-date">' + DAYS[d.getDay()] + ',<br>' + MONS[d.getMonth()] + ' ' +
+					d.getDate() + '<sup>' + ord(d.getDate()) + '</sup></div>';
+
+				h += '<div class="wg-head"><div class="wg-ico">' + ICO_CAL + '</div><div class="ttl">Calendar</div></div>' +
+					'<div class="wg-body"><div class="cal-empty"><i style="top:40px"></i><i style="top:80px"></i><i style="top:120px"></i>' +
+					'<span>No Events</span></div></div>';
+
+				h += '<div class="wg-head"><div class="wg-ico">' + ICO_REM + '</div><div class="ttl">Reminders</div></div>' +
+					'<div class="wg-body">' +
+					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!!</b> Fart excessively loud</div>' +
+					'<div class="dt">11/23/23</div></div></div>' +
+					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!!</b> Shart&nbsp; my pants</div>' +
+					'<div class="dt">12/30/23</div></div></div></div>';
+
+				h += '<div class="wg-head"><div class="wg-ico">' + ICO_STK + '</div><div class="ttl">Stocks</div></div>' +
+					'<div class="wg-body">' + STOCKS.map(function (r, i) {
+						let pct = r[2] === null ? '' :
+							'<div class="pct ' + (r[2] < 0 ? 'dn' : 'up') + '"><span>' + (r[2] < 0 ? '\u2212' : '+') + '</span>' +
+							Math.abs(r[2]).toFixed(2) + '%</div>';
+						return (i ? '<div class="hairline"></div>' : '') +
+							'<div class="stk"><div class="sym">' + r[0] + '</div>' +
+							'<div class="prc">' + r[1] + '</div>' + pct + '</div>';
+					}).join('') + '<div class="hairline"></div></div>';
+
+				h += '<div class="wg-head"><div class="ttl">Tomorrow</div></div>' +
+					'<div class="wg-body"><div class="tmw">You have no events scheduled for tomorrow.</div></div>';
+
+				h += '<div class="nc-edit">Edit</div>' +
+					'<div class="nc-cred"><u>Weather</u> information provided by<br>The Weather Channel, LLC.<br>' +
+					'<u>Stock</u> information provided by <span style="color:rgba(190,150,220,.75);font-weight:600">YAHOO!</span></div>';
+				return h;
+			}
+			function ncNotif() { return '<div class="nc-none">No Notifications</div>'; }
+
+			let ncTab = 'today';
+			function drawNC() {
+				$('ncScroll').innerHTML = ncTab === 'today' ? ncToday() : ncNotif();
+				$('ncScroll').scrollTop = 0;
+				let segs = $('ncSeg').children;
+				for (let i = 0; i < segs.length; i++) segs[i].className = segs[i].dataset.t === ncTab ? 'on' : '';
+			}
+			$('ncSeg').addEventListener('click', function (e) {
+				let d = e.target.closest('div[data-t]'); if (!d) return;
+				ncTab = d.dataset.t; drawNC();
+			});
+			drawNC();
+
+			/* ---- open / close ---- */
+			let CC_DIM = 0.45;   /* how far the app behind Control Center gets dimmed */
+			function ccDim(p) {   /* p = 0 closed .. 1 fully open */
+				ccShade.style.opacity = (p * CC_DIM).toFixed(3);
+				ccP = p;
+				refreshInk();
+			}
+			function setCC(open) {
+				ccOpen = open;
+				ccEl.style.transition = SPRING;
+				ccEl.style.transform = 'translateY(' + (open ? 0 : CC_H) + 'px)';
+				ccShade.style.transition = 'opacity .34s cubic-bezier(.32,.72,0,1)';
+				ccShade.style.pointerEvents = open ? 'auto' : 'none';
+				ccDim(open ? 1 : 0);
+				if (open) syncCCVol();
+			}
+			function setNC(open) {
+				ncOpen = open;
+				ncEl.style.transition = SPRING;
+				ncEl.style.transform = 'translateY(' + (open ? 0 : -NC_H) + 'px)';
+				if (open) drawNC();
+			}
+			ccShade.addEventListener('click', function () { setCC(false); });
+
+			/* ---- edge drags ---- */
+			let EDGE = 16, THRESH = 9;
+			let drag = null, swallow = false;
+
+			function scaleNow() {
+				let r = screenEl.getBoundingClientRect();
+				return r.width / 320;
+			}
+			screenEl.addEventListener('pointerdown', function (e) {
+				if (asleep) return;
+				if (locked && e.target.closest('#lkCam')) return;   /* camera handle owns that corner */
+				let r = screenEl.getBoundingClientRect(), sc = scaleNow();
+				let y = (e.clientY - r.top) / sc;
+				if (ccOpen) { drag = { t: 'cc', y0: e.clientY, from: 0, live: false }; return; }
+				if (ncOpen) {
+					if (y > NC_H - 34) drag = { t: 'nc', y0: e.clientY, from: 0, live: false };
+					return;
+				}
+				if (y > 568 - EDGE) drag = { t: 'cc', y0: e.clientY, from: CC_H, live: false };
+				else if (y < EDGE) drag = { t: 'nc', y0: e.clientY, from: -NC_H, live: false };
+			}, true);
+
+			window.addEventListener('pointermove', function (e) {
+				if (!drag) return;
+				let d = (e.clientY - drag.y0) / scaleNow();
+				if (!drag.live) {
+					let want = drag.t === 'cc' ? (drag.from ? d < -THRESH : d > THRESH)
+						: (drag.from ? d > THRESH : d < -THRESH);
+					if (want) {
+						drag.live = true; swallow = true;
+						(drag.t === 'cc' ? ccEl : ncEl).style.transition = 'none';
+					} else if (Math.abs(d) > THRESH * 1.8) { drag = null; return; }
+					else return;
+				}
+				e.preventDefault();
+				if (drag.t === 'cc') {
+					let yc = Math.max(0, Math.min(CC_H, drag.from + d));
+					ccEl.style.transform = 'translateY(' + yc + 'px)';
+					ccShade.style.transition = 'none';
+					ccDim(1 - yc / CC_H);
+				} else {
+					ncEl.style.transform = 'translateY(' + Math.max(-NC_H, Math.min(0, drag.from + d)) + 'px)';
+				}
+			}, { passive: false });
+
+			window.addEventListener('pointerup', function (e) {
+				if (!drag) return;
+				let d = (e.clientY - drag.y0) / scaleNow(), t = drag.t, live = drag.live, from = drag.from;
+				drag = null;
+				if (!live) return;
+				setTimeout(function () { swallow = false; }, 0);
+				if (t === 'cc') {
+					/* 0 = open, CC_H = closed. Flick wins, else nearest half. */
+					let y = Math.max(0, Math.min(CC_H, from + d));
+					if (d < -55) setCC(true);
+					else if (d > 55) setCC(false);
+					else setCC(y < CC_H / 2);
+				} else {
+					/* 0 = open, -NC_H = closed */
+					let y2 = Math.max(-NC_H, Math.min(0, from + d));
+					if (d > 55) setNC(true);
+					else if (d < -55) setNC(false);
+					else setNC(y2 > -NC_H / 2);
+				}
+			});
+
+			document.addEventListener('click', function (e) {
+				if (swallow) { e.stopPropagation(); e.preventDefault(); swallow = false; }
+			}, true);
+
+			/* ================================================================== */
+			/* CLOCK                                                              */
+			/* ================================================================== */
+			/* Geometry throughout is traced off ref_pic/Clock (2x shots):
+			     nav 44, tab bar 49, list rows 85, picker 215 with 35 pt rows. */
+
+			var CK_RED = '#FF3B30';
+
+			var TICK = '<svg class="tick" width="15" height="12" viewBox="0 0 15 12" aria-hidden="true">' +
+				'<path d="M1.3 6.3 5.3 10.4 13.7 1.5" fill="none" stroke="' + CK_RED +
+				'" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			/* same glyph, but without the .tick hook the tone rows use to park it
+			   in the left gutter -- here it just sits inline at the row's end */
+			var TICKI = TICK.replace(' class="tick"', '');
+			var CKCHEV = '<svg class="chev" width="9" height="15" viewBox="0 0 9 15"><path d="M1 1l6.4 6.5L1 14" ' +
+				'fill="none" stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			var CKBACK = function (lbl) {
+				return '<div class="btn back"><svg width="12" height="20" viewBox="0 0 12 20">' +
+					'<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="' + CK_RED + '" stroke-width="2.4" ' +
+					'stroke-linecap="round" stroke-linejoin="round"/></svg><span>' + esc(lbl) + '</span></div>';
+			};
+
+			/* ---- tab bar glyphs: grey outline off, red (mostly solid) on ---- */
+			var TAB_ICONS = {
+				world: function (on) {
+					return '<svg width="25" height="25" viewBox="0 0 26 26"><g fill="none" stroke="currentColor" ' +
+						'stroke-width="' + (on ? 1.7 : 1.4) + '"><circle cx="13" cy="13" r="11.6"/>' +
+						'<ellipse cx="13" cy="13" rx="5.3" ry="11.6"/>' +
+						'<path d="M2.3 8.2h21.4M1.4 13h23.2M2.3 17.8h21.4"/></g></svg>';
+				},
+				alarm: function (on) {
+					if (!on) return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="none" ' +
+						'stroke="currentColor" stroke-width="1.7" stroke-linecap="round">' +
+						'<circle cx="14" cy="16.6" r="8.9"/><path d="M14 11.4v5.2h3.4"/>' +
+						'<circle cx="5.6" cy="7" r="3.4"/><circle cx="22.4" cy="7" r="3.4"/>' +
+						'<path d="M8 24.6 6.2 26.8M20 24.6l1.8 2.2"/></g></svg>';
+					return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="currentColor">' +
+						'<circle cx="5.6" cy="7" r="4.2"/><circle cx="22.4" cy="7" r="4.2"/>' +
+						'<path d="M8.4 23.8 6 27.2l-2-1.4 2.4-3.4zM19.6 23.8 22 27.2l2-1.4-2.4-3.4z"/>' +
+						'<circle cx="14" cy="16.6" r="9.6"/></g>' +
+						'<path d="M14 11.4v5.2h3.4" fill="none" stroke="#fff" stroke-width="1.7" ' +
+						'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+				},
+				sw: function (on) {
+					if (!on) return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="none" ' +
+						'stroke="currentColor" stroke-width="1.7" stroke-linecap="round">' +
+						'<circle cx="14" cy="16.4" r="9.6"/><path d="M14 16.4V9.6"/>' +
+						'<path d="M11.6 2.4h4.8"/><path d="M14 2.6v3.4"/></g></svg>';
+					return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="currentColor">' +
+						'<rect x="11.4" y="1.4" width="5.2" height="3.2" rx="1"/>' +
+						'<circle cx="23.2" cy="7.4" r="2.1"/><circle cx="14" cy="16.4" r="10.2"/></g>' +
+						'<path d="M14 16.4V8.8M11.4 4.4h5.2" fill="none" stroke="#fff" stroke-width="1.8" ' +
+						'stroke-linecap="round"/></svg>';
+				},
+				timer: function (on) {
+					if (!on) return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="none" ' +
+						'stroke="currentColor" stroke-width="1.7" stroke-linecap="round">' +
+						'<circle cx="14" cy="16.4" r="9.6"/><path d="M14 16.4 8.6 11"/>' +
+						'<path d="M7.4 4.6 5 7"/></g></svg>';
+					return '<svg width="25" height="25" viewBox="0 0 28 28"><g fill="currentColor">' +
+						'<circle cx="14" cy="16.4" r="10.2"/>' +
+						'<path d="M5.4 3.6 8.8 7 6.6 9.2 3.2 5.8z"/></g>' +
+						'<path d="M14 16.4 8.4 10.8" fill="none" stroke="#fff" stroke-width="1.9" ' +
+						'stroke-linecap="round"/></svg>';
+				}
+			};
+
+			var CK_TABS = [
+				{ k: 'world', n: 'World Clock', pane: 'pane-world' },
+				{ k: 'alarm', n: 'Alarm', pane: 'pane-alarm' },
+				{ k: 'sw', n: 'Stopwatch', pane: 'pane-sw' },
+				{ k: 'timer', n: 'Timer', pane: 'pane-timer' }
+			];
+
+			/* ---- cities: IANA zones, so Intl does every DST decision for us ---- */
+			var CK_CITIES = [
+				['Accra', 'Ghana', 'Africa/Accra'], ['Acton', 'U.S.A.', 'America/Los_Angeles'],
+				['Adak', 'U.S.A.', 'America/Adak'], ['Adamstown', 'Pitcairn', 'Pacific/Pitcairn'],
+				['Addis Ababa', 'Ethiopia', 'Africa/Addis_Ababa'], ['Adelaide', 'Australia', 'Australia/Adelaide'],
+				['Aden', 'Yemen', 'Asia/Aden'], ['Albuquerque', 'U.S.A.', 'America/Denver'],
+				['Alexandria', 'Egypt', 'Africa/Cairo'], ['Algiers', 'Algeria', 'Africa/Algiers'],
+				['Alofi', 'Niue', 'Pacific/Niue'], ['Amman', 'Jordan', 'Asia/Amman'],
+				['Amsterdam', 'Netherlands', 'Europe/Amsterdam'], ['Anchorage', 'U.S.A.', 'America/Anchorage'],
+				['Andorra la Vella', 'Andorra', 'Europe/Andorra'], ['Ankara', 'Turkey', 'Europe/Istanbul'],
+				['Antananarivo', 'Madagascar', 'Indian/Antananarivo'], ['Apia', 'Samoa', 'Pacific/Apia'],
+				['Ashgabat', 'Turkmenistan', 'Asia/Ashgabat'], ['Asmara', 'Eritrea', 'Africa/Asmara'],
+				['Astana', 'Kazakhstan', 'Asia/Almaty'], ['Asunción', 'Paraguay', 'America/Asuncion'],
+				['Athens', 'Greece', 'Europe/Athens'], ['Atlanta', 'U.S.A.', 'America/New_York'],
+				['Auckland', 'New Zealand', 'Pacific/Auckland'], ['Austin', 'U.S.A.', 'America/Chicago'],
+				['Baghdad', 'Iraq', 'Asia/Baghdad'], ['Baku', 'Azerbaijan', 'Asia/Baku'],
+				['Bangkok', 'Thailand', 'Asia/Bangkok'], ['Barcelona', 'Spain', 'Europe/Madrid'],
+				['Beijing', 'China', 'Asia/Shanghai'], ['Beirut', 'Lebanon', 'Asia/Beirut'],
+				['Belgrade', 'Serbia', 'Europe/Belgrade'], ['Berlin', 'Germany', 'Europe/Berlin'],
+				['Bermuda', 'Bermuda', 'Atlantic/Bermuda'], ['Bogotá', 'Colombia', 'America/Bogota'],
+				['Boston', 'U.S.A.', 'America/New_York'], ['Brasília', 'Brazil', 'America/Sao_Paulo'],
+				['Bratislava', 'Slovakia', 'Europe/Bratislava'], ['Brisbane', 'Australia', 'Australia/Brisbane'],
+				['Brussels', 'Belgium', 'Europe/Brussels'], ['Bucharest', 'Romania', 'Europe/Bucharest'],
+				['Budapest', 'Hungary', 'Europe/Budapest'],
+				['Buenos Aires', 'Argentina', 'America/Argentina/Buenos_Aires'],
+				['Cairo', 'Egypt', 'Africa/Cairo'], ['Calgary', 'Canada', 'America/Edmonton'],
+				['Canberra', 'Australia', 'Australia/Sydney'], ['Cape Town', 'South Africa', 'Africa/Johannesburg'],
+				['Caracas', 'Venezuela', 'America/Caracas'], ['Casablanca', 'Morocco', 'Africa/Casablanca'],
+				['Chicago', 'U.S.A.', 'America/Chicago'], ['Colombo', 'Sri Lanka', 'Asia/Colombo'],
+				['Copenhagen', 'Denmark', 'Europe/Copenhagen'], ['Cupertino', 'U.S.A.', 'America/Los_Angeles'],
+				['Dakar', 'Senegal', 'Africa/Dakar'], ['Dallas', 'U.S.A.', 'America/Chicago'],
+				['Damascus', 'Syria', 'Asia/Damascus'], ['Dar es Salaam', 'Tanzania', 'Africa/Dar_es_Salaam'],
+				['Delhi', 'India', 'Asia/Kolkata'], ['Denver', 'U.S.A.', 'America/Denver'],
+				['Detroit', 'U.S.A.', 'America/Detroit'], ['Dhaka', 'Bangladesh', 'Asia/Dhaka'],
+				['Doha', 'Qatar', 'Asia/Qatar'], ['Dubai', 'U.A.E.', 'Asia/Dubai'],
+				['Dublin', 'Ireland', 'Europe/Dublin'], ['Edinburgh', 'U.K.', 'Europe/London'],
+				['Edmonton', 'Canada', 'America/Edmonton'], ['Frankfurt', 'Germany', 'Europe/Berlin'],
+				['Georgetown', 'Guyana', 'America/Guyana'], ['Guatemala City', 'Guatemala', 'America/Guatemala'],
+				['Halifax', 'Canada', 'America/Halifax'], ['Hanoi', 'Vietnam', 'Asia/Ho_Chi_Minh'],
+				['Havana', 'Cuba', 'America/Havana'], ['Helsinki', 'Finland', 'Europe/Helsinki'],
+				['Honolulu', 'U.S.A.', 'Pacific/Honolulu'], ['Hong Kong', 'China', 'Asia/Hong_Kong'],
+				['Houston', 'U.S.A.', 'America/Chicago'], ['Islamabad', 'Pakistan', 'Asia/Karachi'],
+				['Istanbul', 'Turkey', 'Europe/Istanbul'], ['Jakarta', 'Indonesia', 'Asia/Jakarta'],
+				['Jerusalem', 'Israel', 'Asia/Jerusalem'],
+				['Johannesburg', 'South Africa', 'Africa/Johannesburg'],
+				['Kabul', 'Afghanistan', 'Asia/Kabul'], ['Kampala', 'Uganda', 'Africa/Kampala'],
+				['Kathmandu', 'Nepal', 'Asia/Kathmandu'], ['Khartoum', 'Sudan', 'Africa/Khartoum'],
+				['Kiev', 'Ukraine', 'Europe/Kiev'], ['Kingston', 'Jamaica', 'America/Jamaica'],
+				['Kinshasa', 'Congo', 'Africa/Kinshasa'], ['Kolkata', 'India', 'Asia/Kolkata'],
+				['Kuala Lumpur', 'Malaysia', 'Asia/Kuala_Lumpur'], ['Kuwait City', 'Kuwait', 'Asia/Kuwait'],
+				['La Paz', 'Bolivia', 'America/La_Paz'], ['Lagos', 'Nigeria', 'Africa/Lagos'],
+				['Las Vegas', 'U.S.A.', 'America/Los_Angeles'], ['Lima', 'Peru', 'America/Lima'],
+				['Lisbon', 'Portugal', 'Europe/Lisbon'], ['London', 'U.K.', 'Europe/London'],
+				['Los Angeles', 'U.S.A.', 'America/Los_Angeles'],
+				['Luxembourg', 'Luxembourg', 'Europe/Luxembourg'], ['Madrid', 'Spain', 'Europe/Madrid'],
+				['Managua', 'Nicaragua', 'America/Managua'], ['Manila', 'Philippines', 'Asia/Manila'],
+				['Melbourne', 'Australia', 'Australia/Melbourne'],
+				['Mexico City', 'Mexico', 'America/Mexico_City'], ['Miami', 'U.S.A.', 'America/New_York'],
+				['Minneapolis', 'U.S.A.', 'America/Chicago'], ['Minsk', 'Belarus', 'Europe/Minsk'],
+				['Monaco', 'Monaco', 'Europe/Monaco'], ['Monrovia', 'Liberia', 'Africa/Monrovia'],
+				['Montevideo', 'Uruguay', 'America/Montevideo'], ['Montréal', 'Canada', 'America/Toronto'],
+				['Moscow', 'Russia', 'Europe/Moscow'], ['Mumbai', 'India', 'Asia/Kolkata'],
+				['Nairobi', 'Kenya', 'Africa/Nairobi'], ['Nassau', 'Bahamas', 'America/Nassau'],
+				['New Orleans', 'U.S.A.', 'America/Chicago'], ['New York', 'U.S.A.', 'America/New_York'],
+				['Nicosia', 'Cyprus', 'Asia/Nicosia'], ['Nuuk', 'Greenland', 'America/Godthab'],
+				['Oslo', 'Norway', 'Europe/Oslo'], ['Ottawa', 'Canada', 'America/Toronto'],
+				['Panama City', 'Panama', 'America/Panama'],
+				['Papeete', 'French Polynesia', 'Pacific/Tahiti'], ['Paris', 'France', 'Europe/Paris'],
+				['Perth', 'Australia', 'Australia/Perth'], ['Philadelphia', 'U.S.A.', 'America/New_York'],
+				['Phoenix', 'U.S.A.', 'America/Phoenix'], ['Port-au-Prince', 'Haiti', 'America/Port-au-Prince'],
+				['Prague', 'Czech Republic', 'Europe/Prague'], ['Quito', 'Ecuador', 'America/Guayaquil'],
+				['Reykjavík', 'Iceland', 'Atlantic/Reykjavik'], ['Riga', 'Latvia', 'Europe/Riga'],
+				['Rio de Janeiro', 'Brazil', 'America/Sao_Paulo'], ['Riyadh', 'Saudi Arabia', 'Asia/Riyadh'],
+				['Rome', 'Italy', 'Europe/Rome'], ['San Francisco', 'U.S.A.', 'America/Los_Angeles'],
+				['San Juan', 'Puerto Rico', 'America/Puerto_Rico'], ['Santiago', 'Chile', 'America/Santiago'],
+				['Santo Domingo', 'Dominican Republic', 'America/Santo_Domingo'],
+				['São Paulo', 'Brazil', 'America/Sao_Paulo'], ['Seattle', 'U.S.A.', 'America/Los_Angeles'],
+				['Seoul', 'South Korea', 'Asia/Seoul'], ['Shanghai', 'China', 'Asia/Shanghai'],
+				['Singapore', 'Singapore', 'Asia/Singapore'], ['Sofia', 'Bulgaria', 'Europe/Sofia'],
+				['St. John’s', 'Canada', 'America/St_Johns'], ['Stockholm', 'Sweden', 'Europe/Stockholm'],
+				['Suva', 'Fiji', 'Pacific/Fiji'], ['Sydney', 'Australia', 'Australia/Sydney'],
+				['Taipei', 'Taiwan', 'Asia/Taipei'], ['Tallinn', 'Estonia', 'Europe/Tallinn'],
+				['Tashkent', 'Uzbekistan', 'Asia/Tashkent'], ['Tbilisi', 'Georgia', 'Asia/Tbilisi'],
+				['Tehran', 'Iran', 'Asia/Tehran'], ['Tokyo', 'Japan', 'Asia/Tokyo'],
+				['Toronto', 'Canada', 'America/Toronto'], ['Tripoli', 'Libya', 'Africa/Tripoli'],
+				['Tunis', 'Tunisia', 'Africa/Tunis'], ['Ulaanbaatar', 'Mongolia', 'Asia/Ulaanbaatar'],
+				['Vancouver', 'Canada', 'America/Vancouver'], ['Vienna', 'Austria', 'Europe/Vienna'],
+				['Vilnius', 'Lithuania', 'Europe/Vilnius'], ['Warsaw', 'Poland', 'Europe/Warsaw'],
+				['Washington, D.C.', 'U.S.A.', 'America/New_York'],
+				['Wellington', 'New Zealand', 'Pacific/Auckland'], ['Yangon', 'Myanmar', 'Asia/Yangon'],
+				['Zagreb', 'Croatia', 'Europe/Zagreb'], ['Zürich', 'Switzerland', 'Europe/Zurich']
+			];
+			CK_CITIES.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+
+			/* ---- time-zone maths ------------------------------------------- */
+			var zoneFmt = {};
+			function zoneParts(tz, d) {
+				var f = zoneFmt[tz];
+				if (f === undefined) {
+					try {
+						f = new Intl.DateTimeFormat('en-US', {
+							timeZone: tz, hour12: false, year: 'numeric', month: '2-digit',
+							day: '2-digit', hour: '2-digit', minute: '2-digit'
+						});
+					} catch (err) { f = null; }         /* unknown zone -> fall back to UTC */
+					zoneFmt[tz] = f;
+				}
+				if (!f) {
+					return {
+						y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, d: d.getUTCDate(),
+						h: d.getUTCHours(), mi: d.getUTCMinutes()
+					};
+				}
+				var parts = f.formatToParts(d), p = {};
+				for (var i = 0; i < parts.length; i++) p[parts[i].type] = parts[i].value;
+				return { y: +p.year, mo: +p.month, d: +p.day, h: (+p.hour) % 24, mi: +p.minute };
+			}
+			function partsMs(p) { return Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi); }
+			function localParts(d) {
+				return {
+					y: d.getFullYear(), mo: d.getMonth() + 1, d: d.getDate(),
+					h: d.getHours(), mi: d.getMinutes()
+				};
+			}
+
+			function ampm(h24, m) {
+				var ap = h24 >= 12 ? 'PM' : 'AM', h = h24 % 12;
+				if (h === 0) h = 12;
+				return { t: h + ':' + (m < 10 ? '0' : '') + m, ap: ap };
+			}
+
+			function offsetText(mins) {
+				if (!mins) return '';
+				var a = Math.abs(mins), h = Math.floor(a / 60), m = a % 60;
+				var num = m ? (h + ':' + (m < 10 ? '0' : '') + m) : String(h);
+				var unit = (!m && h === 1) ? 'hour' : 'hours';
+				return num + ' ' + unit + (mins > 0 ? ' ahead' : ' behind');
+			}
+
+			/* ---- world clock ------------------------------------------------ */
+			function cityIndex(name) {
+				for (var i = 0; i < CK_CITIES.length; i++) if (CK_CITIES[i][0] === name) return i;
+				return -1;
+			}
+			var wcCities = ['Cupertino']
+				.map(cityIndex).filter(function (i) { return i > -1; });
+			var wcEdit = false, wcListEl = $('wcList');
+
+			function renderWorld() {
+				var now = new Date(), lp = localParts(now), lms = partsMs(lp);
+				var today = Date.UTC(lp.y, lp.mo - 1, lp.d);
+				wcListEl.innerHTML = wcCities.map(function (ci, row) {
+					var c = CK_CITIES[ci], p = zoneParts(c[2], now);
+					var mins = Math.round((partsMs(p) - lms) / 60000);
+					var dayDiff = Math.round((Date.UTC(p.y, p.mo - 1, p.d) - today) / 86400000);
+					var when = dayDiff < 0 ? 'Yesterday' : (dayDiff > 0 ? 'Tomorrow' : 'Today');
+					var off = offsetText(mins), t = ampm(p.h, p.mi);
+					return '<div class="wc-row" data-row="' + row + '">' +
+						'<div class="ck-minus"></div>' +
+						'<div class="wc-main"><div class="wc-name">' + esc(c[0]) + '</div>' +
+						'<div class="wc-time">' + t.t + '<i>' + t.ap + '</i></div></div>' +
+						'<div class="wc-sub"><b>' + when + (off ? ',' : '') + '</b>' +
+						(off ? ' ' + off : '') + '</div>' +
+						'<div class="ck-grip"><i></i><i></i><i></i></div></div>';
+				}).join('');
+			}
+
+			wcListEl.addEventListener('click', function (e) {
+				var row = e.target.closest('.wc-row'); if (!row) return;
+				if (wcEdit && e.target.closest('.ck-minus')) {
+					wcCities.splice(+row.dataset.row, 1);
+					renderWorld();
+				}
+			});
+
+			/* grip drag: shuffle the neighbours out of the way, commit on release */
+			var wcDrag = null;
+			wcListEl.addEventListener('pointerdown', function (e) {
+				if (!wcEdit || !e.target.closest('.ck-grip')) return;
+				var row = e.target.closest('.wc-row');
+				var rows = [].slice.call(wcListEl.children);
+				wcDrag = { rows: rows, from: rows.indexOf(row), to: rows.indexOf(row), y0: e.clientY, el: row };
+				row.classList.add('drag');
+				if (e.cancelable) e.preventDefault();
+			});
+			window.addEventListener('pointermove', function (e) {
+				if (!wcDrag) return;
+				var dy = (e.clientY - wcDrag.y0) / scaleNow();
+				var to = Math.max(0, Math.min(wcDrag.rows.length - 1, wcDrag.from + Math.round(dy / 85)));
+				wcDrag.to = to;
+				wcDrag.el.style.transform = 'translateY(' + dy + 'px)';
+				for (var i = 0; i < wcDrag.rows.length; i++) {
+					if (i === wcDrag.from) continue;
+					var sh = 0;
+					if (wcDrag.from < to && i > wcDrag.from && i <= to) sh = -85;
+					if (wcDrag.from > to && i >= to && i < wcDrag.from) sh = 85;
+					wcDrag.rows[i].style.transform = sh ? 'translateY(' + sh + 'px)' : '';
+				}
+			});
+			window.addEventListener('pointerup', function () {
+				if (!wcDrag) return;
+				var d = wcDrag; wcDrag = null;
+				if (d.to !== d.from) {
+					var moved = wcCities.splice(d.from, 1)[0];
+					wcCities.splice(d.to, 0, moved);
+				}
+				renderWorld();
+			});
+
+			/* ---- choose a city ---------------------------------------------- */
+			var cyQuery = '', cySearching = false;
+			var cyListEl = $('cyList'), cyHead = $('cyHead');
+
+			function cyKey(c) {
+				var ch = c[0].charAt(0).toUpperCase();
+				ch = ch.normalize ? ch.normalize('NFD').charAt(0) : ch;
+				return /[A-Z]/.test(ch) ? ch : '#';
+			}
+			function cyMatches() {
+				var q = cyQuery.trim().toLowerCase();
+				if (!q) return CK_CITIES;
+				return CK_CITIES.filter(function (c) {
+					return (c[0] + ', ' + c[1]).toLowerCase().indexOf(q) > -1;
+				});
+			}
+			function renderCity() {
+				var rows = cyMatches();
+				if (!rows.length) { cyListEl.innerHTML = '<div class="cy-none">No Results</div>'; return; }
+				var h = '', last = '';
+				rows.forEach(function (c) {
+					var k = cyKey(c);
+					if (k !== last) { last = k; h += '<div class="cy-sec" data-k="' + k + '">' + k + '</div>'; }
+					h += '<div class="cy-row" data-n="' + esc(c[0]) + '">' + esc(c[0] + ', ' + c[1]) + '</div>';
+				});
+				cyListEl.innerHTML = h;
+			}
+			function cySync() {
+				var t = $('cyText');
+				if (cyQuery) t.innerHTML = '<span class="q">' + esc(cyQuery) + '</span><span class="caret"></span>';
+				else if (cySearching) t.innerHTML = '<span class="caret" style="height:17px"></span>';
+				else t.innerHTML = '';
+				kb6.retDim = !cyQuery; drawKeys(kb6);
+				renderCity();
+			}
+			function cyFocus() {
+				cySearching = true; cyHead.classList.add('searching');
+				openKB(kb6); cySync();
+			}
+			function cyBlur() { closeKB(kb6); }
+			function cyCancelSearch() {
+				cySearching = false; cyQuery = '';
+				cyHead.classList.remove('searching');
+				closeKB(kb6); cySync();
+			}
+			function cyOpen() {
+				cyCancelSearch();
+				cyListEl.scrollTop = 0;
+				$('ck-city').classList.add('active');
+			}
+			function cyClose() { cyCancelSearch(); $('ck-city').classList.remove('active'); }
+
+			$('cyField').addEventListener('click', cyFocus);
+			$('cyCancel').addEventListener('click', cyClose);
+			cyListEl.addEventListener('click', function (e) {
+				var r = e.target.closest('.cy-row'); if (!r) return;
+				var i = cityIndex(r.dataset.n);
+				if (i > -1) { wcCities.push(i); renderWorld(); }
+				cyClose();
+			});
+
+			$('cyIndex').innerHTML = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('')
+				.map(function (k) { return '<span data-k="' + k + '">' + k + '</span>'; }).join('');
+			function cyJump(el) {
+				var k = el && el.dataset && el.dataset.k; if (!k) return;
+				var secs = cyListEl.querySelectorAll('.cy-sec'), best = null;
+				for (var i = 0; i < secs.length; i++) {
+					if (secs[i].dataset.k >= k) { best = secs[i]; break; }
+					best = secs[i];
+				}
+				if (best) cyListEl.scrollTop = best.offsetTop;
+			}
+			(function () {
+				var live = false, idx = $('cyIndex');
+				function at(e) {
+					return document.elementFromPoint(e.clientX, e.clientY);
+				}
+				idx.addEventListener('pointerdown', function (e) {
+					live = true; idx.setPointerCapture(e.pointerId); cyJump(e.target);
+					if (e.cancelable) e.preventDefault();
+				});
+				idx.addEventListener('pointermove', function (e) { if (live) cyJump(at(e)); });
+				idx.addEventListener('pointerup', function () { live = false; });
+			})();
+
+			/* ---- alarms ------------------------------------------------------ */
+			var DAY3 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+			var alarmSeq = 6;
+			var alarms = [
+				{ id: 1, min: 120, lbl: 'Alarm', on: true, rep: [], snd: 'Radar', sn: true },
+			];
+			var alEdit = false, alListEl = $('alList');
+
+			function repeatText(rep) {
+				if (!rep.length) return 'Never';
+				if (rep.length === 7) return 'Every day';
+				var s = rep.slice().sort();
+				if (s.join() === '1,2,3,4,5') return 'Weekdays';
+				if (s.join() === '0,6') return 'Weekends';
+				if (s.length === 1) return 'Every ' + DAYS[s[0]];
+				return s.map(function (d) { return DAY3[d]; }).join(' ');
+			}
+			function renderAlarms() {
+				var on = false;
+				alarms.sort(function (a, b) { return a.min - b.min || a.id - b.id; });
+				alListEl.innerHTML = alarms.map(function (a) {
+					if (a.on) on = true;
+					var t = ampm(Math.floor(a.min / 60), a.min % 60);
+					return '<div class="al-row' + (a.on ? ' on' : '') + '" data-id="' + a.id + '">' +
+						'<div class="ck-minus"></div>' +
+						'<div class="al-main"><div class="al-time">' + t.t + '<i>' + t.ap + '</i></div></div>' +
+						'<div class="al-lbl">' + esc(a.lbl) + '</div>' +
+						'<span class="sw al-sw' + (a.on ? ' on' : '') + '"><i></i></span>' +
+						'<span class="al-chev">' + CKCHEV + '</span></div>';
+				}).join('') || '<div class="al-empty">No Alarms</div>';
+				if (on !== ckAlarmOn) { ckAlarmOn = on; battSync(); }
+			}
+
+			alListEl.addEventListener('click', function (e) {
+				var row = e.target.closest('.al-row'); if (!row) return;
+				var id = +row.dataset.id;
+				var a = alarms.filter(function (x) { return x.id === id; })[0];
+				if (!a) return;
+				if (alEdit) {
+					if (e.target.closest('.ck-minus')) {
+						alarms = alarms.filter(function (x) { return x.id !== id; });
+						renderAlarms();
+					} else openAlarmSheet(a);
+					return;
+				}
+				if (e.target.closest('.al-sw')) { a.on = !a.on; renderAlarms(); }
+			});
+
+			/* ---- add / edit alarm sheet -------------------------------------- */
+			var aaDraft = { lbl: 'Alarm', rep: [], snd: 'Radar', sn: true }, aaId = null;
+			var aaHourW, aaMinW, aaApW;
+
+			function renderAA() {
+				var h = '<div class="sect">' +
+					'<div class="cell" data-r="repeat"><span class="grow">Repeat</span>' +
+					'<span class="rval">' + esc(repeatText(aaDraft.rep)) + '</span>' + CKCHEV + '</div>' +
+					'<div class="cell" data-r="label"><span class="grow">Label</span>' +
+					'<span class="rval">' + esc(aaDraft.lbl || 'Alarm') + '</span>' + CKCHEV + '</div>' +
+					'<div class="cell" data-r="sound"><span class="grow">Sound</span>' +
+					'<span class="rval">' + esc(aaDraft.snd) + '</span>' + CKCHEV + '</div>' +
+					'<div class="cell"><span class="grow">Snooze</span>' +
+					'<span class="sw' + (aaDraft.sn ? ' on' : '') + '" data-r="snooze"><i></i></span></div></div>';
+				if (aaId !== null) {
+					h += '<div class="hdr">&nbsp;</div><div class="sect">' +
+						'<div class="cell center" data-r="del">Delete Alarm</div></div>';
+				}
+				h += '<div style="height:24px"></div>';
+				$('aaRest').innerHTML = h;
+			}
+
+			function openAlarmSheet(a) {
+				aaId = a ? a.id : null;
+				$('aaTitle').textContent = a ? 'Edit Alarm' : 'Add Alarm';
+				var mins;
+				if (a) {
+					aaDraft = { lbl: a.lbl, rep: a.rep.slice(), snd: a.snd, sn: a.sn };
+					mins = a.min;
+				} else {
+					var d = new Date();
+					aaDraft = { lbl: 'Alarm', rep: [], snd: 'Radar', sn: true };
+					mins = d.getHours() * 60 + d.getMinutes();
+				}
+				var h24 = Math.floor(mins / 60), m = mins % 60, h12 = h24 % 12;
+				wheelSet(aaHourW, h12 === 0 ? 11 : h12 - 1);
+				wheelSet(aaMinW, m);
+				wheelSet(aaApW, h24 >= 12 ? 1 : 0);
+				renderAA();
+				$('aaRest').scrollTop = 0;
+				$('ck-alarm').classList.add('active');
+			}
+			function aaMinutes() {
+				var h = aaHourW.i + 1;                 /* wheel shows 1..12 */
+				if (h === 12) h = 0;
+				return (h + (aaApW.i ? 12 : 0)) * 60 + aaMinW.i;
+			}
+			function closeAlarmSheet() {
+				$('ck-alarm').classList.remove('active');
+				$('ck-alarm').classList.remove('behind');
+			}
+			$('aaCancel').addEventListener('click', closeAlarmSheet);
+			$('aaSave').addEventListener('click', function () {
+				var min = aaMinutes();
+				if (aaId === null) {
+					alarms.push({
+						id: alarmSeq++, min: min, lbl: aaDraft.lbl || 'Alarm', on: true,
+						rep: aaDraft.rep.slice(), snd: aaDraft.snd, sn: aaDraft.sn
+					});
+				} else {
+					alarms.forEach(function (a) {
+						if (a.id !== aaId) return;
+						a.min = min; a.lbl = aaDraft.lbl || 'Alarm'; a.rep = aaDraft.rep.slice();
+						a.snd = aaDraft.snd; a.sn = aaDraft.sn; a.on = true;
+					});
+				}
+				renderAlarms();
+				closeAlarmSheet();
+			});
+			$('aaRest').addEventListener('click', function (e) {
+				var t = e.target.closest('[data-r]'); if (!t) return;
+				switch (t.dataset.r) {
+					case 'snooze': aaDraft.sn = !aaDraft.sn; renderAA(); break;
+					case 'repeat': renderRepeat(); push($('ck-alarm'), $('ck-repeat')); break;
+					case 'label': push($('ck-alarm'), $('ck-label')); openKB(kb5); lbSync(); break;
+					case 'sound': openTone('alarm'); break;
+					case 'del':
+						alarms = alarms.filter(function (a) { return a.id !== aaId; });
+						renderAlarms(); closeAlarmSheet();
+						break;
+				}
+			});
+
+			/* ---- repeat ------------------------------------------------------ */
+			function renderRepeat() {
+				var h = '<div style="height:36px"></div><div class="sect">';
+				for (var d = 0; d < 7; d++) {
+					h += '<div class="cell" data-d="' + d + '"><span class="plain">Every ' + DAYS[d] + '</span>' +
+						(aaDraft.rep.indexOf(d) > -1 ? TICKI : '') + '</div>';
+				}
+				$('rpBody').innerHTML = h + '</div>';
+			}
+			$('rpBody').addEventListener('click', function (e) {
+				var c = e.target.closest('[data-d]'); if (!c) return;
+				var d = +c.dataset.d, at = aaDraft.rep.indexOf(d);
+				if (at > -1) aaDraft.rep.splice(at, 1); else aaDraft.rep.push(d);
+				renderRepeat();
+			});
+			$('rpBack').addEventListener('click', function () {
+				renderAA(); pop($('ck-repeat'), $('ck-alarm'));
+			});
+
+			/* ---- label ------------------------------------------------------- */
+			function lbSync() {
+				var kbUp = kb5.el.classList.contains('up');
+				$('lbVal').innerHTML = esc(aaDraft.lbl) + (kbUp ? '<span class="caret"></span>' : '');
+				$('lbClear').style.visibility = aaDraft.lbl ? 'visible' : 'hidden';
+			}
+			function lbDone() { closeKB(kb5); lbSync(); }
+			$('lbCell').addEventListener('click', function (e) {
+				if (e.target.closest('#lbClear')) { aaDraft.lbl = ''; lbSync(); autoShift(kb5); updatePred(kb5); return; }
+				openKB(kb5); lbSync();
+			});
+			$('lbBack').addEventListener('click', function () {
+				closeKB(kb5);
+				if (!aaDraft.lbl.trim()) aaDraft.lbl = 'Alarm';
+				renderAA(); pop($('ck-label'), $('ck-alarm'));
+			});
+
+			/* ---- tones ------------------------------------------------------- */
+			var TONES = ['Radar (Default)', 'Apex', 'Beacon', 'Bulletin', 'By The Seaside', 'Chimes', 'Circuit',
+				'Constellation', 'Cosmic', 'Crystals', 'Hillside', 'Illuminate', 'Night Owl', 'Opening',
+				'Playtime', 'Presto', 'Radiate', 'Reflection', 'Ripples', 'Sencha', 'Signal', 'Silk',
+				'Slow Rise', 'Stargaze', 'Summit', 'Twinkle', 'Uplift', 'Waves'];
+			var CLASSIC = ['Alarm', 'Ascending', 'Bark', 'Bell Tower', 'Blues', 'Boing', 'Crickets', 'Digital',
+				'Doorbell', 'Duck', 'Harp', 'Marimba', 'Motorcycle', 'Old Car Horn', 'Old Phone', 'Piano Riff',
+				'Pinball', 'Robot', 'Sci-Fi', 'Sonar', 'Strum', 'Timba', 'Time Passing', 'Trill', 'Xylophone'];
+			function toneName(t) { return t.replace(' (Default)', ''); }
+
+			var toneMode = 'alarm', toneDraft = 'Radar';
+
+			function renderToneNav() {
+				$('toneNav').innerHTML = toneMode === 'timer'
+					? '<div class="btn" id="tnCancel">Cancel</div><div class="title">When Timer Ends</div>' +
+					'<div class="btn right" id="tnSet">Set</div>'
+					: CKBACK('Back') + '<div class="title">Sound</div>';
+			}
+			function renderToneBody() {
+				var h = '<div style="height:36px"></div>' +
+					'<div class="sect"><div class="cell tone"><span class="plain">Buy More Tones</span></div></div>' +
+					'<div class="hdr">RINGTONES</div><div class="sect">';
+				h += TONES.map(function (t) {
+					var n = toneName(t);
+					return '<div class="cell tone' + (toneDraft === n ? ' sel' : '') + '" data-t="' + esc(n) + '">' +
+						TICK + '<span class="plain">' + esc(t) + '</span></div>';
+				}).join('');
+				h += '<div class="cell tone" data-classic="1"><span class="plain">Classic</span>' +
+					(CLASSIC.indexOf(toneDraft) > -1 ? TICKI : '') + CKCHEV + '</div></div>';
+				var last = toneMode === 'timer' ? 'Stop Playing' : 'None';
+				h += '<div class="hdr">&nbsp;</div><div class="sect"><div class="cell tone' +
+					(toneDraft === last ? ' sel' : '') + '" data-t="' + last + '">' + TICK +
+					'<span class="plain">' + last + '</span></div></div><div style="height:24px"></div>';
+				var body = $('toneBody');
+				body.innerHTML = h;
+				var sel = body.querySelector('.cell.tone.sel');
+				if (sel) {
+					body.scrollTop = Math.max(0, body.scrollTop +
+						sel.getBoundingClientRect().top - body.getBoundingClientRect().top - 190);
+				}
+			}
+			function openTone(mode) {
+				toneMode = mode;
+				toneDraft = mode === 'timer' ? tmr.tone : aaDraft.snd;
+				renderToneNav(); renderToneBody();
+				var p = $('ck-tone');
+				/* the timer presents this sheet, the alarm pushes it -- flip the
+				   off-screen resting transform without animating the swap */
+				var wantModal = (mode === 'timer');
+				if (p.classList.contains('modal') !== wantModal) {
+					p.style.transition = 'none';
+					p.classList.toggle('modal', wantModal);
+					p.offsetHeight;
+					p.style.transition = '';
+				}
+				if (wantModal) p.classList.add('active');
+				else push($('ck-alarm'), p);
+			}
+			function closeTone(commit) {
+				var p = $('ck-tone');
+				if (toneMode === 'timer') {
+					if (commit) { tmr.tone = toneDraft; $('tmTone').textContent = toneDraft; }
+					p.classList.remove('active');
+				} else {
+					aaDraft.snd = toneDraft; renderAA();
+					pop(p, $('ck-alarm'));
+				}
+			}
+			$('toneNav').addEventListener('click', function (e) {
+				if (e.target.closest('#tnCancel')) return closeTone(false);
+				if (e.target.closest('#tnSet')) return closeTone(true);
+				if (e.target.closest('.back')) return closeTone(true);
+			});
+			$('toneBody').addEventListener('click', function (e) {
+				var c = e.target.closest('.cell'); if (!c) return;
+				if (c.dataset.classic) { renderClassic(); push($('ck-tone'), $('ck-classic')); return; }
+				if (!c.dataset.t) return;
+				toneDraft = c.dataset.t;
+				renderToneBody();
+				if (toneMode === 'alarm') { aaDraft.snd = toneDraft; }
+			});
+
+			function renderClassic() {
+				$('clsNav').innerHTML = CKBACK(toneMode === 'timer' ? 'When Timer Ends' : 'Sound') +
+					'<div class="title inline">Classic</div>';
+				$('clsBody').innerHTML = '<div style="height:36px"></div><div class="sect">' +
+					CLASSIC.map(function (t) {
+						return '<div class="cell tone' + (toneDraft === t ? ' sel' : '') + '" data-t="' + esc(t) + '">' +
+							TICK + '<span class="plain">' + esc(t) + '</span></div>';
+					}).join('') + '</div><div style="height:24px"></div>';
+			}
+			$('clsNav').addEventListener('click', function (e) {
+				if (!e.target.closest('.back')) return;
+				renderToneBody(); pop($('ck-classic'), $('ck-tone'));
+			});
+			$('clsBody').addEventListener('click', function (e) {
+				var c = e.target.closest('.cell[data-t]'); if (!c) return;
+				toneDraft = c.dataset.t;
+				if (toneMode === 'alarm') aaDraft.snd = toneDraft;
+				renderClassic();
+			});
+
+			/* ---- wheel picker ------------------------------------------------ */
+			/* 215 pt tall, 35 pt rows: 90 pt of padding keeps row i at scrollTop
+			   35*i, so the index is just a division. */
+			var PK_ROW = 35, PK_HALF = 107.5;
+
+			/* A looping column is just the item list stamped out enough times to
+			   swallow any fling; once the scroll settles we snap it back to the
+			   middle copy, which is invisible because the value is identical. */
+			function makeWheel(el, items, loop) {
+				var n = items.length;
+				var reps = loop ? Math.max(5, Math.ceil(360 / n)) : 1;
+				var st = {
+					el: el, n: n, reps: reps, loop: !!loop, home: loop ? ((reps / 2) | 0) * n : 0,
+					i: 0, cb: null, t: null, lo: 0, hi: -1
+				};
+				var one = items.map(function (v) { return '<div class="pk-i">' + esc(v) + '</div>'; }).join('');
+				var all = '';
+				for (var r = 0; r < reps; r++) all += one;
+				el.innerHTML = '<div class="pk-pad"></div>' + all + '<div class="pk-pad"></div>';
+				st.rows = el.querySelectorAll('.pk-i');
+				el.addEventListener('scroll', function () {
+					wheelPaint(st);
+					clearTimeout(st.t);
+					st.t = setTimeout(function () { wheelSettle(st); }, 110);
+				});
+				el.addEventListener('click', function (e) {
+					var r = e.target.closest('.pk-i');
+					if (r) {
+						var raw = [].indexOf.call(st.rows, r);
+						wheelScroll(st, raw, true);
+						wheelValue(st, raw % st.n);
+					}
+				});
+				wheelSet(st, 0);
+				return st;
+			}
+			function wheelValue(st, i) {
+				if (i === st.i) return;
+				st.i = i;
+				if (st.cb) st.cb(i);
+			}
+			function wheelSettle(st) {
+				var raw = Math.max(0, Math.min(st.rows.length - 1, Math.round(st.el.scrollTop / PK_ROW)));
+				var i = raw % st.n;
+				if (st.loop && (raw < st.n || raw >= (st.reps - 1) * st.n)) {
+					st.el.scrollTop = (st.home + i) * PK_ROW;      /* re-centre silently */
+					wheelPaint(st);
+				}
+				wheelValue(st, i);
+			}
+			function wheelPaint(st) {
+				var c = st.el.scrollTop + PK_HALF;
+				var mid = Math.round(st.el.scrollTop / PK_ROW);
+				var lo = Math.max(0, mid - 5), hi = Math.min(st.rows.length - 1, mid + 5);
+				for (var j = st.lo; j <= st.hi; j++) {
+					if (j < lo || j > hi) st.rows[j].style.opacity = '0';
+				}
+				for (var i = lo; i <= hi; i++) {
+					var d = (90 + i * PK_ROW + PK_ROW / 2 - c) / PK_HALF, a = Math.abs(d), r = st.rows[i];
+					if (a > 1.3) { r.style.opacity = '0'; continue; }
+					r.style.opacity = Math.max(0, 1 - a * 0.66).toFixed(3);
+					r.style.transform = 'scale(' + (1 - a * 0.07).toFixed(3) + ',' + (1 - a * 0.46).toFixed(3) + ')';
+				}
+				st.lo = lo; st.hi = hi;
+			}
+			function wheelScroll(st, raw, smooth) {
+				if (smooth && st.el.scrollTo) st.el.scrollTo({ top: raw * PK_ROW, behavior: 'smooth' });
+				else st.el.scrollTop = raw * PK_ROW;
+				wheelPaint(st);
+			}
+			function wheelSet(st, i) {
+				i = Math.max(0, Math.min(st.n - 1, i));
+				st.i = i;
+				wheelScroll(st, st.home + i, false);
+			}
+			function pad2(n) { return (n < 10 ? '0' : '') + n; }
+			function seq(a, b, f) {
+				var out = [];
+				for (var i = a; i <= b; i++) out.push(f ? f(i) : String(i));
+				return out;
+			}
+
+			/* hours and minutes wrap the way iOS's date wheels do; AM/PM does not */
+			aaHourW = makeWheel($('aaHour'), seq(1, 12), true);
+			aaMinW = makeWheel($('aaMin'), seq(0, 59, pad2), true);
+			aaApW = makeWheel($('aaAp'), ['AM', 'PM']);
+
+			/* ---- stopwatch --------------------------------------------------- */
+			var sw = { run: false, base: 0, t0: 0, laps: [], lapBase: 0 };
+			var swBig = $('swBig'), swLapEl = $('swLap'), swLapsEl = $('swLaps');
+			var swLapBtn = $('swLapBtn'), swGoBtn = $('swGoBtn');
+
+			function swMs() { return sw.run ? sw.base + (performance.now() - sw.t0) : sw.base; }
+			function fmtSW(ms) {
+				var t = Math.max(0, ms);
+				var cs = Math.floor(t / 10) % 100, s = Math.floor(t / 1000) % 60;
+				var m = Math.floor(t / 60000) % 60, h = Math.floor(t / 3600000);
+				return (h ? h + ':' : '') + pad2(m) + ':' + pad2(s) + '.' + pad2(cs);
+			}
+			function swPaint() {
+				var t = swMs();
+				swBig.textContent = fmtSW(t);
+				swLapEl.textContent = fmtSW(t - sw.lapBase);
+			}
+			function swButtons() {
+				swGoBtn.textContent = sw.run ? 'Stop' : 'Start';
+				swGoBtn.className = 'ck-btn right ' + (sw.run ? 'red' : 'green');
+				/* iOS: Lap while it runs, Reset once it is stopped with time on the
+				   face, and a dead "Lap" when it has never been started */
+				swLapBtn.textContent = (!sw.run && sw.base) ? 'Reset' : 'Lap';
+				swLapBtn.className = 'ck-btn left' + (sw.run || sw.base ? '' : ' off');
+			}
+			function swLoop() {
+				if (!sw.run) return;
+				swPaint();
+				requestAnimationFrame(swLoop);
+			}
+			function renderLaps() {
+				var n = Math.max(6, sw.laps.length), h = '';
+				for (var i = 0; i < n; i++) {
+					var k = sw.laps.length - 1 - i;
+					h += '<div class="sw-lrow">' + (k >= 0
+						? '<div class="sw-lname">Lap ' + (k + 1) + '</div><div class="sw-ltime">' +
+						fmtSW(sw.laps[k]) + '</div>'
+						: '') + '</div>';
+				}
+				swLapsEl.innerHTML = h;
+			}
+			swGoBtn.addEventListener('click', function () {
+				if (sw.run) { sw.base = swMs(); sw.run = false; }
+				else { sw.t0 = performance.now(); sw.run = true; requestAnimationFrame(swLoop); }
+				swButtons(); swPaint();
+			});
+			swLapBtn.addEventListener('click', function () {
+				if (sw.run) {
+					var t = swMs();
+					sw.laps.push(t - sw.lapBase);
+					sw.lapBase = t;
+				} else {
+					sw.base = 0; sw.lapBase = 0; sw.laps = [];
+				}
+				renderLaps(); swButtons(); swPaint();
+			});
+
+			/* ---- timer -------------------------------------------------------- */
+			var tmr = { h: 0, m: 1, state: 'idle', endAt: 0, left: 0, tone: 'Radar' };
+			var tmHoursW, tmMinsW;
+			var tmBig = $('tmBig'), tmRun = $('tmRun');
+			var tmPauseBtn = $('tmPauseBtn'), tmGoBtn = $('tmGoBtn');
+
+			function fmtTimer(ms) {
+				var t = Math.max(0, Math.ceil(ms / 1000));
+				var s = t % 60, m = Math.floor(t / 60) % 60, h = Math.floor(t / 3600);
+				return h ? (h + ':' + pad2(m) + ':' + pad2(s)) : (pad2(m) + ':' + pad2(s));
+			}
+			function tmLeft() {
+				return tmr.state === 'run' ? Math.max(0, tmr.endAt - Date.now()) : tmr.left;
+			}
+			function tmPaint() {
+				var idle = tmr.state === 'idle';
+				tmRun.classList.toggle('on', !idle);
+				if (!idle) tmBig.textContent = fmtTimer(tmLeft());
+				tmGoBtn.textContent = idle ? 'Start' : 'Cancel';
+				tmGoBtn.className = 'ck-btn right ' + (idle ? 'green' : 'red') +
+					(idle && !tmr.h && !tmr.m ? ' off' : '');
+				tmPauseBtn.textContent = tmr.state === 'pause' ? 'Resume' : 'Pause';
+				tmPauseBtn.className = 'ck-btn left' + (idle ? ' off' : '');
+			}
+			function tmStart() {
+				var ms = (tmr.h * 3600 + tmr.m * 60) * 1000;
+				if (!ms) return;
+				tmr.state = 'run'; tmr.endAt = Date.now() + ms; tmr.left = ms;
+				tmPaint();
+			}
+			function tmCancel() { tmr.state = 'idle'; tmr.left = 0; tmPaint(); }
+			tmGoBtn.addEventListener('click', function () {
+				if (tmr.state === 'idle') tmStart(); else tmCancel();
+			});
+			tmPauseBtn.addEventListener('click', function () {
+				if (tmr.state === 'run') { tmr.left = tmLeft(); tmr.state = 'pause'; }
+				else if (tmr.state === 'pause') { tmr.endAt = Date.now() + tmr.left; tmr.state = 'run'; }
+				tmPaint();
+			});
+			$('tmWhen').addEventListener('click', function () { openTone('timer'); });
+
+			/* the countdown picker loops its minutes but stops dead at 0 hours */
+			tmHoursW = makeWheel($('tmHours'), seq(0, 23));
+			tmMinsW = makeWheel($('tmMins'), seq(0, 59), true);
+			tmHoursW.cb = function (i) { tmr.h = i; tmPaint(); };
+			tmMinsW.cb = function (i) { tmr.m = i; tmPaint(); };
+
+			setInterval(function () {
+				if (tmr.state !== 'run') return;
+				tmBig.textContent = fmtTimer(tmLeft());
+				if (tmLeft() <= 0) {
+					tmCancel();
+					ckAlert('Timer Done', '', [{ n: 'OK', bold: true }]);
+				}
+			}, 120);
+
+			/* ---- alerts -------------------------------------------------------- */
+			var ckAlertCb = null;
+			function ckAlert(title, msg, btns) {
+				$('ckATitle').textContent = title;
+				$('ckAMsg').textContent = msg || '';
+				$('ckAMsg').style.display = msg ? '' : 'none';
+				$('ckABtns').innerHTML = btns.map(function (b, i) {
+					return '<div class="ck-abtn' + (b.bold ? ' bold' : '') + '" data-i="' + i + '">' + esc(b.n) + '</div>';
+				}).join('');
+				ckAlertCb = btns;
+				$('ckAlert').classList.add('up');
+			}
+			$('ckABtns').addEventListener('click', function (e) {
+				var b = e.target.closest('.ck-abtn'); if (!b || !ckAlertCb) return;
+				var spec = ckAlertCb[+b.dataset.i];
+				$('ckAlert').classList.remove('up');
+				ckAlertCb = null;
+				if (spec && spec.fn) spec.fn();
+			});
+
+			/* ---- alarms going off ---------------------------------------------- */
+			/* one shot per alarm per minute; repeats stay armed, one-offs switch
+			   themselves off the way iOS does */
+			var alFired = {}, alSnooze = {};
+			function ckCheckAlarms() {
+				var d = new Date(), nowMin = d.getHours() * 60 + d.getMinutes();
+				var stamp = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + '-' + nowMin;
+				var now = Date.now();
+
+				Object.keys(alSnooze).forEach(function (id) {
+					if (alSnooze[id] > now) return;
+					delete alSnooze[id];
+					var a = alarms.filter(function (x) { return x.id === +id; })[0];
+					if (a) ringAlarm(a);
+				});
+
+				alarms.forEach(function (a) {
+					if (!a.on || a.min !== nowMin) return;
+					if (a.rep.length && a.rep.indexOf(d.getDay()) < 0) return;
+					var key = a.id + '@' + stamp;
+					if (alFired[key]) return;
+					alFired[key] = 1;
+					if (!a.rep.length) { a.on = false; renderAlarms(); }
+					ringAlarm(a);
+				});
+			}
+			function ringAlarm(a) {
+				var t = ampm(Math.floor(a.min / 60), a.min % 60);
+				var btns = [];
+				if (a.sn) btns.push({
+					n: 'Snooze', fn: function () { alSnooze[a.id] = Date.now() + 9 * 60000; }
+				});
+				btns.push({ n: 'OK', bold: true });
+				ckAlert(a.lbl || 'Alarm', t.t + ' ' + t.ap, btns);
+			}
+
+			/* ---- tabs + nav ------------------------------------------------------ */
+			var ckTab = 'world';
+			function paintTabs() {
+				$('ckTabs').innerHTML = CK_TABS.map(function (t) {
+					var on = t.k === ckTab;
+					return '<div class="ck-tab' + (on ? ' on' : '') + '" data-k="' + t.k + '">' +
+						TAB_ICONS[t.k](on) + '<span>' + t.n + '</span></div>';
+				}).join('');
+			}
+			function setTab(k) {
+				ckTab = k;
+				if (k !== 'world' && wcEdit) setWcEdit(false);
+				if (k !== 'alarm' && alEdit) setAlEdit(false);
+				CK_TABS.forEach(function (t) { $(t.pane).classList.toggle('on', t.k === k); });
+				paintTabs();
+				var t = CK_TABS.filter(function (x) { return x.k === k; })[0];
+				$('ckTitle').textContent = t.n;
+				var listy = (k === 'world' || k === 'alarm');
+				$('ckEdit').style.visibility = listy ? 'visible' : 'hidden';
+				$('ckAdd').style.visibility = listy ? 'visible' : 'hidden';
+				if (k === 'world') renderWorld();
+				/* the panes are display:none when hidden, so the wheels can only be
+				   scrolled into place once the timer is actually on screen */
+				if (k === 'timer') { wheelSet(tmHoursW, tmr.h); wheelSet(tmMinsW, tmr.m); tmPaint(); }
+				if (k === 'sw') { swPaint(); swButtons(); }
+			}
+			$('ckTabs').addEventListener('click', function (e) {
+				var t = e.target.closest('.ck-tab'); if (t) setTab(t.dataset.k);
+			});
+
+			function setWcEdit(on) {
+				wcEdit = on;
+				wcListEl.classList.toggle('editing', on);
+				$('ckEdit').textContent = on ? 'Done' : 'Edit';
+			}
+			function setAlEdit(on) {
+				alEdit = on;
+				alListEl.classList.toggle('editing', on);
+				$('ckEdit').textContent = on ? 'Done' : 'Edit';
+			}
+			$('ckEdit').addEventListener('click', function () {
+				if (ckTab === 'world') setWcEdit(!wcEdit);
+				else if (ckTab === 'alarm') setAlEdit(!alEdit);
+			});
+			$('ckAdd').addEventListener('click', function () {
+				if (ckTab === 'world') cyOpen();
+				else if (ckTab === 'alarm') openAlarmSheet(null);
+			});
+
+			/* pressing Home leaves the app on its tab but drops every sheet */
+			function ckReset() {
+				closeKB(kb5); closeKB(kb6);
+				cyCancelSearch();
+				['ck-city', 'ck-alarm', 'ck-repeat', 'ck-label', 'ck-tone', 'ck-classic'].forEach(function (id) {
+					$(id).classList.remove('active', 'behind');
+				});
+				setWcEdit(false); setAlEdit(false);
+			}
+
+			function ckTick() {
+				if (ckTab === 'world') renderWorld();
+				ckCheckAlarms();
+			}
+
+			renderWorld(); renderAlarms(); renderCity(); renderLaps();
+			swPaint(); swButtons(); tmPaint(); setTab('world');
+			ckReady = true;
+
+		})();
+	</script>
+</body>
+
+</html>
