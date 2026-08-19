@@ -6,6 +6,7 @@
 	<meta name="viewport"
 		content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="description" content="an iOS 9.3.5 demo">
 	<title>iOS 9.3.5</title>
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -220,7 +221,8 @@
 								</div>
 
 								<div class="ft-go off" id="ftSignIn">
-									<span class="spin" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+									<span class="spin"
+										aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
 									<span id="ftGoLbl">Sign In</span>
 								</div>
 
@@ -235,7 +237,9 @@
 							<div class="ft-alert">
 								<div class="ft-atitle" id="ftATitle"></div>
 								<div class="ft-amsg" id="ftAMsg"></div>
-								<div class="ft-abtns"><div class="ft-abtn" id="ftAOk">OK</div></div>
+								<div class="ft-abtns">
+									<div class="ft-abtn" id="ftAOk">OK</div>
+								</div>
 							</div>
 						</div>
 					</div><!-- /#ftapp -->
@@ -310,8 +314,8 @@
 											<span class="grow">When Timer Ends</span>
 											<span class="val" id="tmTone">Radar</span>
 											<svg class="chev" width="9" height="15" viewBox="0 0 9 15">
-												<path d="M1 1l6.4 6.5L1 14" fill="none" stroke="#C7C7CC" stroke-width="2"
-													stroke-linecap="round" stroke-linejoin="round" />
+												<path d="M1 1l6.4 6.5L1 14" fill="none" stroke="#C7C7CC"
+													stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 											</svg>
 										</div>
 										<div class="ck-pad tm-btns">
@@ -370,8 +374,8 @@
 								<div class="nav">
 									<div class="btn back" id="rpBack">
 										<svg width="12" height="20" viewBox="0 0 12 20">
-											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30" stroke-width="2.4"
-												stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30"
+												stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 										</svg>
 										<span>Back</span>
 									</div>
@@ -384,8 +388,8 @@
 								<div class="nav">
 									<div class="btn back" id="lbBack">
 										<svg width="12" height="20" viewBox="0 0 12 20">
-											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30" stroke-width="2.4"
-												stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M10.5 1 1.6 10l8.9 9" fill="none" stroke="#FF3B30"
+												stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 										</svg>
 										<span>Back</span>
 									</div>
@@ -455,8 +459,8 @@
 							<div class="lk-date" id="lkDate">Saturday, December 27</div>
 							<div class="lk-slide">
 								<svg class="lk-chev" width="10" height="23" viewBox="0 0 10 23" aria-hidden="true">
-									<path d="M1.2 1.3 8.7 11.5 1.2 21.7" fill="none" stroke="#C67510"
-										stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+									<path d="M1.2 1.3 8.7 11.5 1.2 21.7" fill="none" stroke="#C67510" stroke-width="2.2"
+										stroke-linecap="round" stroke-linejoin="round" />
 								</svg>
 								<span class="lk-shine">slide to unlock</span>
 							</div>
@@ -609,22 +613,29 @@
 
 	<!-- ============ FOURTH WALL: power controls, outside the device ============ -->
 	<div id="fourthwall">
-		<div class="fw-head">
-			<svg width="11" height="15" viewBox="0 0 7 11" aria-hidden="true">
-				<path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor" />
-			</svg>
-			<span>Power</span>
+		<!-- 
+		&#11205; up arrow
+		&#11206; down arrow
+		-->
+		<div id="fwtoggle">&#11205;</div>
+		<div class="fwwrapper collapsed" id="fwWrap">
+			<div class="fw-head">
+				<svg width="11" height="15" viewBox="0 0 7 11" aria-hidden="true">
+					<path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor" />
+				</svg>
+				<span>Power</span>
+			</div>
+			<div class="fw-read">
+				<span id="fwPct">100%</span>
+				<span class="fw-state" id="fwState">Charging</span>
+			</div>
+			<div class="fw-gauge">
+				<i id="fwBar"></i>
+			</div>
+			<button type="button" id="fwPlug">Unplug</button>
+			<label class="fw-lbl" for="fwCond">Battery Condition</label>
+			<select id="fwCond"></select>
 		</div>
-		<div class="fw-read">
-			<span id="fwPct">100%</span>
-			<span class="fw-state" id="fwState">Charging</span>
-		</div>
-		<div class="fw-gauge">
-			<i id="fwBar"></i>
-		</div>
-		<button type="button" id="fwPlug">Unplug</button>
-		<label class="fw-lbl" for="fwCond">Battery Condition</label>
-		<select id="fwCond"></select>
 	</div>
 
 	<svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -691,10 +702,10 @@
 
 			/* One geometry for every status bar, traced pixel-for-pixel off the lock
 			   screen photograph (ref_pic/IMG_2446.PNG, 2x). In points:
-			     frame  27.0 x 11.0, solid 0.5 stroke, corners ~1.2
-			     fill   inset 1.0 all round -> 25.0 x 9.0 at full charge
-			     nub    1.5 x 5.0, starting 0.5 past the frame, vertically centred
-			     bolt   6.0 x 10.0, sitting 3.0 after the nub  (see .sb-right gap) */
+				 frame  27.0 x 11.0, solid 0.5 stroke, corners ~1.2
+				 fill   inset 1.0 all round -> 25.0 x 9.0 at full charge
+				 nub    1.5 x 5.0, starting 0.5 past the frame, vertically centred
+				 bolt   6.0 x 10.0, sitting 3.0 after the nub  (see .sb-right gap) */
 			var BATT_STD = {
 				w: 29, h: 11, vb: '0 0 29 11',
 				body: { x: .25, y: .25, w: 26.5, h: 10.5, rx: 1.2, sw: .5, so: 1 },
@@ -821,6 +832,13 @@
 					battSync();
 				}, 200);
 			})();
+
+			// FW collapse/expand toggle
+			$('fwtoggle').addEventListener('click', function () {
+				var fw = $('fwWrap');
+				fw.classList.toggle('collapsed');
+				$('fwtoggle').innerHTML = fw.classList.contains('collapsed') ? '&#11205;' : '&#11206;';
+			});
 
 			renderBatteries(); paintFW(); refreshInk();
 
@@ -1729,7 +1747,7 @@
 				{ n: 'Voice Memos' }, { n: 'Compass' }, { n: 'Stocks' }, { n: 'Tips' }
 			];
 			let DOCK = [
-				{ n: 'Messages', app: 'messages', img: 'messages.png' }, 
+				{ n: 'Messages', app: 'messages', img: 'messages.png' },
 				{ n: 'Music', img: 'music.png' }, { n: 'App Store', img: 'app-store.png' },
 				{ n: 'Voice Memos', img: 'voice-memos.png' }
 			];
@@ -2029,9 +2047,9 @@
 
 				h += '<div class="wg-head"><div class="wg-ico">' + ICO_REM + '</div><div class="ttl">Reminders</div></div>' +
 					'<div class="wg-body">' +
-					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!!</b> Fart excessively loud</div>' +
+					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!</b> Turn in my homework</div>' +
 					'<div class="dt">11/23/23</div></div></div>' +
-					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!!</b> Shart&nbsp; my pants</div>' +
+					'<div class="rem"><div class="cir"></div><div><div class="tx"><b>!!!</b> Charge my computer</div>' +
 					'<div class="dt">12/30/23</div></div></div></div>';
 
 				h += '<div class="wg-head"><div class="wg-ico">' + ICO_STK + '</div><div class="ttl">Stocks</div></div>' +
@@ -2165,7 +2183,7 @@
 			/* CLOCK                                                              */
 			/* ================================================================== */
 			/* Geometry throughout is traced off ref_pic/Clock (2x shots):
-			     nav 44, tab bar 49, list rows 85, picker 215 with 35 pt rows. */
+				 nav 44, tab bar 49, list rows 85, picker 215 with 35 pt rows. */
 
 			var CK_RED = '#FF3B30';
 

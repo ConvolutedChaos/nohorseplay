@@ -74,7 +74,7 @@ body {
     left: 18px;
     bottom: 18px;
     z-index: 9999;
-    width: 178px;
+    width: min-content;
     padding: 11px 12px 12px;
     border-radius: 11px;
     background: rgba(22, 24, 28, .88);
@@ -210,6 +210,30 @@ body {
 
 #fwCond:focus {
     outline: 1px solid #3a80e8;
+}
+
+.fwwrapper {
+    width: 178px;
+}
+
+#fwtoggle {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #2a2d33;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.collapsed {
+    display: none;
 }
 
 /* ---------- device frame: iPod touch 5G (A1421), space gray ----------
