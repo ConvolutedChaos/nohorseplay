@@ -425,6 +425,192 @@
 						</div><!-- /#ckstack -->
 					</div><!-- /#ckapp -->
 
+					<!-- ============ PHOTOS ============ -->
+					<div id="phapp">
+						<div id="phstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="phClock">6:11 PM</div>
+							<div class="sb-right" id="phBatt"></div>
+						</div>
+
+						<div id="phstack">
+
+							<!-- ---- root: the six levels, then the tab bar ---- -->
+							<div class="page active" id="ph-root">
+								<div class="ph-levels" id="phLevels">
+
+									<div class="ph-level" id="lv-years" data-tab="photos">
+										<div class="nav" id="yearsNav"></div>
+										<div class="ph-body" id="yearsBody"></div>
+									</div>
+
+									<div class="ph-level" id="lv-coll" data-tab="photos">
+										<div class="nav" id="collNav"></div>
+										<div class="ph-body" id="collBody"></div>
+									</div>
+
+									<div class="ph-level" id="lv-moments" data-tab="photos">
+										<div class="nav" id="momNav"></div>
+										<div class="ph-body" id="momBody"></div>
+									</div>
+
+									<div class="ph-level" id="lv-shared" data-tab="shared">
+										<div class="nav" id="shNav"></div>
+										<div class="ph-body ph-empty">
+											<div class="ph-emptybox">
+												<div class="ph-emptytitle">iCloud Photo Sharing</div>
+												<div class="ph-emptymsg">Share photos and videos with just the
+													people you choose, and let them add photos, videos, and
+													comments.</div>
+												<div class="ph-emptybtn" id="phStartShare">Start Sharing</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="ph-level" id="lv-albums" data-tab="albums">
+										<div class="nav" id="albNav"></div>
+										<div class="ph-body ph-alblist" id="albBody"></div>
+									</div>
+
+									<div class="ph-level" id="lv-grid" data-tab="albums">
+										<div class="nav" id="gridNav"></div>
+										<div class="ph-body" id="gridBody"></div>
+									</div>
+
+								</div>
+
+								<div class="ph-tabs" id="phTabs"></div>
+								<div class="ph-toolbar" id="phToolbar"></div>
+							</div>
+
+							<!-- ---- one photo, full screen ---- -->
+							<div class="page" id="ph-viewer">
+								<div class="nav" id="vwNav"></div>
+								<div class="vw-stage" id="vwStage"></div>
+								<div class="vw-bar" id="vwBar"></div>
+							</div>
+
+							<!-- ---- Add To: pick an album for the selection ---- -->
+							<div class="page modal" id="ph-addto">
+								<div class="nav" id="addToNav"></div>
+								<div class="ph-body ph-alblist" id="addToBody"></div>
+							</div>
+
+							<!-- ---- search, over everything but the status bar ---- -->
+							<div class="ph-searchpage" id="ph-search">
+								<div class="ph-srow">
+									<div class="ph-sfield" id="phSField">
+										<svg width="13" height="13" viewBox="0 0 16 16" style="flex:0 0 auto">
+											<circle cx="6.6" cy="6.6" r="5.2" fill="none" stroke="#8E8E93"
+												stroke-width="1.6" />
+											<path d="M10.6 10.6 15 15" stroke="#8E8E93" stroke-width="1.8"
+												stroke-linecap="round" />
+										</svg>
+										<span id="phSText">Search Photos</span>
+									</div>
+									<div class="ph-scancel" id="phSCancel">Cancel</div>
+								</div>
+								<div class="ph-sbody" id="phSBody"></div>
+								<div class="ph-indexing" id="phIndexing">
+									<span class="spin"
+										aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+									<span>Indexing&#8230;</span>
+								</div>
+								<div class="kbwrap nopred" id="kb8"></div>
+							</div>
+
+							<!-- ---- New Album ---- -->
+							<div class="ph-alertwrap" id="phAlert">
+								<div class="ph-alert">
+									<div class="ft-atitle">New Album</div>
+									<div class="ft-amsg">Enter a name for this album.</div>
+									<div class="ph-afield" id="phAField"><span id="phAVal"></span></div>
+									<div class="ft-abtns">
+										<div class="ft-abtn" id="phACancel">Cancel</div>
+										<div class="ft-abtn dim" id="phASave">Save</div>
+									</div>
+								</div>
+								<div class="kbwrap" id="kb7"></div>
+							</div>
+
+							<!-- ---- action sheets (delete / album) ---- -->
+							<div class="ph-sheetwrap" id="phSheet">
+								<div class="ph-sheet">
+									<div class="ph-sgroup" id="phSGroup"></div>
+									<div class="ph-sgroup"><div class="ph-sbtn cancel" id="phSCancelBtn">Cancel</div></div>
+								</div>
+							</div>
+
+						</div>
+					</div><!-- /#phapp -->
+
+					<!-- ============ CAMERA ============ -->
+					<div id="camapp">
+						<div id="camStage">
+							<div id="camBox">
+								<video id="camVideo" autoplay muted playsinline></video>
+								<div id="camGrid"></div>
+								<div id="camFocus"></div>
+								<div id="camPano">
+									<div class="pano-line"></div>
+									<div class="pano-arrow"></div>
+									<div class="pano-hint">Move iPod continuously when taking a Panorama</div>
+								</div>
+								<div id="camMsg">
+									<b>Camera Unavailable</b>
+									<span id="camMsgSub">Allow camera access to use the Camera.</span>
+									<div id="camRetry">Allow Camera</div>
+								</div>
+							</div>
+							<div id="camPicker"></div>
+							<div id="camBadge"></div>
+							<div id="camCount"></div>
+						</div>
+
+						<div id="camTop">
+							<div class="cam-tbtn" data-act="flash" id="camFlashBtn"></div>
+							<div class="cam-tbtn" data-act="hdr" id="camHdrBtn"></div>
+							<div class="cam-tbtn" data-act="timer" id="camTimerBtn"></div>
+							<div class="cam-tbtn" data-act="swap" id="camSwapBtn"></div>
+						</div>
+
+						<div id="camPill">
+							<div class="cam-pbtn" data-act="flash" id="camPillFlash"></div>
+							<div class="cam-clock" id="camClock">00:00:00</div>
+							<div class="cam-pbtn" data-act="swap" id="camPillSwap"></div>
+						</div>
+
+						<div id="camBottom">
+							<div id="camModes">
+								<div class="cam-modes" id="camModeRow"></div>
+							</div>
+							<div id="camControls">
+								<div id="camThumb"></div>
+								<div id="camShutter"><i></i></div>
+								<div id="camFilterBtn">
+									<svg width="38" height="38" viewBox="0 0 34 34" aria-hidden="true">
+										<circle cx="12" cy="12" r="9.5" fill="#8E8E93" />
+										<circle cx="22" cy="13.5" r="9.5" fill="#C7C7CC" fill-opacity=".85" />
+										<circle cx="16" cy="22" r="9.5" fill="#E8E8ED" fill-opacity=".8" />
+									</svg>
+								</div>
+								<div id="camRes">720P</div>
+							</div>
+						</div>
+
+						<div id="camWhite"></div>
+						<div id="camBlink"></div>
+					</div><!-- /#camapp -->
+
 					<!-- alarms and timers ring wherever you are, so this lives
 					     outside the app window, over the lock screen too -->
 					<div class="ck-alertwrap" id="ckAlert">
@@ -635,6 +821,24 @@
 			<button type="button" id="fwPlug">Unplug</button>
 			<label class="fw-lbl" for="fwCond">Battery Condition</label>
 			<select id="fwCond"></select>
+
+			<!-- the device has no camera, so the library is filled from here -->
+			<div class="fw-head fw-sep">
+				<svg width="13" height="12" viewBox="0 0 14 13" aria-hidden="true">
+					<rect x="0.7" y="2.6" width="12.6" height="9.7" rx="1.6" fill="none" stroke="currentColor"
+						stroke-width="1.3" />
+					<path d="M4.6 2.6 5.6 0.8h2.8l1 1.8" fill="none" stroke="currentColor" stroke-width="1.3"
+						stroke-linejoin="round" />
+					<circle cx="7" cy="7.6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3" />
+				</svg>
+				<span>Photo Library</span>
+			</div>
+			<div class="fw-read">
+				<span id="fwPhCount">0</span>
+				<span class="fw-state draining" id="fwPhState">Empty</span>
+			</div>
+			<button type="button" id="fwPhAdd">Add Photos&#8230;</button>
+			<button type="button" class="fw-quiet" id="fwPhWipe">Erase Library</button>
 		</div>
 	</div>
 
@@ -646,6 +850,7 @@
 		</defs>
 	</svg>
 	<input type="file" id="photoPicker" accept="image/*">
+	<input type="file" id="phPicker" accept="image/*,video/*" multiple>
 	<script>
 		(function () {
 			"use strict";
@@ -674,7 +879,7 @@
 				let txt = h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
 				$('clock').textContent = txt; $('hsClock').textContent = txt;
 				$('ncClock').textContent = txt; $('ftClock').textContent = txt;
-				$('ckClock').textContent = txt;
+				$('ckClock').textContent = txt; $('phClock').textContent = txt;
 				lkTick();
 				if (ckReady) ckTick();
 			}
@@ -736,7 +941,7 @@
 				'<path d="M6 4.3v2.5h1.8" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>' +
 				'<path d="M2.2 1 3.7 2.4M9.8 1 8.3 2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
 
-			var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt'];
+			var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt', 'phBatt'];
 			function renderBatteries() {
 				var std = (ckAlarmOn ? ALARM_STD : '') +
 					battSVG(BATT_STD, batt.level, batt.charging) + (batt.charging ? BOLT_STD : '');
@@ -1197,12 +1402,16 @@
 				if (st.target === 'ft') return ftFocus === 'pw' ? ftPw : ftId;
 				if (st.target === 'label') return aaDraft.lbl;
 				if (st.target === 'city') return cyQuery;
+				if (st.target === 'album') return phAlbName;
+				if (st.target === 'psearch') return phQuery;
 				return st.target === 'to' ? toText : (st.target === 'search' ? query : buffer);
 			}
 			function setText(st, v) {
 				if (st.target === 'ft') { if (ftFocus === 'pw') ftPw = v; else ftId = v; syncFT(); }
 				else if (st.target === 'label') { aaDraft.lbl = v; lbSync(); }
 				else if (st.target === 'city') { cyQuery = v; cySync(); }
+				else if (st.target === 'album') { phAlbName = v; phAlbSync(); }
+				else if (st.target === 'psearch') { phQuery = v; phSearchSync(); }
 				else if (st.target === 'to') { toText = v; syncTo(); }
 				else if (st.target === 'search') { query = v; syncSearch(); renderList(); }
 				else { buffer = v; syncField(); }
@@ -1242,6 +1451,8 @@
 						else if (st.target === 'ft') ftReturn();
 						else if (st.target === 'label') lbDone();
 						else if (st.target === 'city') cyBlur();
+						else if (st.target === 'album') { if (phAlbName.trim()) $('phASave').click(); }
+						else if (st.target === 'psearch') { closeKB(kb8); phSearchSync(); }
 						else insert('\n', st);
 						break;
 					case 'mic':
@@ -1693,6 +1904,8 @@
 				let st = (openAppId === 'facetime') ? (kb4.el.classList.contains('up') ? kb4 : null)
 					: (openAppId === 'clock') ? (kb5.el.classList.contains('up') ? kb5
 						: (kb6.el.classList.contains('up') ? kb6 : null))
+					: (openAppId === 'photos') ? (kb7.el.classList.contains('up') ? kb7
+						: (kb8.el.classList.contains('up') ? kb8 : null))
 						: (pNew.classList.contains('active') ? kb2
 							: (searching ? kb3
 								: (kb1.el.classList.contains('up') ? kb1 : null)));
@@ -1703,12 +1916,16 @@
 					if (st === kb4) ftReturn();
 					else if (st === kb5) lbDone();
 					else if (st === kb6) cyBlur();
+					else if (st === kb7) { if (phAlbName.trim()) $('phASave').click(); }
+					else if (st === kb8) { closeKB(kb8); phSearchSync(); }
 					else if (st === kb1 && buffer.trim()) rightBtn.click();
 				}
 				else if (e.key === 'Escape') {
 					if (st === kb4) ftBlur();
 					else if (st === kb5) lbDone();
 					else if (st === kb6) cyCancelSearch();
+					else if (st === kb7) phCloseAlbumAlert();
+					else if (st === kb8) phCloseSearch();
 					else if (searching) exitSearch();
 					else { closeKB(kb1); closeDict(); syncField(); }
 				}
@@ -1736,20 +1953,34 @@
 
 			/* img = file in icons/ ; leave it off and the tile falls back to the grey placeholder */
 			let PAGE1 = [
-				{ n: 'FaceTime', img: 'facetime.png', app: 'facetime' }, { n: 'Clock', img: 'clock.png', app: 'clock' }, { n: 'Weather', img: 'weather.png' }, { n: 'Photos', img: 'photos.png' },
-				{ n: 'Maps', img: 'maps.png' }, { n: 'Camera', img: 'camera.png' }, { n: 'Videos', img: 'videos.png' }, { n: 'Notes', img: 'notes.png' },
-				{ n: 'Reminders', img: 'reminders.png', badge: 2 }, { n: 'Settings', img: 'settings.png' }, { n: 'Shopping', folder: 2, badge: 1 }, { n: 'Calendar', img: 'calendar.png' },
-				{ n: 'Games', folder: 6 }, { n: 'Safari', img: 'safari.png' }
+				{ n: 'FaceTime', img: 'facetime.png', app: 'facetime' }, 
+				{ n: 'Calendar', img: 'calendar.png', live: 'cal' },
+				{ n: 'Photos', img: 'photos.png', app: 'photos' },
+				{ n: 'Camera', img: 'camera.png', app: 'camera' }, 
+				{ n: 'Weather', img: 'weather.png' }, 
+				{ n: 'Clock', img: 'clock.png', app: 'clock', live: 'clock' }, 
+				{ n: 'Maps', img: 'maps.png' }, 
+				{ n: 'Videos', img: 'videos.png' }, 
+				{ n: 'Wallet', img: 'wallet.png' },
+				{ n: 'Notes', img: 'notes.png' },
+				{ n: 'Reminders', img: 'reminders.png'}, 
+				{ n: 'Stocks', img: 'stocks.png'}, 
+				{ n: 'iTunes Store', img: 'itunes-store.png'}, 
+				{ n: 'App Store', img: 'app-store.png'}, 
+				{ n: 'iBooks', img: 'ibooks.png'}, 
+				{ n: 'News', img: 'news.png'}, 
+				{ n: 'Health', img: 'health.png'}, 
+				{ n: 'Settings', img: 'settings.png' }
 			];
 			/* page 2 is a guess -- I have no screenshot of it */
 			let PAGE2 = [
-				{ n: 'App Store' }, { n: 'iTunes Store' }, { n: 'Podcasts' }, { n: 'Contacts' },
-				{ n: 'Voice Memos' }, { n: 'Compass' }, { n: 'Stocks' }, { n: 'Tips' }
+				
 			];
 			let DOCK = [
 				{ n: 'Messages', app: 'messages', img: 'messages.png' },
-				{ n: 'Music', img: 'music.png' }, { n: 'App Store', img: 'app-store.png' },
-				{ n: 'Voice Memos', img: 'voice-memos.png' }
+				{ n: 'Safari', img: 'safari.png' },
+				{ n: 'Mail', img: 'mail.png' },
+				{ n: 'Music', img: 'music.png' }
 			];
 
 			function folderHTML(count) {
@@ -1757,10 +1988,22 @@
 				for (let i = 0; i < 9; i++) h += '<u class="' + (i < count ? 'f' : '') + '"></u>';
 				return h;
 			}
+			/* the two icons that are alive: blank artwork underneath, moving parts
+			   drawn on top of it and repainted by liveIcons() every second */
+			let CAL_FACE = '<div class="cal-dow"><span></span></div><div class="cal-day"></div>';
+			let CLK_FACE = '<svg class="clk-hands" viewBox="0 0 100 100">' +
+				'<line class="h-sec" x1="50" y1="55.8" x2="50" y2="12.1"></line>' +
+				'<line class="h-hour" x1="50" y1="50" x2="50" y2="24.6"></line>' +
+				'<line class="h-min" x1="50" y1="50" x2="50" y2="11.4"></line>' +
+				'<circle class="h-cap" cx="50" cy="50" r="2.1"></circle></svg>';
+			let LIVE_FACE = { cal: CAL_FACE, clock: CLK_FACE };
+
 			function iconHTML(a) {
-				let cls = 'tile' + (a.img ? ' art' : (a.app === 'messages' ? ' messages' : '')) + (a.folder ? ' folder' : '');
+				let cls = 'tile' + (a.img ? ' art' : (a.app === 'messages' ? ' messages' : '')) + (a.folder ? ' folder' : '')
+					+ (a.live ? ' live-' + a.live : '');
 				let inner = a.img ? '<img src="icons/' + a.img + '" alt="" draggable="false">'
 					: (a.app === 'messages' ? MSGICON : (a.folder ? folderHTML(a.folder) : ''));
+				if (a.live) inner += LIVE_FACE[a.live];
 				return '<div class="icon" data-app="' + (a.app || '') + '">' +
 					'<div class="' + cls + '">' + inner + '</div>' +
 					(a.badge ? '<div class="badge">' + a.badge + '</div>' : '') +
@@ -1770,6 +2013,55 @@
 			$('hsGrid2').innerHTML = PAGE2.map(iconHTML).join('');
 			$('hsDock').innerHTML = DOCK.map(iconHTML).join('');
 			$('hsDots').innerHTML = '<i class="on"></i><i></i>';
+
+			/* ---- the two icons that tell the time ------------------------------
+			   The calendar shows today's weekday and date; the clock's three hands
+			   ride on the blank face in icons/clock.png. Both are repainted on the
+			   second boundary, so the second hand lands with the system clock and
+			   the date flips at midnight without a reload. */
+			var liveCal = document.querySelector('#hsGrid1 .live-cal'),
+				liveClk = document.querySelector('#hsGrid1 .live-clock'),
+				calDow = liveCal && liveCal.querySelector('.cal-dow span'),
+				calDay = liveCal && liveCal.querySelector('.cal-day'),
+				hSec = liveClk && liveClk.querySelector('.h-sec'),
+				hMin = liveClk && liveClk.querySelector('.h-min'),
+				hHour = liveClk && liveClk.querySelector('.h-hour'),
+				calShown = '';
+
+			function paintCal(d) {
+				if (!calDow) return;
+				var key = d.getDay() + '/' + d.getDate();
+				if (key === calShown) return;
+				calShown = key;
+				calDow.textContent = DAYS[d.getDay()];
+				calDay.textContent = d.getDate();
+				/* a long name (Wednesday) is squeezed to fit rather than clipped */
+				var room = liveCal.clientWidth - 5, w = calDow.offsetWidth;
+				calDow.style.transform = w > room ? 'scaleX(' + (room / w).toFixed(3) + ')' : '';
+			}
+
+			function spin(el, deg) {
+				el.setAttribute('transform', 'rotate(' + deg.toFixed(2) + ' 50 50)');
+			}
+			function paintClock(d) {
+				if (!hSec) return;
+				var s = d.getSeconds(), m = d.getMinutes(), h = d.getHours() % 12;
+				spin(hSec, s * 6);
+				spin(hMin, m * 6 + s * 0.1);
+				spin(hHour, h * 30 + m * 0.5);
+			}
+
+			(function liveIcons() {
+				var d = new Date();
+				paintCal(d); paintClock(d);
+				setTimeout(liveIcons, 1000 - (d.getTime() % 1000) + 4);
+			})();
+
+			/* the first paint can measure the weekday in the fallback font, so
+			   re-fit it once SF UI Display is actually in */
+			if (document.fonts && document.fonts.ready) {
+				document.fonts.ready.then(function () { calShown = ''; paintCal(new Date()); });
+			}
 
 			/* ---- paging ---- */
 			let page = 0, PAGES = 2;
@@ -1823,7 +2115,7 @@
 
 			/* ---- open / close with the zoom-into-icon transition ---- */
 			let openAppId = null, hsEl = $('homescreen');
-			let APPS = { messages: $('app'), facetime: $('ftapp'), clock: $('ckapp') };
+			let APPS = { messages: $('app'), facetime: $('ftapp'), clock: $('ckapp'), photos: $('phapp'), camera: $('camapp') };
 			let EASE = 'cubic-bezier(.32,.06,.16,1)', DUR = 400;
 
 			function originOf(iconEl) {
@@ -1841,6 +2133,7 @@
 			function openApp(iconEl, id) {
 				let appEl = APPS[id];
 				if (openAppId || !appEl) return;
+				if (id === 'camera') camOpen();
 				let o = originOf(iconEl);
 				openAppId = id;
 				appEl.style.transition = 'none';
@@ -1867,6 +2160,8 @@
 				openAppId = null;
 				if (id === 'facetime') { ftBlur(); $('ftAlert').classList.remove('up'); ftAlertCb = null; }
 				if (id === 'clock') ckReset();
+				if (id === 'photos') phReset();
+				if (id === 'camera') camReset();
 				let o = originOf(iconFor(id));
 				appEl.style.transformOrigin = o;
 				hsEl.style.transformOrigin = o;
@@ -1914,6 +2209,8 @@
 					$('volHud').classList.remove('show');
 					lkLock();              /* sleeping locks it, so waking lands on the lock screen */
 				}
+				/* a sleeping device has no business holding the webcam open */
+				if (openAppId === 'camera') { if (on) camReset(); else camOpen(); }
 			}
 
 			function goHome() {
@@ -3139,6 +3436,1819 @@
 			renderWorld(); renderAlarms(); renderCity(); renderLaps();
 			swPaint(); swButtons(); tmPaint(); setTab('world');
 			ckReady = true;
+
+			/* ================================================================== */
+			/* PHOTOS                                                             */
+			/* ------------------------------------------------------------------ */
+			/* The library lives in IndexedDB: full-size Blobs plus a small JPEG
+			   thumbnail per item, so the grids can paint hundreds of cells
+			   without decoding originals.  Everything the UI reads comes off an
+			   in-memory mirror (LIB) that is refreshed from the store, and every
+			   mutation writes through to the store first.                        */
+
+			var PH_DB = null, PH_DBV = 1;
+			var LIB = { photos: [], albums: [], recents: [] };
+			var PH_URL = {};                      /* id -> object URL, per size   */
+
+			function phIDB(cb) {
+				var rq = indexedDB.open('ios9-photos', PH_DBV);
+				rq.onupgradeneeded = function (e) {
+					var db = e.target.result;
+					if (!db.objectStoreNames.contains('photos')) {
+						var st = db.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+						st.createIndex('taken', 'taken');
+					}
+					if (!db.objectStoreNames.contains('albums'))
+						db.createObjectStore('albums', { keyPath: 'id', autoIncrement: true });
+					if (!db.objectStoreNames.contains('meta'))
+						db.createObjectStore('meta', { keyPath: 'k' });
+				};
+				rq.onsuccess = function () { PH_DB = rq.result; cb(null); };
+				rq.onerror = function () { cb(rq.error); };
+			}
+
+			function phTx(stores, mode) { return PH_DB.transaction(stores, mode); }
+
+			function phAll(store, cb) {
+				var out = [], rq = phTx([store], 'readonly').objectStore(store).openCursor();
+				rq.onsuccess = function () {
+					var c = rq.result;
+					if (!c) { cb(out); return; }
+					out.push(c.value); c.continue();
+				};
+				rq.onerror = function () { cb(out); };
+			}
+
+			/* pull the whole library into memory; blobs stay lazy until drawn */
+			function phLoad(cb) {
+				phAll('photos', function (ps) {
+					phAll('albums', function (as) {
+						/* oldest first: every grid in Photos reads top-to-bottom in time */
+						LIB.photos = ps.sort(function (a, b) { return a.taken - b.taken; });
+						LIB.albums = as.sort(function (a, b) { return a.ord - b.ord; });
+						var rq = phTx(['meta'], 'readonly').objectStore('meta').get('recents');
+						rq.onsuccess = function () { LIB.recents = (rq.result && rq.result.v) || []; cb && cb(); };
+						rq.onerror = function () { cb && cb(); };
+					});
+				});
+			}
+
+			function phPut(store, rec, cb) {
+				var tx = phTx([store], 'readwrite'), rq = tx.objectStore(store).put(rec);
+				rq.onsuccess = function () { if (cb) cb(rq.result); };
+			}
+			function phDel(store, id, cb) {
+				var tx = phTx([store], 'readwrite');
+				tx.objectStore(store).delete(id);
+				tx.oncomplete = function () { if (cb) cb(); };
+			}
+			function phSaveRecents() { phPut('meta', { k: 'recents', v: LIB.recents }); }
+
+			function phThumbURL(p) {
+				var k = 't' + p.id;
+				if (!PH_URL[k]) PH_URL[k] = URL.createObjectURL(p.thumb || p.blob);
+				return PH_URL[k];
+			}
+			function phFullURL(p) {
+				var k = 'f' + p.id;
+				if (!PH_URL[k]) PH_URL[k] = URL.createObjectURL(p.blob);
+				return PH_URL[k];
+			}
+			function phForget(id) {
+				['t' + id, 'f' + id].forEach(function (k) {
+					if (PH_URL[k]) { URL.revokeObjectURL(PH_URL[k]); delete PH_URL[k]; }
+				});
+			}
+
+			/* ---- EXIF: just enough of it for the date, and to spot a selfie ----
+			   Moments / Collections / Years are only as good as the capture date,
+			   and the file's mtime is often the day it was copied, not shot. */
+			function phExif(buf) {
+				var v = new DataView(buf), out = {};
+				if (v.byteLength < 12 || v.getUint16(0) !== 0xFFD8) return out;   /* not a JPEG */
+				var off = 2;
+				while (off + 4 < v.byteLength) {
+					if (v.getUint8(off) !== 0xFF) break;
+					var mk = v.getUint8(off + 1), len = v.getUint16(off + 2);
+					if (mk === 0xE1 && v.getUint32(off + 4) === 0x45786966) { off += 10; break; }
+					if (mk === 0xDA) return out;
+					off += 2 + len;
+				}
+				if (off + 8 > v.byteLength) return out;
+				var tiff = off, le = v.getUint16(tiff) === 0x4949;
+				var g16 = function (o) { return v.getUint16(o, le); };
+				var g32 = function (o) { return v.getUint32(o, le); };
+				if (g16(tiff + 2) !== 0x002A) return out;
+
+				function str(o, n) {
+					var s = '';
+					for (var i = 0; i < n && v.getUint8(o + i); i++) s += String.fromCharCode(v.getUint8(o + i));
+					return s;
+				}
+				function walk(dir) {
+					if (dir + 2 > v.byteLength) return;
+					var n = g16(dir);
+					for (var i = 0; i < n; i++) {
+						var e = dir + 2 + i * 12;
+						if (e + 12 > v.byteLength) return;
+						var tag = g16(e), type = g16(e + 2), cnt = g32(e + 4);
+						var size = ({ 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 7: 1, 9: 4, 10: 8 })[type] || 1;
+						var val = cnt * size <= 4 ? e + 8 : tiff + g32(e + 8);
+						if (tag === 0x0112) out.orient = g16(val);
+						else if (tag === 0x9003 || tag === 0x0132) out.date = out.date || str(val, 19);
+						else if (tag === 0x0110) out.model = str(val, Math.min(cnt, 60));
+						else if (tag === 0xA434) out.lens = str(val, Math.min(cnt, 60));
+						else if (tag === 0x8769) walk(tiff + g32(val));
+					}
+				}
+				walk(tiff + g32(tiff + 4));
+				return out;
+			}
+
+			/* "2024:07:23 15:55:04" -> ms, read as local time the way iOS does */
+			function phExifDate(s) {
+				var m = /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/.exec(s || '');
+				if (!m) return 0;
+				return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]).getTime();
+			}
+
+			var PH_THUMB = 320;
+			function phMakeThumb(src, w, h) {
+				var s = Math.min(1, PH_THUMB / Math.max(w, h));
+				var c = document.createElement('canvas');
+				c.width = Math.max(1, Math.round(w * s));
+				c.height = Math.max(1, Math.round(h * s));
+				c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+				return new Promise(function (res) {
+					c.toBlob(function (b) { res(b); }, 'image/jpeg', 0.74);
+				});
+			}
+
+			/* one file -> one record, or null if the browser cannot decode it */
+			function phRead(file) {
+				var isVid = /^video\//.test(file.type);
+				var base = {
+					name: file.name, type: file.type, blob: file, fav: 0, deleted: 0,
+					taken: file.lastModified || Date.now(), added: Date.now(), dur: 0
+				};
+				if (isVid) {
+					return new Promise(function (res) {
+						var url = URL.createObjectURL(file), vid = document.createElement('video');
+						var done = function (rec) { URL.revokeObjectURL(url); res(rec); };
+						vid.preload = 'metadata'; vid.muted = true; vid.playsInline = true;
+						vid.onerror = function () { done(null); };
+						vid.onloadedmetadata = function () {
+							base.w = vid.videoWidth; base.h = vid.videoHeight;
+							base.dur = Math.round(vid.duration) || 0;
+							base.kind = 'video';
+							vid.onseeked = function () {
+								phMakeThumb(vid, base.w, base.h).then(function (t) {
+									base.thumb = t; done(base);
+								});
+							};
+							try { vid.currentTime = Math.min(0.2, (vid.duration || 1) / 2); }
+							catch (err) { done(base); }
+						};
+						vid.src = url;
+					});
+				}
+				return file.arrayBuffer().then(function (buf) {
+					var ex = phExif(buf.slice(0, Math.min(buf.byteLength, 262144)));
+					var d = phExifDate(ex.date);
+					if (d) base.taken = d;
+					base.exif = !!ex.date;
+					return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function (bm) {
+						base.w = bm.width; base.h = bm.height;
+						/* a PNG with no camera metadata, shaped like the screen, is a
+						   screen grab; a front-facing lens makes it a selfie */
+						var ratio = base.w / base.h;
+						if (/front/i.test(ex.lens || '')) base.kind = 'selfie';
+						else if (!ex.date && /png/i.test(file.type) && ratio > 0.42 && ratio < 0.72) base.kind = 'screenshot';
+						else base.kind = 'photo';
+						return phMakeThumb(bm, base.w, base.h).then(function (t) {
+							base.thumb = t; bm.close && bm.close();
+							return base;
+						});
+					});
+				}).catch(function () { return null; });
+			}
+
+			var phBusy = false;
+			function phImport(files, done) {
+				if (!files || !files.length || phBusy) { if (done) done(0); return; }
+				phBusy = true;
+				var list = Array.prototype.slice.call(files), i = 0, ok = 0;
+				phFwState('Reading…');
+				(function next() {
+					if (i >= list.length) {
+						phBusy = false;
+						phLoad(function () { phRepaint(); phToBottom(); phFw(); if (done) done(ok); });
+						return;
+					}
+					var f = list[i++];
+					phFwState('Reading ' + i + '/' + list.length);
+					phRead(f).then(function (rec) {
+						if (!rec) { next(); return; }
+						var tx = phTx(['photos'], 'readwrite');
+						tx.objectStore('photos').add(rec);
+						tx.oncomplete = function () { ok++; next(); };
+						tx.onerror = function () { next(); };
+					}, function () { next(); });
+				})();
+			}
+
+			/* ---- the bench panel outside the device owns the import ---- */
+			function phFwState(t) { $('fwPhState').textContent = t; }
+			function phFw() {
+				var live = LIB.photos.filter(function (p) { return !p.deleted; }).length;
+				$('fwPhCount').textContent = live;
+				phFwState(live ? (live === 1 ? 'Item' : 'Items') : 'Empty');
+			}
+			$('fwPhAdd').addEventListener('click', function () { $('phPicker').click(); });
+			$('phPicker').addEventListener('change', function () {
+				phImport($('phPicker').files, function () { $('phPicker').value = ''; });
+			});
+			$('fwPhWipe').addEventListener('click', function () {
+				if (phBusy) return;
+				var tx = phTx(['photos', 'albums', 'meta'], 'readwrite');
+				tx.objectStore('photos').clear();
+				tx.objectStore('albums').clear();
+				tx.objectStore('meta').clear();
+				tx.oncomplete = function () {
+					Object.keys(PH_URL).forEach(function (k) { URL.revokeObjectURL(PH_URL[k]); });
+					PH_URL = {};
+					phLoad(function () { phRepaint(); phFw(); });
+				};
+			});
+
+			/* dropping files on the device is the same import */
+			(function () {
+				var scr = $('screen');
+				scr.addEventListener('dragover', function (e) { e.preventDefault(); });
+				scr.addEventListener('drop', function (e) {
+					e.preventDefault();
+					if (e.dataTransfer && e.dataTransfer.files.length) phImport(e.dataTransfer.files);
+				});
+			})();
+
+			/* ---- artwork ------------------------------------------------------- */
+			var PH_ICON = {
+				mag: '<svg width="21" height="21" viewBox="0 0 22 22"><circle cx="9.2" cy="9.2" r="7.3" fill="none" ' +
+					'stroke="currentColor" stroke-width="2"/><path d="M14.6 14.6 20.4 20.4" stroke="currentColor" ' +
+					'stroke-width="2.4" stroke-linecap="round"/></svg>',
+				back: '<svg width="12" height="20" viewBox="0 0 12 20"><path d="M10.5 1 1.6 10l8.9 9" fill="none" ' +
+					'stroke="#007AFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+				chev: '<svg width="9" height="15" viewBox="0 0 9 15"><path d="M1 1l6.4 6.5L1 14" fill="none" ' +
+					'stroke="#C7C7CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+				tick: '<svg width="13" height="11" viewBox="0 0 14 12"><path d="M1.4 6.2 5 9.8 12.6 2" fill="none" ' +
+					'stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+				cam: '<svg width="15" height="10" viewBox="0 0 16 11"><path d="M1.6 0h6.6a1.6 1.6 0 011.6 1.6v7.8A1.6 ' +
+					'1.6 0 018.2 11H1.6A1.6 1.6 0 010 9.4V1.6A1.6 1.6 0 011.6 0z" fill="currentColor"/>' +
+					'<path d="M11 4.2 15.4.9v9.2L11 6.8z" fill="currentColor"/></svg>',
+				heart: '<svg width="17" height="15" viewBox="0 0 18 16"><path d="M9 15.4C3.4 11.3.4 8.2.4 5.1.4 2.6 ' +
+					'2.3.8 4.7.8c1.7 0 3.3 1 4.3 2.4C10 1.8 11.6.8 13.3.8c2.4 0 4.3 1.8 4.3 4.3 0 3.1-3 6.2-8.6 ' +
+					'10.3z" fill="currentColor"/></svg>',
+				selfie: '<svg width="16" height="13" viewBox="0 0 17 14"><rect x=".8" y="2.4" width="15.4" ' +
+					'height="10.8" rx="1.8" fill="currentColor"/><path d="M5 2.4 5.9.6h5.2l.9 1.8z" ' +
+					'fill="currentColor"/><path d="M11.4 7.8a2.9 2.9 0 11-1.1-2.3" fill="none" stroke="#fff" ' +
+					'stroke-width="1.3"/><path d="M10.6 3.9v1.9h-1.9" fill="none" stroke="#fff" stroke-width="1.3" ' +
+					'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+				trashbig: '<svg width="34" height="40" viewBox="0 0 34 40"><g fill="none" stroke="currentColor" ' +
+					'stroke-width="1.6"><path d="M4.6 9.6h24.8l-2.2 27.6a2 2 0 01-2 1.8H8.8a2 2 0 01-2-1.8z"/>' +
+					'<path d="M1 6.4h32M12 6.4V2.4h10v4"/><path d="M12.6 15v18M21.4 15v18M17 15v18"/></g></svg>',
+				stackbig: '<svg width="46" height="36" viewBox="0 0 46 36"><g fill="none" stroke="currentColor" ' +
+					'stroke-width="1.6"><rect x="1" y="8.6" width="27" height="26.4" rx="2"/>' +
+					'<path d="M32 30.6h11a2 2 0 002-2V5a2 2 0 00-2-2H15a2 2 0 00-2 2v1.6"/></g></svg>',
+				grip: '<svg width="20" height="12" viewBox="0 0 20 12"><g stroke="currentColor" stroke-width="1.6" ' +
+					'stroke-linecap="round"><path d="M1 1.6h18M1 6h18M1 10.4h18"/></g></svg>',
+				share: '<svg width="20" height="26" viewBox="0 0 20 26"><path d="M10 1.6v14.6" fill="none" ' +
+					'stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M5.4 6 10 1.4 14.6 6" ' +
+					'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" ' +
+					'stroke-linejoin="round"/><path d="M4.8 9.4H2.4a1.6 1.6 0 00-1.6 1.6v12.2a1.6 1.6 0 001.6 ' +
+					'1.6h15.2a1.6 1.6 0 001.6-1.6V11a1.6 1.6 0 00-1.6-1.6h-2.4" fill="none" stroke="currentColor" ' +
+					'stroke-width="1.9" stroke-linecap="round"/></svg>',
+				heartbar: '<svg width="25" height="22" viewBox="0 0 26 23"><path d="M13 22.4C4.9 16.5.6 12 .6 7.4.6 ' +
+					'3.8 3.3 1.2 6.8 1.2c2.5 0 4.8 1.4 6.2 3.5 1.4-2.1 3.7-3.5 6.2-3.5 3.5 0 6.2 2.6 6.2 6.2 0 ' +
+					'4.6-4.3 9.1-12.4 15z" fill="currentColor"/></svg>',
+				heartbaro: '<svg width="25" height="22" viewBox="0 0 26 23"><path d="M13 21.4C5.4 15.8 1.6 11.6 1.6 ' +
+					'7.4c0-3 2.3-5.2 5.2-5.2 2.2 0 4.2 1.3 5.4 3.2l.8 1.3.8-1.3c1.2-1.9 3.2-3.2 5.4-3.2 2.9 0 5.2 ' +
+					'2.2 5.2 5.2 0 4.2-3.8 8.4-11.4 14z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+				trash: '<svg width="19" height="24" viewBox="0 0 20 25"><g fill="none" stroke="currentColor" ' +
+					'stroke-width="1.7"><path d="M2.6 5.6h14.8l-1.3 17.4a1.6 1.6 0 01-1.6 1.5H5.5a1.6 1.6 0 ' +
+					'01-1.6-1.5z"/><path d="M.8 3.6h18.4M7 3.6V1.4h6v2.2"/><path d="M7.4 9.4v11M12.6 9.4v11"/>' +
+					'</g></svg>'
+			};
+
+			var PH_TAB_ICONS = {
+				photos: function (on) {
+					if (on) return '<svg width="28" height="19" viewBox="0 0 28 19"><rect x="7.6" y="1" width="19.4" ' +
+						'height="14.2" rx="1.6" fill="currentColor"/><rect x="1" y="4.4" width="19.4" height="14.2" ' +
+						'rx="1.6" fill="currentColor" stroke="#F7F7F7" stroke-width="1.4"/></svg>';
+					return '<svg width="28" height="19" viewBox="0 0 28 19"><g fill="none" stroke="currentColor" ' +
+						'stroke-width="1.5"><rect x="7.6" y="1.2" width="19" height="13.8" rx="1.8"/>' +
+						'<rect x="1.2" y="4.6" width="19" height="13.8" rx="1.8" fill="#F7F7F7"/></g></svg>';
+				},
+				shared: function (on) {
+					if (on) return '<svg width="30" height="19" viewBox="0 0 30 19"><path d="M8.4 18.2a6.7 6.7 0 ' +
+						'01-.5-13.4A7.6 7.6 0 0122.3 6a5.6 5.6 0 01-.7 12.2z" fill="currentColor"/></svg>';
+					return '<svg width="30" height="19" viewBox="0 0 30 19"><path d="M8.4 18.2a6.7 6.7 0 ' +
+						'01-.5-13.4A7.6 7.6 0 0122.3 6a5.6 5.6 0 01-.7 12.2z" fill="none" stroke="currentColor" ' +
+						'stroke-width="1.6"/></svg>';
+				},
+				albums: function (on) {
+					if (on) return '<svg width="26" height="20" viewBox="0 0 26 20"><g fill="currentColor">' +
+						'<rect x="5.4" y="0" width="15.2" height="2.2" rx="1.1"/>' +
+						'<rect x="3" y="3.4" width="20" height="2.2" rx="1.1"/>' +
+						'<rect x="0.6" y="7" width="24.8" height="12.6" rx="1.8"/></g></svg>';
+					return '<svg width="26" height="20" viewBox="0 0 26 20"><g fill="currentColor">' +
+						'<rect x="5.4" y="0" width="15.2" height="2" rx="1"/>' +
+						'<rect x="3" y="3.4" width="20" height="2" rx="1"/></g>' +
+						'<rect x="1.4" y="7.8" width="23.2" height="11.4" rx="1.6" fill="none" ' +
+						'stroke="currentColor" stroke-width="1.6"/></svg>';
+				}
+			};
+
+			/* ---- dates --------------------------------------------------------- */
+			function phDayKey(ms) { var d = new Date(ms); return d.getFullYear() * 10000 + d.getMonth() * 100 + d.getDate(); }
+			function phMidnight(ms) { var d = new Date(ms); d.setHours(0, 0, 0, 0); return d.getTime(); }
+			function phDaysApart(a, b) { return Math.round((phMidnight(a) - phMidnight(b)) / 86400000); }
+
+			function phDayName(ms) {
+				var diff = phDaysApart(Date.now(), ms), d = new Date(ms);
+				if (diff === 0) return 'Today';
+				if (diff === 1) return 'Yesterday';
+				if (diff > 1 && diff < 7) return DAYS[d.getDay()];
+				var y = d.getFullYear() === new Date().getFullYear() ? '' : ', ' + d.getFullYear();
+				return MONS[d.getMonth()] + ' ' + d.getDate() + y;
+			}
+			function phShortDay(ms) {
+				var diff = phDaysApart(Date.now(), ms), d = new Date(ms);
+				if (diff === 0) return 'Today';
+				if (diff === 1) return 'Yesterday';
+				if (diff > 1 && diff < 7) return DAYS[d.getDay()];
+				return MONS[d.getMonth()] + ' ' + d.getDate();
+			}
+			function phTimeStr(ms) {
+				var d = new Date(ms), h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? 'PM' : 'AM';
+				h = h % 12; if (h === 0) h = 12;
+				return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+			}
+
+			/* ---- the three groupings the Photos tab drills through -------------- */
+			function phLive() { return LIB.photos.filter(function (p) { return !p.deleted; }); }
+
+			function phMoments() {
+				var out = [], cur = null;
+				phLive().forEach(function (p) {
+					var k = phDayKey(p.taken);
+					if (!cur || cur.k !== k) { cur = { k: k, t: p.taken, items: [] }; out.push(cur); }
+					cur.items.push(p);
+				});
+				return out;
+			}
+
+			/* a collection is a run of moments no more than four days apart */
+			function phCollections() {
+				var out = [], cur = null;
+				phMoments().forEach(function (m) {
+					if (cur && phDaysApart(m.t, cur.to) <= 4) {
+						cur.items = cur.items.concat(m.items);
+						cur.to = m.t;
+					} else {
+						cur = { from: m.t, to: m.t, items: m.items.slice() };
+						out.push(cur);
+					}
+				});
+				return out;
+			}
+
+			function phCollLabel(c) {
+				var a = new Date(c.from), b = new Date(c.to), yr = new Date().getFullYear();
+				var sameDay = phDayKey(c.from) === phDayKey(c.to);
+				var endName = phDaysApart(Date.now(), c.to) < 7 ? phShortDay(c.to) : null;
+				var tail = b.getFullYear() === yr ? '' : ', ' + b.getFullYear();
+				if (sameDay) return (endName || MONS[b.getMonth()] + ' ' + b.getDate()) + (endName ? '' : tail);
+				var recent = phDaysApart(Date.now(), c.from) < 7;
+				var start = recent ? phShortDay(c.from) : MONS[a.getMonth()] + ' ' + a.getDate();
+				var end = a.getMonth() === b.getMonth() ? String(b.getDate()) : MONS[b.getMonth()] + ' ' + b.getDate();
+				if (endName) return start + ' - ' + endName;
+				return start + ' - ' + end + tail;
+			}
+
+			/* years merge upward until a band has enough photos to fill a row */
+			function phYears() {
+				var by = [], cur = null;
+				phLive().forEach(function (p) {
+					var y = new Date(p.taken).getFullYear();
+					if (!cur || cur.y !== y) { cur = { y: y, items: [] }; by.push(cur); }
+					cur.items.push(p);
+				});
+				/* a year with enough photos to fill a strip stands on its own; the
+				   sparse ones huddle together under a range, as in the reference */
+				var out = [], band = null, ROW = 24;
+				by.forEach(function (g) {
+					if (band && band.items.length < ROW && g.items.length < ROW) {
+						band.items = band.items.concat(g.items);
+						band.hi = g.y;
+					} else {
+						band = { hi: g.y, lo: g.y, items: g.items.slice() };
+						out.push(band);
+					}
+				});
+				return out.map(function (b) {
+					b.label = b.lo === b.hi ? String(b.hi) : b.lo + ' - ' + b.hi;
+					return b;
+				});
+			}
+
+			function phCountLine(items) {
+				var v = 0, p = 0;
+				items.forEach(function (x) { if (x.kind === 'video') v++; else p++; });
+				var bits = [];
+				if (p) bits.push(p + (p === 1 ? ' Photo' : ' Photos'));
+				if (v) bits.push(v + (v === 1 ? ' Video' : ' Videos'));
+				return bits.join(', ') || 'No Photos or Videos';
+			}
+
+			function phDur(s) {
+				s = Math.max(0, Math.round(s || 0));
+				var m = Math.floor(s / 60);
+				return m + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+			}
+
+			/* ---- albums -------------------------------------------------------- */
+			function phAlbumList() {
+				var live = phLive(), out = [];
+				function smart(k, n, items, badge, opt) {
+					out.push({ k: k, n: n, items: items, badge: badge, always: !!(opt && opt.always), blank: opt && opt.blank });
+				}
+				smart('roll', 'Camera Roll', live, null, { always: true });
+				smart('fav', 'Favorites', live.filter(function (p) { return p.fav; }), 'heart');
+				smart('selfie', 'Selfies', live.filter(function (p) { return p.kind === 'selfie'; }), 'selfie');
+				smart('video', 'Videos', live.filter(function (p) { return p.kind === 'video'; }), 'cam');
+				smart('shot', 'Screenshots', live.filter(function (p) { return p.kind === 'screenshot'; }), null);
+				smart('del', 'Recently Deleted',
+					LIB.photos.filter(function (p) { return p.deleted; }), null, { blank: 'trashbig' });
+				out = out.filter(function (a) { return a.always || a.items.length; });
+				LIB.albums.forEach(function (a) {
+					out.push({
+						k: 'u' + a.id, id: a.id, n: a.name, user: true, blank: 'stackbig',
+						items: a.ids.map(phById).filter(function (p) { return p && !p.deleted; })
+					});
+				});
+				return out;
+			}
+			function phById(id) {
+				for (var i = 0; i < LIB.photos.length; i++) if (LIB.photos[i].id === id) return LIB.photos[i];
+				return null;
+			}
+			function phAlbumByKey(k) {
+				var all = phAlbumList();
+				for (var i = 0; i < all.length; i++) if (all[i].k === k) return all[i];
+				return null;
+			}
+
+			/* ---- level stack ---------------------------------------------------
+			   Each tab keeps its own chain of levels; the tab bar never moves, so
+			   the levels slide underneath it exactly like a pushed view. */
+			var PH_LEVELS = ['years', 'coll', 'moments', 'shared', 'albums', 'grid'];
+			var PH_CHAIN = { photos: ['years', 'coll', 'moments'], shared: ['shared'], albums: ['albums', 'grid'] };
+			var phTab = 'photos', phDepth = { photos: 2, shared: 0, albums: 0 };
+			var phGridAlbum = null;      /* album key the grid level is showing     */
+			var phGridSet = null;        /* or an ad-hoc list, from search          */
+			var phSel = null;            /* {ctx:'grid'|'moments', ids:{}}          */
+
+			function phPaintLevels(anim) {
+				var chain = PH_CHAIN[phTab], depth = phDepth[phTab];
+				PH_LEVELS.forEach(function (id) {
+					var el = $('lv-' + id), i = chain.indexOf(id);
+					var live = i > -1 && i <= depth;
+					if (!anim) el.classList.add('nomove');
+					el.classList.toggle('live', live);
+					el.classList.toggle('active', live && i === depth);
+					el.classList.toggle('behind', live && i < depth);
+				});
+				if (!anim) {
+					void $('phLevels').offsetHeight;
+					PH_LEVELS.forEach(function (id) { $('lv-' + id).classList.remove('nomove'); });
+				}
+			}
+			function phPush() { phDepth[phTab]++; phPaintLevels(true); }
+			function phPop() { if (phDepth[phTab] > 0) { phDepth[phTab]--; phPaintLevels(true); } }
+
+			function phSetTab(k) {
+				if (phSel) phEndSelect();
+				phTab = k;
+				phPaintLevels(false);
+				phPaintTabs();
+				phRepaint();
+				phToBottom();
+			}
+			function phPaintTabs() {
+				$('phTabs').innerHTML = [['photos', 'Photos'], ['shared', 'Shared'], ['albums', 'Albums']]
+					.map(function (t) {
+						var on = t[0] === phTab;
+						return '<div class="ph-tab' + (on ? ' on' : '') + '" data-k="' + t[0] + '">' +
+							PH_TAB_ICONS[t[0]](on) + '<span>' + t[1] + '</span></div>';
+					}).join('');
+			}
+			$('phTabs').addEventListener('click', function (e) {
+				var t = e.target.closest('.ph-tab'); if (t) phSetTab(t.dataset.k);
+			});
+
+			/* ---- nav bars ------------------------------------------------------ */
+			function phNavBtn(act, label, cls) {
+				return '<div class="btn' + (cls ? ' ' + cls : '') + '" data-act="' + act + '">' + label + '</div>';
+			}
+			function phBackBtn(label) {
+				return '<div class="btn back" data-act="pop">' + PH_ICON.back + '<span>' + esc(label) + '</span></div>';
+			}
+			function phMag() {
+				return '<div class="btn ph-mag" data-act="search">' + PH_ICON.mag + '</div>';
+			}
+			/* two trailing buttons need one flex box between them: two separate
+			   margin-left:auto items would split the slack and land mid-bar */
+			function phRight() {
+				return '<div class="ph-navright">' +
+					Array.prototype.join.call(arguments, '') + '</div>';
+			}
+			function phTitle(t) { return '<div class="title">' + esc(t) + '</div>'; }
+
+			function phSelTitle() {
+				return phSelCount() === 0 ? 'Select Items' : phNoun(phSelected()) + ' Selected';
+			}
+			function phSelCount() { return phSel ? Object.keys(phSel.ids).length : 0; }
+
+			function phPaintNav() {
+				$('yearsNav').innerHTML = phTitle('Years') + phRight(phMag());
+				$('collNav').innerHTML = phBackBtn('Years') + phTitle('Collections') + phRight(phMag());
+
+				if (phSel && phSel.ctx === 'moments') {
+					$('momNav').innerHTML = phTitle(phSelTitle()) + phRight(phNavBtn('cancelsel', 'Cancel'));
+				} else {
+					$('momNav').innerHTML = phBackBtn('Collections') + phTitle('Moments') +
+						phRight(phMag(), phNavBtn('select', 'Select', phLive().length ? '' : 'dim'));
+				}
+
+				$('shNav').innerHTML = phTitle('iCloud');
+
+				$('albNav').innerHTML =
+					'<div class="btn ck-plus" data-act="newalbum"><svg width="26" height="26" viewBox="0 0 26 26">' +
+					'<path d="M13 3.2v19.6M3.2 13h19.6" stroke="currentColor" stroke-width="2.2" ' +
+					'stroke-linecap="round"/></svg></div>' +
+					phTitle('Albums') +
+					phRight((phAlbEdit ? '' : phMag()), phNavBtn('albedit', phAlbEdit ? 'Done' : 'Edit'));
+
+				var alb = phGridSet || phAlbumByKey(phGridAlbum);
+				if (phSel && phSel.ctx === 'grid') {
+					$('gridNav').innerHTML = phTitle(phSelTitle()) + phRight(phNavBtn('cancelsel', 'Cancel'));
+				} else {
+					$('gridNav').innerHTML = phBackBtn(phGridSet ? 'Search' : 'Albums') +
+						phTitle(alb ? alb.n : '') +
+						phRight(phNavBtn('select', 'Select', alb && alb.items.length ? '' : 'dim'));
+				}
+
+				$('addToNav').innerHTML = phNavBtn('addtocancel', 'Cancel') + phTitle('Add to Album');
+				$('vwNav').innerHTML = '<div class="btn back" data-act="vwback">' + PH_ICON.back + '</div>' +
+					'<div class="vw-title" id="vwTitle"></div>' + phRight(phNavBtn('vwedit', 'Edit'));
+			}
+
+			/* ---- cells --------------------------------------------------------- */
+			function phCell(p, opts) {
+				var sel = phSel && phSel.ids[p.id];
+				var days = opts && opts.days
+					? '<div class="ph-vid"><span class="dur">' + phDaysLeft(p) + '</span></div>' : '';
+				return '<div class="ph-cell' + (sel ? ' sel' : '') + '" data-id="' + p.id + '">' +
+					'<img src="' + phThumbURL(p) + '" alt="" draggable="false">' +
+					(p.kind === 'video' ? '<div class="ph-vid">' + PH_ICON.cam +
+						'<span class="dur">' + phDur(p.dur) + '</span></div>' : days) +
+					'<div class="ph-tick">' + PH_ICON.tick + '</div></div>';
+			}
+			function phDaysLeft(p) {
+				var d = 30 - phDaysApart(Date.now(), p.deleted);
+				return Math.max(0, d) + (Math.max(0, d) === 1 ? ' day' : ' days');
+			}
+			function phGridHTML(items, cls, opts) {
+				return '<div class="ph-grid' + (cls ? ' ' + cls : '') + '">' +
+					items.map(function (p) { return phCell(p, opts); }).join('') + '</div>';
+			}
+
+			/* ---- the six bodies ------------------------------------------------ */
+			function phRenderMoments() {
+				var ms = phMoments();
+				if (!ms.length) { $('momBody').innerHTML = phNoPhotos(); return; }
+				var h = '', all = [];
+				ms.forEach(function (m) {
+					all = all.concat(m.items);
+					h += '<div class="ph-head"><span class="h-title">' + esc(phDayName(m.t)) + '</span>' +
+						'<span class="h-act" data-act="share-moment" data-k="' + m.k + '">Share</span></div>' +
+						phGridHTML(m.items);
+				});
+				h += '<div class="ph-foot">' + esc(phCountLine(all)) + '</div>';
+				$('momBody').innerHTML = h;
+			}
+			function phRenderColl() {
+				var cs = phCollections();
+				if (!cs.length) { $('collBody').innerHTML = phNoPhotos(); return; }
+				$('collBody').innerHTML = cs.map(function (c) {
+					return '<div class="ph-head coll"><span class="h-title">' + esc(phCollLabel(c)) + '</span></div>' +
+						phGridHTML(c.items, 'coll');
+				}).join('') + '<div class="ph-pad"></div>';
+			}
+			function phRenderYears() {
+				var ys = phYears();
+				if (!ys.length) { $('yearsBody').innerHTML = phNoPhotos(); return; }
+				$('yearsBody').innerHTML = ys.map(function (b) {
+					return '<div class="ph-head years"><span class="h-title">' + esc(b.label) + '</span></div>' +
+						phGridHTML(b.items, 'years');
+				}).join('') + '<div class="ph-pad"></div>';
+			}
+			function phNoPhotos() {
+				return '<div class="ph-foot" style="padding-top:64px">No Photos or Videos</div>';
+			}
+
+			var phAlbEdit = false;
+			function phAlbumRow(a) {
+				/* Recently Deleted always shows the bin, never one of its photos */
+				var n = a.items.length, cover = a.blank === 'trashbig' ? null : a.items[n - 1], sheets = '';
+				[2, 3].forEach(function (i) {
+					var q = cover ? a.items[n - i] : null;
+					sheets += '<div class="pa-sheet' + (i === 3 ? ' far' : '') + '">' +
+						(q ? '<img src="' + phThumbURL(q) + '" alt="">' : '') + '</div>';
+				});
+				var badge = a.badge ? '<span class="kind">' + PH_ICON[a.badge] + '</span>' : '';
+				var art = cover
+					? '<div class="pa-cover"><img src="' + phThumbURL(cover) + '" alt="">' + badge + '</div>'
+					: '<div class="pa-cover blank">' + (PH_ICON[a.blank] || PH_ICON.stackbig) + '</div>';
+				return '<div class="pa-row' + (a.user ? '' : ' fixed') + '" data-k="' + a.k + '">' +
+					'<div class="pa-minus" data-act="delalbum"><i></i></div>' +
+					'<div class="pa-stack">' + sheets + art + '</div>' +
+					'<div class="pa-text"><div class="pa-name">' + esc(a.n) + '</div>' +
+					'<div class="pa-count">' + a.items.length + '</div></div>' +
+					'<div class="pa-chev">' + PH_ICON.chev + '</div>' +
+					'<div class="pa-grip">' + PH_ICON.grip + '</div></div>';
+			}
+			function phRenderAlbums() {
+				var el = $('albBody');
+				el.classList.toggle('editing', phAlbEdit);
+				el.innerHTML = phAlbumList().map(phAlbumRow).join('');
+			}
+			function phRenderGrid() {
+				var a = phGridSet || phAlbumByKey(phGridAlbum);
+				$('gridBody').innerHTML = a && a.items.length
+					? phGridHTML(a.items, '', { days: phGridAlbum === 'del' })
+					: phNoPhotos();
+			}
+			function phRenderAddTo() {
+				var h = '<div class="pa-row" data-k="new"><div class="pa-stack">' +
+					'<div class="pa-cover blank">' + PH_ICON.stackbig + '</div></div>' +
+					'<div class="pa-text"><div class="pa-name">New Album</div>' +
+					'<div class="pa-count">&nbsp;</div></div><div class="pa-chev">' + PH_ICON.chev + '</div></div>';
+				h += LIB.albums.map(function (a) {
+					return phAlbumRow({
+						k: 'u' + a.id, n: a.name, user: true, blank: 'stackbig',
+						items: a.ids.map(phById).filter(function (p) { return p && !p.deleted; })
+					});
+				}).join('');
+				$('addToBody').innerHTML = h;
+			}
+
+			/* iOS parks these views at the newest end */
+			function phToBottom() {
+				['momBody', 'collBody', 'yearsBody', 'gridBody'].forEach(function (id) {
+					var el = $(id); el.scrollTop = el.scrollHeight;
+				});
+			}
+
+			function phRepaint() {
+				phPaintNav();
+				phRenderMoments();
+				phRenderColl();
+				phRenderYears();
+				phRenderAlbums();
+				phRenderGrid();
+				$('ph-root').classList.toggle('selecting', !!phSel);
+				if (phSel) phPaintToolbar();
+			}
+
+			/* ---- select mode --------------------------------------------------- */
+			function phBeginSelect(ctx) { phSel = { ctx: ctx, ids: {} }; phRepaint(); }
+			function phEndSelect() { phSel = null; phRepaint(); }
+			function phSelected() {
+				return Object.keys(phSel.ids).map(function (k) { return phById(+k); })
+					.filter(Boolean);
+			}
+			function phPaintToolbar() {
+				var n = phSelCount(), off = n ? '' : ' off';
+				var recycle = phSel.ctx === 'grid' && phGridAlbum === 'del';
+				$('phToolbar').innerHTML = recycle
+					? '<div class="ph-tbtn' + off + '" data-act="recover">Recover</div>' +
+					'<div class="ph-tbtn grow"></div>' +
+					'<div class="ph-tbtn' + off + '" data-act="purge">Delete</div>'
+					: '<div class="ph-tbtn' + off + '" data-act="share">' + PH_ICON.share + '</div>' +
+					'<div class="ph-tbtn grow' + off + '" data-act="addto">Add To</div>' +
+					'<div class="ph-tbtn' + off + '" data-act="trash">' + PH_ICON.trash + '</div>';
+			}
+			$('phToolbar').addEventListener('click', function (e) {
+				var b = e.target.closest('.ph-tbtn'); if (!b || !b.dataset.act) return;
+				phAction(b.dataset.act);
+			});
+
+			/* ---- viewer -------------------------------------------------------- */
+			var phView = { list: [], i: 0 };
+			function phOpenViewer(list, i) {
+				phView.list = list; phView.i = i;
+				phPaintViewer();
+				push($('ph-root'), $('ph-viewer'));
+			}
+			function phCloseViewer() {
+				pop($('ph-viewer'), $('ph-root'));
+				$('vwStage').innerHTML = '';
+			}
+			function phCurrent() { return phView.list[phView.i] || null; }
+			function phPaintViewer() {
+				var p = phCurrent();
+				if (!p) { phCloseViewer(); return; }
+				$('vwTitle').innerHTML = '<b>' + esc(phShortDay(p.taken)) + '</b><span>' +
+					esc(phTimeStr(p.taken)) + '</span>';
+				$('vwStage').innerHTML = p.kind === 'video'
+					? '<video src="' + phFullURL(p) + '" controls playsinline></video>'
+					: '<img src="' + phFullURL(p) + '" alt="" draggable="false">';
+				$('vwBar').innerHTML = '<div class="b" data-act="vwshare">' + PH_ICON.share + '</div>' +
+					'<div class="b mid" data-act="vwfav">' +
+					(p.fav ? PH_ICON.heartbar : PH_ICON.heartbaro) + '</div>' +
+					'<div class="b" data-act="vwtrash">' + PH_ICON.trash + '</div>';
+			}
+			$('vwBar').addEventListener('click', function (e) {
+				var b = e.target.closest('.b'); if (b) phAction(b.dataset.act);
+			});
+			$('vwNav').addEventListener('click', function (e) {
+				var b = e.target.closest('.btn'); if (b) phAction(b.dataset.act);
+			});
+			/* swipe through the roll */
+			(function () {
+				var x0 = null, moved = false, st = $('vwStage');
+				function down(e) { x0 = (e.touches ? e.touches[0].clientX : e.clientX); moved = false; }
+				function move(e) {
+					if (x0 === null) return;
+					var x = (e.touches ? e.touches[0].clientX : e.clientX);
+					if (Math.abs(x - x0) > 40) {
+						moved = true;
+						var dir = x < x0 ? 1 : -1, n = phView.i + dir;
+						if (n >= 0 && n < phView.list.length) { phView.i = n; phPaintViewer(); }
+						x0 = null;
+					}
+				}
+				function up() { x0 = null; }
+				st.addEventListener('mousedown', down);
+				st.addEventListener('touchstart', down, { passive: true });
+				window.addEventListener('mousemove', move);
+				st.addEventListener('touchmove', move, { passive: true });
+				window.addEventListener('mouseup', up);
+				st.addEventListener('touchend', up);
+			})();
+
+			/* ---- alerts + action sheets ---------------------------------------- */
+			var phSheetCb = null;
+			function phSheet(msg, buttons) {
+				$('phSGroup').innerHTML = (msg ? '<div class="ph-smsg">' + esc(msg) + '</div>' : '') +
+					buttons.map(function (b, i) {
+						return '<div class="ph-sbtn' + (b.red ? ' red' : '') + '" data-i="' + i + '">' +
+							esc(b.n) + '</div>';
+					}).join('');
+				phSheetCb = buttons;
+				$('phSheet').classList.add('up');
+			}
+			function phCloseSheet() { $('phSheet').classList.remove('up'); phSheetCb = null; }
+			$('phSheet').addEventListener('click', function (e) {
+				var b = e.target.closest('.ph-sbtn');
+				if (!b) { if (e.target === $('phSheet')) phCloseSheet(); return; }
+				if (b.id === 'phSCancelBtn') { phCloseSheet(); return; }
+				var spec = phSheetCb && phSheetCb[+b.dataset.i];
+				phCloseSheet();
+				if (spec && spec.fn) spec.fn();
+			});
+
+			/* New Album keeps its own little text field and keyboard */
+			var phAlbName = '', phAlbTarget = null;
+			function phAlbSync() {
+				var e = $('phAVal'), on = $('phAlert').classList.contains('up');
+				$('phAField').classList.toggle('empty', !phAlbName);
+				e.innerHTML = phAlbName ? esc(phAlbName) + (on ? '<span class="caret"></span>' : '')
+					: (on ? '<span class="caret"></span>Title' : 'Title');
+				$('phASave').classList.toggle('dim', !phAlbName.trim());
+			}
+			function phNewAlbum(target) {
+				phAlbName = ''; phAlbTarget = target || null;
+				phAlbSync();
+				$('phAlert').classList.add('up');
+				openKB(kb7);
+				phAlbSync();
+			}
+			function phCloseAlbumAlert() {
+				closeKB(kb7);
+				$('phAlert').classList.remove('up');
+			}
+			$('phACancel').addEventListener('click', phCloseAlbumAlert);
+			$('phASave').addEventListener('click', function () {
+				var name = phAlbName.trim();
+				if (!name) return;
+				var rec = { name: name, ord: Date.now(), ids: [] };
+				var tx = phTx(['albums'], 'readwrite'), rq = tx.objectStore('albums').add(rec);
+				rq.onsuccess = function () {
+					var id = rq.result;
+					phCloseAlbumAlert();
+					phLoad(function () {
+						if (phAlbTarget === 'addto') { phAddToAlbum(id); }
+						else phRepaint();
+					});
+				};
+			});
+
+			/* ---- Add To -------------------------------------------------------- */
+			function phAddToAlbum(albumId) {
+				var a = null;
+				LIB.albums.forEach(function (x) { if (x.id === albumId) a = x; });
+				if (!a) return;
+				phSelected().forEach(function (p) { if (a.ids.indexOf(p.id) < 0) a.ids.push(p.id); });
+				phPut('albums', a, function () {
+					$('ph-addto').classList.remove('active');
+					phEndSelect();
+					phLoad(function () { phRepaint(); });
+				});
+			}
+			$('addToNav').addEventListener('click', function (e) {
+				var b = e.target.closest('.btn');
+				if (b && b.dataset.act === 'addtocancel') $('ph-addto').classList.remove('active');
+			});
+			$('addToBody').addEventListener('click', function (e) {
+				var r = e.target.closest('.pa-row'); if (!r) return;
+				if (r.dataset.k === 'new') { phNewAlbum('addto'); return; }
+				phAddToAlbum(+r.dataset.k.slice(1));
+			});
+
+			/* ---- search -------------------------------------------------------- */
+			var phQuery = '', phSearchOn = false;
+			function phSearchSync() {
+				var t = $('phSText');
+				if (phQuery) t.innerHTML = '<span class="q">' + esc(phQuery) + '</span><span class="caret"></span>';
+				else t.innerHTML = '<span class="caret"></span>Search Photos';
+				phRenderSearch();
+			}
+			function phSuggestions() {
+				var out = [], live = phLive();
+				if (!live.length) return out;
+				var fav = live.filter(function (p) { return p.fav; });
+				if (fav.length) out.push({ n: 'Favorites', cover: fav[0], key: 'fav' });
+				var seen = {}, months = [];
+				live.slice().reverse().forEach(function (p) {
+					var d = new Date(p.taken), k = d.getFullYear() + '-' + d.getMonth();
+					if (!seen[k]) { seen[k] = 1; months.push({ n: MONS[d.getMonth()] + ' ' + d.getFullYear(), cover: p, key: 'm' + k }); }
+				});
+				return out.concat(months.slice(0, 6));
+			}
+			function phSearchHits(q) {
+				q = q.trim().toLowerCase();
+				return phSuggestions().concat(LIB.albums.map(function (a) {
+					var items = a.ids.map(phById).filter(function (p) { return p && !p.deleted; });
+					return { n: a.name, cover: items[0], key: 'u' + a.id };
+				})).filter(function (s) { return !q || s.n.toLowerCase().indexOf(q) > -1; });
+			}
+			function phRenderSearch() {
+				var rows = phSearchHits(phQuery), h = '';
+				h += rows.map(function (s) {
+					return '<div class="ph-srowitem" data-key="' + s.key + '" data-n="' + esc(s.n) + '">' +
+						'<div class="ph-sthumb">' + (s.cover ? '<img src="' + phThumbURL(s.cover) + '" alt="">' : '') +
+						'</div><div class="ph-slabel">' + esc(s.n) + '</div></div>';
+				}).join('');
+				if (!phQuery && LIB.recents.length) {
+					h += '<div class="ph-shdr">Recent Searches</div>' +
+						LIB.recents.map(function (r) {
+							return '<div class="ph-srowitem plain" data-q="' + esc(r) + '">' +
+								'<div class="ph-slabel">' + esc(r) + '</div></div>';
+						}).join('');
+				}
+				if (!rows.length && phQuery) h += '<div class="ph-foot" style="padding-top:40px">No Results</div>';
+				$('phSBody').innerHTML = h;
+			}
+			function phOpenSearch() {
+				phSearchOn = true; phQuery = '';
+				$('ph-search').classList.add('up');
+				openKB(kb8);
+				phSearchSync();
+			}
+			function phCloseSearch() {
+				phSearchOn = false;
+				closeKB(kb8);
+				$('ph-search').classList.remove('up');
+			}
+			$('phSCancel').addEventListener('click', phCloseSearch);
+			$('phSBody').addEventListener('click', function (e) {
+				var r = e.target.closest('.ph-srowitem'); if (!r) return;
+				if (r.dataset.q !== undefined) { phQuery = r.dataset.q; phSearchSync(); return; }
+				var name = r.dataset.n;
+				if (LIB.recents.indexOf(name) < 0) LIB.recents.unshift(name);
+				LIB.recents = LIB.recents.slice(0, 4);
+				phSaveRecents();
+				phShowSet(name, phSetFor(r.dataset.key));
+				phCloseSearch();
+			});
+			function phSetFor(key) {
+				var live = phLive();
+				if (key === 'fav') return live.filter(function (p) { return p.fav; });
+				if (key.charAt(0) === 'u') {
+					var id = +key.slice(1), a = null;
+					LIB.albums.forEach(function (x) { if (x.id === id) a = x; });
+					return a ? a.ids.map(phById).filter(function (p) { return p && !p.deleted; }) : [];
+				}
+				var m = /^m(\d+)-(\d+)$/.exec(key);
+				if (m) return live.filter(function (p) {
+					var d = new Date(p.taken);
+					return d.getFullYear() === +m[1] && d.getMonth() === +m[2];
+				});
+				return live;
+			}
+			/* search results borrow the album grid level */
+			function phShowSet(name, items) {
+				phGridSet = { n: name, items: items };
+				phGridAlbum = null;
+				phTab = 'albums';
+				phDepth.albums = 1;
+				phPaintTabs();
+				phPaintLevels(false);
+				phRepaint();
+			}
+
+			/* ---- mutations ----------------------------------------------------- */
+			function phWriteAll(recs, cb) {
+				var tx = phTx(['photos'], 'readwrite'), st = tx.objectStore('photos');
+				recs.forEach(function (r) { st.put(r); });
+				tx.oncomplete = function () { phLoad(function () { phFw(); if (cb) cb(); }); };
+			}
+			function phStripFromAlbums(ids, cb) {
+				var touched = LIB.albums.filter(function (a) {
+					return a.ids.some(function (id) { return ids.indexOf(id) > -1; });
+				});
+				if (!touched.length) { cb(); return; }
+				var tx = phTx(['albums'], 'readwrite'), st = tx.objectStore('albums');
+				touched.forEach(function (a) {
+					a.ids = a.ids.filter(function (id) { return ids.indexOf(id) < 0; });
+					st.put(a);
+				});
+				tx.oncomplete = cb;
+			}
+			function phInAlbum(items) {
+				return items.some(function (p) {
+					return LIB.albums.some(function (a) { return a.ids.indexOf(p.id) > -1; });
+				});
+			}
+			function phNoun(items) {
+				var v = items.filter(function (p) { return p.kind === 'video'; }).length;
+				if (v === 0) return items.length + (items.length === 1 ? ' Photo' : ' Photos');
+				if (v === items.length) return items.length + (items.length === 1 ? ' Video' : ' Videos');
+				return items.length + ' Items';
+			}
+			function phDeleteItems(items, after) {
+				var now = Date.now(), ids = items.map(function (p) { return p.id; });
+				items.forEach(function (p) { p.deleted = now; });
+				phStripFromAlbums(ids, function () {
+					phWriteAll(items, function () { phRepaint(); if (after) after(); });
+				});
+			}
+			function phConfirmDelete(items, after) {
+				phSheet(phInAlbum(items) ? 'These photos will also be deleted from an album.' : '',
+					[{ n: 'Delete ' + phNoun(items), red: true, fn: function () { phDeleteItems(items, after); } }]);
+			}
+			function phPurge(items, after) {
+				var tx = phTx(['photos'], 'readwrite'), st = tx.objectStore('photos');
+				items.forEach(function (p) { st.delete(p.id); phForget(p.id); });
+				tx.oncomplete = function () {
+					phLoad(function () { phFw(); phRepaint(); if (after) after(); });
+				};
+			}
+			function phRecover(items, after) {
+				items.forEach(function (p) { p.deleted = 0; });
+				phWriteAll(items, function () { phRepaint(); if (after) after(); });
+			}
+
+			/* Recently Deleted really does empty itself after 30 days */
+			function phSweep() {
+				var dead = LIB.photos.filter(function (p) {
+					return p.deleted && phDaysApart(Date.now(), p.deleted) >= 30;
+				});
+				if (dead.length) phPurge(dead);
+			}
+
+			/* Edit is one honest tool rather than a fake screen: a real rotate that
+			   re-encodes the stored blob and its thumbnail. */
+			function phRotate(p, cb) {
+				var url = phFullURL(p), img = new Image();
+				img.onload = function () {
+					var c = document.createElement('canvas');
+					c.width = img.naturalHeight; c.height = img.naturalWidth;
+					var g = c.getContext('2d');
+					g.translate(c.width / 2, c.height / 2);
+					g.rotate(-Math.PI / 2);
+					g.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+					c.toBlob(function (b) {
+						if (!b) { cb && cb(); return; }
+						p.blob = b; p.w = c.width; p.h = c.height; p.type = 'image/jpeg';
+						phMakeThumb(c, c.width, c.height).then(function (t) {
+							p.thumb = t;
+							phForget(p.id);
+							phWriteAll([p], function () {
+								var fresh = phById(p.id);
+								phView.list = phView.list.map(function (q) { return q.id === p.id ? fresh : q; });
+								phPaintViewer(); phRepaint(); cb && cb();
+							});
+						});
+					}, 'image/jpeg', 0.92);
+				};
+				img.onerror = function () { cb && cb(); };
+				img.src = url;
+			}
+
+			function phShareOut(items) {
+				items.slice(0, 8).forEach(function (p) {
+					var a = document.createElement('a');
+					a.href = phFullURL(p);
+					a.download = p.name || ('photo-' + p.id + '.jpg');
+					document.body.appendChild(a); a.click(); a.remove();
+				});
+			}
+
+			/* ---- one dispatcher for every button in the app --------------------- */
+			function phAction(act, el) {
+				switch (act) {
+					case 'pop': phPop(); break;
+					case 'search': phOpenSearch(); break;
+					case 'select':
+						phBeginSelect(phTab === 'albums' ? 'grid' : 'moments'); break;
+					case 'cancelsel': phEndSelect(); break;
+					case 'newalbum': phNewAlbum(); break;
+					case 'albedit':
+						phAlbEdit = !phAlbEdit;
+						phRepaint();
+						break;
+					case 'delalbum': {
+						var row = el && el.closest('.pa-row'); if (!row) break;
+						var id = +row.dataset.k.slice(1), name = '';
+						LIB.albums.forEach(function (a) { if (a.id === id) name = a.name; });
+						phSheet('Deleting this album will not delete the photos in it.',
+							[{
+								n: 'Delete Album', red: true, fn: function () {
+									phDel('albums', id, function () { phLoad(function () { phRepaint(); }); });
+								}
+							}]);
+						break;
+					}
+					case 'share': phShareOut(phSelected()); break;
+					case 'addto':
+						phRenderAddTo();
+						$('ph-addto').classList.add('active');
+						break;
+					case 'trash': phConfirmDelete(phSelected(), phEndSelect); break;
+					case 'recover': phRecover(phSelected(), phEndSelect); break;
+					case 'purge': {
+						var items = phSelected();
+						phSheet('', [{
+							n: 'Delete ' + phNoun(items), red: true,
+							fn: function () { phPurge(items, phEndSelect); }
+						}]);
+						break;
+					}
+					case 'share-moment': {
+						var k = el && +el.dataset.k;
+						var m = phMoments().filter(function (x) { return x.k === k; })[0];
+						if (m) phShareOut(m.items);
+						break;
+					}
+					case 'vwback': phCloseViewer(); break;
+					case 'vwshare': phShareOut([phCurrent()]); break;
+					case 'vwfav': {
+						var p = phCurrent(); if (!p) break;
+						p.fav = p.fav ? 0 : 1;
+						phWriteAll([p], function () {
+							var fresh = phById(p.id);
+							phView.list = phView.list.map(function (q) { return q.id === p.id ? fresh : q; });
+							phPaintViewer(); phRepaint();
+						});
+						break;
+					}
+					case 'vwtrash': {
+						var cur = phCurrent(); if (!cur) break;
+						phConfirmDelete([cur], function () {
+							phView.list = phView.list.filter(function (q) { return q.id !== cur.id; });
+							if (phView.i >= phView.list.length) phView.i = phView.list.length - 1;
+							if (!phView.list.length) phCloseViewer(); else phPaintViewer();
+						});
+						break;
+					}
+					case 'vwedit': {
+						var e = phCurrent(); if (!e || e.kind === 'video') break;
+						phSheet('', [{ n: 'Rotate', fn: function () { phRotate(e); } }]);
+						break;
+					}
+				}
+			}
+
+			/* every tap inside the levels funnels through here */
+			$('phLevels').addEventListener('click', function (e) {
+				var act = e.target.closest('[data-act]');
+				if (act) { phAction(act.dataset.act, act); return; }
+
+				var row = e.target.closest('.pa-row');
+				if (row) {
+					if (phAlbEdit && !row.classList.contains('fixed')) return;
+					if (phAlbEdit) return;
+					phGridSet = null;
+					phGridAlbum = row.dataset.k;
+					phRenderGrid(); phPaintNav();
+					$('gridBody').scrollTop = $('gridBody').scrollHeight;
+					phPush();
+					return;
+				}
+
+				var cell = e.target.closest('.ph-cell');
+				if (cell) {
+					var id = +cell.dataset.id;
+					if (phSel) {
+						if (phSel.ids[id]) delete phSel.ids[id]; else phSel.ids[id] = 1;
+						cell.classList.toggle('sel');
+						phPaintNav(); phPaintToolbar();
+						return;
+					}
+					var lvl = e.target.closest('.ph-level').id;
+					var set;
+					if (lvl === 'lv-grid') { var a = phGridSet || phAlbumByKey(phGridAlbum); set = a ? a.items : []; }
+					else if (lvl === 'lv-moments') set = phLive();
+					else if (lvl === 'lv-coll') set = phLive();
+					else set = phLive();
+					var i = 0;
+					set.forEach(function (p, n) { if (p.id === id) i = n; });
+					if (lvl === 'lv-years' || lvl === 'lv-coll') {
+						/* the small grids drill down a level instead of opening */
+						phDepth.photos = lvl === 'lv-years' ? 1 : 2;
+						phPaintLevels(true);
+						return;
+					}
+					phOpenViewer(set, i);
+				}
+			});
+
+			/* ---- app plumbing --------------------------------------------------- */
+			function phReset() {
+				phCloseSearch();
+				phCloseSheet();
+				phCloseAlbumAlert();
+				$('ph-addto').classList.remove('active');
+				if ($('ph-viewer').classList.contains('active')) phCloseViewer();
+				if (phSel) phEndSelect();
+				phAlbEdit = false;
+				phRepaint();
+			}
+
+			var kb7 = buildKeyboard($('kb7'), { target: 'album' });
+			var kb8 = buildKeyboard($('kb8'), { target: 'psearch', nopred: true, retLabel: 'Search', retDim: true });
+
+			phPaintTabs();
+			phPaintLevels(false);
+			phPaintNav();
+			phIDB(function (err) {
+				if (err) { phFwState('Unavailable'); return; }
+				phLoad(function () { phSweep(); phFw(); phRepaint(); phToBottom(); });
+			});
+
+			/* ================================================================== */
+			/* CAMERA                                                             */
+			/* ------------------------------------------------------------------ */
+			/* The preview is the user's real webcam; captures are drawn through a
+			   canvas (crop, mirror, filter) and land in the same IndexedDB store
+			   the Photos app reads, so a shot taken here shows up in the Camera
+			   Roll straight away.  The device has no flash, so "flash" is exactly
+			   what the brief asked for: the whole screen goes white.             */
+
+			var CAM_ICON = {
+				bolt: function (on) {
+					return '<svg width="22" height="25" viewBox="0 0 22 26" aria-hidden="true">' +
+						'<path d="M12.6 1 4 14.4h5.2L8.4 25 17 11.2h-5.2z" fill="' + (on ? '#FFCC00' : '#fff') + '"/>' +
+						(on ? '' : '<path d="M2.6 2.2 19.4 23.8" stroke="#000" stroke-width="4.4" ' +
+							'stroke-linecap="round"/><path d="M2.6 2.2 19.4 23.8" stroke="#fff" ' +
+							'stroke-width="1.8" stroke-linecap="round"/>') + '</svg>';
+				},
+				hdr: function (on) {
+					return '<svg width="22" height="14" viewBox="0 0 34 20" aria-hidden="true">' +
+						'<text x="17" y="15.5" text-anchor="middle" font-family="' +
+						'-apple-system,Helvetica,Arial" font-size="15" font-weight="600" fill="' +
+						(on ? '#FFCC00' : '#fff') + '">HDR</text>' +
+						(on ? '' : '<path d="M3 18 31 2" stroke="#000" stroke-width="4.2" ' +
+							'stroke-linecap="round"/><path d="M3 18 31 2" stroke="#fff" ' +
+							'stroke-width="1.7" stroke-linecap="round"/>') + '</svg>';
+				},
+				timer: function (on) {
+					var c = on ? '#FFCC00' : '#fff';
+					return '<svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true">' +
+						'<path d="M13 2.6a10.4 10.4 0 1 0 7.4 3.1" fill="none" stroke="' + c +
+						'" stroke-width="1.8" stroke-linecap="round"/>' +
+						'<path d="M17.4 1.6 21.2 5.4 17.4 9" fill="none" stroke="' + c +
+						'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+						'<path d="M13 13 13 7.6" stroke="' + c + '" stroke-width="1.8" ' +
+						'stroke-linecap="round"/></svg>';
+				},
+				swap: '<svg width="24" height="21" viewBox="0 0 28 24" aria-hidden="true">' +
+					'<rect x="1" y="2.6" width="26" height="19.4" rx="3.4" fill="none" ' +
+					'stroke="#fff" stroke-width="1.8"/>' +
+					'<path d="M9.6 12.4a4.4 4.4 0 0 1 7.5-3.1" fill="none" stroke="#fff" ' +
+					'stroke-width="1.7" stroke-linecap="round"/>' +
+					'<path d="M18.4 12.4a4.4 4.4 0 0 1-7.5 3.1" fill="none" stroke="#fff" ' +
+					'stroke-width="1.7" stroke-linecap="round"/>' +
+					'<path d="M14.6 6.6h2.8v2.8M13.4 18.2h-2.8v-2.8" fill="none" stroke="#fff" ' +
+					'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+			};
+
+			/* Core Image's names, approximated with the filters a canvas has */
+			var CAM_FILTERS = [
+				{ k: 'mono', n: 'Mono', f: 'grayscale(1) contrast(1.06)' },
+				{ k: 'tonal', n: 'Tonal', f: 'grayscale(1) contrast(.82) brightness(1.06)' },
+				{ k: 'noir', n: 'Noir', f: 'grayscale(1) contrast(1.4) brightness(.94)' },
+				{ k: 'fade', n: 'Fade', f: 'saturate(.7) contrast(.82) brightness(1.12) sepia(.14)' },
+				{ k: 'none', n: 'None', f: '' },
+				{ k: 'chrome', n: 'Chrome', f: 'saturate(1.4) contrast(1.14) brightness(1.02)' },
+				{ k: 'process', n: 'Process', f: 'saturate(1.2) contrast(1.06) hue-rotate(12deg) sepia(.12)' },
+				{ k: 'transfer', n: 'Transfer', f: 'sepia(.4) saturate(1.5) contrast(1.04) brightness(1.04)' },
+				{ k: 'instant', n: 'Instant', f: 'sepia(.3) saturate(.9) contrast(.88) brightness(1.14) hue-rotate(-8deg)' }
+			];
+
+			var CAM_MODES = [
+				{ k: 'lapse', n: 'TIME-LAPSE' },
+				{ k: 'video', n: 'VIDEO' },
+				{ k: 'photo', n: 'PHOTO' },
+				{ k: 'square', n: 'SQUARE' },
+				{ k: 'pano', n: 'PANO' }
+			];
+
+			var cam = {
+				mode: 'photo', flash: 'off', hdr: false, timer: 0, front: false,
+				filter: 'none', filters: false, rec: false, t0: 0, busy: false,
+				stream: null, devices: [], devIx: 0, picker: null
+			};
+			var camEl = $('camapp'), camVid = $('camVideo');
+
+			/* ---- the live stream ------------------------------------------------ */
+			function camStop() {
+				if (cam.stream) {
+					cam.stream.getTracks().forEach(function (t) { t.stop(); });
+					cam.stream = null;
+				}
+				camVid.srcObject = null;
+			}
+
+			function camStart() {
+				if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+					camFail('This browser will not hand over a camera.');
+					return;
+				}
+				camStop();
+				var want = { width: { ideal: 1280 }, height: { ideal: 960 } };
+				if (cam.devices.length > 1 && cam.devices[cam.devIx]) want.deviceId = { exact: cam.devices[cam.devIx].deviceId };
+				else want.facingMode = cam.front ? 'user' : 'environment';
+				navigator.mediaDevices.getUserMedia({ video: want, audio: false }).then(function (s) {
+					cam.stream = s;
+					camVid.srcObject = s;
+					camEl.classList.remove('nocam');
+					/* labels only arrive once permission is granted, so enumerate late */
+					if (!cam.devices.length && navigator.mediaDevices.enumerateDevices) {
+						navigator.mediaDevices.enumerateDevices().then(function (ds) {
+							cam.devices = ds.filter(function (d) { return d.kind === 'videoinput'; });
+						});
+					}
+					camPaint();
+				}, function (err) {
+					camFail(err && err.name === 'NotAllowedError'
+						? 'Allow camera access to use the Camera.'
+						: 'No camera was found on this device.');
+				});
+			}
+			function camFail(msg) {
+				camStop();
+				$('camMsgSub').textContent = msg;
+				camEl.classList.add('nocam');
+			}
+			$('camRetry').addEventListener('click', camStart);
+
+			/* ---- chrome --------------------------------------------------------- */
+			function camPaint() {
+				CAM_MODES.forEach(function (m) { camEl.classList.toggle('m-' + m.k, m.k === cam.mode); });
+				camEl.classList.toggle('front', cam.front);
+				camEl.classList.toggle('rec', cam.rec);
+				camEl.classList.toggle('filters', cam.filters);
+
+				$('camFlashBtn').innerHTML = CAM_ICON.bolt(cam.flash !== 'off');
+				$('camPillFlash').innerHTML = CAM_ICON.bolt(cam.flash !== 'off');
+				$('camHdrBtn').innerHTML = CAM_ICON.hdr(cam.hdr);
+				$('camTimerBtn').innerHTML = CAM_ICON.timer(!!cam.timer) +
+					(cam.timer ? '<em>' + cam.timer + 's</em>' : '');
+				$('camSwapBtn').innerHTML = CAM_ICON.swap;
+				$('camPillSwap').innerHTML = CAM_ICON.swap;
+
+				var chips = [];
+				if (cam.flash === 'on') chips.push({ svg: 1 });
+				else if (cam.flash === 'auto') chips.push({ svg: 1, t: 'Auto' });
+				if (cam.hdr) chips.push({ t: 'HDR' });
+				var badge = $('camBadge');
+				badge.classList.toggle('up', chips.length > 0 && !cam.filters && cam.mode !== 'video' && cam.mode !== 'lapse');
+				badge.innerHTML = chips.map(function (c) {
+					return '<b>' +
+						(c.svg ? '<svg width="9" height="14" viewBox="0 0 12 18"><path d="M7 0 1 8h3.4L3.6 18 10 7.4H6.4z" fill="#000"/></svg>' : '') +
+						(c.t ? '<span>' + c.t + '</span>' : '') + '</b>';
+				}).join('');
+
+				camPaintModes();
+				camPaintThumb();
+			}
+
+			function camPaintModes() {
+				var row = $('camModeRow');
+				var sel = 0;
+				CAM_MODES.forEach(function (m, i) { if (m.k === cam.mode) sel = i; });
+				row.innerHTML = CAM_MODES.map(function (m, i) {
+					return '<div class="cam-mode' + (i === sel ? ' on' : '') +
+						(Math.abs(i - sel) > 1 ? ' far' : '') + '" data-k="' + m.k + '">' + m.n + '</div>';
+				}).join('');
+				/* slide the wheel so the chosen mode sits under the shutter */
+				var on = row.querySelector('.cam-mode.on');
+				if (on) row.style.transform = 'translateX(' + (-(on.offsetLeft + on.offsetWidth / 2)) + 'px)';
+			}
+
+			function camPaintThumb() {
+				var live = (typeof LIB !== 'undefined' && LIB.photos) ? LIB.photos.filter(function (p) {
+					return !p.deleted;
+				}) : [];
+				var last = live[live.length - 1];
+				$('camThumb').innerHTML = last ? '<img src="' + phThumbURL(last) + '" alt="">' : '';
+			}
+
+			/* ---- drawing a frame ------------------------------------------------ */
+			function camFilterCSS() {
+				var f = CAM_FILTERS.filter(function (x) { return x.k === cam.filter; })[0];
+				var s = f ? f.f : '';
+				/* HDR here is a gentle shadow lift, not a real bracket */
+				if (cam.hdr) s += ' contrast(.93) saturate(1.06) brightness(1.04)';
+				return s.trim();
+			}
+
+			/* centre-crop the camera frame to the aspect the mode wants */
+			function camGrab(aspect, maxW, filter) {
+				var vw = camVid.videoWidth, vh = camVid.videoHeight;
+				if (!vw || !vh) return null;
+				var sw = vw, sh = Math.round(vw / aspect);
+				if (sh > vh) { sh = vh; sw = Math.round(vh * aspect); }
+				var sx = (vw - sw) / 2, sy = (vh - sh) / 2;
+				var w = Math.min(maxW, sw), h = Math.round(w / aspect);
+				var c = document.createElement('canvas');
+				c.width = w; c.height = h;
+				var g = c.getContext('2d');
+				if (filter !== undefined) g.filter = filter || 'none';
+				else { var f = camFilterCSS(); if (f) g.filter = f; }
+				if (cam.front) { g.translate(w, 0); g.scale(-1, 1); }
+				g.drawImage(camVid, sx, sy, sw, sh, 0, 0, w, h);
+				return c;
+			}
+
+			function camAspect() {
+				if (cam.mode === 'square') return 1;
+				if (cam.mode === 'video' || cam.mode === 'lapse') return 16 / 9;
+				if (cam.mode === 'pano') return 3 / 4;
+				return 4 / 3;
+			}
+
+			/* ---- writing into the library --------------------------------------- */
+			function camSave(blob, w, h, kind, dur, cb) {
+				if (!PH_DB) { if (cb) cb(); return; }
+				var rec = {
+					name: (kind === 'video' ? 'VID' : 'IMG') + '_' + Date.now() +
+						(kind === 'video' ? '.webm' : '.jpg'),
+					type: blob.type, blob: blob, w: w, h: h, fav: 0, deleted: 0,
+					taken: Date.now(), added: Date.now(), dur: dur || 0,
+					kind: kind || (cam.front ? 'selfie' : 'photo'), exif: false
+				};
+				var src = kind === 'video' ? camPoster : null;
+				var mk = src ? Promise.resolve(src) : createImageBitmap(blob).then(function (bm) {
+					return phMakeThumb(bm, w, h).then(function (t) { bm.close && bm.close(); return t; });
+				});
+				mk.then(function (thumb) {
+					rec.thumb = thumb;
+					var tx = phTx(['photos'], 'readwrite');
+					tx.objectStore('photos').add(rec);
+					tx.oncomplete = function () {
+						phLoad(function () {
+							phRepaint(); phToBottom(); phFw(); camPaintThumb();
+							if (cb) cb();
+						});
+					};
+					tx.onerror = function () { if (cb) cb(); };
+				}, function () { if (cb) cb(); });
+			}
+			var camPoster = null;
+
+			/* ---- the shutter ----------------------------------------------------- */
+			function camFlashScreen() {
+				var el = $('camWhite');
+				el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+			}
+			function camBlink() {
+				var el = $('camBlink');
+				el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+			}
+
+			function camWantsFlash() {
+				if (cam.flash === 'on') return true;
+				if (cam.flash !== 'auto') return false;
+				/* Auto: sample the frame and fire when the scene is dark */
+				var c = camGrab(1, 32, 'none');
+				if (!c) return false;
+				var d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, sum = 0;
+				for (var i = 0; i < d.length; i += 4) sum += (d[i] + d[i + 1] + d[i + 2]) / 3;
+				return (sum / (d.length / 4)) < 70;
+			}
+
+			function camShoot() {
+				if (cam.busy || camEl.classList.contains('nocam')) return;
+				cam.busy = true;
+				var fire = camWantsFlash();
+				if (fire) camFlashScreen();
+				camBlink();
+				/* let the white actually land on the frame before grabbing it */
+				setTimeout(function () {
+					var c = camGrab(camAspect(), 1600);
+					if (!c) { cam.busy = false; return; }
+					c.toBlob(function (b) {
+						if (!b) { cam.busy = false; return; }
+						camSave(b, c.width, c.height, cam.front ? 'selfie' : 'photo', 0,
+							function () { cam.busy = false; });
+					}, 'image/jpeg', 0.92);
+				}, fire ? 90 : 40);
+			}
+
+			/* the self-timer counts down over the frame, then fires */
+			function camCountdown(n, done) {
+				var el = $('camCount');
+				el.classList.add('up');
+				(function tickDown() {
+					el.textContent = n;
+					if (n <= 0) { el.classList.remove('up'); done(); return; }
+					n--;
+					setTimeout(tickDown, 1000);
+				})();
+			}
+
+			function camPress() {
+				if (cam.mode === 'video' || cam.mode === 'lapse') { camToggleRec(); return; }
+				if (cam.mode === 'pano') { camPano(); return; }
+				if (cam.timer) {
+					if (cam.busy) return;
+					cam.busy = true;
+					camCountdown(cam.timer, function () { cam.busy = false; camShoot(); });
+					return;
+				}
+				camShoot();
+			}
+
+			/* ---- filters -------------------------------------------------------- */
+			var camGridTimer = null;
+			function camBuildGrid() {
+				$('camGrid').innerHTML = CAM_FILTERS.map(function (f) {
+					return '<div class="cam-ftile' + (f.k === cam.filter ? ' on' : '') + '" data-k="' + f.k + '">' +
+						'<canvas width="120" height="160"></canvas><span>' + f.n + '</span></div>';
+				}).join('');
+			}
+			function camDrawGrid() {
+				var tiles = $('camGrid').children;
+				for (var i = 0; i < tiles.length; i++) {
+					var cv = tiles[i].querySelector('canvas'), g = cv.getContext('2d');
+					var src = camGrab(cv.width / cv.height, 240, CAM_FILTERS[i].f);
+					g.clearRect(0, 0, cv.width, cv.height);
+					if (src) g.drawImage(src, 0, 0, cv.width, cv.height);
+				}
+			}
+			function camSetFilters(on) {
+				cam.filters = on;
+				camEl.classList.toggle('filters', on);
+				if (on) {
+					camBuildGrid(); camDrawGrid();
+					camGridTimer = setInterval(camDrawGrid, 260);
+				} else {
+					clearInterval(camGridTimer); camGridTimer = null;
+				}
+				camPaint();
+			}
+			$('camGrid').addEventListener('click', function (e) {
+				var t = e.target.closest('.cam-ftile'); if (!t) return;
+				cam.filter = t.dataset.k;
+				camSetFilters(false);
+				camVid.style.filter = camFilterCSS();
+			});
+
+			/* ---- flash / timer option rows -------------------------------------- */
+			function camOpenPicker(which) {
+				if (cam.picker === which) { camClosePicker(); return; }
+				cam.picker = which;
+				var opts = which === 'flash'
+					? [['off', 'Off'], ['on', 'On'], ['auto', 'Auto']]
+					: [['0', 'Off'], ['3', '3s'], ['10', '10s']];
+				var cur = which === 'flash' ? cam.flash : String(cam.timer);
+				$('camPicker').innerHTML = opts.map(function (o) {
+					return '<span class="cam-opt' + (o[0] === cur ? ' on' : '') + '" data-v="' + o[0] + '">' +
+						o[1] + '</span>';
+				}).join('');
+				$('camPicker').classList.add('up');
+			}
+			function camClosePicker() {
+				cam.picker = null;
+				$('camPicker').classList.remove('up');
+			}
+			$('camPicker').addEventListener('click', function (e) {
+				var o = e.target.closest('.cam-opt'); if (!o) return;
+				if (cam.picker === 'flash') cam.flash = o.dataset.v;
+				else cam.timer = +o.dataset.v;
+				camClosePicker();
+				camPaint();
+			});
+
+			/* ---- video + time-lapse ---------------------------------------------- */
+			var camRecorder = null, camChunks = [], camClockTimer = null;
+			var camLapseFrames = [], camLapseTimer = null;
+
+			function camFmtClock(ms) {
+				var s = Math.floor(ms / 1000);
+				var h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = s % 60;
+				var p = function (n) { return (n < 10 ? '0' : '') + n; };
+				return p(h) + ':' + p(m) + ':' + p(ss);
+			}
+			function camRunClock() {
+				$('camClock').textContent = camFmtClock(Date.now() - cam.t0);
+			}
+
+			function camMime() {
+				var want = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
+				for (var i = 0; i < want.length; i++) {
+					if (window.MediaRecorder && MediaRecorder.isTypeSupported(want[i])) return want[i];
+				}
+				return '';
+			}
+
+			function camToggleRec() {
+				if (cam.rec) { camStopRec(); return; }
+				if (camEl.classList.contains('nocam') || cam.busy) return;
+				if (!window.MediaRecorder) { camFail('This browser cannot record video.'); return; }
+				cam.rec = true; cam.t0 = Date.now();
+				camEl.classList.add('rec');
+				$('camClock').textContent = '00:00:00';
+				camClockTimer = setInterval(camRunClock, 250);
+
+				if (cam.mode === 'lapse') {
+					/* hold on to one frame every 400 ms and speed them up later */
+					camLapseFrames = [];
+					camLapseTimer = setInterval(function () {
+						if (camLapseFrames.length >= 240) return;
+						var c = camGrab(16 / 9, 640);
+						if (c) camLapseFrames.push(c);
+					}, 400);
+					return;
+				}
+
+				camChunks = [];
+				var opts = {}; var mt = camMime(); if (mt) opts.mimeType = mt;
+				try { camRecorder = new MediaRecorder(cam.stream, opts); }
+				catch (err) { cam.rec = false; camEl.classList.remove('rec'); return; }
+				camRecorder.ondataavailable = function (e) { if (e.data && e.data.size) camChunks.push(e.data); };
+				camRecorder.onstop = function () {
+					var blob = new Blob(camChunks, { type: camChunks.length ? camChunks[0].type : 'video/webm' });
+					var dur = Math.max(1, Math.round((Date.now() - cam.t0) / 1000));
+					camFinishVideo(blob, dur);
+				};
+				camRecorder.start(500);
+			}
+
+			function camStopRec() {
+				if (!cam.rec) return;
+				cam.rec = false;
+				camEl.classList.remove('rec');
+				clearInterval(camClockTimer); camClockTimer = null;
+				$('camClock').textContent = '00:00:00';
+
+				if (cam.mode === 'lapse') {
+					clearInterval(camLapseTimer); camLapseTimer = null;
+					camRenderLapse();
+					return;
+				}
+				if (camRecorder && camRecorder.state !== 'inactive') camRecorder.stop();
+				camRecorder = null;
+			}
+
+			/* a poster frame, so the video reads properly in the Photos grid */
+			function camMakePoster(src, w, h, cb) {
+				phMakeThumb(src, w, h).then(cb);
+			}
+
+			function camFinishVideo(blob, dur) {
+				cam.busy = true;
+				var c = camGrab(16 / 9, 640);
+				camMakePoster(c || document.createElement('canvas'), c ? c.width : 16, c ? c.height : 9,
+					function (thumb) {
+						camPoster = thumb;
+						camSave(blob, 1280, 720, 'video', dur, function () {
+							camPoster = null; cam.busy = false;
+						});
+					});
+			}
+
+			/* replay the held frames into a canvas at 30 fps and record that */
+			function camRenderLapse() {
+				var frames = camLapseFrames; camLapseFrames = [];
+				if (frames.length < 2 || !window.MediaRecorder) return;
+				cam.busy = true;
+				var w = frames[0].width, h = frames[0].height;
+				var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+				var g = cv.getContext('2d');
+				var stream = cv.captureStream(30), chunks = [];
+				var opts = {}; var mt = camMime(); if (mt) opts.mimeType = mt;
+				var rec;
+				try { rec = new MediaRecorder(stream, opts); }
+				catch (err) { cam.busy = false; return; }
+				rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+				rec.onstop = function () {
+					var blob = new Blob(chunks, { type: chunks.length ? chunks[0].type : 'video/webm' });
+					camPoster = null;
+					phMakeThumb(frames[frames.length - 1], w, h).then(function (t) {
+						camPoster = t;
+						camSave(blob, w, h, 'video', Math.max(1, Math.round(frames.length / 30)), function () {
+							camPoster = null; cam.busy = false;
+						});
+					});
+				};
+				g.drawImage(frames[0], 0, 0);
+				rec.start();
+				var i = 0;
+				var step = setInterval(function () {
+					if (i >= frames.length) {
+						clearInterval(step);
+						setTimeout(function () { if (rec.state !== 'inactive') rec.stop(); }, 120);
+						return;
+					}
+					g.drawImage(frames[i++], 0, 0);
+				}, 33);
+			}
+
+			/* ---- panorama --------------------------------------------------------
+			   No reference shot for this one, so it keeps to the shape iOS uses: a
+			   guide line with a travelling arrow, and a sweep that stitches the
+			   centre column of successive frames into one wide picture. */
+			function camPano() {
+				if (cam.rec || cam.busy) return;
+				cam.rec = true;
+				camEl.classList.add('rec');
+				var W = 1600, H = 600, x = 0, STRIP = 12;
+				var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+				var g = cv.getContext('2d');
+				var arrow = document.querySelector('.pano-arrow');
+				var stop = function () {
+					clearInterval(t);
+					cam.rec = false;
+					camEl.classList.remove('rec');
+					arrow.style.transform = '';
+					$('camShutter').removeEventListener('click', stop);
+					cv.toBlob(function (b) {
+						if (b) camSave(b, x || W, H, cam.front ? 'selfie' : 'photo', 0,
+							function () { cam.busy = false; });
+						else cam.busy = false;
+					}, 'image/jpeg', 0.9);
+				};
+				cam.busy = true;
+				var t = setInterval(function () {
+					var src = camGrab(3 / 4, 300);
+					if (src) {
+						var sx = Math.round(src.width / 2 - STRIP / 2);
+						g.drawImage(src, sx, 0, STRIP, src.height, x, 0, STRIP, H);
+					}
+					x += STRIP;
+					arrow.style.transform = 'translateX(' + (x / W * 260) + 'px)';
+					if (x >= W) stop();
+				}, 45);
+				$('camShutter').addEventListener('click', stop);
+			}
+
+			/* ---- input ------------------------------------------------------------ */
+			$('camTop').addEventListener('click', function (e) {
+				var b = e.target.closest('.cam-tbtn'); if (!b) return;
+				camAct(b.dataset.act);
+			});
+			$('camPill').addEventListener('click', function (e) {
+				var b = e.target.closest('.cam-pbtn'); if (!b) return;
+				camAct(b.dataset.act);
+			});
+			function camAct(a) {
+				if (a === 'flash') camOpenPicker('flash');
+				else if (a === 'timer') camOpenPicker('timer');
+				else if (a === 'hdr') { cam.hdr = !cam.hdr; camClosePicker(); camPaint(); }
+				else if (a === 'swap') {
+					camClosePicker();
+					cam.front = !cam.front;
+					if (cam.devices.length > 1) cam.devIx = (cam.devIx + 1) % cam.devices.length;
+					camStart();
+					camPaint();
+				}
+			}
+			$('camShutter').addEventListener('click', function () { camClosePicker(); camPress(); });
+			$('camFilterBtn').addEventListener('click', function () {
+				camClosePicker();
+				camSetFilters(!cam.filters);
+			});
+			$('camThumb').addEventListener('click', function () {
+				var live = LIB.photos.filter(function (p) { return !p.deleted; });
+				if (!live.length) return;
+				camGoPhotos(live, live.length - 1);
+			});
+
+			/* the thumbnail hands off to Photos, the way the real one opens a viewer */
+			function camGoPhotos(list, i) {
+				closeApp();
+				setTimeout(function () {
+					openApp(document.querySelector('#homescreen .icon[data-app="photos"]'), 'photos');
+					phOpenViewer(list, i);
+				}, 260);
+			}
+
+			function camSetMode(k) {
+				if (cam.rec) return;
+				cam.mode = k;
+				camClosePicker();
+				if (cam.filters) camSetFilters(false);
+				camPaint();
+			}
+			$('camModeRow').addEventListener('click', function (e) {
+				var m = e.target.closest('.cam-mode'); if (m) camSetMode(m.dataset.k);
+			});
+
+			/* swipe the wheel, and tap the frame to focus */
+			(function () {
+				var x0 = null, moved = false;
+				function down(e) { x0 = (e.touches ? e.touches[0].clientX : e.clientX); moved = false; }
+				function move(e) {
+					if (x0 === null || cam.rec) return;
+					var x = (e.touches ? e.touches[0].clientX : e.clientX);
+					if (Math.abs(x - x0) > 34) {
+						moved = true;
+						var i = 0;
+						CAM_MODES.forEach(function (m, n) { if (m.k === cam.mode) i = n; });
+						i = Math.max(0, Math.min(CAM_MODES.length - 1, i + (x < x0 ? 1 : -1)));
+						camSetMode(CAM_MODES[i].k);
+						x0 = null;
+					}
+				}
+				function up() { x0 = null; setTimeout(function () { moved = false; }, 0); }
+				['camBottom', 'camStage'].forEach(function (id) {
+					var el = $(id);
+					el.addEventListener('mousedown', down);
+					el.addEventListener('touchstart', down, { passive: true });
+					el.addEventListener('touchmove', move, { passive: true });
+					el.addEventListener('touchend', up);
+				});
+				window.addEventListener('mousemove', move);
+				window.addEventListener('mouseup', up);
+
+				$('camBox').addEventListener('click', function (e) {
+					if (moved || cam.filters || camEl.classList.contains('nocam')) return;
+					if (cam.picker) { camClosePicker(); return; }
+					var r = $('camBox').getBoundingClientRect();
+					var s = r.width / 320;
+					var f = $('camFocus');
+					f.style.left = ((e.clientX - r.left) / s) + 'px';
+					f.style.top = ((e.clientY - r.top) / s) + 'px';
+					f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+				});
+			})();
+
+			/* ---- app plumbing ----------------------------------------------------- */
+			function camOpen() {
+				cam.filters = false;
+				camClosePicker();
+				camVid.style.filter = camFilterCSS();
+				camPaint();
+				camStart();
+			}
+			function camReset() {
+				if (cam.rec) camStopRec();
+				if (cam.filters) camSetFilters(false);
+				camClosePicker();
+				clearInterval(camGridTimer); camGridTimer = null;
+				clearInterval(camClockTimer); camClockTimer = null;
+				clearInterval(camLapseTimer); camLapseTimer = null;
+				$('camCount').classList.remove('up');
+				camStop();
+			}
+
+			camPaint();
 
 		})();
 	</script>

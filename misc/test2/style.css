@@ -154,7 +154,36 @@ body {
     background: #FF453A;
 }
 
-#fwPlug {
+.fw-head.fw-sep {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, .09);
+}
+
+#fwPhCount {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.4px;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+#fwPhAdd,
+#fwPhWipe {
+    margin-top: 6px;
+}
+
+#fwPhWipe.fw-quiet {
+    background: #4a4e57;
+}
+
+#fwPhWipe.fw-quiet:hover {
+    background: #585d68;
+}
+
+#fwPlug,
+#fwPhAdd,
+#fwPhWipe {
     display: block;
     width: 100%;
     height: 30px;
@@ -169,11 +198,14 @@ body {
     transition: background-color .18s ease;
 }
 
-#fwPlug:hover {
+#fwPlug:hover,
+#fwPhAdd:hover {
     background: #3a80e8;
 }
 
-#fwPlug:active {
+#fwPlug:active,
+#fwPhAdd:active,
+#fwPhWipe:active {
     background: #275ba8;
 }
 
@@ -531,6 +563,75 @@ body {
     display: block;
     -webkit-user-drag: none;
     user-select: none;
+}
+
+/* ---------- live icons ----------
+   Calendar and Clock ship blank artwork (an empty white squircle, a face with
+   no hands); everything that moves is drawn on top of the img and driven by
+   the tick in the script. Sizes are percentages of the 60px tile so the icons
+   survive a change of grid metrics. */
+.tile.live-cal .cal-dow,
+.tile.live-cal .cal-day {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    white-space: nowrap;
+    font-family: var(--sf-display);
+    font-weight: 100;
+    pointer-events: none;
+}
+
+.tile.live-cal .cal-dow {
+    top: 12.9%;
+    font-size: 9.85px;
+    line-height: 1;
+    color: #FE2510;
+    letter-spacing: .1px;
+}
+
+/* an inline-block so the script can measure the weekday's natural width and
+   squeeze the long ones; transforms don't disturb that measurement */
+.tile.live-cal .cal-dow span {
+    display: inline-block;
+    transform-origin: 50% 50%;
+}
+
+.tile.live-cal .cal-day {
+    top: 26.4%;
+    font-size: 37.8px;
+    line-height: 1;
+    color: #000;
+    letter-spacing: -.6px;
+    /* letter-spacing is added after the last digit too, which drags centred
+       text off by half of it -- this pulls it back */
+    padding-right: .6px;
+}
+
+.tile.live-clock .clk-hands {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.tile.live-clock .h-hour,
+.tile.live-clock .h-min {
+    stroke: #000;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.tile.live-clock .h-sec {
+    stroke: #FF9500;
+    stroke-width: .76;
+    stroke-linecap: round;
+}
+
+.tile.live-clock .h-cap {
+    fill: #000;
 }
 
 .tile.messages {
@@ -3142,7 +3243,7 @@ input[type=file] {
     display: block;
 }
 
-.ft-go .spin i {
+.spin i {
     position: absolute;
     left: 9px;
     top: 1px;
@@ -3154,62 +3255,62 @@ input[type=file] {
     animation: ftspin 1s linear infinite;
 }
 
-.ft-go .spin i:nth-child(1) {
+.spin i:nth-child(1) {
     transform: rotate(0deg);
     animation-delay: -.917s
 }
 
-.ft-go .spin i:nth-child(2) {
+.spin i:nth-child(2) {
     transform: rotate(30deg);
     animation-delay: -.833s
 }
 
-.ft-go .spin i:nth-child(3) {
+.spin i:nth-child(3) {
     transform: rotate(60deg);
     animation-delay: -.75s
 }
 
-.ft-go .spin i:nth-child(4) {
+.spin i:nth-child(4) {
     transform: rotate(90deg);
     animation-delay: -.667s
 }
 
-.ft-go .spin i:nth-child(5) {
+.spin i:nth-child(5) {
     transform: rotate(120deg);
     animation-delay: -.583s
 }
 
-.ft-go .spin i:nth-child(6) {
+.spin i:nth-child(6) {
     transform: rotate(150deg);
     animation-delay: -.5s
 }
 
-.ft-go .spin i:nth-child(7) {
+.spin i:nth-child(7) {
     transform: rotate(180deg);
     animation-delay: -.417s
 }
 
-.ft-go .spin i:nth-child(8) {
+.spin i:nth-child(8) {
     transform: rotate(210deg);
     animation-delay: -.333s
 }
 
-.ft-go .spin i:nth-child(9) {
+.spin i:nth-child(9) {
     transform: rotate(240deg);
     animation-delay: -.25s
 }
 
-.ft-go .spin i:nth-child(10) {
+.spin i:nth-child(10) {
     transform: rotate(270deg);
     animation-delay: -.167s
 }
 
-.ft-go .spin i:nth-child(11) {
+.spin i:nth-child(11) {
     transform: rotate(300deg);
     animation-delay: -.083s
 }
 
-.ft-go .spin i:nth-child(12) {
+.spin i:nth-child(12) {
     transform: rotate(330deg);
     animation-delay: 0s
 }
@@ -4442,4 +4543,1715 @@ input[type=file] {
 
 .ck-abtn:active {
     background: rgba(0, 0, 0, .1);
+}
+
+/* ================= PHOTOS =================
+   Traced off ref_pic/Photos (2x screenshots), so everything below is in
+   points: screen 320 x 568, status 20, nav 44, tab bar 49.  The grid is
+   4 x 78.5 pt cells with 2 pt gutters; Collections drops to 32 pt cells
+   (10 across) and Years to 10 pt (32 across). */
+#phapp {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#phapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#phstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#phstatus .sb-left,
+#phstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#phstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#phstatus .sb-mid {
+    font-weight: 600;
+}
+
+#phstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+#phstack .nav .btn {
+    padding: 0 8px;
+    min-width: 0;
+}
+
+#phstack .nav .btn.back {
+    padding: 0 8px 0 6px;
+}
+
+/* the search magnifier sits between the title and the trailing button */
+.ph-navright {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+}
+
+.ph-mag {
+    display: flex;
+    align-items: center;
+    height: 44px;
+}
+
+.ph-navright .btn.dim {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+/* ---------- the level stack inside the tab bar ---------- */
+.ph-levels {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.ph-level {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    transform: translateX(100%);
+    transition: transform .33s cubic-bezier(.32, .72, 0, 1);
+    will-change: transform;
+}
+
+.ph-level.live {
+    display: flex;
+}
+
+.ph-level.active {
+    transform: translateX(0);
+}
+
+.ph-level.behind {
+    transform: translateX(-27%);
+}
+
+/* tab switches are a cut, not a slide */
+.ph-level.nomove {
+    transition: none;
+}
+
+.ph-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- tab bar ---------- */
+.ph-tabs {
+    flex: 0 0 49px;
+    height: 49px;
+    background: #F7F7F7;
+    display: flex;
+    position: relative;
+    z-index: 3;
+}
+
+.ph-tabs:before,
+.ph-toolbar:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #A7A7AA;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.ph-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #8E8E93;
+}
+
+.ph-tab.on {
+    color: #007AFF;
+}
+
+.ph-tab svg {
+    display: block;
+}
+
+.ph-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+/* ---------- select-mode toolbar (replaces the tab bar) ---------- */
+.ph-toolbar {
+    flex: 0 0 49px;
+    height: 49px;
+    background: #F7F7F7;
+    display: none;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    padding: 0 14px;
+    color: #007AFF;
+}
+
+#ph-root.selecting .ph-tabs {
+    display: none;
+}
+
+#ph-root.selecting .ph-toolbar {
+    display: flex;
+}
+
+.ph-tbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    font-size: 17px;
+    letter-spacing: -.41px;
+}
+
+.ph-tbtn.grow {
+    flex: 1;
+}
+
+.ph-tbtn.off {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+.ph-tbtn:active {
+    opacity: .35;
+}
+
+/* ---------- photo grid ---------- */
+.ph-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+}
+
+.ph-grid.coll {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0;
+}
+
+.ph-grid.years {
+    grid-template-columns: repeat(32, 1fr);
+    gap: 0;
+}
+
+.ph-cell {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #EFEFF4;
+}
+
+.ph-cell img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-drag: none;
+}
+
+.ph-cell:active img {
+    opacity: .72;
+}
+
+/* video badge: a scrim, the camcorder, and the running time */
+.ph-vid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: -.1px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .38));
+    pointer-events: none;
+}
+
+.ph-vid .dur {
+    margin-left: auto;
+}
+
+.ph-grid.coll .ph-vid,
+.ph-grid.years .ph-vid {
+    display: none;
+}
+
+/* the blue tick that select mode drops on a chosen photo */
+.ph-tick {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: #007AFF;
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.ph-cell.sel .ph-tick {
+    display: flex;
+}
+
+.ph-cell.sel img {
+    opacity: .78;
+}
+
+/* ---------- moments / collections / years headers ---------- */
+.ph-head {
+    display: flex;
+    align-items: baseline;
+    padding: 15px 9px 6.5px;
+    background: #fff;
+}
+
+.ph-head .h-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+}
+
+.ph-head .h-sub {
+    font-size: 13px;
+    color: #8E8E93;
+    letter-spacing: -.08px;
+    margin-left: 6px;
+}
+
+.ph-head .h-act {
+    margin-left: auto;
+    font-size: 17px;
+    color: #007AFF;
+    letter-spacing: -.41px;
+}
+
+.ph-head .h-act:active {
+    opacity: .35;
+}
+
+.ph-head.coll {
+    padding: 17px 9px 8px;
+}
+
+.ph-head.coll .h-title {
+    font-weight: 400;
+}
+
+.ph-head.years {
+    padding: 18px 9px 3px;
+}
+
+.ph-head.years .h-title {
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -.3px;
+}
+
+.ph-foot {
+    padding: 26px 0 27px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+}
+
+.ph-pad {
+    height: 14px;
+}
+
+/* ---------- albums list ---------- */
+.ph-alblist {
+    padding: 6px 0 10px;
+}
+
+.pa-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 0 12px 16.5px 0;
+    position: relative;
+}
+
+.pa-stack {
+    flex: 0 0 68.5px;
+    margin-left: 9px;
+    padding-top: 4px;
+    position: relative;
+}
+
+/* the two slivers of the photos sitting under the cover */
+.pa-sheet {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 2px;
+    height: 1.5px;
+    overflow: hidden;
+    background: #C8C8CE;
+}
+
+.pa-sheet.far {
+    left: 8px;
+    right: 8px;
+    top: 0;
+}
+
+.pa-sheet img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 68.5px;
+    object-fit: cover;
+}
+
+.pa-cover {
+    position: relative;
+    width: 68.5px;
+    height: 68.5px;
+    overflow: hidden;
+    background: #EFEFF4;
+}
+
+.pa-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pa-cover .kind {
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    color: #fff;
+    filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, .5));
+}
+
+/* the empty / system placeholders drawn in outline instead of a photo */
+.pa-cover.blank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C7C7CC;
+}
+
+.pa-text {
+    flex: 1;
+    min-width: 0;
+    padding: 17px 0 0 17px;
+}
+
+.pa-name {
+    font-size: 17px;
+    color: #000;
+    letter-spacing: -.41px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pa-count {
+    font-size: 13.5px;
+    color: #000;
+    letter-spacing: -.08px;
+    margin-top: 4px;
+}
+
+.pa-chev {
+    align-self: center;
+    margin-top: 4px;
+    flex: 0 0 auto;
+}
+
+.pa-row:active .pa-cover,
+.pa-row:active .pa-name {
+    opacity: .55;
+}
+
+/* ---------- albums edit mode ---------- */
+.ph-alblist.editing .pa-row {
+    padding-left: 0;
+}
+
+.ph-alblist.editing .pa-row.fixed .pa-name,
+.ph-alblist.editing .pa-row.fixed .pa-count {
+    color: #B9B9BE;
+}
+
+.ph-alblist.editing .pa-row.fixed .pa-cover img,
+.ph-alblist.editing .pa-row.fixed .pa-sheet img {
+    opacity: .55;
+}
+
+.ph-alblist.editing .pa-chev {
+    display: none;
+}
+
+/* edit mode indents the whole list, but only a user album gets a badge --
+   the built-in ones keep the gutter and leave it empty */
+.pa-minus {
+    flex: 0 0 0;
+    width: 0;
+    overflow: hidden;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    transition: width .25s cubic-bezier(.32, .72, 0, 1), flex-basis .25s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ph-alblist.editing .pa-minus {
+    flex: 0 0 37.5px;
+    width: 37.5px;
+    padding-left: 12px;
+}
+
+.ph-alblist.editing .pa-row.fixed .pa-minus i {
+    display: none;
+}
+
+.pa-minus i {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: #FF3B30;
+    display: block;
+    position: relative;
+}
+
+.pa-minus i:after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 10px;
+    height: 2px;
+    background: #fff;
+    border-radius: 1px;
+}
+
+.pa-grip {
+    align-self: center;
+    display: none;
+    padding-left: 6px;
+    padding-right: 3px;
+    color: #8E8E93;
+}
+
+.ph-alblist.editing .pa-row:not(.fixed) .pa-grip {
+    display: block;
+}
+
+/* ---------- shared: the empty iCloud pitch ---------- */
+.ph-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ph-emptybox {
+    width: 260px;
+    text-align: center;
+    margin-top: -40px;
+}
+
+.ph-emptytitle {
+    font-size: 30px;
+    line-height: 36px;
+    color: #8E8E93;
+    letter-spacing: -.6px;
+}
+
+.ph-emptymsg {
+    margin-top: 14px;
+    font-size: 19px;
+    line-height: 23px;
+    color: #8E8E93;
+    letter-spacing: -.3px;
+}
+
+.ph-emptybtn {
+    margin: 30px auto 0;
+    width: 124px;
+    height: 30px;
+    border: 1px solid #C7C7CC;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: #8E8E93;
+    letter-spacing: -.24px;
+}
+
+/* ---------- one photo ---------- */
+#ph-viewer {
+    background: #fff;
+}
+
+#ph-viewer .nav {
+    z-index: 2;
+}
+
+.vw-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    pointer-events: none;
+}
+
+.vw-title b {
+    display: block;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+    line-height: 19px;
+}
+
+.vw-title span {
+    display: block;
+    font-size: 12px;
+    color: #000;
+    letter-spacing: -.08px;
+    line-height: 14px;
+}
+
+.vw-stage {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vw-stage img,
+.vw-stage video {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    -webkit-user-drag: none;
+}
+
+.vw-bar {
+    flex: 0 0 44px;
+    height: 44px;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 14px;
+    color: #007AFF;
+}
+
+.vw-bar:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #A7A7AA;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.vw-bar .b {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+}
+
+.vw-bar .b.mid {
+    flex: 1;
+}
+
+.vw-bar .b:active {
+    opacity: .35;
+}
+
+/* ---------- search ---------- */
+.ph-searchpage {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 500;
+    display: none;
+    flex-direction: column;
+}
+
+.ph-searchpage.up {
+    display: flex;
+}
+
+.ph-srow {
+    flex: 0 0 44px;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    position: relative;
+}
+
+.ph-srow:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #B2B2B2;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.ph-sfield {
+    flex: 1;
+    height: 29px;
+    border-radius: 5px;
+    background: #E4E4E6;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    color: #8E8E93;
+    font-size: 15px;
+    letter-spacing: -.24px;
+    overflow: hidden;
+}
+
+.ph-sfield .q {
+    color: #000;
+}
+
+.ph-scancel {
+    font-size: 17px;
+    color: #007AFF;
+    letter-spacing: -.41px;
+}
+
+.ph-sbody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.ph-srowitem {
+    display: flex;
+    align-items: center;
+    height: 42px;
+    position: relative;
+    background: #fff;
+}
+
+.ph-srowitem:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.ph-srowitem:active {
+    background: #D9D9D9;
+}
+
+.ph-sthumb {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 42px;
+    background: #EFEFF4;
+    overflow: hidden;
+}
+
+.ph-sthumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ph-slabel {
+    padding-left: 7px;
+    font-size: 15px;
+    color: #8E8E93;
+    letter-spacing: -.41px;
+}
+
+.ph-shdr {
+    background: #EFEFF4;
+    padding: 12px 9px 5px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    color: #000;
+    text-transform: uppercase;
+}
+
+.ph-srowitem.plain {
+    height: 44px;
+    padding-left: 16px;
+}
+
+.ph-srowitem.plain .ph-slabel {
+    padding-left: 0;
+}
+
+.ph-indexing .spin {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    display: block;
+}
+
+.ph-indexing {
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 15px;
+    color: #000;
+    letter-spacing: -.24px;
+    background: #fff;
+}
+
+/* ---------- New Album alert ---------- */
+.ph-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    background: rgba(0, 0, 0, .35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+}
+
+.ph-alertwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* the alert is out of flow, so the keyboard has to be pinned itself */
+.ph-alertwrap .kbwrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.ph-alert {
+    position: absolute;
+    left: 50%;
+    top: 54px;
+    width: 270px;
+    margin-left: -135px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(248, 248, 248, .94);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    text-align: center;
+    transform: scale(1.14);
+    transition: transform .22s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ph-alertwrap.up .ph-alert {
+    transform: scale(1);
+}
+
+.ph-afield {
+    margin: 6px 16px 13px;
+    height: 25px;
+    background: #fff;
+    border: 1px solid #A9A9A9;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 14px;
+    color: #000;
+    letter-spacing: -.15px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.ph-afield.empty {
+    color: #C7C7CC;
+}
+
+.ft-abtn.dim {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+/* ---------- action sheet ---------- */
+.ph-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    background: rgba(0, 0, 0, .35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.ph-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ph-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(110%);
+    transition: transform .3s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ph-sheetwrap.up .ph-sheet {
+    transform: translateY(0);
+}
+
+.ph-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(248, 248, 248, .93);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    margin-top: 8px;
+}
+
+.ph-smsg {
+    padding: 15px 16px;
+    font-size: 13px;
+    line-height: 17px;
+    color: #8E8E93;
+    text-align: center;
+    letter-spacing: -.08px;
+    position: relative;
+}
+
+.ph-sbtn {
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #007AFF;
+    letter-spacing: -.45px;
+    position: relative;
+}
+
+.ph-sbtn.red {
+    color: #FF3B30;
+}
+
+.ph-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .96);
+}
+
+.ph-sbtn:active {
+    background: rgba(0, 0, 0, .08);
+}
+
+.ph-smsg+.ph-sbtn:before,
+.ph-sbtn+.ph-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .18);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+/* ---------- Add To ---------- */
+#ph-addto .ph-alblist {
+    background: #fff;
+}
+
+/* ================= CAMERA =================
+   The reference shots were taken in landscape; rotated upright they give the
+   portrait layout this builds to -- top bar 40, a 4:3 preview of 320 x 426.7,
+   and a 101.3 pt shelf holding the mode wheel, shutter, thumbnail and filter
+   button.  Video and Time-Lapse go full-bleed 16:9 and turn the bars
+   translucent instead. */
+#camapp {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    color: #fff;
+    font-family: var(--sf-text);
+}
+
+#camapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------- preview ---------- */
+#camStage {
+    position: absolute;
+    inset: 0;
+}
+
+#camBox {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 40px;
+    height: 426.67px;
+    overflow: hidden;
+    background: #000;
+    transition: top .25s ease, height .25s ease;
+}
+
+#camapp.m-square #camBox {
+    top: 93.33px;
+    height: 320px;
+}
+
+#camapp.m-video #camBox,
+#camapp.m-lapse #camBox {
+    top: 0;
+    height: 568px;
+}
+
+#camVideo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+}
+
+#camapp.front #camVideo {
+    transform: scaleX(-1);
+}
+
+/* the filter picker covers the preview with nine live tiles */
+#camGrid {
+    position: absolute;
+    inset: 0;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    background: #000;
+}
+
+#camapp.filters #camGrid {
+    display: grid;
+}
+
+.cam-ftile {
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.cam-ftile canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.cam-ftile span {
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    font-size: 13px;
+    letter-spacing: -.1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+    z-index: 2;
+}
+
+.cam-ftile.on {
+    outline: 2px solid #FFCC00;
+    outline-offset: -2px;
+}
+
+/* tap to focus */
+#camFocus {
+    position: absolute;
+    width: 74px;
+    height: 74px;
+    margin: -37px 0 0 -37px;
+    border: 1px solid #FFCC00;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#camFocus:before,
+#camFocus:after {
+    content: "";
+    position: absolute;
+    background: #FFCC00;
+}
+
+#camFocus:before {
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    height: 1px;
+    box-shadow: 0 0 0 0 transparent;
+    clip-path: polygon(0 0, 9px 0, 9px 1px, 0 1px, 100% 0, calc(100% - 9px) 0, calc(100% - 9px) 1px, 100% 1px);
+}
+
+#camFocus:after {
+    top: -4px;
+    bottom: -4px;
+    left: 50%;
+    width: 1px;
+    clip-path: polygon(0 0, 1px 0, 1px 9px, 0 9px, 0 100%, 1px 100%, 1px calc(100% - 9px), 0 calc(100% - 9px));
+}
+
+#camFocus.go {
+    animation: camfocus 1.5s ease-out forwards;
+}
+
+@keyframes camfocus {
+    0% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+
+    12% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    55% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: .35;
+    }
+
+    85% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* the flash / timer option row, and the yellow chip that reports the choice */
+#camPicker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    z-index: 4;
+}
+
+#camPicker.up {
+    display: flex;
+}
+
+.cam-opt {
+    font-size: 17px;
+    letter-spacing: -.41px;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+}
+
+.cam-opt.on {
+    color: #FFCC00;
+}
+
+#camBadge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 412px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 4;
+}
+
+#camBadge b {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 9px;
+    border-radius: 3px;
+    background: #FFCC00;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -.1px;
+}
+
+#camBadge.up {
+    display: flex;
+}
+
+#camapp.m-square #camBadge {
+    top: 367px;
+}
+
+/* the self-timer counts down over the middle of the frame */
+#camCount {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 190px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-weight: 100;
+    font-size: 120px;
+    line-height: 120px;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .45);
+    display: none;
+    z-index: 5;
+    pointer-events: none;
+}
+
+#camCount.up {
+    display: block;
+}
+
+/* what shows when there is no camera to show */
+#camMsg {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 32px;
+    text-align: center;
+    background: #000;
+}
+
+#camapp.nocam #camMsg {
+    display: flex;
+}
+
+#camMsg b {
+    font-size: 21px;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -.3px;
+}
+
+#camMsg span {
+    font-size: 14px;
+    line-height: 19px;
+    color: #8E8E93;
+    letter-spacing: -.1px;
+}
+
+#camRetry {
+    margin-top: 10px;
+    padding: 7px 16px;
+    border: 1px solid #636366;
+    border-radius: 5px;
+    font-size: 15px;
+    color: #fff;
+}
+
+/* ---------- top bar ---------- */
+#camTop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 40px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 6;
+}
+
+#camapp.m-video #camTop,
+#camapp.m-lapse #camTop,
+#camapp.rec #camTop {
+    display: none;
+}
+
+.cam-tbtn {
+    width: 43px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.cam-tbtn:active {
+    opacity: .5;
+}
+
+.cam-tbtn em {
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 600;
+    color: #FFCC00;
+    letter-spacing: -.1px;
+}
+
+/* ---------- video mode: a floating pill instead of the bar ---------- */
+#camPill {
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    width: 272px;
+    margin-left: -136px;
+    height: 30px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, .42);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    padding: 0 8px;
+    z-index: 6;
+}
+
+#camapp.m-video #camPill,
+#camapp.m-lapse #camPill {
+    display: flex;
+}
+
+#camapp.filters #camPill {
+    display: none;
+}
+
+/* recording keeps only the clock */
+#camapp.rec .cam-pbtn {
+    visibility: hidden;
+}
+
+#camapp.rec #camPill {
+    width: 150px;
+    margin-left: -75px;
+}
+
+.cam-pbtn {
+    width: 40px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cam-clock {
+    flex: 1;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: .4px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- bottom shelf ---------- */
+#camBottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 101.33px;
+    background: #000;
+    z-index: 6;
+}
+
+#camapp.m-video #camBottom,
+#camapp.m-lapse #camBottom {
+    background: rgba(0, 0, 0, .38);
+    -webkit-backdrop-filter: blur(14px) saturate(.9);
+    backdrop-filter: blur(14px) saturate(.9);
+}
+
+#camapp.rec #camModes,
+#camapp.rec #camThumb,
+#camapp.filters #camModes,
+#camapp.filters #camThumb,
+#camapp.filters #camShutter {
+    visibility: hidden;
+}
+
+#camapp.rec #camBottom {
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+#camModes {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 31px;
+    overflow: hidden;
+}
+
+.cam-modes {
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 27px;
+    white-space: nowrap;
+    transition: transform .25s cubic-bezier(.32, .72, 0, 1);
+}
+
+/* selected reads yellow, its neighbours white, anything further out greys
+   off the way the wheel does in the reference */
+.cam-mode {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .55px;
+    color: #fff;
+    opacity: 1;
+    line-height: 14px;
+}
+
+.cam-mode.far {
+    opacity: .42;
+}
+
+.cam-mode.on {
+    color: #FFCC00;
+    opacity: 1;
+}
+
+#camControls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 34px;
+    bottom: 0;
+}
+
+#camThumb {
+    position: absolute;
+    left: 14.5px;
+    top: 4px;
+    width: 47px;
+    height: 47px;
+    background: #1c1c1e;
+    overflow: hidden;
+}
+
+#camThumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#camThumb:active {
+    opacity: .6;
+}
+
+#camShutter {
+    position: absolute;
+    left: 127px;
+    top: -5.5px;
+    width: 66px;
+    height: 66px;
+    border-radius: 33px;
+    border: 6px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#camShutter i {
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: #fff;
+    transition: transform .12s ease, border-radius .2s ease, width .2s ease, height .2s ease;
+}
+
+#camShutter:active i {
+    transform: scale(.9);
+}
+
+#camapp.m-video #camShutter i,
+#camapp.m-lapse #camShutter i {
+    background: #FC3D39;
+}
+
+#camapp.rec #camShutter i {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+}
+
+/* time-lapse wears a ticked ring instead of the plain one */
+#camapp.m-lapse #camShutter {
+    border-color: transparent;
+}
+
+#camapp.m-lapse #camShutter:before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 39px;
+    background:
+        repeating-conic-gradient(#fff 0deg 2.2deg, transparent 2.2deg 9deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 26px, #000 26px 33px, transparent 33px);
+    mask: radial-gradient(circle, transparent 0 26px, #000 26px 33px, transparent 33px);
+}
+
+#camapp.m-lapse.rec #camShutter:before {
+    animation: camlapse 3s linear infinite;
+}
+
+@keyframes camlapse {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#camFilterBtn {
+    position: absolute;
+    left: 267px;
+    top: 9px;
+    width: 38px;
+    height: 38px;
+}
+
+#camFilterBtn:active {
+    opacity: .6;
+}
+
+#camapp.filters #camFilterBtn svg circle:first-child {
+    fill: #FFCC00;
+}
+
+#camapp.m-video #camFilterBtn,
+#camapp.m-lapse #camFilterBtn {
+    display: none;
+}
+
+#camRes {
+    position: absolute;
+    left: 260px;
+    top: 16px;
+    display: none;
+    padding: 2px 7px;
+    border: 1.5px solid #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .4px;
+}
+
+#camapp.m-video #camRes {
+    display: block;
+}
+
+/* ---------- the flash, which is just the whole screen ---------- */
+#camWhite {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+#camWhite.go {
+    animation: camwhite .42s ease-out;
+}
+
+@keyframes camwhite {
+
+    0%,
+    62% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* the shutter's own blink over the frame */
+#camBlink {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 19;
+}
+
+#camBlink.go {
+    animation: camblink .22s ease-out;
+}
+
+@keyframes camblink {
+    0% {
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* ---------- panorama ---------- */
+#camPano {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#camapp.m-pano #camPano {
+    display: flex;
+}
+
+.pano-line {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 50%;
+    height: 2px;
+    background: rgba(255, 255, 255, .85);
+}
+
+.pano-arrow {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    margin-top: -9px;
+    border-left: 14px solid #FFCC00;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    transition: transform .2s linear;
+}
+
+.pano-hint {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    top: 58%;
+    text-align: center;
+    font-size: 13px;
+    line-height: 17px;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+}
+
+#camapp.rec .pano-hint {
+    display: none;
 }
