@@ -1438,6 +1438,47 @@ body {
     pointer-events: auto;
 }
 
+/* ---------- boot ----------
+   Above the sleep mask, so the device comes up dark no matter what else
+   is already painted underneath. The logo fades up on its own, then the
+   whole sheet fades out onto the lock screen. */
+#boot {
+    position: absolute;
+    inset: 0;
+    z-index: 1100;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+#boot.on {
+    display: flex;
+}
+
+#boot.off {
+    opacity: 0;
+}
+
+/* the logo trails the black by a beat, the way the real one warms up */
+#bootLogo {
+    opacity: 0;
+    transition: opacity .55s ease-out;
+}
+
+#boot.lit #bootLogo {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #boot,
+    #bootLogo {
+        transition: none;
+    }
+}
+
 
 /* ---------- status bar ink ----------
    Every bar draws its glyphs with currentColor, so the whole thing fades
@@ -1447,6 +1488,7 @@ body {
 #statusbar,
 #ckstatus,
 #ftstatus,
+#vdstatus,
 .nc-status,
 #lkStatus {
     transition: color .3s ease;
@@ -1493,6 +1535,76 @@ body {
 
 #statusbar .sb-mid {
     font-weight: 600;
+}
+
+/* ---------- the network-activity throbber iOS parks next to the wi-fi glyph ----------
+   traced off a 2x device shot: a 10px box, eight 1x3px spokes with round caps
+   ringed from 2px to 5px out of the middle, stepped a spoke at a time */
+.sb-net {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    display: none;
+    animation: sbnet .8s steps(8, end) infinite;
+}
+
+.sb-net i {
+    position: absolute;
+    left: 4.5px;
+    top: 0;
+    width: 1px;
+    height: 3px;
+    border-radius: .5px;
+    background: currentColor;
+    transform-origin: .5px 5px;
+}
+
+/* the trail the shot caught: darkest spoke leading, fading off behind it */
+.sb-net i:nth-child(1) {
+    transform: rotate(0deg);
+    opacity: .3;
+}
+
+.sb-net i:nth-child(2) {
+    transform: rotate(45deg);
+    opacity: .4;
+}
+
+.sb-net i:nth-child(3) {
+    transform: rotate(90deg);
+    opacity: .5;
+}
+
+.sb-net i:nth-child(4) {
+    transform: rotate(135deg);
+    opacity: .6;
+}
+
+.sb-net i:nth-child(5) {
+    transform: rotate(180deg);
+    opacity: .8;
+}
+
+.sb-net i:nth-child(6) {
+    transform: rotate(225deg);
+    opacity: 1;
+}
+
+.sb-net i:nth-child(7) {
+    transform: rotate(270deg);
+    opacity: .1;
+}
+
+.sb-net i:nth-child(8) {
+    transform: rotate(315deg);
+    opacity: .2;
+}
+
+@keyframes sbnet {
+    to {
+        transform: rotate(1turn);
+    }
 }
 
 /* ---------- page stack ---------- */
@@ -2916,6 +3028,41 @@ input[type=file] {
     line-height: 22px;
     letter-spacing: -.65px;
     color: #fff;
+}
+
+/* the reason line, only after a restart */
+.lk-psub {
+    position: absolute;
+    left: 48px;
+    right: 48px;
+    top: 90px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -.08px;
+    color: #fff;
+    display: none;
+}
+
+/* with the reason line in, the whole header rides up and the dots follow it down */
+#lkPass.why .lk-psub {
+    display: block;
+}
+
+#lkPass.why .lk-ptitle {
+    top: 48px;
+}
+
+#lkPass.why .lk-psub {
+    top: 74px;
+}
+
+#lkPass.why .lk-dots {
+    top: 118px;
+}
+
+#lkPass.why .lk-fail {
+    top: 139px;
 }
 
 .lk-dots {
@@ -6254,4 +6401,4911 @@ input[type=file] {
 
 #camapp.rec .pano-hint {
     display: none;
+}
+
+/* ==================================================================== */
+/* WEATHER                                                              */
+/* ==================================================================== */
+/* Everything here is traced off ref_pic/Weather/ (2x screenshots of a
+   320 x 568 screen, so every measurement below is the pixel value / 2).
+
+   The city page is one long scroll made of six fixed-height blocks:
+     228  the hero -- city, condition and the big temperature
+      28  "Tuesday  84  66", today's high / low
+      94  the hourly strip                (sticks 78 pt down once reached)
+     252  nine daily rows at 28 pt each
+      56  the "Today: ..." sentence
+     228  the ten detail rows
+   886 pt of content in a 511 pt window -> 375 pt of travel, which is
+   exactly the distance between IMG_2509 (top) and IMG_2510 (bottom). */
+
+#wxapp {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#wxapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#wxstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, .28);
+    pointer-events: none;
+}
+
+#wxstatus .sb-left,
+#wxstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#wxstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#wxstatus .sb-mid {
+    font-weight: 600;
+}
+
+#wxstack {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: var(--sf-display);
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the weather scenes ----------------------------------------
+   The real app runs a photograph behind each city. These are gradient
+   stand-ins keyed off the condition; .wx-scene is shared, the sc-* class
+   supplies the sky and ::before / ::after the sun, cloud and rain. */
+.wx-scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #4A9AC8;
+}
+
+.wx-scene::before,
+.wx-scene::after {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+}
+
+/* clear, sunny daylight -- the flare in the top-left corner of IMG_2509 */
+.sc-sun {
+    background:
+        radial-gradient(120% 70% at 6% -6%, #7FC4E8 0%, rgba(127, 196, 232, 0) 55%),
+        linear-gradient(180deg, #3D95CE 0%, #4A9AC8 46%, #56A0C2 100%);
+}
+
+.sc-sun::before {
+    background:
+        radial-gradient(circle at 9% 4%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, .5) 3.5%, rgba(255, 255, 255, 0) 15%),
+        radial-gradient(circle at 20% 16%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 7%),
+        radial-gradient(circle at 31% 30%, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, 0) 5.5%),
+        radial-gradient(circle at 44% 48%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 6.5%),
+        radial-gradient(circle at 62% 71%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 5%),
+        radial-gradient(circle at 78% 88%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 7%);
+}
+
+.sc-sun::after {
+    background: linear-gradient(112deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, 0) 34%);
+}
+
+/* deep blue sky with a few wisps -- Bellevue in IMG_2512 */
+.sc-clear {
+    background: linear-gradient(180deg, #2E86C6 0%, #56A6D6 62%, #8CC4E2 100%);
+}
+
+.sc-clear::before {
+    background:
+        radial-gradient(60% 22% at 74% 26%, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(50% 14% at 26% 52%, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(70% 26% at 56% 82%, rgba(255, 255, 255, .30) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* bright, mostly-cloud daylight -- Cupertino and Tokyo */
+.sc-partly {
+    background: linear-gradient(180deg, #9FC4DA 0%, #B9D2E1 48%, #A8C7DB 100%);
+}
+
+.sc-partly::before {
+    background:
+        radial-gradient(48% 30% at 18% 22%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(60% 34% at 72% 40%, rgba(255, 255, 255, .78) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(54% 26% at 40% 76%, rgba(255, 255, 255, .62) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+.sc-partly::after {
+    background: linear-gradient(180deg, rgba(70, 110, 140, .18) 0%, rgba(70, 110, 140, 0) 40%);
+}
+
+/* flat overcast */
+.sc-cloudy {
+    background: linear-gradient(180deg, #7E93A3 0%, #93A6B4 50%, #7C90A0 100%);
+}
+
+.sc-cloudy::before {
+    background:
+        radial-gradient(56% 30% at 26% 24%, rgba(255, 255, 255, .40) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(64% 32% at 76% 62%, rgba(255, 255, 255, .32) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* after dark -- New York and Guatemala City in IMG_2511 */
+.sc-night {
+    background: linear-gradient(180deg, #23272B 0%, #2C3136 46%, #1B1F23 100%);
+}
+
+.sc-night::before {
+    background:
+        radial-gradient(52% 30% at 22% 18%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(64% 34% at 78% 58%, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(50% 26% at 44% 88%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* rain -- Estes Park, grey-blue with the streaks running down it */
+.sc-rain {
+    background: linear-gradient(180deg, #5A7488 0%, #6B8296 52%, #55697B 100%);
+}
+
+.sc-rain::before {
+    background:
+        radial-gradient(58% 28% at 30% 16%, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(60% 30% at 74% 54%, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+.sc-rain::after {
+    background-image: repeating-linear-gradient(76deg,
+            rgba(255, 255, 255, .13) 0 1px,
+            rgba(255, 255, 255, 0) 1px 9px);
+}
+
+/* ---------- the paged city deck --------------------------------------- */
+.wx-deck {
+    position: absolute;
+    inset: 0;
+}
+
+.wx-pages {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    will-change: transform;
+}
+
+.wx-page {
+    position: relative;
+    touch-action: pan-y;
+    flex: 0 0 320px;
+    width: 320px;
+    height: 568px;
+    overflow: hidden;
+}
+
+/* city + condition, pinned; they slide up 25 pt and stop (IMG_2509 -> 2510) */
+.wx-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+}
+
+.wx-name {
+    margin-top: 48px;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 42px;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+}
+
+.wx-cond {
+    margin-top: -5px;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: -.2px;
+}
+
+/* the two clipped windows the scroll actually happens inside: one above the
+   hourly strip and one below it, so nothing ever shows through the strip */
+.wx-clip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 3;
+}
+
+.wx-clip>div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    will-change: transform;
+}
+
+/* the invisible thing the browser actually scrolls */
+.wx-scroll {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 37px;
+    z-index: 6;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- hero ---------- */
+.wx-hero {
+    height: 228px;
+    position: relative;
+}
+
+.wx-temp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 85px;
+    text-align: center;
+    line-height: 106px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .16);
+}
+
+.wx-degwrap {
+    position: relative;
+    display: inline-block;
+}
+
+.wx-degwrap .n {
+    font-size: 102px;
+    font-weight: 100;
+    letter-spacing: -2px;
+}
+
+.wx-degwrap .d {
+    position: absolute;
+    left: 100%;
+    top: 10px;
+    font-size: 36px;
+    font-weight: 100;
+    line-height: 36px;
+}
+
+/* ---------- today's high / low ---------- */
+.wx-today {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-today .dow {
+    flex: 1;
+}
+
+.wx-today .hi {
+    width: 40px;
+    text-align: right;
+}
+
+.wx-today .lo {
+    width: 31px;
+    text-align: right;
+    color: rgba(255, 255, 255, .5);
+}
+
+/* ---------- hourly strip ---------- */
+.wx-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 94px;
+    touch-action: pan-x;
+    z-index: 7;
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-hours {
+    display: flex;
+    height: 94px;
+    padding: 0 8px;
+    align-items: stretch;
+}
+
+.wx-hr {
+    flex: 0 0 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-hr .h,
+.wx-hr .t {
+    white-space: nowrap;
+}
+
+.wx-hr .h {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+
+.wx-hr .t {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+}
+
+.wx-hr svg {
+    display: block;
+}
+
+/* ---------- the nine day rows ---------- */
+.wx-day {
+    position: relative;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -.3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-day .dow {
+    flex: 1;
+}
+
+.wx-day .ic {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wx-day .hi {
+    width: 40px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.wx-day .lo {
+    width: 31px;
+    text-align: right;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .5);
+}
+
+/* ---------- the sentence, and the detail table ---------- */
+.wx-summary {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    line-height: 21px;
+    letter-spacing: -.3px;
+    border-top: .5px solid rgba(255, 255, 255, .42);
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-details {
+    height: 228px;
+    padding: 10px 0 19px;
+    font-size: 17px;
+    letter-spacing: -.3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-drow {
+    height: 17px;
+    display: flex;
+    align-items: center;
+}
+
+.wx-drow.gap {
+    margin-top: 7px;
+}
+
+.wx-drow .k {
+    width: 165px;
+    text-align: right;
+    padding-right: 12.5px;
+}
+
+.wx-drow .v {
+    flex: 1;
+}
+
+/* ---------- bottom bar ---------- */
+.wx-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 37px;
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-top: .5px solid rgba(255, 255, 255, .32);
+    background: rgba(255, 255, 255, .06);
+}
+
+.wx-twc {
+    flex: 0 0 34px;
+    height: 24px;
+    background: rgba(255, 255, 255, .32);
+    color: rgba(0, 0, 0, .62);
+    font-family: var(--sf-text);
+    font-size: 6px;
+    line-height: 8px;
+    font-weight: 700;
+    padding: 0 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wx-dots {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+}
+
+.wx-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .38);
+}
+
+.wx-dots i.on {
+    background: #fff;
+}
+
+.wx-listbtn {
+    flex: 0 0 34px;
+    display: flex;
+    justify-content: flex-end;
+    color: rgba(255, 255, 255, .92);
+}
+
+.wx-listbtn:active {
+    opacity: .5;
+}
+
+/* ---------- every city at a glance (IMG_2511 / IMG_2512) ------------- */
+.wx-list {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.14);
+    transition: opacity .3s ease, transform .3s cubic-bezier(.32, .72, 0, 1);
+}
+
+.wx-list.on {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.wx-lscroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-lscroll::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-lrow {
+    position: relative;
+    height: 83px;
+    overflow: hidden;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+
+.wx-lrow .wx-scene {
+    z-index: 0;
+}
+
+.wx-lrow .when,
+.wx-lrow .nm,
+.wx-lrow .temp {
+    position: absolute;
+    z-index: 2;
+}
+
+.wx-lrow .when {
+    left: 16px;
+    top: 19px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -.2px;
+}
+
+.wx-lrow .nm {
+    left: 16px;
+    top: 37px;
+    right: 96px;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: -.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wx-lrow .temp {
+    right: 26px;
+    top: 12px;
+    font-size: 62px;
+    font-weight: 100;
+    line-height: 60px;
+    letter-spacing: -2px;
+}
+
+/* the top row runs its photograph up behind the status bar, so it is 20 pt
+   taller than the rest and its text sits 20 pt lower (IMG_2511) */
+.wx-lrow.first {
+    height: 103px;
+}
+
+.wx-lrow.first .when {
+    top: 39px;
+}
+
+.wx-lrow.first .nm {
+    top: 57px;
+}
+
+.wx-lrow.first .temp {
+    top: 32px;
+}
+
+.wx-lrow .temp .d {
+    position: absolute;
+    left: 100%;
+    top: 3px;
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: 0;
+}
+
+/* the footer is part of the scroll, which is why IMG_2511 has no toolbar
+   and IMG_2512 -- scrolled to the end -- does */
+.wx-lfoot {
+    position: relative;
+    height: 133px;
+    background: #000;
+}
+
+.wx-unit {
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 21px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.wx-unit span {
+    color: rgba(255, 255, 255, .38);
+    padding: 6px 2px;
+}
+
+.wx-unit span.on {
+    color: #fff;
+}
+
+.wx-unit i {
+    display: block;
+    width: 12px;
+    height: 22px;
+    margin: 0 1px;
+    border-right: 1px solid rgba(255, 255, 255, .38);
+    transform: skewX(-20deg);
+}
+
+.wx-add {
+    position: absolute;
+    right: 16px;
+    top: 15px;
+    color: rgba(255, 255, 255, .82);
+}
+
+.wx-add:active {
+    opacity: .5;
+}
+
+.wx-twc.foot {
+    position: absolute;
+    left: 50%;
+    margin-left: -17px;
+    bottom: 22px;
+    flex: none;
+}
+
+/* ---------- add a city (IMG_2513 / IMG_2514) ------------------------- */
+.wx-search {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32, .72, 0, 1);
+}
+
+.wx-search.on {
+    transform: translateY(0);
+}
+
+.wx-sbackdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(80% 50% at 50% 42%, #23404E 0%, rgba(35, 64, 78, 0) 70%),
+        linear-gradient(180deg, #24272A 0%, #1E3542 44%, #16222A 100%);
+}
+
+.wx-shead {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 93px;
+    z-index: 3;
+    background: rgba(0, 0, 0, .74);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+.wx-stitle {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -.2px;
+    color: #fff;
+}
+
+.wx-srow {
+    display: flex;
+    align-items: center;
+    margin-top: 13px;
+    padding: 0 8px;
+}
+
+.wx-sfield {
+    flex: 1;
+    height: 26px;
+    border-radius: 5px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 6px;
+    overflow: hidden;
+}
+
+.wx-stext {
+    flex: 1;
+    font-family: var(--sf-text);
+    font-size: 15px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.wx-stext .caret {
+    display: inline-block;
+    width: 1.5px;
+    height: 18px;
+    background: #007AFF;
+    animation: blink 1.06s steps(1, end) infinite;
+    flex: 0 0 auto;
+}
+
+.wx-sclear {
+    display: none;
+    flex: 0 0 auto;
+    line-height: 0;
+}
+
+.wx-sfield.filled .wx-sclear {
+    display: block;
+}
+
+.wx-scancel {
+    flex: 0 0 auto;
+    padding: 0 4px 0 10px;
+    font-size: 21px;
+    color: #fff;
+    letter-spacing: -.4px;
+}
+
+.wx-scancel:active {
+    opacity: .5;
+}
+
+.wx-sresults {
+    position: absolute;
+    top: 93px;
+    left: 0;
+    right: 0;
+    bottom: 216px;
+    z-index: 2;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 2px;
+    scrollbar-width: none;
+}
+
+.wx-sresults::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-sres {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px 0 36px;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -.4px;
+    color: rgba(255, 255, 255, .42);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.wx-sres b {
+    font-weight: 400;
+    color: #fff;
+}
+
+.wx-sres:active {
+    background: rgba(255, 255, 255, .1);
+}
+
+.wx-snone {
+    padding: 24px 0;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(255, 255, 255, .45);
+}
+
+/* the keyboard is the standard one; it just needs to sit on top */
+.wx-search .kbwrap {
+    position: relative;
+    z-index: 4;
+}
+
+
+/* ================= VIDEOS =================
+   Traced off ref_pic/Videos/. The library is a plain table view; playback
+   forces landscape, which on a screen that cannot rotate means the player
+   stage is turned a quarter turn inside the portrait window. */
+#vdapp {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#vdapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#vdstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#vdstatus .sb-left,
+#vdstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#vdstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#vdstatus .sb-mid {
+    font-weight: 600;
+}
+
+#vdstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+/* ---------- tab bar (one tab: this library only holds music videos) ---------- */
+.vd-tabs {
+    flex: 0 0 49px;
+    height: 49px;
+    background: #F7F7F7;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+}
+
+.vd-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #A7A7AA;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.vd-tab {
+    width: 106px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #8E8E93;
+}
+
+.vd-tab.on {
+    color: #29A9E0;
+}
+
+.vd-tab svg {
+    display: block;
+}
+
+.vd-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+/* ---------- the library list ---------- */
+.vd-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+}
+
+.vd-row {
+    position: relative;
+    height: 76px;
+    overflow: hidden;
+}
+
+/* everything that slides left when Delete is revealed */
+.vd-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.vd-row.armed .vd-slide {
+    transform: translateX(-85px);
+}
+
+.vd-minus {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #FF3B30;
+    margin-left: -42px;
+    margin-right: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: margin-left .28s cubic-bezier(.32, .72, 0, 1), opacity .2s ease;
+}
+
+.vd-minus:before {
+    content: "";
+    width: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+#vd-root.editing .vd-minus {
+    margin-left: 11px;
+    opacity: 1;
+}
+
+.vd-thumb {
+    flex: 0 0 auto;
+    width: 100px;
+    height: 56px;
+    margin-left: 16px;
+    background: #B4B4B4 center/cover no-repeat;
+    color: #6E6E6E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin-left .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+#vd-root.editing .vd-thumb {
+    margin-left: 0;
+}
+
+.vd-thumb.art {
+    color: transparent;
+}
+
+.vd-title {
+    flex: 1;
+    min-width: 0;
+    margin-left: 13px;
+    padding-right: 14px;
+    font-size: 19px;
+    letter-spacing: -.3px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* the hairline starts at the title, the way iOS insets a cell separator */
+.vd-slide:after {
+    content: "";
+    position: absolute;
+    left: 129px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+#vd-root.editing .vd-slide:after {
+    left: 166px;
+}
+
+.vd-row:active .vd-slide {
+    background: #D9D9D9;
+}
+
+#vd-root.editing .vd-row:active .vd-slide {
+    background: #fff;
+}
+
+.vd-del {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -85px;
+    width: 85px;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.vd-row.armed .vd-del {
+    transform: translateX(-85px);
+}
+
+.vd-del:active {
+    background: #D8271D;
+}
+
+/* ---------- one video ---------- */
+.vd-dbody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(#fff 0 55%, #EFEFF1);
+}
+
+.vd-hero {
+    flex: 0 0 152px;
+    height: 152px;
+    background: #B4B4B4 center/cover no-repeat;
+    color: #6E6E6E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-hero.art {
+    color: transparent;
+}
+
+.vd-dtitle {
+    margin: 20px 16px 0;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -.7px;
+    color: #000;
+}
+
+.vd-ddate {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 17px;
+    color: #8E8E93;
+    letter-spacing: -.3px;
+}
+
+.vd-dplay {
+    margin: 26px auto 0;
+    color: #000;
+}
+
+.vd-dplay:active {
+    opacity: .35;
+}
+
+.vd-meta {
+    margin: auto 0 22px;
+    padding: 26px 16px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 18px;
+}
+
+.vd-mk {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    color: #000;
+}
+
+.vd-mv {
+    margin-top: 2px;
+    font-size: 15px;
+    letter-spacing: -.2px;
+    color: #1c1c1e;
+}
+
+/* ---------- the player ---------- */
+#vdPlayer {
+    position: absolute;
+    inset: 0;
+    z-index: 800;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+}
+
+#vdPlayer.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* a quarter turn: the app wants landscape, the window cannot give it one */
+.vd-stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 568px;
+    height: 320px;
+    margin: -160px 0 0 -284px;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+.vd-screen {
+    position: absolute;
+    inset: 0;
+    background: #000 center/contain no-repeat;
+    color: #4a4a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-screen.art {
+    color: transparent;
+}
+
+.vd-ptop,
+.vd-pbot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(246, 246, 246, .62);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    color: #000;
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.vd-ptop {
+    top: 0;
+    height: 50px;
+}
+
+.vd-pbot {
+    bottom: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+#vdPlayer.bare .vd-ptop {
+    opacity: 0;
+    transform: translateY(-100%);
+}
+
+#vdPlayer.bare .vd-pbot {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+.vd-pstatus {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.vd-pstatus .sb-left,
+.vd-pstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.vd-pstatus .sb-right {
+    justify-content: flex-end;
+}
+
+.vd-pstatus .sb-mid {
+    font-weight: 600;
+}
+
+.vd-prow {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 14px;
+}
+
+.vd-done {
+    font-family: var(--sf-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+}
+
+.vd-done:active {
+    opacity: .35;
+}
+
+.vd-time {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+    min-width: 42px;
+}
+
+.vd-time.rem {
+    text-align: right;
+}
+
+/* the scrubber and the volume slider share one skin */
+.vd-scrub,
+.vd-vol {
+    position: relative;
+    height: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.vd-scrub {
+    flex: 1;
+}
+
+.vd-vol {
+    flex: 0 0 115px;
+    margin-left: 15px;
+}
+
+.vd-scrub i,
+.vd-vol i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 1.5px;
+    background: rgba(0, 0, 0, .78);
+}
+
+.vd-vol i {
+    background: rgba(0, 0, 0, .3);
+}
+
+.vd-scrub b,
+.vd-vol b {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
+
+.vd-transport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 52px;
+}
+
+.vd-tbtn {
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-tbtn:active {
+    opacity: .35;
+}
+
+
+/* ================= NOTES =================
+   Traced off ref_pic/Notes/. Everything sits on paper: one tiled
+   feTurbulence sheet stands in for the linen the real app draws, which keeps
+   the app self-contained the way the rest of this page is. */
+#ntapp {
+    --nt-tint: #D9A21A;
+    --nt-ink: #3A3A3C;
+    --nt-dim: #8E8E93;
+    --nt-hair: #C6C5C0;
+    /* the paper: fine noise over a warm off-white */
+    --nt-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='120' height='120' filter='url(%23p)' opacity='.055'/></svg>");
+    position: absolute;
+    inset: 0;
+    background: #F4F3F0;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#ntapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ntstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F4F3F0 var(--nt-paper);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#ntstatus .sb-left,
+#ntstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ntstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#ntstatus .sb-mid {
+    font-weight: 600;
+}
+
+#ntstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+#ntstack .page {
+    background: #F4F3F0 var(--nt-paper);
+}
+
+#ntstack .nav {
+    background: rgba(255, 255, 255, .34);
+    color: var(--nt-tint);
+}
+
+#ntstack .nav .title {
+    color: #1c1c1e;
+}
+
+#ntstack .nav:after {
+    background: var(--nt-hair);
+}
+
+#ntstack .nav .btn.back {
+    padding-left: 12px;
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+#ntstack .nav .btn.back svg {
+    margin-right: 6px;
+    flex: 0 0 auto;
+}
+
+.nt-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- bottom bars ---------- */
+.nt-tbar {
+    flex: 0 0 44px;
+    height: 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, .34);
+    color: var(--nt-tint);
+}
+
+.nt-tbar:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.nt-tgrow {
+    flex: 1;
+}
+
+.nt-tlabel {
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+.nt-tlabel:active,
+.nt-tbtn:active {
+    opacity: .35;
+}
+
+.nt-tlabel.dim {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+.nt-tbtn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+}
+
+.nt-tcount {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c2c2e;
+    letter-spacing: -.1px;
+}
+
+/* the note toolbar spreads four buttons evenly */
+#ntNBar {
+    justify-content: space-between;
+    padding: 0 22px;
+}
+
+/* select mode swaps one bar for the other */
+#ntSelBar {
+    display: none;
+}
+
+#nt-list.selecting #ntLBar {
+    display: none;
+}
+
+#nt-list.selecting #ntSelBar {
+    display: flex;
+}
+
+/* ---------- folders ---------- */
+.nt-fhdr {
+    padding: 26px 16px 6px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #6D6D72;
+    letter-spacing: .3px;
+}
+
+.nt-frow,
+.nt-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, .18);
+}
+
+.nt-frow {
+    height: 45px;
+    padding: 0 14px 0 16px;
+}
+
+.nt-frow:active,
+.nt-row:active {
+    background: rgba(0, 0, 0, .07);
+}
+
+.nt-fname {
+    flex: 1;
+    min-width: 0;
+    font-size: 19px;
+    letter-spacing: -.4px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-fcount {
+    font-size: 19px;
+    color: var(--nt-ink);
+    letter-spacing: -.4px;
+    margin-right: 9px;
+}
+
+.nt-chev {
+    color: #C0C0C0;
+    display: flex;
+}
+
+/* the hairline is inset to the label, iOS-style */
+.nt-frow:after,
+.nt-row:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.nt-frow.first:before,
+.nt-rows > .nt-row.first:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.nt-frow.first:before {
+    left: 0;
+}
+
+/* ---------- the note list ---------- */
+.nt-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+}
+
+.nt-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 28px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, .075);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    color: #8A8A8F;
+    font-size: 17px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+}
+
+.nt-sfield span {
+    color: #1c1c1e;
+    white-space: nowrap;
+}
+
+.nt-sfield.empty span:after {
+    content: "Search";
+    color: #8A8A8F;
+}
+
+.nt-scancel {
+    display: none;
+    font-size: 17px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+#nt-list.searching .nt-scancel {
+    display: block;
+}
+
+.nt-banner {
+    display: none;
+    padding: 14px 24px;
+    text-align: center;
+    font-size: 19px;
+    line-height: 1.24;
+    color: #4a4a4c;
+    letter-spacing: -.4px;
+    background: rgba(0, 0, 0, .045);
+    border-top: 1px solid var(--nt-hair);
+    border-bottom: 1px solid var(--nt-hair);
+}
+
+#nt-list.trash .nt-banner {
+    display: block;
+}
+
+#nt-list.trash .nt-search {
+    display: none;
+}
+
+.nt-row {
+    min-height: 53px;
+    padding: 8px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.nt-rtitle {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.45px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-rsub {
+    margin-top: 2px;
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    letter-spacing: -.25px;
+    color: var(--nt-dim);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.nt-rdate {
+    flex: 0 0 auto;
+    color: #77777C;
+}
+
+.nt-rprev {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* select mode slides a ring in on the left */
+.nt-ring {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 28px;
+    height: 28px;
+    margin-top: -14px;
+    border-radius: 50%;
+    border: 1.5px solid #C7C7CC;
+    opacity: 0;
+    transition: opacity .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-row.on .nt-ring {
+    background: var(--nt-tint);
+    border-color: var(--nt-tint);
+}
+
+.nt-ring svg {
+    opacity: 0;
+}
+
+.nt-row.on .nt-ring svg {
+    opacity: 1;
+}
+
+#nt-list.selecting .nt-ring {
+    opacity: 1;
+}
+
+#nt-list.selecting .nt-row {
+    padding-left: 56px;
+}
+
+#nt-list.selecting .nt-row:after {
+    left: 56px;
+}
+
+/* ---------- the editor ---------- */
+.nt-editor {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 16px 20px;
+}
+
+.nt-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--nt-ink);
+    letter-spacing: -.4px;
+    line-height: 1.32;
+    padding: 1px 0;
+}
+
+.nt-ltext {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.nt-line.f-title .nt-ltext {
+    font-family: var(--sf-display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.6px;
+}
+
+.nt-line.f-heading .nt-ltext {
+    font-family: var(--sf-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -.45px;
+}
+
+.nt-line.f-body .nt-ltext {
+    font-size: 19px;
+}
+
+.nt-line.f-bullet,
+.nt-line.f-dash,
+.nt-line.f-number,
+.nt-line.f-check {
+    font-size: 19px;
+}
+
+.nt-line.f-bullet .nt-ltext,
+.nt-line.f-dash .nt-ltext,
+.nt-line.f-number .nt-ltext,
+.nt-line.f-check .nt-ltext {
+    font-size: 19px;
+}
+
+.nt-lmark {
+    flex: 0 0 auto;
+    color: var(--nt-ink);
+    font-size: 19px;
+    line-height: 1.32;
+}
+
+/* the first line of a note is drawn as its title, the way iOS does */
+.nt-line.head .nt-ltext {
+    font-weight: 600;
+    font-size: 19px;
+}
+
+.nt-check {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    border-radius: 50%;
+    border: 1.5px solid #C0C0C0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-check.on {
+    background: var(--nt-tint);
+    border-color: var(--nt-tint);
+}
+
+.nt-check svg {
+    opacity: 0;
+}
+
+.nt-check.on svg {
+    opacity: 1;
+}
+
+.caret.nt {
+    background: var(--nt-tint);
+}
+
+/* Done only exists while the keyboard is up; the share button slides over */
+.nt-done {
+    display: none;
+    margin-left: auto;
+    text-align: right;
+    font-weight: 600;
+}
+
+#nt-note.editing .nt-done {
+    display: block;
+}
+
+.nt-share {
+    margin-left: auto;
+}
+
+#nt-note.editing .nt-share {
+    margin-left: auto;
+    margin-right: 4px;
+}
+
+#nt-note.editing #ntNBar {
+    display: none;
+}
+
+/* the round + parks above the keyboard */
+.nt-plus {
+    position: absolute;
+    right: 14px;
+    bottom: 260px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(120, 120, 125, .55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.nt-plus:active {
+    opacity: .6;
+}
+
+#nt-note.editing .nt-plus {
+    display: flex;
+}
+
+#nt-note.plusopen .nt-plus {
+    display: none;
+}
+
+.nt-plusbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 252px;
+    height: 52px;
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 20px;
+    color: var(--nt-tint);
+    z-index: 5;
+}
+
+#nt-note.plusopen .nt-plusbar {
+    display: flex;
+}
+
+.nt-pbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+}
+
+.nt-pbtn:active {
+    opacity: .35;
+}
+
+.nt-pbtn.dim {
+    color: #9A9A9F;
+}
+
+.nt-aa {
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 500;
+    letter-spacing: -.5px;
+}
+
+/* ---------- attachments ---------- */
+.nt-abody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-asec {
+    border-bottom: 1px solid var(--nt-hair);
+    padding-bottom: 18px;
+}
+
+.nt-ahead {
+    display: flex;
+    align-items: baseline;
+    padding: 18px 16px 14px;
+}
+
+.nt-aname {
+    flex: 1;
+    font-family: var(--sf-display);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: -.5px;
+    color: #1c1c1e;
+}
+
+.nt-aall {
+    font-size: 17px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-aall:active {
+    opacity: .35;
+}
+
+.nt-astrip {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-atile {
+    position: relative;
+    flex: 0 0 auto;
+    width: 96px;
+    height: 128px;
+    background: #C4C3BE center/cover no-repeat;
+    color: #8A8A85;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-abadge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 6px;
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .55));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.nt-arow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.nt-atext {
+    flex: 1;
+    min-width: 0;
+}
+
+.nt-atitle {
+    font-size: 19px;
+    letter-spacing: -.4px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-asub {
+    margin-top: 2px;
+    font-size: 15px;
+    color: var(--nt-dim);
+    letter-spacing: -.25px;
+}
+
+.nt-aplay {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 1px solid #D0CFCA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007AFF;
+}
+
+.nt-adoc {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 78px;
+    background: #fff;
+    border: 1px solid #DAD9D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- the formatting panel ---------- */
+.nt-fmtwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 820;
+    pointer-events: none;
+}
+
+.nt-fmtwrap.up {
+    pointer-events: auto;
+}
+
+.nt-fmt {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 302px;
+    background: #F7F7F5 var(--nt-paper);
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32, .72, 0, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.nt-fmtwrap.up .nt-fmt {
+    transform: translateY(0);
+}
+
+.nt-fhead {
+    flex: 0 0 46px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #fff;
+}
+
+.nt-fhead:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+}
+
+.nt-ftitle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: -.4px;
+    pointer-events: none;
+}
+
+.nt-fdone {
+    margin-left: auto;
+    z-index: 2;
+    font-size: 19px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-fdone:active {
+    opacity: .35;
+}
+
+.nt-frows {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-frw {
+    position: relative;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    color: #1c1c1e;
+}
+
+.nt-frw:active {
+    background: rgba(0, 0, 0, .06);
+}
+
+.nt-frw:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+}
+
+.nt-frw .tick {
+    position: absolute;
+    right: 16px;
+    opacity: 0;
+}
+
+.nt-frw.on .tick {
+    opacity: 1;
+}
+
+.nt-frw.s-title {
+    font-family: var(--sf-display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.6px;
+}
+
+.nt-frw.s-heading {
+    font-family: var(--sf-display);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -.5px;
+}
+
+.nt-frw.s-body {
+    font-size: 19px;
+}
+
+.nt-frw.s-list {
+    font-size: 19px;
+}
+
+/* ---------- action sheet ---------- */
+.nt-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 830;
+    background: rgba(0, 0, 0, .0);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease, background .28s ease;
+}
+
+.nt-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .34);
+}
+
+.nt-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(20px);
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.nt-sheetwrap.up .nt-sheet {
+    transform: translateY(0);
+}
+
+.nt-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .84);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.nt-sgroup + .nt-sgroup {
+    margin-top: 8px;
+}
+
+.nt-sbtn {
+    position: relative;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-sbtn + .nt-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .18);
+    transform: scaleY(.5);
+}
+
+.nt-sbtn:active {
+    background: rgba(0, 0, 0, .09);
+}
+
+.nt-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .93);
+}
+
+/* ---------- New Folder ---------- */
+.nt-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 840;
+    background: rgba(0, 0, 0, .0);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, background .25s ease;
+}
+
+.nt-alertwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .32);
+}
+
+.nt-alert {
+    position: absolute;
+    left: 27px;
+    right: 27px;
+    top: 92px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .94);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    transform: scale(1.1);
+    transition: transform .25s cubic-bezier(.32, .72, 0, 1);
+}
+
+.nt-alertwrap.up .nt-alert {
+    transform: scale(1);
+}
+
+.nt-afield {
+    margin: 4px 16px 16px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #C8C7CC;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 7px;
+    font-size: 15px;
+    color: #1c1c1e;
+    text-align: left;
+    overflow: hidden;
+}
+
+.nt-afield.empty:after {
+    content: "Name";
+    color: #B0B0B5;
+}
+
+.nt-alertwrap .ft-abtn {
+    color: var(--nt-tint);
+}
+
+/* the red minus that Edit slides into a deletable folder row */
+.nt-fminus {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #FF3B30;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-fminus:before {
+    content: "";
+    width: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+
+/* ================= SHARE SHEETS =================
+   Traced off ref_pic/ShareSheets/. Photos presents its sheet as a full page
+   with the selection strip along the top; Notes floats the same three
+   sections as a card. The pieces below are shared, the presentation is not. */
+.ss-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #F7F7F7;
+}
+
+/* ---------- the strip of what you are sharing ---------- */
+.ss-strip {
+    display: flex;
+    gap: 3px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    border-bottom: 1px solid #C8C7CC;
+}
+
+.ss-shot {
+    position: relative;
+    flex: 0 0 auto;
+    width: 74px;
+    height: 100px;
+    background: #2A2A2C center/cover no-repeat;
+}
+
+.ss-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, .9);
+    box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ss-shot.on .ss-ring {
+    background: #007AFF;
+    border-color: #007AFF;
+}
+
+.ss-ring svg {
+    opacity: 0;
+}
+
+.ss-shot.on .ss-ring svg {
+    opacity: 1;
+}
+
+.ss-dur {
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    text-shadow: 0 0 3px rgba(0, 0, 0, .6);
+}
+
+/* ---------- AirDrop ---------- */
+.ss-air {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 22px 16px 30px;
+    border-bottom: 1px solid #D2D1D6;
+}
+
+.ss-airtile {
+    flex: 0 0 auto;
+    width: 76px;
+    height: 76px;
+    border-radius: 15px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6E6E73;
+}
+
+.ss-air.on .ss-airtile {
+    background: none;
+    color: #007AFF;
+}
+
+.ss-airtext {
+    flex: 1;
+    min-width: 0;
+    padding-top: 12px;
+    font-size: 17px;
+    line-height: 1.29;
+    color: #1c1c1e;
+    letter-spacing: -.35px;
+}
+
+.ss-airtext b {
+    font-weight: 600;
+}
+
+/* ---------- the two scrolling rows ---------- */
+.ss-row {
+    display: flex;
+    gap: 14px;
+    padding: 18px 16px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid #D2D1D6;
+}
+
+.ss-row:last-child {
+    border-bottom: 0;
+}
+
+.ss-item {
+    flex: 0 0 auto;
+    width: 76px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.ss-item:active {
+    opacity: .5;
+}
+
+.ss-tile {
+    width: 60px;
+    height: 60px;
+    border-radius: 13px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #6E6E73;
+}
+
+.ss-row.acts .ss-tile {
+    background: #fff;
+}
+
+.ss-label {
+    font-size: 12px;
+    line-height: 1.16;
+    text-align: center;
+    color: #1c1c1e;
+    letter-spacing: -.1px;
+}
+
+/* the app tiles carry their own brand fills */
+.ss-tile.mail {
+    background: linear-gradient(#1D8FEA, #24C1F5);
+}
+
+.ss-tile.notes {
+    background: #fff;
+}
+
+.ss-tile.fb {
+    background: #3B5998;
+}
+
+.ss-tile.tw {
+    background: #4BA6E4;
+}
+
+.ss-tile.flickr {
+    background: #fff;
+}
+
+.ss-tile.ibooks {
+    background: linear-gradient(#FF9500, #FF7000);
+}
+
+/* ---------- Activities ---------- */
+.ss-actlist {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+}
+
+.ss-actrow {
+    position: relative;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 16px;
+}
+
+.ss-actrow:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+}
+
+.ss-actrow .ss-tile {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    flex: 0 0 auto;
+}
+
+.ss-actname {
+    flex: 1;
+    min-width: 0;
+    font-size: 19px;
+    color: #1c1c1e;
+    letter-spacing: -.4px;
+}
+
+.ss-grip {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: 6px;
+}
+
+.ss-grip i {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background: #C7C7CC;
+}
+
+/* the same switch the rest of the page uses, scoped so it can live here */
+.ss-sw {
+    flex: 0 0 auto;
+    width: 51px;
+    height: 31px;
+    border-radius: 16px;
+    background: #E5E5EA;
+    position: relative;
+    transition: background .22s ease;
+}
+
+.ss-sw.on {
+    background: #4CD964;
+}
+
+.ss-sw:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .28);
+    transition: transform .22s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ss-sw.on:after {
+    transform: translateX(20px);
+}
+
+/* ---------- Notes presents the same thing as a floating card ---------- */
+.ss-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 835;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    transition: opacity .3s ease, background .3s ease;
+}
+
+.ss-wrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .3);
+}
+
+.ss-card,
+.ss-cancel {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(248, 248, 247, .95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    transform: translateY(24px);
+    transition: transform .3s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ss-card {
+    top: 107px;
+    bottom: 74px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ss-cancel {
+    bottom: 8px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.ss-cancel:active {
+    background: rgba(0, 0, 0, .08);
+}
+
+.ss-wrap.up .ss-card,
+.ss-wrap.up .ss-cancel {
+    transform: translateY(0);
+}
+
+.ss-card .ss-air {
+    flex: 1;
+    align-items: center;
+    padding: 16px;
+    border-bottom-color: #D9D8D4;
+}
+
+.ss-card .ss-row {
+    flex: 0 0 auto;
+    border-bottom-color: #D9D8D4;
+}
+
+.ss-card .ss-tile,
+.ss-card .ss-airtile {
+    background: #fff;
+}
+
+/* Notes' own Activities sits over the card */
+.ss-actwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 845;
+    pointer-events: none;
+}
+
+.ss-actwrap.up {
+    pointer-events: auto;
+}
+
+.ss-actpage {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ss-actwrap.up .ss-actpage {
+    transform: translateY(0);
+}
+
+.ss-actwrap .nav {
+    color: var(--nt-tint);
+}
+
+/* ---------- Notes: locking ---------- */
+.nt-lockbtn {
+    margin-left: auto;
+    display: none;
+    color: var(--nt-tint);
+}
+
+#nt-note.haslock .nt-lockbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#nt-note.haslock .nt-share {
+    margin-left: 0;
+}
+
+/* a locked note hides its body and dims what you cannot use */
+.nt-locked {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 44px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+}
+
+#nt-note.locked .nt-locked {
+    display: flex;
+}
+
+#nt-note.locked .nt-editor {
+    visibility: hidden;
+}
+
+#nt-note.locked .nt-share,
+#nt-note.locked #ntCheckBtn,
+#nt-note.locked #ntCamBtn {
+    color: #B5B4B0;
+    pointer-events: none;
+}
+
+.nt-lockbig {
+    width: 100px;
+    height: 100px;
+    color: #949490;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-lockmsg {
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 700;
+    color: #3A3A3C;
+    letter-spacing: -.6px;
+}
+
+.nt-lockview {
+    font-size: 22px;
+    color: var(--nt-tint);
+    letter-spacing: -.5px;
+}
+
+.nt-lockview:active {
+    opacity: .35;
+}
+
+/* the list row's lock badge, and the second line the toolbar grows */
+.nt-rlock {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    margin-top: -9px;
+    color: #8A8A85;
+}
+
+.nt-tstack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+}
+
+.nt-locknow {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--nt-tint);
+    letter-spacing: -.1px;
+}
+
+#nt-list.anyopen .nt-locknow {
+    display: flex;
+}
+
+.nt-locknow:active {
+    opacity: .35;
+}
+
+/* the password field masks what you type */
+.nt-afield.pw span {
+    letter-spacing: 2px;
+}
+
+.nt-afield.pw.empty:after {
+    content: "Password";
+    letter-spacing: 0;
+}
+
+/* keep a locked row's text clear of its padlock */
+.nt-row.haslock .nt-rtitle,
+.nt-row.haslock .nt-rsub {
+    padding-right: 30px;
+}
+
+
+/* ================= REMINDERS =================
+   Traced off ref_pic/Reminders/. Every list is a card on the same paper
+   Notes uses; the stack hangs from a dark strip, and opening a card slides
+   it up over the others, which then peek along the bottom edge. */
+#rmapp {
+    --rm-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='120' height='120' filter='url(%23p)' opacity='.055'/></svg>");
+    --rm-ink: #3A3A3C;
+    --rm-rule: #C9C8C3;
+    --rm-red: #FF3B30;
+    position: absolute;
+    inset: 0;
+    background: #0D0D0F;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+#rmapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#rmstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 800;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#rmstatus .sb-left,
+#rmstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#rmstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#rmstatus .sb-mid {
+    font-weight: 600;
+}
+
+/* ---------- the dark strip ---------- */
+#rmtop {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: linear-gradient(#232326, #131315);
+}
+
+.rm-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 9px;
+    color: #9A9A9F;
+    font-size: 17px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+}
+
+.rm-sfield span {
+    color: #fff;
+    white-space: nowrap;
+}
+
+.rm-sfield.empty span:after {
+    content: "Search";
+    color: #9A9A9F;
+    font-weight: 500;
+}
+
+/* once you are searching the field goes left-aligned and grows a clear key */
+#rmapp.searching .rm-sfield {
+    justify-content: flex-start;
+}
+
+.rm-sclear {
+    display: none;
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
+#rmapp.searching .rm-sclear {
+    display: block;
+}
+
+.rm-plus {
+    flex: 0 0 auto;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.rm-plus:active {
+    opacity: .4;
+}
+
+.rm-scancel {
+    display: none;
+    flex: 0 0 auto;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.4px;
+}
+
+#rmapp.searching .rm-scancel {
+    display: block;
+}
+
+#rmapp.searching .rm-plus {
+    display: none;
+}
+
+/* ---------- the stack ---------- */
+#rmapp > .kbwrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 650;
+}
+
+#rmstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 300;
+    overflow: hidden;
+}
+
+#rmstack.open {
+    z-index: 550;
+}
+
+.rm-card {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 76px;
+    border-radius: 10px 10px 0 0;
+    background: #F2F1EE var(--rm-paper);
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, .7) inset, 0 -3px 8px rgba(0, 0, 0, .38);
+    overflow: hidden;
+    transition: transform .38s cubic-bezier(.32, .72, 0, 1),
+        height .38s cubic-bezier(.32, .72, 0, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* the open card climbs to the top of the strip and takes the whole screen */
+#rmstack.open .rm-card {
+    height: var(--rm-openh, 500px);
+}
+
+.rm-card.up {
+    z-index: 40;
+}
+
+.rm-chead {
+    flex: 0 0 auto;
+    position: relative;
+    padding: 14px 16px 0;
+    height: 76px;
+}
+
+.rm-cname {
+    font-family: var(--sf-display);
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -.9px;
+    line-height: 1.06;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 76px;
+}
+
+.rm-csub {
+    margin-top: 1px;
+    font-size: 15px;
+    color: #8A8A8F;
+    letter-spacing: -.25px;
+}
+
+.rm-ccount {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    text-align: right;
+    font-family: var(--sf-display);
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -.9px;
+    line-height: 1.06;
+}
+
+.rm-cover {
+    position: absolute;
+    right: 16px;
+    top: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--rm-red);
+    letter-spacing: -.25px;
+}
+
+.rm-cedit {
+    position: absolute;
+    right: 16px;
+    top: 50px;
+    font-size: 15px;
+    color: #0A84FF;
+    letter-spacing: -.25px;
+    display: none;
+}
+
+.rm-card.up .rm-cedit {
+    display: block;
+}
+
+.rm-card.up .rm-cover {
+    display: none;
+}
+
+.rm-clock {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    color: #9A9A9F;
+}
+
+/* ---------- the ruled body ---------- */
+.rm-cbody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* the rules keep going under the rows, like a legal pad */
+    display: none;
+}
+
+.rm-card.up .rm-cbody {
+    display: block;
+}
+
+.rm-row {
+    position: relative;
+    min-height: 38px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    padding: 8px 14px 8px 50px;
+}
+
+.rm-row:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}
+
+.rm-ring {
+    position: absolute;
+    left: 13px;
+    top: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid #B9B8B3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-ring i {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+}
+
+.rm-row.done .rm-ring i {
+    opacity: 1;
+}
+
+.rm-rtext {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    line-height: 1.32;
+    color: var(--rm-ink);
+    letter-spacing: -.35px;
+    word-break: break-word;
+}
+
+.rm-row.done .rm-rtext {
+    color: #9A9A9F;
+}
+
+.rm-bang {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.rm-rdue {
+    margin-top: 1px;
+    font-size: 15px;
+    letter-spacing: -.25px;
+    color: #6D6D72;
+}
+
+.rm-rdue.late {
+    color: var(--rm-red);
+}
+
+.rm-rlist {
+    margin-top: 0;
+    font-size: 15px;
+    color: #9A9A9F;
+    letter-spacing: -.25px;
+}
+
+/* the add row keeps a plus in the left gutter */
+.rm-add {
+    position: relative;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px 0 50px;
+    color: #A8A7A2;
+}
+
+.rm-add:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}
+
+.rm-addplus {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-addtext {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    color: var(--rm-ink);
+    letter-spacing: -.35px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Scheduled groups its rows under grey day headers */
+.rm-day {
+    position: relative;
+    padding: 4px 16px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    background: #DEDDD9;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: -.3px;
+}
+
+.rm-showdone {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.35px;
+    border-top: 1px dashed #B6B5B0;
+}
+
+.rm-showdone:active {
+    opacity: .4;
+}
+
+/* ---------- creating a list ---------- */
+.rm-dots {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 20px;
+}
+
+.rm-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-dot.on:after {
+    content: "";
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #F2F1EE;
+    box-shadow: 0 0 0 2px currentColor;
+}
+
+.rm-cname.edit {
+    padding-right: 76px;
+}
+
+/* ---------- search results ---------- */
+#rmResults {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: var(--rm-kb, 0px);
+    z-index: 350;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #F2F1EE var(--rm-paper);
+    display: none;
+}
+
+#rmapp.searching #rmResults {
+    display: block;
+}
+
+#rmResults .rm-row {
+    margin-left: 50px;
+}
+
+#rmResults .rm-ring {
+    border-color: currentColor;
+}
+
+.rm-hit {
+    font-weight: 700;
+}
+
+/* ---------- Create Reminder ---------- */
+.rm-page {
+    position: absolute;
+    inset: 0;
+    z-index: 600;
+    background: #EFEFF4;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
+    padding-top: 20px;
+}
+
+.rm-page:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: #F7F7F7;
+}
+
+.rm-page.up {
+    transform: translateY(0);
+}
+
+.rm-dbody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.rm-gap {
+    height: 35px;
+}
+
+.rm-group {
+    background: #fff;
+    border-top: 1px solid #C8C7CC;
+    border-bottom: 1px solid #C8C7CC;
+}
+
+.rm-frow {
+    position: relative;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 17px;
+    color: #000;
+    letter-spacing: -.4px;
+}
+
+.rm-frow + .rm-frow:before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+}
+
+.rm-flabel {
+    flex: 0 0 auto;
+}
+
+.rm-fval {
+    margin-left: auto;
+    color: #8A8A8F;
+    letter-spacing: -.4px;
+}
+
+.rm-fchev {
+    margin-left: 7px;
+    color: #C7C7CC;
+    display: flex;
+}
+
+.rm-ffield {
+    flex: 1;
+    min-width: 0;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.rm-ffield.empty:after {
+    content: "Reminder";
+    color: #C0C0C5;
+}
+
+.rm-fnotes.empty:after {
+    content: "Notes";
+    color: #C0C0C5;
+}
+
+.rm-frow.tall {
+    min-height: 88px;
+    align-items: flex-start;
+    padding-top: 12px;
+}
+
+/* the priority picker is four segments in one pill */
+.rm-seg {
+    margin-left: auto;
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #007AFF;
+}
+
+.rm-segbtn {
+    min-width: 46px;
+    height: 29px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #007AFF;
+    background: #fff;
+    letter-spacing: -.2px;
+}
+
+.rm-segbtn + .rm-segbtn {
+    border-left: 1px solid #007AFF;
+}
+
+.rm-segbtn.on {
+    background: #007AFF;
+    color: #fff;
+}
+
+.rm-sw {
+    margin-left: auto;
+    flex: 0 0 auto;
+    width: 51px;
+    height: 31px;
+    border-radius: 16px;
+    background: #E5E5EA;
+    position: relative;
+    transition: background .22s ease;
+}
+
+.rm-sw.on {
+    background: #4CD964;
+}
+
+.rm-sw:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .28);
+    transition: transform .22s cubic-bezier(.32, .72, 0, 1);
+}
+
+.rm-sw.on:after {
+    transform: translateX(20px);
+}
+
+.rm-frow.pick:active {
+    background: #D9D9DE;
+}
+
+.rm-ptick {
+    margin-left: auto;
+    color: #007AFF;
+    opacity: 0;
+}
+
+.rm-frow.on .rm-ptick {
+    opacity: 1;
+}
+
+.rm-swatch {
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-right: 10px;
+}
+
+/* ---------- Create new... ---------- */
+.rm-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    transition: opacity .28s ease, background .28s ease;
+}
+
+.rm-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .3);
+}
+
+.rm-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(20px);
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.rm-sheetwrap.up .rm-sheet {
+    transform: translateY(0);
+}
+
+.rm-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .86);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.rm-sgroup + .rm-sgroup {
+    margin-top: 8px;
+}
+
+.rm-shead {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #8A8A8F;
+    letter-spacing: -.35px;
+}
+
+.rm-sbtn {
+    position: relative;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #007AFF;
+    letter-spacing: -.4px;
+}
+
+.rm-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .16);
+    transform: scaleY(.5);
+}
+
+.rm-sbtn:active {
+    background: rgba(0, 0, 0, .09);
+}
+
+.rm-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .94);
+}
+
+.rm-sbtn.cancel:before {
+    display: none;
+}
+
+.caret.rm {
+    background: #0A84FF;
+}
+
+/* the empty rules under the last row -- generated so they line up with it */
+.rm-fill {
+    position: relative;
+    height: 38px;
+}
+
+.rm-fill:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}
+
+
+/* ================= STOCKS =================
+   Traced off ref_pic/Stocks/. Black all the way down: quotes on top, then a
+   three-page panel you swipe between, and a footer that never moves. */
+#stapp {
+    --st-green: #4CD661;
+    --st-red: #FF3B30;
+    --st-hair: #3A3A3C;
+    --st-dim: #8A8A8F;
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-display);
+    color: #fff;
+}
+
+#stapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ststatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: #000;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--sf-text);
+}
+
+#ststatus .sb-left,
+#ststatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ststatus .sb-right {
+    justify-content: flex-end;
+}
+
+#ststatus .sb-mid {
+    font-weight: 600;
+}
+
+#stapp.busy .sb-net {
+    display: block;
+}
+
+/* ---------- the quotes ---------- */
+#sttickers {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 336px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-row {
+    position: relative;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+}
+
+.st-row.on {
+    background: #2C2C2E;
+}
+
+.st-row:before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.st-row:first-child:before,
+.st-row.on:before,
+.st-row.on + .st-row:before {
+    display: none;
+}
+
+.st-sym {
+    flex: 0 0 auto;
+    font-size: 21px;
+    letter-spacing: -.4px;
+}
+
+.st-price {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    font-size: 21px;
+    letter-spacing: -.4px;
+}
+
+.st-pill {
+    flex: 0 0 auto;
+    width: 94px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--st-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.3px;
+}
+
+.st-pill.down {
+    background: var(--st-red);
+}
+
+/* ---------- the panel ---------- */
+#stpanel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 356px;
+    bottom: 0;
+    background: #1C1C1E;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.st-track {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    width: 300%;
+    transition: transform .34s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-page {
+    width: 33.3333%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---------- stats ---------- */
+.st-name {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 7px 12px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+
+.st-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 16px 4px;
+}
+
+.st-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 2px;
+}
+
+.st-cell:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-cell:nth-child(1):after,
+.st-cell:nth-child(2):after {
+    display: none;
+}
+
+.st-k {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--st-dim);
+    letter-spacing: .2px;
+}
+
+.st-v {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    font-size: 19px;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* ---------- chart ---------- */
+.st-ranges {
+    flex: 0 0 34px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.st-ranges:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-range {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
+    color: var(--st-dim);
+    letter-spacing: -.3px;
+}
+
+.st-range.on {
+    color: #fff;
+    font-weight: 700;
+}
+
+.st-plot {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.st-plot svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ---------- news ---------- */
+#stNews {
+    position: relative;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+}
+
+.st-story {
+    position: relative;
+    padding: 9px 16px 8px;
+    font-family: var(--sf-text);
+}
+
+.st-story:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-head {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.4px;
+}
+
+.st-head em {
+    font-style: normal;
+    font-weight: 400;
+    color: #C7C7CC;
+}
+
+.st-src {
+    margin-top: 2px;
+    font-size: 15px;
+    color: #7C7C81;
+    letter-spacing: -.3px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* ---------- both loading states ---------- */
+.st-load {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 19px;
+    color: var(--st-dim);
+    letter-spacing: -.4px;
+}
+
+.st-load .spin {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+}
+
+.st-load .spin i {
+    left: 12px;
+    top: 1px;
+    width: 2px;
+    height: 7px;
+    transform-origin: 1px 12px;
+    background: #6E6E73;
+}
+
+/* ---------- footer ---------- */
+.st-foot {
+    flex: 0 0 34px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+}
+
+.st-foot:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-yahoo {
+    flex: 0 0 auto;
+    width: 74px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #6E6E73;
+    letter-spacing: .4px;
+}
+
+.st-yahoo span {
+    color: #8A8A8F;
+}
+
+.st-fmid {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+.st-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.st-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #48484A;
+}
+
+.st-dots i.on {
+    background: #fff;
+}
+
+.st-market {
+    font-size: 13px;
+    color: #8A8A8F;
+    letter-spacing: -.1px;
+}
+
+.st-info {
+    flex: 0 0 auto;
+    width: 74px;
+    display: flex;
+    justify-content: flex-end;
+    color: #8A8A8F;
+}
+
+.st-info:active {
+    opacity: .4;
+}
+
+/* ---------- the two full-screen sheets ---------- */
+.st-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 600;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transform: translateY(100%);
+    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-sheet.up {
+    transform: translateY(0);
+}
+
+.st-sheet .nav {
+    background: #1C1C1E;
+    color: #0A84FF;
+}
+
+.st-sheet .nav .title {
+    color: #fff;
+}
+
+.st-sheet .nav:after {
+    background: var(--st-hair);
+}
+
+/* ---------- the editable list ---------- */
+.st-elist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-erow {
+    position: relative;
+    height: 50px;
+    overflow: hidden;
+}
+
+.st-eslide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 16px;
+    background: #000;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-erow.armed .st-eslide {
+    transform: translateX(-85px);
+}
+
+.st-eslide:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-eminus {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #FF3B30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.st-eminus:before {
+    content: "";
+    width: 15px;
+    height: 2.4px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+.st-etext {
+    flex: 1;
+    min-width: 0;
+}
+
+.st-etop {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.st-esym {
+    font-size: 23px;
+    letter-spacing: -.6px;
+    white-space: nowrap;
+}
+
+.st-eexch {
+    font-size: 21px;
+    color: #6E6E73;
+    letter-spacing: -.5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.st-ename {
+    margin-top: 0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.st-grip {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.st-grip i {
+    display: block;
+    width: 28px;
+    height: 2px;
+    background: #6E6E73;
+}
+
+.st-edel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -85px;
+    width: 85px;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-erow.armed .st-edel {
+    transform: translateX(-85px);
+}
+
+/* ---------- percentage / price / market cap ---------- */
+.st-segwrap {
+    flex: 0 0 auto;
+    padding: 12px 16px 10px;
+}
+
+.st-seg {
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #0A84FF;
+}
+
+.st-segbtn {
+    flex: 1;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.3px;
+}
+
+.st-segbtn + .st-segbtn {
+    border-left: 1px solid #0A84FF;
+}
+
+.st-segbtn.on {
+    background: #35AEE8;
+    color: #000;
+}
+
+.st-yfin {
+    flex: 0 0 auto;
+    padding: 6px 0 14px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    color: #4A4A4C;
+    letter-spacing: .6px;
+}
+
+.st-yfin em {
+    display: block;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #3A3A3C;
+}
+
+/* ---------- add a symbol ---------- */
+.st-prompt {
+    flex: 0 0 auto;
+    padding: 12px 16px 8px;
+    text-align: center;
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+.st-srow {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px 10px;
+}
+
+.st-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 34px;
+    border-radius: 6px;
+    background: #1C1C1E;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 9px;
+    color: var(--st-dim);
+    font-size: 19px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+.st-sfield span {
+    color: #fff;
+    white-space: nowrap;
+}
+
+.st-sclear {
+    margin-left: auto;
+    flex: 0 0 auto;
+    display: none;
+}
+
+.st-sfield.has .st-sclear {
+    display: block;
+}
+
+.st-scancel {
+    flex: 0 0 auto;
+    font-size: 21px;
+    color: #0A84FF;
+    letter-spacing: -.4px;
+}
+
+.st-sres {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-hit {
+    position: relative;
+    padding: 9px 16px 8px;
+}
+
+.st-hit:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-hit:active {
+    background: #1C1C1E;
+}
+
+.st-none {
+    padding: 22px 0;
+    text-align: center;
+    font-size: 17px;
+    color: var(--st-dim);
+}
+
+
+/* ================= iTUNES STORE =================
+   Traced off ref_pic/iTunesStore/. Music, Search and More are light; Movies
+   and TV Shows are dark, the way the 2015 store shipped. Nothing loads,
+   because there is nothing left on the other end to load from -- the empty
+   panes and the Cannot Connect sheet are the app working correctly. */
+#itapp {
+    --it-blue: #0A84FF;
+    --it-hair: #C8C7CC;
+    --it-bar: #F7F7F7;
+    --it-bg: #fff;
+    --it-idle: #929296;
+    position: absolute;
+    inset: 0;
+    background: var(--it-bg);
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+/* the two video sections invert the whole chrome */
+#itapp.dark {
+    --it-blue: #0A84FF;
+    --it-hair: #2A2A2C;
+    --it-bar: #1F1F21;
+    --it-bg: #1A1A1C;
+    --it-idle: #8A8A8F;
+}
+
+#itapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#itstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: var(--it-bar);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#itstatus .sb-left,
+#itstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#itstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#itstatus .sb-mid {
+    font-weight: 600;
+}
+
+#itapp.busy .sb-net {
+    display: block;
+}
+
+#itstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--it-bg);
+}
+
+/* ---------- nav ---------- */
+.it-nav {
+    flex: 0 0 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--it-bar);
+}
+
+.it-nav:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+    pointer-events: none;
+}
+
+#itapp.dark .it-title {
+    color: #fff;
+}
+
+.it-edit {
+    margin-left: auto;
+    padding: 0 14px;
+    font-size: 17px;
+    color: var(--it-blue);
+    letter-spacing: -.41px;
+    display: none;
+    z-index: 2;
+}
+
+#itapp.more .it-edit {
+    display: block;
+}
+
+.it-back {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    padding-left: 8px;
+    font-size: 17px;
+    color: var(--it-blue);
+    letter-spacing: -.41px;
+    z-index: 2;
+}
+
+#itapp.sub .it-back {
+    display: flex;
+}
+
+#itapp.sub .it-edit {
+    display: none;
+}
+
+/* ---------- body ---------- */
+.it-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--it-bg);
+}
+
+/* the message that is the whole point of the app */
+.it-fail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -.5px;
+    color: #8A8A8F;
+}
+
+/* ---------- the More list ---------- */
+.it-row {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 14px 0 12px;
+}
+
+.it-row:active {
+    background: rgba(0, 0, 0, .07);
+}
+
+.it-icon {
+    flex: 0 0 auto;
+    width: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--it-blue);
+}
+
+.it-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    color: #000;
+    letter-spacing: -.41px;
+}
+
+#itapp.dark .it-label {
+    color: #fff;
+}
+
+.it-chev {
+    flex: 0 0 auto;
+    color: #C7C7CC;
+    display: flex;
+}
+
+/* rows and the blank rules under them share one hairline */
+.it-row:after,
+.it-rule:after {
+    content: "";
+    position: absolute;
+    left: 55px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-rule {
+    position: relative;
+    height: 44px;
+}
+
+/* ---------- tab bar ---------- */
+.it-tabs {
+    flex: 0 0 49px;
+    position: relative;
+    display: flex;
+    background: var(--it-bar);
+}
+
+.it-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    color: var(--it-idle);
+}
+
+.it-tab.on {
+    color: var(--it-blue);
+}
+
+.it-tab svg {
+    display: block;
+}
+
+.it-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+.it-tab:active {
+    opacity: .5;
+}
+
+/* The MobileStore artwork is black (or blue) on alpha, so it goes in as a
+   mask and takes its colour from the row -- that keeps the unselected icons
+   visible when Movies and TV Shows flip the bar dark. `--m` is the plain
+   glyph, `--ms` the filled one a selected tab uses. */
+.it-tab i,
+.it-icon i {
+    display: block;
+    background: currentColor;
+    -webkit-mask-image: var(--m);
+    mask-image: var(--m);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+.it-tab.on i {
+    -webkit-mask-image: var(--ms);
+    mask-image: var(--ms);
+}
+
+/* ==================================================================
+   APP STORE
+   Traced off ref_pic/AppStore/. Same joke as the iTunes Store: every
+   tab reaches for a storefront that is not there any more. The chrome
+   never inverts, so there is no dark variant to carry.
+   ================================================================== */
+#asapp {
+    --as-blue: #007AFF;
+    --as-hair: #B2B2B2;
+    --as-bar: #F9F9F9;
+    --as-bg: #fff;
+    --as-idle: #929292;
+    position: absolute;
+    inset: 0;
+    background: var(--as-bg);
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+#asapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#asstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: var(--as-bar);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#asstatus .sb-left,
+#asstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#asstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#asstatus .sb-mid {
+    font-weight: 600;
+}
+
+#asapp.busy .sb-net {
+    display: block;
+}
+
+#asstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--as-bg);
+}
+
+/* ---------- nav ----------
+   Nothing ever loads, so the bar stays empty; it is here for the hairline
+   and the 44px it takes off the top. */
+.as-nav {
+    flex: 0 0 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--as-bar);
+}
+
+.as-nav:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--as-hair);
+    transform: scaleY(.5);
+}
+
+.as-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+    pointer-events: none;
+}
+
+/* ---------- body ---------- */
+.as-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--as-bg);
+}
+
+.as-fail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -.5px;
+    color: #8A8A8F;
+}
+
+/* ---------- tab bar ----------
+   49px tall, glyphs on a 26px band 5px down from the hairline, labels at
+   10px underneath -- the numbers come straight off the screenshots. */
+.as-tabs {
+    flex: 0 0 49px;
+    position: relative;
+    display: flex;
+    background: var(--as-bar);
+}
+
+.as-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--as-hair);
+    transform: scaleY(.5);
+}
+
+.as-tab {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5px;
+    color: var(--as-idle);
+}
+
+.as-tab.on {
+    color: var(--as-blue);
+}
+
+.as-tab .as-glyph {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.as-tab svg {
+    display: block;
+}
+
+.as-tab span {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+.as-tab:active {
+    opacity: .5;
 }

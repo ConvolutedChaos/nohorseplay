@@ -505,6 +505,29 @@
 								<div class="ph-body ph-alblist" id="addToBody"></div>
 							</div>
 
+							<!-- ---- share sheet ---- -->
+							<div class="page modal" id="ph-share">
+								<div class="nav">
+									<div class="btn" id="phSSCancel">Cancel</div>
+									<div class="title" id="phSSTitle">1 Photo Selected</div>
+								</div>
+								<div class="ss-body">
+									<div class="ss-strip" id="phSSStrip"></div>
+									<div class="ss-air" id="phSSAir"></div>
+									<div class="ss-row" id="phSSApps"></div>
+									<div class="ss-row acts" id="phSSActs"></div>
+								</div>
+							</div>
+
+							<!-- ---- Activities, from either row's More ---- -->
+							<div class="page modal" id="ph-acts">
+								<div class="nav">
+									<div class="title">Activities</div>
+									<div class="btn right" id="phActsDone">Done</div>
+								</div>
+								<div class="ss-actlist" id="phActsBody"></div>
+							</div>
+
 							<!-- ---- search, over everything but the status bar ---- -->
 							<div class="ph-searchpage" id="ph-search">
 								<div class="ph-srow">
@@ -546,7 +569,9 @@
 							<div class="ph-sheetwrap" id="phSheet">
 								<div class="ph-sheet">
 									<div class="ph-sgroup" id="phSGroup"></div>
-									<div class="ph-sgroup"><div class="ph-sbtn cancel" id="phSCancelBtn">Cancel</div></div>
+									<div class="ph-sgroup">
+										<div class="ph-sbtn cancel" id="phSCancelBtn">Cancel</div>
+									</div>
 								</div>
 							</div>
 
@@ -611,6 +636,745 @@
 						<div id="camBlink"></div>
 					</div><!-- /#camapp -->
 
+					<!-- ============ WEATHER ============ -->
+					<div id="wxapp">
+						<div id="wxstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="wxClock">7:55 PM</div>
+							<div class="sb-right" id="wxBatt"></div>
+						</div>
+
+						<div id="wxstack">
+
+							<!-- ---- the paged city views ---- -->
+							<div class="wx-deck" id="wxDeck">
+								<div class="wx-pages" id="wxPages"></div>
+								<div class="wx-bar" id="wxBar">
+									<div class="wx-twc" id="wxTwc">The<br>Weather<br>Channel</div>
+									<div class="wx-dots" id="wxDots"></div>
+									<div class="wx-listbtn" id="wxListBtn">
+										<svg width="30" height="18" viewBox="0 0 30 18" aria-hidden="true">
+											<circle cx="2" cy="2" r="1.5" fill="currentColor" />
+											<circle cx="2" cy="9" r="1.5" fill="currentColor" />
+											<circle cx="2" cy="16" r="1.5" fill="currentColor" />
+											<path d="M7 2h22M7 9h22M7 16h22" stroke="currentColor" stroke-width="1.4"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---- every city at a glance ---- -->
+							<div class="wx-list" id="wxListView">
+								<div class="wx-lscroll" id="wxLScroll">
+									<div class="wx-lrows" id="wxRows"></div>
+									<div class="wx-lfoot">
+										<div class="wx-unit" id="wxUnit">
+											<span data-u="C">&deg;C</span>
+											<i></i>
+											<span data-u="F">&deg;F</span>
+										</div>
+										<div class="wx-add" id="wxAdd">
+											<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+												<circle cx="15" cy="15" r="13.4" fill="none" stroke="currentColor"
+													stroke-width="1.3" />
+												<path d="M15 8.2v13.6M8.2 15h13.6" stroke="currentColor"
+													stroke-width="1.3" stroke-linecap="round" />
+											</svg>
+										</div>
+										<div class="wx-twc foot">The<br>Weather<br>Channel</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- ---- add a city ---- -->
+							<div class="wx-search" id="wxSearchView">
+								<div class="wx-sbackdrop"></div>
+								<div class="wx-shead">
+									<div class="wx-stitle">Enter city, zip code, or airport location</div>
+									<div class="wx-srow">
+										<div class="wx-sfield" id="wxField">
+											<svg width="14" height="14" viewBox="0 0 16 16" style="flex:0 0 auto">
+												<circle cx="6.6" cy="6.6" r="5.2" fill="none" stroke="#8E8E93"
+													stroke-width="1.6" />
+												<path d="M10.6 10.6 15 15" stroke="#8E8E93" stroke-width="1.8"
+													stroke-linecap="round" />
+											</svg>
+											<span class="wx-stext" id="wxSText"></span>
+											<span class="wx-sclear" id="wxSClear">
+												<svg width="17" height="17" viewBox="0 0 17 17">
+													<circle cx="8.5" cy="8.5" r="8.5" fill="#8E8E93" />
+													<path d="M5.4 5.4l6.2 6.2M11.6 5.4l-6.2 6.2" stroke="#000"
+														stroke-width="1.5" stroke-linecap="round" />
+												</svg>
+											</span>
+										</div>
+										<div class="wx-scancel" id="wxSCancel">Cancel</div>
+									</div>
+								</div>
+								<div class="wx-sresults" id="wxResults"></div>
+								<div class="kbwrap nopred" id="kb9"></div>
+							</div>
+
+						</div><!-- /#wxstack -->
+					</div><!-- /#wxapp -->
+
+					<!-- ============ VIDEOS ============ -->
+					<div id="vdapp">
+						<div id="vdstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="vdClock">8:37 PM</div>
+							<div class="sb-right" id="vdBatt"></div>
+						</div>
+
+						<div id="vdstack">
+
+							<!-- ---- the library ---- -->
+							<div class="page active" id="vd-root">
+								<div class="nav">
+									<div class="btn" id="vdStore">Store</div>
+									<div class="title">Music Videos</div>
+									<div class="btn right" id="vdEdit">Edit</div>
+								</div>
+								<div class="vd-body" id="vdList"></div>
+								<div class="vd-tabs"><div class="vd-tab on" id="vdTab1"></div></div>
+							</div>
+
+							<!-- ---- one video ---- -->
+							<div class="page" id="vd-detail">
+								<div class="nav">
+									<div class="btn back" id="vdBack">
+										<svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+											<path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+												stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+										</svg><span>Music Videos</span>
+									</div>
+								</div>
+								<div class="vd-dbody" id="vdDetail"></div>
+								<div class="vd-tabs"><div class="vd-tab on" id="vdTab2"></div></div>
+							</div>
+
+						</div><!-- /#vdstack -->
+
+						<!-- ---- playback forces landscape, so the whole stage is
+						     turned a quarter turn inside the portrait screen ---- -->
+						<div id="vdPlayer">
+							<div class="vd-stage">
+								<div class="vd-screen" id="vdScreen"></div>
+
+								<div class="vd-ptop" id="vdTop">
+									<div class="vd-pstatus">
+										<div class="sb-left">
+											<span>iPod</span>
+											<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+												<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+												<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none"
+													stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+												<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+													stroke-width="1.5" stroke-linecap="round" />
+											</svg>
+										</div>
+										<div class="sb-mid" id="vdpClock">8:38 PM</div>
+										<div class="sb-right" id="vdpBatt"></div>
+									</div>
+									<div class="vd-prow">
+										<div class="vd-done" id="vdDone">Done</div>
+										<div class="vd-time" id="vdElapsed">0:00</div>
+										<div class="vd-scrub" id="vdScrub">
+											<i></i><b></b>
+										</div>
+										<div class="vd-time rem" id="vdRemain">-0:00</div>
+									</div>
+								</div>
+
+								<div class="vd-pbot" id="vdBot">
+									<div class="vd-vol" id="vdVol"><i></i><b></b></div>
+									<div class="vd-transport">
+										<div class="vd-tbtn" id="vdPrev">
+											<svg width="42" height="26" viewBox="0 0 42 26" aria-hidden="true">
+												<path d="M2 3v20" stroke="currentColor" stroke-width="3.4"
+													stroke-linecap="round" />
+												<path d="M22 3 7.5 13 22 23zM40 3 25.5 13 40 23z" fill="currentColor" />
+											</svg>
+										</div>
+										<div class="vd-tbtn" id="vdPlay"></div>
+										<div class="vd-tbtn" id="vdNext">
+											<svg width="42" height="26" viewBox="0 0 42 26" aria-hidden="true">
+												<path d="M40 3v20" stroke="currentColor" stroke-width="3.4"
+													stroke-linecap="round" />
+												<path d="M20 3 34.5 13 20 23zM2 3 16.5 13 2 23z" fill="currentColor" />
+											</svg>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div><!-- /#vdapp -->
+
+					<!-- ============ NOTES ============ -->
+					<div id="ntapp">
+						<div id="ntstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="ntClock">9:05 PM</div>
+							<div class="sb-right" id="ntBatt"></div>
+						</div>
+
+						<div id="ntstack">
+
+							<!-- ---- folders ---- -->
+							<div class="page active" id="nt-folders">
+								<div class="nav">
+									<div class="title">Folders</div>
+									<div class="btn right" id="ntFEdit">Edit</div>
+								</div>
+								<div class="nt-body" id="ntFolders"></div>
+								<div class="nt-tbar">
+									<div class="nt-tgrow"></div>
+									<div class="nt-tlabel" id="ntNewFolder">New Folder</div>
+								</div>
+							</div>
+
+							<!-- ---- one folder's notes ---- -->
+							<div class="page" id="nt-list">
+								<div class="nav">
+									<div class="btn back" id="ntLBack">
+										<svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+											<path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+												stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+									</div>
+									<div class="title" id="ntLTitle">On My iPod touch</div>
+									<div class="btn right" id="ntLEdit">Edit</div>
+								</div>
+								<div class="nt-body" id="ntListBody">
+									<div class="nt-search" id="ntSearch">
+										<div class="nt-sfield" id="ntSField">
+											<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+												<circle cx="5.8" cy="5.8" r="4.6" fill="none" stroke="currentColor"
+													stroke-width="1.6" />
+												<path d="M9.3 9.3 13 13" stroke="currentColor" stroke-width="1.6"
+													stroke-linecap="round" />
+											</svg>
+											<span id="ntSVal"></span>
+										</div>
+										<div class="nt-scancel" id="ntSCancel">Cancel</div>
+									</div>
+									<div class="nt-banner" id="ntBanner">Notes are permanently<br>deleted after 30 days
+									</div>
+									<div class="nt-rows" id="ntRows"></div>
+								</div>
+								<div class="nt-tbar" id="ntLBar">
+									<div class="nt-tbtn" id="ntAttachBtn">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<rect x="1" y="1" width="10" height="10" rx="2" fill="none"
+												stroke="currentColor" stroke-width="2" />
+											<rect x="15" y="1" width="10" height="10" rx="2" fill="none"
+												stroke="currentColor" stroke-width="2" />
+											<rect x="1" y="15" width="10" height="10" rx="2" fill="none"
+												stroke="currentColor" stroke-width="2" />
+											<rect x="15" y="15" width="10" height="10" rx="2" fill="none"
+												stroke="currentColor" stroke-width="2" />
+										</svg>
+									</div>
+									<div class="nt-tstack">
+										<div class="nt-tcount" id="ntCount">30 Notes</div>
+										<div class="nt-locknow" id="ntLockNow">Lock Now</div>
+									</div>
+									<div class="nt-tbtn" id="ntCompose">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<path d="M25 12.5V24a1 1 0 01-1 1H2a1 1 0 01-1-1V2a1 1 0 011-1h11.5"
+												fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" />
+											<path d="M9 17.4l1-4.2L21.2 2a2.4 2.4 0 013.4 3.4L13.4 16.6z" fill="none"
+												stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+										</svg>
+									</div>
+								</div>
+								<div class="nt-tbar" id="ntSelBar">
+									<div class="nt-tlabel" id="ntMoveBtn">Move All</div>
+									<div class="nt-tgrow"></div>
+									<div class="nt-tlabel" id="ntDelBtn">Delete All</div>
+								</div>
+								<div class="kbwrap nopred" id="kbN3"></div>
+							</div>
+
+							<!-- ---- one note ---- -->
+							<div class="page" id="nt-note">
+								<div class="nav">
+									<div class="btn back" id="ntNBack">
+										<svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+											<path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+												stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+										</svg><span id="ntNBackLbl">On My iPod touch</span>
+									</div>
+									<div class="btn right nt-lockbtn" id="ntLockBtn"></div>
+									<div class="btn nt-share" id="ntShare">
+										<svg width="20" height="26" viewBox="0 0 20 26" aria-hidden="true">
+											<path d="M10 1.5v15" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" />
+											<path d="M5.4 6 10 1.4 14.6 6" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M4.6 10H2a1 1 0 00-1 1v13a1 1 0 001 1h16a1 1 0 001-1V11a1 1 0
+												00-1-1h-2.6" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+									<div class="btn nt-done" id="ntDone">Done</div>
+								</div>
+								<div class="nt-editor" id="ntEditor"></div>
+								<div class="nt-locked" id="ntLocked">
+									<div class="nt-lockbig"></div>
+									<div class="nt-lockmsg">This note is locked.</div>
+									<div class="nt-lockview" id="ntLockView">View Note</div>
+								</div>
+								<div class="nt-tbar" id="ntNBar">
+									<div class="nt-tbtn" id="ntTrash">
+										<svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true">
+											<path d="M1 4h20M8 4V1.8h6V4" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linecap="round" />
+											<path d="M3.4 7.5h15.2l-1 16.2a1.4 1.4 0 01-1.4 1.3H5.8a1.4 1.4 0
+												01-1.4-1.3z" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linejoin="round" />
+											<path d="M8 11.5v9.5M14 11.5v9.5" stroke="currentColor" stroke-width="1.6"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+									<div class="nt-tbtn" id="ntCheckBtn">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<circle cx="13" cy="13" r="11.8" fill="none" stroke="currentColor"
+												stroke-width="2" />
+											<path d="M7.4 13.2 11.3 17 18.6 9.4" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+									</div>
+									<div class="nt-tbtn" id="ntCamBtn">
+										<svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true">
+											<path d="M1 6.5a2 2 0 012-2h4.3l1.9-3.2h11.6l1.9 3.2H27a2 2 0 012 2V21a2 2 0
+												01-2 2H3a2 2 0 01-2-2z" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linejoin="round" />
+											<circle cx="15" cy="13.6" r="5.4" fill="none" stroke="currentColor"
+												stroke-width="2" />
+										</svg>
+									</div>
+									<div class="nt-tbtn" id="ntNCompose">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<path d="M25 12.5V24a1 1 0 01-1 1H2a1 1 0 01-1-1V2a1 1 0 011-1h11.5"
+												fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" />
+											<path d="M9 17.4l1-4.2L21.2 2a2.4 2.4 0 013.4 3.4L13.4 16.6z" fill="none"
+												stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+										</svg>
+									</div>
+								</div>
+
+								<!-- the round + that lives above the keyboard, and the row it
+								     opens into -->
+								<div class="nt-plus" id="ntPlus">
+									<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+										<path d="M11 2v18M2 11h18" stroke="#fff" stroke-width="2.2"
+											stroke-linecap="round" />
+									</svg>
+								</div>
+								<div class="nt-plusbar" id="ntPlusBar">
+									<div class="nt-pbtn" id="ntPCheck">
+										<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+											<circle cx="13" cy="13" r="11.8" fill="none" stroke="currentColor"
+												stroke-width="2" />
+											<path d="M7.4 13.2 11.3 17 18.6 9.4" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+									</div>
+									<div class="nt-pbtn nt-aa" id="ntPFmt">Aa</div>
+									<div class="nt-pbtn" id="ntPCam">
+										<svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true">
+											<path d="M1 6.5a2 2 0 012-2h4.3l1.9-3.2h11.6l1.9 3.2H27a2 2 0 012 2V21a2 2 0
+												01-2 2H3a2 2 0 01-2-2z" fill="none" stroke="currentColor"
+												stroke-width="2" stroke-linejoin="round" />
+											<circle cx="15" cy="13.6" r="5.4" fill="none" stroke="currentColor"
+												stroke-width="2" />
+										</svg>
+									</div>
+									<div class="nt-pbtn dim" id="ntPClose">
+										<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M2 2l20 20M22 2 2 22" stroke="currentColor" stroke-width="2.4"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+								</div>
+								<div class="kbwrap" id="kbN"></div>
+							</div>
+
+							<!-- ---- attachments ---- -->
+							<div class="page modal" id="nt-attach">
+								<div class="nav">
+									<div class="title">Attachments</div>
+									<div class="btn right" id="ntADone">Done</div>
+								</div>
+								<div class="nt-abody" id="ntABody"></div>
+							</div>
+
+						</div><!-- /#ntstack -->
+
+						<!-- ---- the formatting panel ---- -->
+						<div class="nt-fmtwrap" id="ntFmt">
+							<div class="nt-fmt">
+								<div class="nt-fhead">
+									<div class="nt-ftitle">Formatting</div>
+									<div class="nt-fdone" id="ntFDone">Done</div>
+								</div>
+								<div class="nt-frows" id="ntFRows"></div>
+							</div>
+						</div>
+
+						<!-- ---- Photo Library / Take Photo or Video ---- -->
+						<div class="nt-sheetwrap" id="ntSheet">
+							<div class="nt-sheet">
+								<div class="nt-sgroup" id="ntSGroup"></div>
+								<div class="nt-sgroup">
+									<div class="nt-sbtn cancel" id="ntSCancelBtn">Cancel</div>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- ---- share sheet: a card, not a page ---- -->
+						<div class="ss-wrap" id="ntSS">
+							<div class="ss-card">
+								<div class="ss-air" id="ntSSAir"></div>
+								<div class="ss-row" id="ntSSApps"></div>
+								<div class="ss-row acts" id="ntSSActs"></div>
+							</div>
+							<div class="ss-cancel" id="ntSSCancel">Cancel</div>
+						</div>
+
+						<!-- ---- Activities ---- -->
+						<div class="ss-actwrap" id="ntActs">
+							<div class="ss-actpage">
+								<div class="nav">
+									<div class="title">Activities</div>
+									<div class="btn right" id="ntActsDone">Done</div>
+								</div>
+								<div class="ss-actlist" id="ntActsBody"></div>
+							</div>
+						</div>
+
+						<!-- ---- Lock Note / View Note ---- -->
+						<div class="nt-alertwrap" id="ntPwAlert">
+							<div class="nt-alert">
+								<div class="ft-atitle" id="ntPwTitle">Lock Note</div>
+								<div class="ft-amsg" id="ntPwMsg">Enter your password to lock this note.</div>
+								<div class="nt-afield pw" id="ntPwField"><span id="ntPwVal"></span></div>
+								<div class="ft-abtns">
+									<div class="ft-abtn" id="ntPwCancel">Cancel</div>
+									<div class="ft-abtn" id="ntPwOK">OK</div>
+								</div>
+							</div>
+							<div class="kbwrap nopred" id="kbN4"></div>
+						</div>
+
+						<!-- ---- New Folder ---- -->
+						<div class="nt-alertwrap" id="ntAlert">
+							<div class="nt-alert">
+								<div class="ft-atitle">New Folder</div>
+								<div class="ft-amsg">Enter a name for this folder.</div>
+								<div class="nt-afield" id="ntAField"><span id="ntAVal"></span></div>
+								<div class="ft-abtns">
+									<div class="ft-abtn" id="ntACancel">Cancel</div>
+									<div class="ft-abtn dim" id="ntASave">Save</div>
+								</div>
+							</div>
+							<div class="kbwrap" id="kbN2"></div>
+						</div>
+					</div><!-- /#ntapp -->
+
+					<!-- ============ REMINDERS ============ -->
+					<div id="rmapp">
+						<div id="rmstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="sb-mid" id="rmClock">9:20 PM</div>
+							<div class="sb-right" id="rmBatt"></div>
+						</div>
+
+						<!-- the dark strip the stack of cards hangs from -->
+						<div id="rmtop">
+							<div class="rm-sfield" id="rmSField">
+								<svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+									<circle cx="6.2" cy="6.2" r="5" fill="none" stroke="currentColor"
+										stroke-width="1.8" />
+									<path d="M10 10 14 14" stroke="currentColor" stroke-width="1.8"
+										stroke-linecap="round" />
+								</svg>
+								<span id="rmSVal"></span>
+								<div class="rm-sclear" id="rmSClear">
+									<svg width="17" height="17" viewBox="0 0 17 17" aria-hidden="true">
+										<circle cx="8.5" cy="8.5" r="8.5" fill="#8A8A8F" />
+										<path d="M5.4 5.4 11.6 11.6M11.6 5.4 5.4 11.6" stroke="#2C2C2E"
+											stroke-width="1.7" stroke-linecap="round" />
+									</svg>
+								</div>
+							</div>
+							<div class="rm-plus" id="rmPlus">
+								<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+									<path d="M13 1v24M1 13h24" stroke="currentColor" stroke-width="2.2"
+										stroke-linecap="round" />
+								</svg>
+							</div>
+							<div class="rm-scancel" id="rmSCancel">Cancel</div>
+						</div>
+
+						<!-- every list is a card; one of them can be open -->
+						<div id="rmstack"></div>
+
+						<!-- search results sit over the stack -->
+						<div id="rmResults"></div>
+
+						<div class="kbwrap" id="kbR"></div>
+						<div class="kbwrap nopred" id="kbR3"></div>
+						<div class="kbwrap" id="kbR4"></div>
+
+						<!-- ---- Create Reminder ---- -->
+						<div class="rm-page" id="rm-detail">
+							<div class="nav">
+								<div class="btn" id="rmDCancel">Cancel</div>
+								<div class="title" id="rmDTitle">Create Reminder</div>
+								<div class="btn right" id="rmDDone">Done</div>
+							</div>
+							<div class="rm-dbody" id="rmDBody"></div>
+							<div class="kbwrap" id="kbR2"></div>
+						</div>
+
+						<!-- ---- one column of choices, for List and Repeat ---- -->
+						<div class="rm-page" id="rm-pick">
+							<div class="nav">
+								<div class="btn back" id="rmPBack">
+									<svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+										<path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+											stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg><span>Details</span>
+								</div>
+								<div class="title" id="rmPTitle">List</div>
+							</div>
+							<div class="rm-dbody" id="rmPBody"></div>
+						</div>
+
+						<!-- ---- Create new... ---- -->
+						<div class="rm-sheetwrap" id="rmSheet">
+							<div class="rm-sheet">
+								<div class="rm-sgroup">
+									<div class="rm-shead">Create new&#8230;</div>
+									<div class="rm-sbtn" id="rmNewRem">Reminder</div>
+									<div class="rm-sbtn" id="rmNewList">List</div>
+								</div>
+								<div class="rm-sgroup">
+									<div class="rm-sbtn cancel" id="rmSheetCancel">Cancel</div>
+								</div>
+							</div>
+						</div>
+					</div><!-- /#rmapp -->
+
+					<!-- ============ STOCKS ============ -->
+					<div id="stapp">
+						<div id="ststatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+								<span class="sb-net" id="stNet"
+									aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+							</div>
+							<div class="sb-mid" id="stClock">6:14 PM</div>
+							<div class="sb-right" id="stBatt"></div>
+						</div>
+
+						<!-- the quotes -->
+						<div id="sttickers"></div>
+
+						<!-- stats / chart / news, swiped between -->
+						<div id="stpanel">
+							<div class="st-track" id="stTrack">
+								<div class="st-page" id="stStats"></div>
+								<div class="st-page" id="stChartPage">
+									<div class="st-ranges" id="stRanges"></div>
+									<div class="st-plot" id="stPlot"></div>
+								</div>
+								<div class="st-page" id="stNews"></div>
+							</div>
+							<div class="st-foot">
+								<div class="st-yahoo">YAHOO<span>!</span></div>
+								<div class="st-fmid">
+									<div class="st-dots" id="stDots"></div>
+									<div class="st-market">Market closed</div>
+								</div>
+								<div class="st-info" id="stInfo">
+									<svg width="30" height="22" viewBox="0 0 30 22" aria-hidden="true">
+										<circle cx="2" cy="2" r="1.6" fill="currentColor" />
+										<circle cx="2" cy="11" r="1.6" fill="currentColor" />
+										<circle cx="2" cy="20" r="1.6" fill="currentColor" />
+										<path d="M8 2h21M8 11h21M8 20h21" stroke="currentColor" stroke-width="1.6"
+											stroke-linecap="round" />
+									</svg>
+								</div>
+							</div>
+						</div>
+
+						<!-- ---- manage the list ---- -->
+						<div class="st-sheet" id="st-edit">
+							<div class="nav">
+								<div class="btn" id="stAdd">
+									<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+										<path d="M13 1v24M1 13h24" stroke="currentColor" stroke-width="2.4"
+											stroke-linecap="round" />
+									</svg>
+								</div>
+								<div class="title">Stocks</div>
+								<div class="btn right" id="stDone">Done</div>
+							</div>
+							<div class="st-elist" id="stEList"></div>
+							<div class="st-segwrap">
+								<div class="st-seg" id="stSeg">
+									<div class="st-segbtn" data-m="pct">percentage</div>
+									<div class="st-segbtn" data-m="price">price</div>
+									<div class="st-segbtn" data-m="cap">market cap</div>
+								</div>
+							</div>
+							<div class="st-yfin">YAHOO<span>!</span><em>FINANCE</em></div>
+						</div>
+
+						<!-- ---- add one ---- -->
+						<div class="st-sheet" id="st-add">
+							<div class="st-prompt">Type a company name or stock symbol.</div>
+							<div class="st-srow">
+								<div class="st-sfield" id="stSField">
+									<svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+										<circle cx="6.2" cy="6.2" r="5" fill="none" stroke="currentColor"
+											stroke-width="1.8" />
+										<path d="M10 10 14 14" stroke="currentColor" stroke-width="1.8"
+											stroke-linecap="round" />
+									</svg>
+									<span id="stSVal"></span>
+									<div class="st-sclear" id="stSClear">
+										<svg width="19" height="19" viewBox="0 0 19 19" aria-hidden="true">
+											<circle cx="9.5" cy="9.5" r="9.5" fill="#fff" />
+											<path d="M6 6 13 13M13 6 6 13" stroke="#1C1C1E" stroke-width="1.9"
+												stroke-linecap="round" />
+										</svg>
+									</div>
+								</div>
+								<div class="st-scancel" id="stSCancel">Cancel</div>
+							</div>
+							<div class="st-sres" id="stSRes"></div>
+							<div class="kbwrap nopred" id="kbS"></div>
+						</div>
+					</div><!-- /#stapp -->
+
+					<!-- ============ iTUNES STORE ============ -->
+					<div id="itapp">
+						<div id="itstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+								<span class="sb-net" id="itNet"
+									aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+							</div>
+							<div class="sb-mid" id="itClock">6:36 PM</div>
+							<div class="sb-right" id="itBatt"></div>
+						</div>
+
+						<div id="itstack">
+							<div class="it-nav">
+								<div class="it-title" id="itTitle"></div>
+								<div class="it-edit" id="itEdit">Edit</div>
+								<div class="it-back" id="itBack">
+									<svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+										<path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+											stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg><span id="itBackLbl">More</span>
+								</div>
+							</div>
+
+							<div class="it-body" id="itBody"></div>
+
+							<div class="it-tabs" id="itTabs"></div>
+						</div>
+					</div><!-- /#itapp -->
+
+					<!-- ============ APP STORE ============ -->
+					<div id="asapp">
+						<div id="asstatus">
+							<div class="sb-left">
+								<span>iPod</span>
+								<svg width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+									<path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+									<path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+									<path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+										stroke-width="1.5" stroke-linecap="round" />
+								</svg>
+								<span class="sb-net" id="asNet"
+									aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+							</div>
+							<div class="sb-mid" id="asClock">7:42 PM</div>
+							<div class="sb-right" id="asBatt"></div>
+						</div>
+
+						<div id="asstack">
+							<div class="as-nav">
+								<div class="as-title" id="asTitle"></div>
+							</div>
+
+							<div class="as-body" id="asBody"></div>
+
+							<div class="as-tabs" id="asTabs"></div>
+						</div>
+					</div><!-- /#asapp -->
+
 					<!-- alarms and timers ring wherever you are, so this lives
 					     outside the app window, over the lock screen too -->
 					<div class="ck-alertwrap" id="ckAlert">
@@ -662,6 +1426,7 @@
 
 						<div id="lkPass">
 							<div class="lk-ptitle">Enter Passcode</div>
+							<div class="lk-psub" id="lkPSub">iPod touch requires your passcode after restarting</div>
 							<div class="lk-dots" id="lkDots"></div>
 							<div class="lk-fail" id="lkFail"></div>
 							<div id="lkKeys"></div>
@@ -792,6 +1557,21 @@
 					</div>
 					<div id="sleepmask"></div>
 
+					<!-- ============ BOOT ============
+					     Black, then the logo, then it hands over to the lock screen.
+					     Sits above the sleep mask so nothing shows through underneath. -->
+					<div id="boot" class="on">
+						<svg id="bootLogo" width="66" height="81" viewBox="0 0 814 1000" aria-hidden="true">
+							<path fill="#fff" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9
+								134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5
+								0-103.7 40.8-165.9 40.8s-105.6-57-155.5-127C46.7 790.7 0 663 0 541.8c0-194.4 126.4-297.5
+								250.8-297.5 66.1 0 121.2 43.4 162.7 43.4 39.5 0 101.1-46 176.3-46 28.5 0 130.9 2.6 198.3
+								99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1
+								75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0
+								102.5-30.4 135.5-71.3z" />
+						</svg>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -880,6 +1660,13 @@
 				$('clock').textContent = txt; $('hsClock').textContent = txt;
 				$('ncClock').textContent = txt; $('ftClock').textContent = txt;
 				$('ckClock').textContent = txt; $('phClock').textContent = txt;
+				$('wxClock').textContent = txt;
+				$('vdClock').textContent = txt; $('vdpClock').textContent = txt;
+				$('ntClock').textContent = txt;
+				$('rmClock').textContent = txt;
+				$('stClock').textContent = txt;
+				$('itClock').textContent = txt;
+				$('asClock').textContent = txt;
 				lkTick();
 				if (ckReady) ckTick();
 			}
@@ -941,7 +1728,7 @@
 				'<path d="M6 4.3v2.5h1.8" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>' +
 				'<path d="M2.2 1 3.7 2.4M9.8 1 8.3 2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
 
-			var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt', 'phBatt'];
+			var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt', 'phBatt', 'wxBatt', 'vdBatt', 'vdpBatt', 'ntBatt', 'rmBatt', 'stBatt', 'itBatt', 'asBatt'];
 			function renderBatteries() {
 				var std = (ckAlarmOn ? ALARM_STD : '') +
 					battSVG(BATT_STD, batt.level, batt.charging) + (batt.charging ? BOLT_STD : '');
@@ -958,6 +1745,12 @@
 				app: 0.97,      /* #F7F7F7 nav bar */
 				ck: 0.97,      /* Clock's nav bar, same grey */
 				ft: 0.02,      /* FaceTime is black */
+				vd: 0.97,      /* Videos' nav bar, same grey */
+				nt: 0.95,      /* Notes is paper all the way up */
+				rm: 0.08,      /* Reminders hangs its cards off a dark strip */
+				st: 0.03,      /* Stocks is black top to bottom */
+				it: 0.97,      /* the store flips dark for Movies and TV Shows */
+				as: 0.98,      /* #F9F9F9 chrome, and it never inverts */
 				nc: 0.16,      /* blurred + darkened wallpaper */
 				lockMain: 0.87,      /* #FFEC6D */
 				lockPass: 0.31       /* #595317 */
@@ -978,6 +1771,12 @@
 				$('statusbar').style.color = inkCss(inkT(BG_LUMA.app * dim), 1);
 				$('ckstatus').style.color = inkCss(inkT(BG_LUMA.ck * dim), 1);
 				$('ftstatus').style.color = inkCss(inkT(BG_LUMA.ft * dim), 1);
+				$('vdstatus').style.color = inkCss(inkT(BG_LUMA.vd * dim), 1);
+				$('ntstatus').style.color = inkCss(inkT(BG_LUMA.nt * dim), 1);
+				$('rmstatus').style.color = inkCss(inkT(BG_LUMA.rm * dim), 1);
+				$('ststatus').style.color = inkCss(inkT(BG_LUMA.st * dim), 1);
+				$('itstatus').style.color = inkCss(inkT(BG_LUMA.it * dim), 1);
+				$('asstatus').style.color = inkCss(inkT(BG_LUMA.as * dim), 1);
 				$('ncStatus').style.color = inkCss(inkT(BG_LUMA.nc), 1);
 				/* the lock bar rides the passcode slide continuously instead of flipping */
 				$('lkStatus').style.color = inkCss(lkP || 0, 0.7);
@@ -1069,13 +1868,7 @@
 			   Janae's four entries come straight off the screenshot; the rest reuse
 			   numbers already visible in the thread list. */
 			let CONTACTS = [
-				{ first: 'Janae', last: 'Griebel', label: 'home', value: '(308) 440-2158' },
-				{ first: 'Janae', last: 'Griebel', label: 'work', value: '(308) 872-8327' },
-				{ first: 'Janae', last: 'Griebel', label: 'home', value: 'jgriebel@gmail.com' },
-				{ first: 'Janae', last: 'Griebel', group: ' & +1 (402) 910-5452' },
-				{ first: 'Parker', last: '', label: 'mobile', value: '(308) 830-0332' },
-				{ first: 'Marcus', last: '', label: 'mobile', value: '(308) 215-0334' },
-				{ first: 'Joel', last: '', label: 'mobile', value: '(402) 910-5452' }
+				{ first: 'Parker', last: '', label: 'mobile', value: '555-0123' }
 			];
 
 			/* ------------------------------------------------------------------ */
@@ -1404,6 +2197,16 @@
 				if (st.target === 'city') return cyQuery;
 				if (st.target === 'album') return phAlbName;
 				if (st.target === 'psearch') return phQuery;
+				if (st.target === 'wxsearch') return wxQuery;
+				if (st.target === 'note') return ntCur ? ntCur.body : '';
+				if (st.target === 'ntfolder') return ntFName;
+				if (st.target === 'ntsearch') return ntQuery;
+				if (st.target === 'ntpw') return ntPwVal;
+				if (st.target === 'rmadd') return rmAddText;
+				if (st.target === 'rmsearch') return rmQuery;
+				if (st.target === 'rmname') return rmNaming ? rmNaming.n : '';
+				if (st.target === 'rmfield') return rmDraft ? (rmField === 'notes' ? rmDraft.notes : rmDraft.t) : '';
+				if (st.target === 'stsearch') return stQuery;
 				return st.target === 'to' ? toText : (st.target === 'search' ? query : buffer);
 			}
 			function setText(st, v) {
@@ -1412,6 +2215,17 @@
 				else if (st.target === 'city') { cyQuery = v; cySync(); }
 				else if (st.target === 'album') { phAlbName = v; phAlbSync(); }
 				else if (st.target === 'psearch') { phQuery = v; phSearchSync(); }
+				else if (st.target === 'wxsearch') { wxQuery = v; wxSyncSearch(); }
+				else if (st.target === 'note') { if (ntCur) { ntCur.body = v; ntCur.d = new Date(); ntRenderNote(); } }
+				else if (st.target === 'ntfolder') { ntFName = v; ntFSync(); }
+				else if (st.target === 'ntsearch') { ntQuery = v; ntRenderList(); }
+				else if (st.target === 'ntpw') { ntPwVal = v; ntPwSync(); }
+				else if (st.target === 'rmadd') { rmAddText = v; rmRender(); }
+				else if (st.target === 'rmsearch') { rmQuery = v; rmSyncSearch(); }
+				else if (st.target === 'rmname') { if (rmNaming) { rmNaming.n = v; rmRender(); } }
+				else if (st.target === 'stsearch') { stQuery = v; stSyncSearch(); }
+				else if (st.target === 'rmfield') { if (rmDraft) { if (rmField === 'notes') rmDraft.notes = v;
+					else rmDraft.t = v; rmRenderDetail(); } }
 				else if (st.target === 'to') { toText = v; syncTo(); }
 				else if (st.target === 'search') { query = v; syncSearch(); renderList(); }
 				else { buffer = v; syncField(); }
@@ -1453,6 +2267,14 @@
 						else if (st.target === 'city') cyBlur();
 						else if (st.target === 'album') { if (phAlbName.trim()) $('phASave').click(); }
 						else if (st.target === 'psearch') { closeKB(kb8); phSearchSync(); }
+						else if (st.target === 'ntfolder') { if (ntFName.trim()) $('ntASave').click(); }
+						else if (st.target === 'ntsearch') { closeKB(kbN3); ntSyncSearch(); }
+						else if (st.target === 'ntpw') { $('ntPwOK').click(); }
+						else if (st.target === 'rmadd') { rmCommitAdd(); }
+						else if (st.target === 'rmsearch') { closeKB(kbR3); rmSyncSearch(); }
+						else if (st.target === 'rmname') { rmFinishNaming(); }
+						else if (st.target === 'stsearch') { closeKB(kbS); stSyncSearch(); }
+						else if (st.target === 'rmfield') { if (rmField === 'notes') insert('\n', st); }
 						else insert('\n', st);
 						break;
 					case 'mic':
@@ -1806,6 +2628,7 @@
 					lockEl.style.opacity = '';
 					lkAnim(false); lkPaint(0); lkClear();
 					lkFails = 0; lkFail.classList.remove('on');
+					lkWhy(false);        /* asked and answered; it is a restart-only line */
 				}, 360);
 			}
 
@@ -1890,10 +2713,83 @@
 			});
 
 			/* ------------------------------------------------------------------ */
+			/* BOOT                                                               */
+			/* ------------------------------------------------------------------ */
+			/* The sheet is already black in the markup, so there is no flash of
+			   home screen before the script gets here. */
+			var bootEl = $('boot'), booting = true, bootTimers = [];
+
+			/* the restart reason under "Enter Passcode", until it is answered once */
+			function lkWhy(on) { lkPass.classList.toggle('why', on); }
+
+			function bootAt(ms, fn) { bootTimers.push(setTimeout(fn, ms)); }
+
+			/* dark: how long the screen stays plain black before the logo warms
+			   up. A cold start is already black, so it is only a beat; a restart
+			   holds it longer, the way the real one goes dark before coming back. */
+			function boot(dark) {
+				bootTimers.forEach(clearTimeout);
+				bootTimers = [];
+				booting = true;
+				bootEl.classList.remove('off');
+				bootEl.classList.add('on');
+
+				bootAt(dark, function () { bootEl.classList.add('lit'); });
+
+				/* the lock screen is dressed underneath while the black is still up */
+				bootAt(dark + 2700, function () {
+					lkLock();
+					lkWhy(true);
+					bootEl.classList.add('off');
+				});
+
+				bootAt(dark + 3220, function () {
+					bootEl.className = '';
+					booting = false;
+				});
+			}
+
+			/* Cut to black and come up again from nothing. Everything that was
+			   on screen is torn down under the cover of the boot sheet, so the
+			   lock screen that fades in is the only thing left standing. */
+			function restart() {
+				if (booting) return;
+				bootEl.className = 'on';           /* black, no fade, no logo yet */
+
+				if (openAppId) {
+					var id = openAppId, appEl = APPS[id];
+					openAppId = null;
+					appTeardown(id);
+					appEl.style.transition = 'none';
+					appEl.style.transform = 'none';
+					appEl.style.opacity = '';
+					appEl.classList.remove('on');
+				}
+				hsEl.style.transition = 'none';
+				hsEl.style.transform = 'none';
+				hsEl.style.opacity = '';
+
+				$('ckAlert').classList.remove('up');
+				ckAlertCb = null;
+				$('volHud').classList.remove('show');
+				setNC(false);
+				setCC(false);
+				setPage(0);
+				$('hsPages').style.transition = 'none';
+
+				asleep = false;
+				$('sleepmask').classList.remove('on');
+
+				boot(700);
+			}
+
+			boot(200);
+
+			/* ------------------------------------------------------------------ */
 			/* PHYSICAL KEYBOARD                                                  */
 			/* ------------------------------------------------------------------ */
 			document.addEventListener('keydown', function (e) {
-				if (asleep) return;
+				if (asleep || booting) return;
 				if (locked) {
 					if (lkP < .5) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lkGo(1); } return; }
 					if (/^[0-9]$/.test(e.key)) { e.preventDefault(); lkPress(e.key); }
@@ -1904,11 +2800,12 @@
 				let st = (openAppId === 'facetime') ? (kb4.el.classList.contains('up') ? kb4 : null)
 					: (openAppId === 'clock') ? (kb5.el.classList.contains('up') ? kb5
 						: (kb6.el.classList.contains('up') ? kb6 : null))
-					: (openAppId === 'photos') ? (kb7.el.classList.contains('up') ? kb7
-						: (kb8.el.classList.contains('up') ? kb8 : null))
-						: (pNew.classList.contains('active') ? kb2
-							: (searching ? kb3
-								: (kb1.el.classList.contains('up') ? kb1 : null)));
+						: (openAppId === 'weather') ? (kb9.el.classList.contains('up') ? kb9 : null)
+							: (openAppId === 'photos') ? (kb7.el.classList.contains('up') ? kb7
+								: (kb8.el.classList.contains('up') ? kb8 : null))
+								: (pNew.classList.contains('active') ? kb2
+									: (searching ? kb3
+										: (kb1.el.classList.contains('up') ? kb1 : null)));
 				if (!st) return;
 				if (e.key === 'Backspace') { e.preventDefault(); backspace(st); }
 				else if (e.key === 'Enter') {
@@ -1918,6 +2815,7 @@
 					else if (st === kb6) cyBlur();
 					else if (st === kb7) { if (phAlbName.trim()) $('phASave').click(); }
 					else if (st === kb8) { closeKB(kb8); phSearchSync(); }
+					else if (st === kb9) { if (wxResEl._m && wxResEl._m.length) wxAddPlace(wxResEl._m[0].p); }
 					else if (st === kb1 && buffer.trim()) rightBtn.click();
 				}
 				else if (e.key === 'Escape') {
@@ -1926,6 +2824,7 @@
 					else if (st === kb6) cyCancelSearch();
 					else if (st === kb7) phCloseAlbumAlert();
 					else if (st === kb8) phCloseSearch();
+					else if (st === kb9) wxCloseSearch();
 					else if (searching) exitSearch();
 					else { closeKB(kb1); closeDict(); syncField(); }
 				}
@@ -1953,28 +2852,28 @@
 
 			/* img = file in icons/ ; leave it off and the tile falls back to the grey placeholder */
 			let PAGE1 = [
-				{ n: 'FaceTime', img: 'facetime.png', app: 'facetime' }, 
+				{ n: 'FaceTime', img: 'facetime.png', app: 'facetime' },
 				{ n: 'Calendar', img: 'calendar.png', live: 'cal' },
 				{ n: 'Photos', img: 'photos.png', app: 'photos' },
-				{ n: 'Camera', img: 'camera.png', app: 'camera' }, 
-				{ n: 'Weather', img: 'weather.png' }, 
-				{ n: 'Clock', img: 'clock.png', app: 'clock', live: 'clock' }, 
-				{ n: 'Maps', img: 'maps.png' }, 
-				{ n: 'Videos', img: 'videos.png' }, 
+				{ n: 'Camera', img: 'camera.png', app: 'camera' },
+				{ n: 'Weather', img: 'weather.png', app: 'weather' },
+				{ n: 'Clock', img: 'clock.png', app: 'clock', live: 'clock' },
+				{ n: 'Maps', img: 'maps.png' },
+				{ n: 'Videos', img: 'videos.png', app: 'videos' },
 				{ n: 'Wallet', img: 'wallet.png' },
-				{ n: 'Notes', img: 'notes.png' },
-				{ n: 'Reminders', img: 'reminders.png'}, 
-				{ n: 'Stocks', img: 'stocks.png'}, 
-				{ n: 'iTunes Store', img: 'itunes-store.png'}, 
-				{ n: 'App Store', img: 'app-store.png'}, 
-				{ n: 'iBooks', img: 'ibooks.png'}, 
-				{ n: 'News', img: 'news.png'}, 
-				{ n: 'Health', img: 'health.png'}, 
+				{ n: 'Notes', img: 'notes.png', app: 'notes' },
+				{ n: 'Reminders', img: 'reminders.png', app: 'reminders' },
+				{ n: 'Stocks', img: 'stocks.png', app: 'stocks' },
+				{ n: 'iTunes Store', img: 'itunes-store.png', app: 'itunes' },
+				{ n: 'App Store', img: 'app-store.png', app: 'appstore' },
+				{ n: 'iBooks', img: 'ibooks.png' },
+				{ n: 'News', img: 'news.png' },
+				{ n: 'Health', img: 'health.png' },
 				{ n: 'Settings', img: 'settings.png' }
 			];
 			/* page 2 is a guess -- I have no screenshot of it */
 			let PAGE2 = [
-				
+
 			];
 			let DOCK = [
 				{ n: 'Messages', app: 'messages', img: 'messages.png' },
@@ -2115,7 +3014,7 @@
 
 			/* ---- open / close with the zoom-into-icon transition ---- */
 			let openAppId = null, hsEl = $('homescreen');
-			let APPS = { messages: $('app'), facetime: $('ftapp'), clock: $('ckapp'), photos: $('phapp'), camera: $('camapp') };
+			let APPS = { messages: $('app'), facetime: $('ftapp'), clock: $('ckapp'), photos: $('phapp'), camera: $('camapp'), weather: $('wxapp'), videos: $('vdapp'), notes: $('ntapp'), reminders: $('rmapp'), stocks: $('stapp'), itunes: $('itapp'), appstore: $('asapp') };
 			let EASE = 'cubic-bezier(.32,.06,.16,1)', DUR = 400;
 
 			function originOf(iconEl) {
@@ -2134,6 +3033,13 @@
 				let appEl = APPS[id];
 				if (openAppId || !appEl) return;
 				if (id === 'camera') camOpen();
+				if (id === 'weather') wxOpen();
+				if (id === 'videos') vdOpen();
+				if (id === 'notes') ntOpen();
+				if (id === 'reminders') rmAppOpen();
+				if (id === 'stocks') stOpen();
+				if (id === 'itunes') itOpen();
+				if (id === 'appstore') asOpen();
 				let o = originOf(iconEl);
 				openAppId = id;
 				appEl.style.transition = 'none';
@@ -2154,14 +3060,27 @@
 				hsEl.style.opacity = '0';
 			}
 
-			function closeApp() {
-				if (!openAppId) return;
-				let id = openAppId, appEl = APPS[id];
-				openAppId = null;
+			/* an app's own teardown, split out so a restart can run it without
+			   the zoom-out that closeApp draws */
+			function appTeardown(id) {
 				if (id === 'facetime') { ftBlur(); $('ftAlert').classList.remove('up'); ftAlertCb = null; }
 				if (id === 'clock') ckReset();
 				if (id === 'photos') phReset();
 				if (id === 'camera') camReset();
+				if (id === 'weather') wxReset();
+				if (id === 'videos') vdReset();
+				if (id === 'notes') ntReset();
+				if (id === 'reminders') rmAppReset();
+				if (id === 'stocks') stReset();
+				if (id === 'itunes') itReset();
+				if (id === 'appstore') asReset();
+			}
+
+			function closeApp() {
+				if (!openAppId) return;
+				let id = openAppId, appEl = APPS[id];
+				openAppId = null;
+				appTeardown(id);
 				let o = originOf(iconFor(id));
 				appEl.style.transformOrigin = o;
 				hsEl.style.transformOrigin = o;
@@ -2202,6 +3121,7 @@
 			}
 
 			function setSleep(on) {
+				if (booting) return;
 				if (!on && batt.dead) return;      /* a flat battery will not wake up */
 				asleep = on;
 				$('sleepmask').classList.toggle('on', on);
@@ -2214,6 +3134,7 @@
 			}
 
 			function goHome() {
+				if (booting) return;
 				if (asleep) { setSleep(false); return; }
 				if (ccOpen) { setCC(false); return; }
 				if (ncOpen) { setNC(false); return; }
@@ -4468,14 +5389,7 @@
 				img.src = url;
 			}
 
-			function phShareOut(items) {
-				items.slice(0, 8).forEach(function (p) {
-					var a = document.createElement('a');
-					a.href = phFullURL(p);
-					a.download = p.name || ('photo-' + p.id + '.jpg');
-					document.body.appendChild(a); a.click(); a.remove();
-				});
-			}
+			function phShareOut(items) { phShareSheet(items); }
 
 			/* ---- one dispatcher for every button in the app --------------------- */
 			function phAction(act, el) {
@@ -5250,6 +6164,3177 @@
 
 			camPaint();
 
+			/* ------------------------------------------------------------------ */
+			/* WEATHER                                                            */
+			/* ------------------------------------------------------------------ */
+			/* Traced off ref_pic/Weather/. There is no forecast service behind
+			   this, so the numbers are generated: a seeded PRNG gives each city a
+			   stable day-by-day climate, and a real sunrise/sunset calculation
+			   drives the diurnal temperature curve, the day/night icons and the
+			   UV index. Feeding Kearney's latitude and longitude through it on
+			   the day of IMG_2510 reproduces that screenshot's 6:50 AM / 8:29 PM
+			   to the minute, which is the only part of this that can be checked. */
+
+			var WX_STICK = 78, WX_HERO = 228, WX_TODAYH = 28, WX_STRIP = 94;
+			var WX_TOP = WX_HERO + WX_TODAYH;              /* 256: strip's resting offset */
+			var WX_DAYS = 9, WX_DAYH = 28;
+			var WX_CONTENT = WX_TOP + WX_STRIP + WX_DAYS * WX_DAYH + 56 + 228;   /* 886 */
+			var WX_WINDOW = 568 - 20 - 37;                 /* 511 of visible scroller */
+			var WX_MAXS = WX_CONTENT - WX_WINDOW;          /* 375 of travel */
+			var WX_HEADRISE = 25;                          /* how far the title climbs */
+
+			/* name, time zone, latitude, longitude, mean temp, daily swing, wetness */
+			var WX_CITIES = [
+				{ n: 'Cupertino', tz: 'America/Los_Angeles', lat: 37.323, lon: -122.032, base: 66, amp: 20, wet: .12 }
+			];
+
+			var WX_UNIT = 'F';
+			var wxPage = 0, wxTimer = null;
+
+			/* ---- a small stable PRNG, so a city's forecast does not reshuffle
+					every time the view is repainted ---------------------------- */
+			function wxHash(s) {
+				var h = 2166136261, i;
+				for (i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+				return h >>> 0;
+			}
+			function wxRng(seed) {
+				var a = seed >>> 0;
+				return function () {
+					a = (a + 0x6D2B79F5) | 0;
+					var t = Math.imul(a ^ (a >>> 15), 1 | a);
+					t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+					return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+				};
+			}
+
+			/* ---- sun geometry ------------------------------------------------
+			   Declination + the equation of time, with the standard -0.833 deg
+			   refracted horizon. Everything is returned in the city's own clock
+			   hours, so the timezone offset (DST included) folds straight in. */
+			function wxSolar(city, p, offH) {
+				var doy = Math.round((Date.UTC(p.y, p.mo - 1, p.d) - Date.UTC(p.y, 0, 1)) / 86400000) + 1;
+				var decl = 0.409105 * Math.sin(2 * Math.PI * (doy - 81) / 365);
+				var B = 2 * Math.PI * (doy - 81) / 364;
+				var eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);   /* minutes */
+				var latR = city.lat * Math.PI / 180;
+				var noon = 12 - city.lon / 15 + offH - eot / 60;
+				var cosH = (Math.sin(-0.01454) - Math.sin(latR) * Math.sin(decl)) /
+					(Math.cos(latR) * Math.cos(decl));
+				var H;
+				if (cosH <= -1) H = 12;                    /* midnight sun */
+				else if (cosH >= 1) H = 0;                 /* polar night */
+				else H = Math.acos(cosH) * 180 / Math.PI / 15;
+				return { rise: noon - H, set: noon + H, noon: noon, decl: decl, latR: latR };
+			}
+
+			/* how high the sun is, 0..1, at a given clock hour -- feeds the UV index */
+			function wxElev(sun, h) {
+				var ha = (h - sun.noon) * 15 * Math.PI / 180;
+				return Math.sin(sun.latR) * Math.sin(sun.decl) +
+					Math.cos(sun.latR) * Math.cos(sun.decl) * Math.cos(ha);
+			}
+
+			/* ---- conditions --------------------------------------------------- */
+			var WX_LABEL = {
+				sunny: 'Sunny', clear: 'Clear', partly: 'Partly Cloudy', partlyn: 'Partly Cloudy',
+				cloudy: 'Cloudy', fog: 'Foggy', rain: 'Rain', tstorm: 'Thunderstorms'
+			};
+			/* the scene behind the city -- day and night read very differently */
+			function wxScene(cond, night) {
+				if (night) return 'sc-night';
+				if (cond === 'rain' || cond === 'tstorm') return 'sc-rain';
+				if (cond === 'cloudy' || cond === 'fog') return 'sc-cloudy';
+				if (cond === 'partly') return 'sc-partly';
+				return (cond === 'sunny') ? 'sc-sun' : 'sc-clear';
+			}
+			/* the daytime condition seen after dark becomes its night twin */
+			function wxNightly(cond) {
+				if (cond === 'sunny') return 'clear';
+				if (cond === 'partly') return 'partlyn';
+				return cond;
+			}
+
+			/* ---- icons -------------------------------------------------------
+			   Drawn to a 32 x 32 box so one string works at any size. */
+			function wxSun(cx, cy, r, rays) {
+				var h = '', i;
+				if (rays) {
+					for (i = 0; i < 8; i++) {
+						var a = i * Math.PI / 4, r1 = r * 1.42, r2 = r * 2.02;
+						h += '<path d="M' + (cx + Math.cos(a) * r1).toFixed(1) + ' ' + (cy + Math.sin(a) * r1).toFixed(1) +
+							'L' + (cx + Math.cos(a) * r2).toFixed(1) + ' ' + (cy + Math.sin(a) * r2).toFixed(1) +
+							'" stroke="#FFCE1F" stroke-width="2.6" stroke-linecap="round"/>';
+					}
+				}
+				return h + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#FFCE1F"/>';
+			}
+			var WX_MOON = '<path d="M24.4 20.4A9.5 9.5 0 1 1 12.1 8.1A9.5 9.5 0 0 0 24.4 20.4Z" fill="#EDF1F5"/>';
+			/* half a sun on the horizon, for the sunrise / sunset columns */
+			function wxHalfSun() {
+				var h = '', i, cx = 16, cy = 24.6;
+				for (i = 0; i <= 4; i++) {
+					var a = Math.PI + i * Math.PI / 4;
+					h += '<path d="M' + (cx + Math.cos(a) * 8.6).toFixed(1) + ' ' + (cy + Math.sin(a) * 8.6).toFixed(1) +
+						'L' + (cx + Math.cos(a) * 11.6).toFixed(1) + ' ' + (cy + Math.sin(a) * 11.6).toFixed(1) +
+						'" stroke="#FFCE1F" stroke-width="2.4" stroke-linecap="round"/>';
+				}
+				return h + '<path d="M9.6 24.6a6.4 6.4 0 0 1 12.8 0z" fill="#FFCE1F"/>' +
+					'<path d="M3.5 26h25" stroke="#FFCE1F" stroke-width="2.2" stroke-linecap="round"/>';
+			}
+			function wxCloud(dx, dy, s, tone) {
+				var f = tone || '#F1F4F7';
+				return '<g fill="' + f + '" transform="translate(' + dx + ' ' + dy + ') scale(' + s + ')">' +
+					'<circle cx="12" cy="18" r="6"/><circle cx="20.3" cy="16.6" r="7.2"/>' +
+					'<circle cx="25.4" cy="21.4" r="4.6"/><rect x="8.4" y="19" width="17.6" height="6.9" rx="3.45"/></g>';
+			}
+			function wxSvg(inner, size) {
+				return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 32 32" aria-hidden="true">' + inner + '</svg>';
+			}
+			function wxIcon(cond, size) {
+				var i;
+				switch (cond) {
+					case 'sunny': i = wxSun(16, 16, 6.1, true); break;
+					case 'clear': i = WX_MOON; break;
+					case 'partly': i = wxSun(11.5, 11, 5.4, true) + wxCloud(3, 5, .84); break;
+					case 'partlyn': i = '<g transform="translate(-2 -3) scale(.82)">' + WX_MOON + '</g>' + wxCloud(3, 5, .84); break;
+					case 'cloudy': i = wxCloud(0, 1, 1, '#E9EDF1'); break;
+					case 'fog': i = wxCloud(0, -3, .94, '#E9EDF1') +
+						'<path d="M8 24.5h16M9.5 27.6h13" stroke="#DCE2E8" stroke-width="1.7" stroke-linecap="round"/>'; break;
+					case 'rain': i = wxCloud(0, -3, .94) +
+						'<path d="M11 25l-1.6 4M16 25l-1.6 4M21 25l-1.6 4" stroke="#67BFEA" stroke-width="1.9" stroke-linecap="round"/>'; break;
+					case 'tstorm': i = wxCloud(0, -3, .94) +
+						'<path d="M17.4 23.4l-5 5.4h3.4l-1.2 3.6 5.2-5.6h-3.4z" fill="#FFCE1F"/>'; break;
+					case 'sunset': i = wxHalfSun() +
+						'<path d="M16 4.5v10M11.6 10.6 16 15l4.4-4.4" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'; break;
+					case 'sunrise': i = wxHalfSun() +
+						'<path d="M16 15V5M11.6 9.4 16 5l4.4 4.4" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'; break;
+					default: i = wxCloud(0, 1, 1);
+				}
+				return wxSvg(i, size);
+			}
+
+			/* ---- the forecast ------------------------------------------------- */
+			function wxOffH(city, d) {
+				return Math.round((partsMs(zoneParts(city.tz, d)) - d.getTime()) / 60000) / 60;
+			}
+
+			/* one day of weather for a city, keyed by its own local date */
+			var wxDayCache = {};
+			function wxDay(city, y, mo, dd) {
+				var key = city.n + '|' + y + '-' + mo + '-' + dd;
+				if (wxDayCache[key]) return wxDayCache[key];
+				var r = wxRng(wxHash(key));
+				var swing = (r() - .5) * 12;
+				var hi = Math.round(city.base + city.amp * .48 + swing);
+				var lo = Math.round(hi - city.amp * (.72 + r() * .5));
+				var w = r();
+				var cond;
+				var wet = city.wet * .75;
+				if (w < wet * .33) cond = 'tstorm';
+				else if (w < wet) cond = 'rain';
+				else if (w < wet + .12) cond = 'cloudy';
+				else if (w < wet + .16) cond = 'fog';
+				else if (w < wet + .55) cond = 'partly';
+				else cond = 'sunny';
+				var pop = cond === 'tstorm' ? 60 + Math.round(r() * 35)
+					: cond === 'rain' ? 45 + Math.round(r() * 35)
+						: cond === 'cloudy' ? 10 + Math.round(r() * 25)
+							: Math.round(r() * 20);
+				var o = {
+					hi: hi, lo: lo, cond: cond, pop: Math.round(pop / 5) * 5,
+					hum: Math.round(40 + r() * 45 + (cond === 'rain' || cond === 'tstorm' ? 15 : 0)),
+					windDir: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.floor(r() * 8)],
+					windMph: 3 + Math.round(r() * 16),
+					precip: cond === 'rain' || cond === 'tstorm' ? Math.round(r() * 90) / 100 : Math.round(r() * 30) / 100,
+					pres: (29.55 + r() * .72).toFixed(2),
+					vis: cond === 'fog' ? (0.5 + Math.round(r() * 30) / 10).toFixed(1)
+						: cond === 'rain' || cond === 'tstorm' ? (4 + Math.round(r() * 50) / 10).toFixed(1) : '10.0'
+				};
+				if (o.hum > 99) o.hum = 99;
+				wxDayCache[key] = o;
+				return o;
+			}
+
+			/* the diurnal curve, as a fraction of the day's range. The nodes are
+			   pinned to sunrise and sunset rather than to the clock, so a long
+			   summer day warms and cools at the right times of its own. */
+			function wxWarmth(h, rise, set) {
+				var peak = set - 4;
+				var n = [[rise - 1, .03], [rise, 0], [rise + 2, .28], [rise + 4, .58], [rise + 6, .82],
+				[peak, 1], [set - 1, .88], [set + .5, .62], [set + 2, .42], [set + 4, .33], [rise + 24, 0]];
+				var i;
+				if (h < n[0][0]) h += 24;
+				for (i = 0; i < n.length - 1; i++) {
+					if (h >= n[i][0] && h <= n[i + 1][0]) {
+						var span = n[i + 1][0] - n[i][0];
+						var t = span <= 0 ? 0 : (h - n[i][0]) / span;
+						return n[i][1] + (n[i + 1][1] - n[i][1]) * t;
+					}
+				}
+				return n[n.length - 1][1];
+			}
+			function wxTempAt(day, sun, h) {
+				return day.lo + (day.hi - day.lo) * wxWarmth(h, sun.rise, sun.set);
+			}
+
+			/* everything one city page needs, computed fresh off the wall clock */
+			function wxState(city) {
+				var now = new Date();
+				var p = zoneParts(city.tz, now);
+				var offH = wxOffH(city, now);
+				var sun = wxSolar(city, p, offH);
+				var h = p.h + p.mi / 60;
+				var today = wxDay(city, p.y, p.mo, p.d);
+				var night = h < sun.rise || h > sun.set;
+				var temp = Math.round(wxTempAt(today, sun, h));
+				return {
+					city: city, p: p, offH: offH, sun: sun, hour: h, day: today,
+					night: night, temp: temp,
+					cond: night ? wxNightly(today.cond) : today.cond,
+					scene: wxScene(today.cond, night)
+				};
+			}
+
+			/* the nine days after today, walking the city's own calendar */
+			function wxForecast(st) {
+				var out = [], p = st.p, i;
+				for (i = 1; i <= WX_DAYS; i++) {
+					var ms = Date.UTC(p.y, p.mo - 1, p.d + i);
+					var d = new Date(ms);
+					var y = d.getUTCFullYear(), mo = d.getUTCMonth() + 1, dd = d.getUTCDate();
+					var day = wxDay(st.city, y, mo, dd);
+					out.push({ dow: DAYS[d.getUTCDay()], day: day });
+				}
+				return out;
+			}
+
+			/* ---- units -------------------------------------------------------- */
+			function wxT(f) { return WX_UNIT === 'C' ? Math.round((f - 32) * 5 / 9) : Math.round(f); }
+
+			function wxHourLabel(h24) {
+				var ap = h24 >= 12 ? 'PM' : 'AM', h = h24 % 12;
+				if (h === 0) h = 12;
+				return h + ap;
+			}
+			function wxClockLabel(hf) {
+				var t = Math.round(hf * 60), h24 = Math.floor(t / 60) % 24, m = t % 60;
+				var a = ampm(h24, m);
+				return a.t + ' ' + a.ap;
+			}
+
+			/* ---- the hourly strip --------------------------------------------- */
+			function wxHoursHTML(st) {
+				var sun = st.sun, day = st.day, cells = [], i, k;
+				function wrap(hr) { return ((hr % 24) + 24) % 24; }
+				function condAt(hr) {
+					var m = wrap(hr);
+					return (m < sun.rise || m > sun.set) ? wxNightly(day.cond) : day.cond;
+				}
+
+				/* every sunrise and sunset in the next day, in hours-from-now terms */
+				var events = [];
+				[['sunset', sun.set, 'Sunset'], ['sunrise', sun.rise, 'Sunrise']].forEach(function (e) {
+					for (k = 0; k < 3; k++) {
+						var t = e[1] + 24 * k;
+						if (t > st.hour && t < st.hour + 25) events.push({ t: t, ic: e[0], lbl: e[2] });
+					}
+				});
+				events.sort(function (a, b) { return a.t - b.t; });
+
+				cells.push({ top: 'Now', ic: st.cond, bot: wxT(st.temp) + '°' });
+
+				var ei = 0, start = Math.floor(st.hour) + 1;
+				for (i = 0; i < 24; i++) {
+					var hr = start + i;
+					/* the event column lands between the hour before it and the
+					   hour after, the way IMG_2509 puts 8:29 PM between 8PM and 9PM */
+					while (ei < events.length && events[ei].t <= hr) {
+						cells.push({
+							w: true, top: wxClockLabel(events[ei].t % 24),
+							ic: events[ei].ic, bot: events[ei].lbl
+						});
+						ei++;
+					}
+					cells.push({
+						top: wxHourLabel(wrap(hr)), ic: condAt(hr),
+						bot: wxT(Math.round(wxTempAt(day, sun, wrap(hr)))) + '°'
+					});
+				}
+
+				return cells.map(function (c) {
+					return '<div class="wx-hr' + (c.w ? ' wide' : '') + '">' +
+						'<div class="h">' + esc(c.top) + '</div>' + wxIcon(c.ic, 30) +
+						'<div class="t">' + esc(c.bot) + '</div></div>';
+				}).join('');
+			}
+
+			/* ---- one city page ------------------------------------------------ */
+			function wxDetailHTML(st) {
+				var d = st.day, sun = st.sun;
+				var feels = st.temp >= 80 ? st.temp + Math.max(0, Math.round((d.hum - 40) / 8))
+					: st.temp <= 50 ? st.temp - Math.round(d.windMph * .35) : st.temp;
+				var uv = Math.max(0, Math.round(11 * wxElev(sun, st.hour) *
+					(d.cond === 'sunny' ? 1 : d.cond === 'partly' ? .8 : .45)));
+				var rows = [
+					['Sunrise:', wxClockLabel(sun.rise), 0],
+					['Sunset:', wxClockLabel(sun.set), 0],
+					['Chance of Rain:', d.pop + '%', 1],
+					['Humidity:', d.hum + '%', 0],
+					['Wind:', d.windDir + ' ' + d.windMph + ' mph', 1],
+					['Feels Like:', wxT(feels) + '°', 0],
+					['Precipitation:', d.precip.toFixed(1) + ' in', 1],
+					['Pressure:', d.pres + ' in', 0],
+					['Visibility:', d.vis + ' mi', 1],
+					['UV Index:', String(uv), 0]
+				];
+				return rows.map(function (r) {
+					return '<div class="wx-drow' + (r[2] ? ' gap' : '') + '">' +
+						'<div class="k">' + esc(r[0]) + '</div><div class="v">' + esc(r[1]) + '</div></div>';
+				}).join('');
+			}
+
+			function wxSummaryHTML(st) {
+				var past = st.hour > st.sun.set - 4;
+				return 'Today: ' + WX_LABEL[st.cond] + ' currently. It’s ' + wxT(st.temp) + '°; the high today ' +
+					(past ? 'was forecast as ' : 'will be ') + wxT(st.day.hi) + '°.';
+			}
+
+			function wxPageHTML(st) {
+				var fc = wxForecast(st);
+				var days = fc.map(function (f) {
+					return '<div class="wx-day"><div class="dow">' + f.dow + '</div>' +
+						'<div class="ic">' + wxIcon(f.day.cond, 26) + '</div>' +
+						'<div class="hi">' + wxT(f.day.hi) + '</div>' +
+						'<div class="lo">' + wxT(f.day.lo) + '</div></div>';
+				}).join('');
+
+				return '<div class="wx-scene ' + st.scene + '"></div>' +
+					'<div class="wx-clip wx-ctop"><div class="wx-topin">' +
+					'<div class="wx-hero"><div class="wx-temp"><span class="wx-degwrap">' +
+					'<span class="n">' + wxT(st.temp) + '</span><span class="d">°</span></span></div></div>' +
+					'<div class="wx-today"><div class="dow">' + DAYS[new Date(Date.UTC(st.p.y, st.p.mo - 1, st.p.d)).getUTCDay()] + '</div>' +
+					'<div class="hi">' + wxT(st.day.hi) + '</div><div class="lo">' + wxT(st.day.lo) + '</div></div>' +
+					'</div></div>' +
+					'<div class="wx-strip"><div class="wx-hours">' + wxHoursHTML(st) + '</div></div>' +
+					'<div class="wx-clip wx-cbot"><div class="wx-botin">' + days +
+					'<div class="wx-summary">' + esc(wxSummaryHTML(st)) + '</div>' +
+					'<div class="wx-details">' + wxDetailHTML(st) + '</div>' +
+					'</div></div>' +
+					'<div class="wx-head"><div class="wx-name">' + esc(st.city.n) + '</div>' +
+					'<div class="wx-cond">' + WX_LABEL[st.cond] + '</div></div>' +
+					'<div class="wx-scroll"><div style="height:' + WX_CONTENT + 'px"></div></div>';
+			}
+
+			/* ---- position the clipped windows for a given scroll offset -------- */
+			function wxLayout(pg) {
+				var s = pg._sc, st = Math.max(0, Math.min(WX_MAXS, s.scrollTop));
+				var stripTop = Math.max(WX_STICK, WX_TOP - st);
+				pg._head.style.transform = 'translateY(' + (-Math.min(st, WX_HEADRISE)) + 'px)';
+				pg._ctop.style.top = '20px';
+				pg._ctop.style.height = stripTop + 'px';
+				pg._topin.style.transform = 'translateY(' + (-st) + 'px)';
+				pg._strip.style.top = (20 + stripTop) + 'px';
+				pg._cbot.style.top = (20 + stripTop + WX_STRIP) + 'px';
+				pg._cbot.style.height = Math.max(0, WX_WINDOW - stripTop - WX_STRIP) + 'px';
+				pg._botin.style.transform = 'translateY(' + ((WX_TOP - st) - stripTop) + 'px)';
+			}
+
+			/* ---- build the deck ------------------------------------------------ */
+			var wxPagesEl = $('wxPages'), wxDotsEl = $('wxDots');
+
+			function wxRender() {
+				var html = '';
+				WX_CITIES.forEach(function (c) { html += '<div class="wx-page">' + wxPageHTML(wxState(c)) + '</div>'; });
+				wxPagesEl.innerHTML = html;
+				wxPagesEl.style.width = (320 * WX_CITIES.length) + 'px';
+
+				Array.prototype.forEach.call(wxPagesEl.children, function (pg) {
+					pg._sc = pg.querySelector('.wx-scroll');
+					pg._head = pg.querySelector('.wx-head');
+					pg._ctop = pg.querySelector('.wx-ctop');
+					pg._topin = pg.querySelector('.wx-topin');
+					pg._cbot = pg.querySelector('.wx-cbot');
+					pg._botin = pg.querySelector('.wx-botin');
+					pg._strip = pg.querySelector('.wx-strip');
+					pg._sc.addEventListener('scroll', function () { wxLayout(pg); });
+					pg._strip.addEventListener('wheel', function (e) {
+						pg._sc.scrollTop += e.deltaY; e.preventDefault();
+					}, { passive: false });
+					wxLayout(pg);
+				});
+
+				var d = '';
+				WX_CITIES.forEach(function (c, i) { d += '<i class="' + (i === wxPage ? 'on' : '') + '"></i>'; });
+				wxDotsEl.innerHTML = d;
+				wxSetPage(wxPage, true);
+			}
+
+			function wxSetPage(p, instant) {
+				wxPage = Math.max(0, Math.min(WX_CITIES.length - 1, p));
+				wxPagesEl.style.transition = instant ? 'none' : 'transform .32s cubic-bezier(.32,.72,0,1)';
+				wxPagesEl.style.transform = 'translateX(' + (-320 * wxPage) + 'px)';
+				var dots = wxDotsEl.children, i;
+				for (i = 0; i < dots.length; i++) dots[i].className = i === wxPage ? 'on' : '';
+			}
+
+			/* ---- swipe between cities, drag or wheel to scroll one ------------- */
+			(function () {
+				var x0 = null, y0 = 0, st0 = 0, axis = null, dx = 0, inStrip = false, sc = null;
+				var deck = $('wxDeck');
+
+				function pt(e) { return e.touches ? e.touches[0] : e; }
+				function down(e) {
+					if (openAppId !== 'weather') return;
+					var q = pt(e);
+					x0 = q.clientX; y0 = q.clientY; dx = 0; axis = null;
+					inStrip = !!(e.target.closest && e.target.closest('.wx-strip'));
+					sc = wxPagesEl.children[wxPage] ? wxPagesEl.children[wxPage]._sc : null;
+					st0 = sc ? sc.scrollTop : 0;
+					wxPagesEl.style.transition = 'none';
+				}
+				function move(e) {
+					if (x0 === null) return;
+					var q = pt(e), scale = parseFloat((stage.style.transform || '').replace(/[^0-9.]/g, '')) || 1;
+					var ddx = (q.clientX - x0) / scale, ddy = (q.clientY - y0) / scale;
+					if (!axis) {
+						if (Math.abs(ddx) < 6 && Math.abs(ddy) < 6) return;
+						axis = Math.abs(ddx) > Math.abs(ddy) ? 'x' : 'y';
+					}
+					if (axis === 'y') {
+						/* the strip sits above the scroller, so drags that start on
+						   it have to be handed back to the page by hand */
+						if (inStrip || !e.touches) {
+							if (sc) sc.scrollTop = st0 - ddy;
+							if (e.cancelable) e.preventDefault();
+						}
+						return;
+					}
+					if (inStrip) return;                    /* the strip scrolls itself */
+					dx = ddx;
+					if (e.cancelable) e.preventDefault();
+					var off = -320 * wxPage + dx;
+					if (off > 0 || off < -320 * (WX_CITIES.length - 1)) off = -320 * wxPage + dx * .32;
+					wxPagesEl.style.transform = 'translateX(' + off + 'px)';
+				}
+				function up() {
+					if (x0 === null) return;
+					x0 = null;
+					if (axis === 'x') wxSetPage(wxPage + (Math.abs(dx) > 55 ? (dx < 0 ? 1 : -1) : 0));
+					axis = null;
+				}
+				deck.addEventListener('mousedown', down);
+				deck.addEventListener('touchstart', down, { passive: true });
+				window.addEventListener('mousemove', move);
+				deck.addEventListener('touchmove', move, { passive: false });
+				window.addEventListener('mouseup', up);
+				deck.addEventListener('touchend', up);
+				deck.addEventListener('touchcancel', up);
+			})();
+
+			/* ---- every city at a glance ---------------------------------------- */
+			var wxListEl = $('wxListView'), wxRowsEl = $('wxRows');
+
+			function wxRenderList() {
+				wxRowsEl.innerHTML = WX_CITIES.map(function (c, i) {
+					var st = wxState(c);
+					var t = ampm(st.p.h, st.p.mi);
+					return '<div class="wx-lrow' + (i === 0 ? ' first' : '') + '" data-i="' + i + '">' +
+						'<div class="wx-scene ' + st.scene + '"></div>' +
+						'<div class="when">' + t.t + ' ' + t.ap + '</div>' +
+						'<div class="nm">' + esc(c.n) + '</div>' +
+						'<div class="temp">' + wxT(st.temp) + '<span class="d">°</span></div></div>';
+				}).join('');
+				var u = $('wxUnit').children;
+				u[0].className = WX_UNIT === 'C' ? 'on' : '';
+				u[2].className = WX_UNIT === 'F' ? 'on' : '';
+			}
+
+			function wxOpenList() { wxRenderList(); wxListEl.classList.add('on'); }
+			function wxCloseList() { wxListEl.classList.remove('on'); }
+
+			$('wxListBtn').addEventListener('click', wxOpenList);
+			wxRowsEl.addEventListener('click', function (e) {
+				var r = e.target.closest('.wx-lrow'); if (!r) return;
+				wxSetPage(+r.dataset.i, true);
+				wxCloseList();
+			});
+			$('wxUnit').addEventListener('click', function (e) {
+				var s = e.target.closest('span[data-u]'); if (!s) return;
+				if (WX_UNIT === s.dataset.u) return;
+				WX_UNIT = s.dataset.u;
+				wxRenderList(); wxRender();
+			});
+
+			/* ---- add a city ----------------------------------------------------
+			   The zip rows are the ones IMG_2514 returns for 68874, kept verbatim
+			   so that query reproduces the screenshot. */
+			var WX_PLACES = [
+				{ zip: '68874', label: 'Sargent, NE, United States', n: 'Sargent', tz: 'America/Chicago', lat: 41.640, lon: -99.370, base: 73, amp: 19, wet: .22 },
+				{ zip: '68874', label: 'Al Kharkhir, Saudi Arabia', n: 'Al Kharkhir', tz: 'Asia/Riyadh', lat: 18.897, lon: 51.100, base: 92, amp: 24, wet: .03 },
+				{ zip: '68874', label: 'Villa Hidalgo, Oax., Mexico', n: 'Villa Hidalgo', tz: 'America/Mexico_City', lat: 17.183, lon: -95.900, base: 76, amp: 16, wet: .40 },
+				{ zip: '688747', label: 'Singapore', n: 'Singapore', tz: 'Asia/Singapore', lat: 1.352, lon: 103.820, base: 82, amp: 9, wet: .55 },
+				{ zip: '688740', label: 'Singapore', n: 'Singapore', tz: 'Asia/Singapore', lat: 1.352, lon: 103.820, base: 82, amp: 9, wet: .55 },
+				{ zip: '688742', label: 'Singapore', n: 'Singapore', tz: 'Asia/Singapore', lat: 1.352, lon: 103.820, base: 82, amp: 9, wet: .55 },
+				{ zip: '688749', label: 'Singapore', n: 'Singapore', tz: 'Asia/Singapore', lat: 1.352, lon: 103.820, base: 82, amp: 9, wet: .55 },
+				{ zip: '68845', label: 'Kearney, NE, United States', n: 'Kearney', tz: 'America/Chicago', lat: 40.699, lon: -99.082, base: 75, amp: 18, wet: .22 },
+				{ zip: '68005', label: 'Bellevue, NE, United States', n: 'Bellevue', tz: 'America/Chicago', lat: 41.154, lon: -95.915, base: 75, amp: 18, wet: .26 },
+				{ zip: '80517', label: 'Estes Park, CO, United States', n: 'Estes Park', tz: 'America/Denver', lat: 40.377, lon: -105.522, base: 60, amp: 20, wet: .52 },
+				{ zip: '95014', label: 'Cupertino, CA, United States', n: 'Cupertino', tz: 'America/Los_Angeles', lat: 37.323, lon: -122.032, base: 66, amp: 20, wet: .12 },
+				{ zip: '10001', label: 'New York, NY, United States', n: 'New York', tz: 'America/New_York', lat: 40.713, lon: -74.006, base: 72, amp: 14, wet: .32 },
+
+				{ label: 'London, United Kingdom', n: 'London', tz: 'Europe/London', lat: 51.507, lon: -0.128, base: 58, amp: 14, wet: .55 },
+				{ label: 'Paris, France', n: 'Paris', tz: 'Europe/Paris', lat: 48.857, lon: 2.352, base: 60, amp: 16, wet: .45 },
+				{ label: 'Berlin, Germany', n: 'Berlin', tz: 'Europe/Berlin', lat: 52.520, lon: 13.405, base: 56, amp: 17, wet: .45 },
+				{ label: 'Madrid, Spain', n: 'Madrid', tz: 'Europe/Madrid', lat: 40.417, lon: -3.704, base: 68, amp: 22, wet: .18 },
+				{ label: 'Rome, Italy', n: 'Rome', tz: 'Europe/Rome', lat: 41.903, lon: 12.496, base: 68, amp: 18, wet: .25 },
+				{ label: 'Moscow, Russia', n: 'Moscow', tz: 'Europe/Moscow', lat: 55.756, lon: 37.617, base: 46, amp: 18, wet: .42 },
+				{ label: 'Reykjavik, Iceland', n: 'Reykjavik', tz: 'Atlantic/Reykjavik', lat: 64.147, lon: -21.942, base: 42, amp: 10, wet: .60 },
+				{ label: 'Cairo, Egypt', n: 'Cairo', tz: 'Africa/Cairo', lat: 30.044, lon: 31.236, base: 82, amp: 22, wet: .04 },
+				{ label: 'Nairobi, Kenya', n: 'Nairobi', tz: 'Africa/Nairobi', lat: -1.292, lon: 36.822, base: 70, amp: 16, wet: .38 },
+				{ label: 'Cape Town, South Africa', n: 'Cape Town', tz: 'Africa/Johannesburg', lat: -33.925, lon: 18.424, base: 64, amp: 16, wet: .35 },
+				{ label: 'Dubai, United Arab Emirates', n: 'Dubai', tz: 'Asia/Dubai', lat: 25.205, lon: 55.271, base: 92, amp: 18, wet: .04 },
+				{ label: 'Mumbai, India', n: 'Mumbai', tz: 'Asia/Kolkata', lat: 19.076, lon: 72.878, base: 84, amp: 12, wet: .48 },
+				{ label: 'Bangkok, Thailand', n: 'Bangkok', tz: 'Asia/Bangkok', lat: 13.756, lon: 100.502, base: 88, amp: 13, wet: .50 },
+				{ label: 'Hong Kong', n: 'Hong Kong', tz: 'Asia/Hong_Kong', lat: 22.320, lon: 114.170, base: 78, amp: 12, wet: .45 },
+				{ label: 'Beijing, China', n: 'Beijing', tz: 'Asia/Shanghai', lat: 39.904, lon: 116.407, base: 60, amp: 20, wet: .30 },
+				{ label: 'Seoul, South Korea', n: 'Seoul', tz: 'Asia/Seoul', lat: 37.567, lon: 126.978, base: 60, amp: 18, wet: .38 },
+				{ label: 'Tokyo, Japan', n: 'Tokyo', tz: 'Asia/Tokyo', lat: 35.690, lon: 139.692, base: 78, amp: 11, wet: .40 },
+				{ label: 'Sydney, Australia', n: 'Sydney', tz: 'Australia/Sydney', lat: -33.868, lon: 151.209, base: 66, amp: 14, wet: .35 },
+				{ label: 'Auckland, New Zealand', n: 'Auckland', tz: 'Pacific/Auckland', lat: -36.848, lon: 174.763, base: 60, amp: 13, wet: .48 },
+				{ label: 'Honolulu, HI, United States', n: 'Honolulu', tz: 'Pacific/Honolulu', lat: 21.307, lon: -157.858, base: 80, amp: 10, wet: .30 },
+				{ label: 'Anchorage, AK, United States', n: 'Anchorage', tz: 'America/Anchorage', lat: 61.218, lon: -149.900, base: 42, amp: 16, wet: .45 },
+				{ label: 'Seattle, WA, United States', n: 'Seattle', tz: 'America/Los_Angeles', lat: 47.606, lon: -122.333, base: 58, amp: 16, wet: .55 },
+				{ label: 'San Francisco, CA, United States', n: 'San Francisco', tz: 'America/Los_Angeles', lat: 37.775, lon: -122.419, base: 60, amp: 12, wet: .22 },
+				{ label: 'Los Angeles, CA, United States', n: 'Los Angeles', tz: 'America/Los_Angeles', lat: 34.052, lon: -118.244, base: 72, amp: 18, wet: .10 },
+				{ label: 'Denver, CO, United States', n: 'Denver', tz: 'America/Denver', lat: 39.739, lon: -104.990, base: 64, amp: 24, wet: .28 },
+				{ label: 'Chicago, IL, United States', n: 'Chicago', tz: 'America/Chicago', lat: 41.878, lon: -87.630, base: 62, amp: 18, wet: .35 },
+				{ label: 'Omaha, NE, United States', n: 'Omaha', tz: 'America/Chicago', lat: 41.257, lon: -95.995, base: 68, amp: 19, wet: .30 },
+				{ label: 'Lincoln, NE, United States', n: 'Lincoln', tz: 'America/Chicago', lat: 40.813, lon: -96.703, base: 69, amp: 19, wet: .30 },
+				{ label: 'Dallas, TX, United States', n: 'Dallas', tz: 'America/Chicago', lat: 32.777, lon: -96.797, base: 78, amp: 18, wet: .25 },
+				{ label: 'Miami, FL, United States', n: 'Miami', tz: 'America/New_York', lat: 25.762, lon: -80.192, base: 82, amp: 12, wet: .48 },
+				{ label: 'Boston, MA, United States', n: 'Boston', tz: 'America/New_York', lat: 42.360, lon: -71.058, base: 62, amp: 16, wet: .35 },
+				{ label: 'Toronto, Canada', n: 'Toronto', tz: 'America/Toronto', lat: 43.653, lon: -79.383, base: 56, amp: 17, wet: .38 },
+				{ label: 'Vancouver, Canada', n: 'Vancouver', tz: 'America/Vancouver', lat: 49.283, lon: -123.121, base: 55, amp: 14, wet: .55 },
+				{ label: 'Mexico City, Mexico', n: 'Mexico City', tz: 'America/Mexico_City', lat: 19.433, lon: -99.133, base: 68, amp: 20, wet: .40 },
+				{ label: 'Guatemala City, Guatemala', n: 'Guatemala City', tz: 'America/Guatemala', lat: 14.635, lon: -90.507, base: 68, amp: 14, wet: .48 },
+				{ label: 'Bogotá, Colombia', n: 'Bogotá', tz: 'America/Bogota', lat: 4.711, lon: -74.072, base: 58, amp: 14, wet: .50 },
+				{ label: 'Lima, Peru', n: 'Lima', tz: 'America/Lima', lat: -12.046, lon: -77.043, base: 68, amp: 10, wet: .12 },
+				{ label: 'São Paulo, Brazil', n: 'São Paulo', tz: 'America/Sao_Paulo', lat: -23.551, lon: -46.633, base: 68, amp: 16, wet: .42 },
+				{ label: 'Buenos Aires, Argentina', n: 'Buenos Aires', tz: 'America/Argentina/Buenos_Aires', lat: -34.604, lon: -58.382, base: 64, amp: 16, wet: .35 }
+			];
+
+			var wxQuery = '', wxSearchEl = $('wxSearchView'), wxResEl = $('wxResults');
+
+			function wxMatches() {
+				var q = wxQuery.trim();
+				if (!q) return [];
+				if (/^\d+$/.test(q)) {
+					return WX_PLACES.filter(function (p) { return p.zip && p.zip.indexOf(q) === 0; })
+						.map(function (p) { return { p: p, head: p.zip.slice(0, q.length), tail: p.zip.slice(q.length) + ' ' + p.label }; });
+				}
+				var lq = q.toLowerCase();
+				return WX_PLACES.filter(function (p) { return p.n.toLowerCase().indexOf(lq) === 0; })
+					.map(function (p) { return { p: p, head: p.label.slice(0, q.length), tail: p.label.slice(q.length) }; })
+					.slice(0, 12);
+			}
+
+			function wxRenderResults() {
+				var m = wxMatches();
+				wxResEl._m = m;
+				if (!wxQuery.trim()) { wxResEl.innerHTML = ''; return; }
+				if (!m.length) { wxResEl.innerHTML = '<div class="wx-snone">No Results</div>'; return; }
+				wxResEl.innerHTML = m.map(function (r, i) {
+					return '<div class="wx-sres" data-i="' + i + '"><b>' + esc(r.head) + '</b>' + esc(r.tail) + '</div>';
+				}).join('');
+			}
+
+			function wxSyncSearch() {
+				var t = $('wxSText');
+				t.innerHTML = (wxQuery ? '<span>' + esc(wxQuery) + '</span>' : '') + '<span class="caret"></span>';
+				$('wxField').classList.toggle('filled', !!wxQuery);
+				kb9.retDim = !wxQuery.trim();
+				kb9.retGo = !!wxQuery.trim();
+				drawKeys(kb9);
+				wxRenderResults();
+			}
+
+			function wxOpenSearch() {
+				wxQuery = '';
+				wxSearchEl.classList.add('on');
+				openKB(kb9);
+				wxSyncSearch();
+			}
+			function wxCloseSearch() {
+				closeKB(kb9);
+				wxSearchEl.classList.remove('on');
+			}
+			function wxAddPlace(p) {
+				WX_CITIES.push({ n: p.n, tz: p.tz, lat: p.lat, lon: p.lon, base: p.base, amp: p.amp, wet: p.wet });
+				wxPage = WX_CITIES.length - 1;
+				wxRender();
+				wxCloseSearch();
+				wxCloseList();
+			}
+
+			$('wxAdd').addEventListener('click', wxOpenSearch);
+			$('wxSCancel').addEventListener('click', wxCloseSearch);
+			$('wxField').addEventListener('click', function () { openKB(kb9); });
+			$('wxSClear').addEventListener('click', function (e) {
+				e.stopPropagation(); wxQuery = ''; wxSyncSearch();
+			});
+			wxResEl.addEventListener('click', function (e) {
+				var r = e.target.closest('.wx-sres'); if (!r || !wxResEl._m) return;
+				var m = wxResEl._m[+r.dataset.i]; if (m) wxAddPlace(m.p);
+			});
+
+			var kb9 = buildKeyboard($('kb9'), {
+				target: 'wxsearch', nopred: true, nocap: true, retLabel: 'Search', retDim: true
+			});
+
+			/* ---- lifecycle ------------------------------------------------------ */
+			function wxOpen() {
+				wxRender();
+				clearInterval(wxTimer);
+				wxTimer = setInterval(function () {
+					if (openAppId !== 'weather') return;
+					if (wxListEl.classList.contains('on')) wxRenderList();
+				}, 20000);
+			}
+			function wxReset() {
+				clearInterval(wxTimer); wxTimer = null;
+				wxCloseSearch();
+				wxCloseList();
+			}
+
+
+		/* ------------------------------------------------------------------ */
+		/* VIDEOS                                                             */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/Videos/. The library holds the titles that are
+		   legible in the screenshots; there are no video files behind them, so
+		   the player runs a real clock over the artwork rather than footage.
+		   Drop a file in videos/ and point a row's `art` at it and the poster
+		   frames light up. */
+
+		var VD_VIDEOS = [
+			{ t: 'Example Video', d: 'February 9, 2024', len: 24, size: '2.4 MB', dim: '1280 &times; 720' }];
+		/* the library sorts by title, case-blind, the way iOS does */
+		VD_VIDEOS.sort(function (a, b) { return a.t.toLowerCase() < b.t.toLowerCase() ? -1 : 1; });
+
+		/* a display with a music note on it -- outline for missing artwork,
+		   filled for the tab bar */
+		function vdGlyph(w) {
+			var s = w / 46;
+			return '<svg width="' + w + '" height="' + (38 * s).toFixed(1) + '" viewBox="0 0 46 38" aria-hidden="true">' +
+				'<rect x="1" y="1" width="44" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>' +
+				'<path d="M16 36h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
+				'<path d="M20 23.4V10.2l9-2v13.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>' +
+				'<circle cx="17.6" cy="23.4" r="2.6" fill="currentColor"/>' +
+				'<circle cx="26.6" cy="21.4" r="2.6" fill="currentColor"/></svg>';
+		}
+		var VD_TABICON = '<svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true">' +
+			'<rect x="0" y="0" width="30" height="20" rx="2.6" fill="currentColor"/>' +
+			'<path d="M11 24.2h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+			'<path d="M13.4 14.4V6.1l5.6-1.3v8.3" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>' +
+			'<circle cx="12.2" cy="14.7" r="1.9" fill="#fff"/>' +
+			'<circle cx="17.8" cy="13.4" r="1.9" fill="#fff"/></svg>';
+		var VD_PLAY = '<svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true">' +
+			'<path d="M2 1.5 26.5 16 2 30.5z" fill="currentColor"/></svg>';
+		var VD_PAUSE = '<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true">' +
+			'<path d="M1 1h8v28H1zM17 1h8v28h-8z" fill="currentColor"/></svg>';
+
+		$('vdTab1').innerHTML = $('vdTab2').innerHTML = VD_TABICON + '<span>Music Videos</span>';
+
+		function vdFmt(s) {
+			s = Math.max(0, Math.round(s));
+			return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+		}
+		function vdLenLabel(s) {
+			return s < 60 ? s + ' sec' : Math.round(s / 60) + ' min';
+		}
+		function vdArt(cls, v, glyphW) {
+			return '<div class="' + cls + (v.art ? ' art' : '') + '"' +
+				(v.art ? ' style="background-image:url(' + v.art + ')"' : '') + '>' +
+				vdGlyph(glyphW) + '</div>';
+		}
+
+		/* ---- the library ---------------------------------------------------- */
+		var vdListEl = $('vdList'), vdRootEl = $('vd-root'), vdEditing = false, vdArmed = null;
+
+		function vdRenderList() {
+			var h = '';
+			for (var i = 0; i < VD_VIDEOS.length; i++) {
+				var v = VD_VIDEOS[i];
+				h += '<div class="vd-row" data-i="' + i + '">' +
+					'<div class="vd-del">Delete</div>' +
+					'<div class="vd-slide">' +
+					'<div class="vd-minus"></div>' +
+					vdArt('vd-thumb', v, 46) +
+					'<div class="vd-title">' + v.t + '</div>' +
+					'</div></div>';
+			}
+			vdListEl.innerHTML = h;
+		}
+
+		function vdDisarm() {
+			if (vdArmed) { vdArmed.classList.remove('armed'); vdArmed = null; }
+		}
+		function vdArm(row) {
+			if (vdArmed === row) return vdDisarm();
+			vdDisarm();
+			row.classList.add('armed');
+			vdArmed = row;
+		}
+		function vdSetEditing(on) {
+			vdEditing = on;
+			vdDisarm();
+			vdRootEl.classList.toggle('editing', on);
+			$('vdEdit').textContent = on ? 'Done' : 'Edit';
+		}
+
+		vdListEl.addEventListener('click', function (e) {
+			var row = e.target.closest('.vd-row'); if (!row) return;
+			var i = +row.dataset.i;
+			if (e.target.closest('.vd-del')) {
+				VD_VIDEOS.splice(i, 1);
+				vdArmed = null;
+				vdRenderList();
+				return;
+			}
+			if (e.target.closest('.vd-minus')) { vdArm(row); return; }
+			if (vdArmed) { vdDisarm(); return; }
+			if (vdEditing) return;
+			vdOpenDetail(i);
+		});
+
+		/* swipe left on a row reveals the same Delete button */
+		(function () {
+			var x0 = 0, y0 = 0, live = false, row = null;
+			vdListEl.addEventListener('pointerdown', function (e) {
+				row = e.target.closest('.vd-row');
+				x0 = e.clientX; y0 = e.clientY; live = !!row;
+			});
+			vdListEl.addEventListener('pointermove', function (e) {
+				if (!live || !row) return;
+				var dx = e.clientX - x0, dy = e.clientY - y0;
+				if (Math.abs(dy) > Math.abs(dx)) { live = false; return; }
+				if (dx < -26 && vdArmed !== row) { vdArm(row); live = false; }
+				else if (dx > 26 && vdArmed === row) { vdDisarm(); live = false; }
+			});
+			vdListEl.addEventListener('pointerup', function () { live = false; });
+			vdListEl.addEventListener('pointercancel', function () { live = false; });
+		})();
+
+		$('vdEdit').addEventListener('click', function () { vdSetEditing(!vdEditing); });
+
+		/* the Store button hands off to the iTunes Store, which is not built
+		   yet -- the moment it lands in APPS this starts working */
+		$('vdStore').addEventListener('click', function () { appHandOff('itunes'); });
+		function appHandOff(id) {
+			if (!APPS[id]) return;
+			var icon = iconFor(id);
+			closeApp();
+			setTimeout(function () { openApp(icon, id); }, DUR);
+		}
+
+		/* ---- one video ------------------------------------------------------ */
+		var vdCur = 0;
+
+		function vdOpenDetail(i) {
+			vdCur = i;
+			var v = VD_VIDEOS[i];
+			$('vdDetail').innerHTML =
+				vdArt('vd-hero', v, 92) +
+				'<div class="vd-dtitle">' + v.t + '</div>' +
+				'<div class="vd-ddate">' + v.d + '</div>' +
+				'<div class="vd-dplay" id="vdDPlay">' + VD_PLAY + '</div>' +
+				'<div class="vd-meta">' +
+				'<div><div class="vd-mk">Length</div><div class="vd-mv">' + vdLenLabel(v.len) + '</div></div>' +
+				'<div><div class="vd-mk">Size</div><div class="vd-mv">' + v.size + '</div></div>' +
+				'<div><div class="vd-mk">Dimensions</div><div class="vd-mv">' + v.dim + '</div></div>' +
+				'<div><div class="vd-mk">Codecs</div><div class="vd-mv">AAC, H.264</div></div>' +
+				'</div>';
+			$('vdDetail').scrollTop = 0;
+			$('vdDPlay').addEventListener('click', function () { vdPlayerOpen(vdCur); });
+			push($('vd-root'), $('vd-detail'));
+		}
+		$('vdBack').addEventListener('click', function () { pop($('vd-detail'), $('vd-root')); });
+
+		/* ---- the player ----------------------------------------------------- */
+		var vdT = 0, vdPlaying = false, vdTick = null, vdLast = 0, vdBareTimer = null;
+
+		function vdPlayerOpen(i) {
+			vdCur = i;
+			var v = VD_VIDEOS[i];
+			var sc = $('vdScreen');
+			sc.className = 'vd-screen' + (v.art ? ' art' : '');
+			sc.style.backgroundImage = v.art ? 'url(' + v.art + ')' : '';
+			sc.innerHTML = vdGlyph(92);
+			vdT = 0;
+			$('vdPlayer').classList.add('on');
+			$('vdPlayer').classList.remove('bare');
+			vdDraw();
+			vdSetPlaying(true);
+		}
+		function vdPlayerClose() {
+			vdSetPlaying(false);
+			$('vdPlayer').classList.remove('on');
+			clearTimeout(vdBareTimer);
+		}
+		$('vdDone').addEventListener('click', vdPlayerClose);
+
+		function vdSetPlaying(on) {
+			vdPlaying = on;
+			$('vdPlay').innerHTML = on ? VD_PAUSE : VD_PLAY;
+			clearInterval(vdTick);
+			clearTimeout(vdBareTimer);
+			if (on) {
+				vdLast = Date.now();
+				vdTick = setInterval(vdStep, 100);
+				vdBareTimer = setTimeout(function () { $('vdPlayer').classList.add('bare'); }, 3200);
+			} else {
+				$('vdPlayer').classList.remove('bare');
+			}
+		}
+		function vdStep() {
+			var now = Date.now();
+			vdT += (now - vdLast) / 1000;
+			vdLast = now;
+			var len = VD_VIDEOS[vdCur].len;
+			if (vdT >= len) {                       /* iOS drops back to the detail page */
+				vdT = len; vdDraw();
+				vdPlayerClose();
+				return;
+			}
+			vdDraw();
+		}
+		function vdDraw() {
+			var len = VD_VIDEOS[vdCur].len, f = len ? vdT / len : 0;
+			$('vdElapsed').textContent = vdFmt(vdT);
+			$('vdRemain').textContent = '-' + vdFmt(len - vdT);
+			$('vdScrub').lastElementChild.style.left = (f * 100).toFixed(2) + '%';
+			$('vdVol').lastElementChild.style.left = (vol / VOL_STEPS * 100).toFixed(2) + '%';
+		}
+
+		$('vdPlay').addEventListener('click', function () { vdSetPlaying(!vdPlaying); });
+		$('vdPrev').addEventListener('click', function () {
+			if (vdT > 3 || vdCur === 0) { vdT = 0; vdDraw(); vdSetPlaying(vdPlaying); return; }
+			vdPlayerOpen(vdCur - 1);
+		});
+		$('vdNext').addEventListener('click', function () {
+			if (vdCur >= VD_VIDEOS.length - 1) { vdPlayerClose(); return; }
+			vdPlayerOpen(vdCur + 1);
+		});
+
+		/* tap the picture to get the chrome out of the way */
+		$('vdScreen').addEventListener('click', function () {
+			var p = $('vdPlayer');
+			p.classList.toggle('bare');
+			clearTimeout(vdBareTimer);
+			if (!p.classList.contains('bare') && vdPlaying) {
+				vdBareTimer = setTimeout(function () { p.classList.add('bare'); }, 3200);
+			}
+		});
+
+		/* The stage is turned a quarter turn, so a slider that looks horizontal
+		   runs top-to-bottom in page coordinates -- local +x maps to screen +y. */
+		function vdSliderFrac(el, e) {
+			var r = el.getBoundingClientRect();
+			return Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
+		}
+		function vdDragSlider(el, onMove) {
+			var live = false;
+			el.addEventListener('pointerdown', function (e) {
+				live = true; el.setPointerCapture(e.pointerId); onMove(vdSliderFrac(el, e));
+			});
+			el.addEventListener('pointermove', function (e) { if (live) onMove(vdSliderFrac(el, e)); });
+			el.addEventListener('pointerup', function (e) { live = false; el.releasePointerCapture(e.pointerId); });
+			el.addEventListener('pointercancel', function () { live = false; });
+		}
+		vdDragSlider($('vdScrub'), function (f) {
+			vdT = f * VD_VIDEOS[vdCur].len;
+			vdLast = Date.now();
+			vdDraw();
+			clearTimeout(vdBareTimer);
+		});
+		vdDragSlider($('vdVol'), function (f) {
+			vol = Math.round(f * VOL_STEPS);
+			drawVol();
+			vdDraw();
+		});
+
+		/* ---- lifecycle ------------------------------------------------------ */
+		function vdOpen() {
+			vdRenderList();
+			vdDraw();
+		}
+		function vdReset() {
+			vdPlayerClose();
+			vdSetEditing(false);
+			$('vd-detail').classList.remove('active');
+			$('vd-root').classList.remove('behind');
+			$('vd-root').classList.add('active');
+			vdListEl.scrollTop = 0;
+		}
+
+		/* ------------------------------------------------------------------ */
+		/* NOTES                                                              */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/Notes/. The library holds the notes that are
+		   legible in the screenshots -- the real device has thirty, so every
+		   count on screen is computed from the data rather than written down,
+		   and filling the rest in makes the numbers right on their own.
+		   A note's body is one string; `fmt` and `chk` run alongside it, one
+		   entry per line, because the keyboard here only ever appends. */
+
+		var NT_TINT = '#D9A21A';
+
+		function ntMk(f, d, body, fmt, att) {
+			var lines = body.split('\n');
+			var o = {
+				f: f, d: d, body: body, att: att || [],
+				fmt: [], chk: []
+			};
+			for (var i = 0; i < lines.length; i++) {
+				o.fmt.push(fmt && fmt[i] ? fmt[i] : 'body');
+				o.chk.push(o.fmt[i] === 'check' ? false : null);
+			}
+			return o;
+		}
+
+		var NT_FOLDERS = [
+			{ id: 'notes', n: 'Notes', fixed: true }
+		];
+
+		var NT_NOTES = [
+			ntMk('notes', new Date(2026, 6, 21), 'Hello')
+		];
+		/* the three tiles in the attachment browser's top strip */
+		NT_NOTES[0].att = [{ k: 'photo', n: 'IMG_0412' }];
+
+		var NT_TRASH = [];
+
+		/* ---- reading a note -------------------------------------------------- */
+		function ntLines(n) { return n.body.split('\n'); }
+		function ntTitle(n) {
+			var L = ntLines(n);
+			for (var i = 0; i < L.length; i++) if (L[i].trim()) return L[i];
+			return 'New Note';
+		}
+		function ntPreview(n) {
+			var L = ntLines(n), seen = false, rest = [];
+			for (var i = 0; i < L.length; i++) {
+				if (!L[i].trim()) continue;
+				if (!seen) { seen = true; continue; }
+				rest.push(L[i]);
+			}
+			if (rest.length) return rest.join(' ');
+			if (n.att.length) {
+				var w = { audio: 'audio recording', doc: 'document', video: 'video', photo: 'photo' }[n.att[0].k];
+				return n.att.length + ' ' + w + (n.att.length > 1 ? 's' : '');
+			}
+			return 'No additional text';
+		}
+		var NT_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		function ntDate(d) {
+			var now = new Date(), day = 86400000;
+			var a = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+			var b = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+			var diff = Math.round((a - b) / day);
+			if (diff === 0) {
+				var h = d.getHours(), m = d.getMinutes();
+				return ((h % 12) || 12) + ':' + ('0' + m).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
+			}
+			if (diff === 1) return 'Yesterday';
+			if (diff > 1 && diff < 7) return NT_DAYS[d.getDay()];
+			return (d.getMonth() + 1) + '/' + d.getDate() + '/' + ('' + d.getFullYear()).slice(-2);
+		}
+		function ntIn(fid) {
+			var out = NT_NOTES.filter(function (n) { return fid === 'all' || n.f === fid; });
+			return out.sort(function (a, b) { return b.d - a.d; });
+		}
+
+		/* ---- folders --------------------------------------------------------- */
+		var ntFEditing = false;
+		var NT_CHEV = '<svg width="9" height="15" viewBox="0 0 9 15" aria-hidden="true">' +
+			'<path d="M1.4 1.3 7.4 7.5l-6 6.2" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		var NT_TICK = '<svg width="15" height="12" viewBox="0 0 15 12" aria-hidden="true">' +
+			'<path d="M1.2 6.2 5.4 10.4 13.6 1.6" fill="none" stroke="#fff" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+		function ntRenderFolders() {
+			var h = '<div class="nt-fhdr">ON MY IPOD TOUCH</div>';
+			var rows = [{ id: 'all', n: 'All On My iPod touch', c: NT_NOTES.length }];
+			NT_FOLDERS.forEach(function (f) {
+				rows.push({ id: f.id, n: f.n, c: ntIn(f.id).length, del: !f.fixed });
+			});
+			if (NT_TRASH.length) rows.push({ id: 'trash', n: 'Recently Deleted', c: NT_TRASH.length });
+
+			rows.forEach(function (r, i) {
+				h += '<div class="nt-frow' + (i === 0 ? ' first' : '') + '" data-f="' + r.id + '">' +
+					(ntFEditing && r.del ? '<div class="nt-fminus" data-del="' + r.id + '"></div>' : '') +
+					'<div class="nt-fname">' + esc(r.n) + '</div>' +
+					'<div class="nt-fcount">' + r.c + '</div>' +
+					'<div class="nt-chev">' + NT_CHEV + '</div></div>';
+			});
+			$('ntFolders').innerHTML = h;
+		}
+
+		$('ntFEdit').addEventListener('click', function () {
+			ntFEditing = !ntFEditing;
+			$('ntFEdit').textContent = ntFEditing ? 'Done' : 'Edit';
+			ntRenderFolders();
+		});
+
+		$('ntFolders').addEventListener('click', function (e) {
+			var d = e.target.closest('.nt-fminus');
+			if (d) {
+				var id = d.dataset.del;
+				NT_NOTES = NT_NOTES.filter(function (n) { return n.f !== id; });
+				NT_FOLDERS = NT_FOLDERS.filter(function (f) { return f.id !== id; });
+				ntRenderFolders();
+				return;
+			}
+			var row = e.target.closest('.nt-frow');
+			if (!row || ntFEditing) return;
+			ntOpenFolder(row.dataset.f);
+		});
+
+		/* ---- the note list --------------------------------------------------- */
+		var ntFolder = 'all', ntSel = [], ntSelecting = false, ntQuery = '', ntSearching = false;
+
+		function ntFolderName(id) {
+			if (id === 'all') return 'On My iPod touch';
+			if (id === 'trash') return 'Recently Deleted';
+			var f = NT_FOLDERS.filter(function (x) { return x.id === id; })[0];
+			return f ? f.n : 'Notes';
+		}
+		function ntRows() {
+			var src = ntFolder === 'trash' ? NT_TRASH.slice().sort(function (a, b) { return b.d - a.d; })
+				: ntIn(ntFolder);
+			if (!ntQuery.trim()) return src;
+			var q = ntQuery.toLowerCase();
+			return src.filter(function (n) { return n.body.toLowerCase().indexOf(q) > -1; });
+		}
+
+		function ntOpenFolder(id) {
+			ntFolder = id;
+			ntSel = [];
+			ntQuery = '';
+			ntSetSelecting(false);
+			ntSetSearching(false);
+			$('ntLTitle').textContent = ntFolderName(id);
+			$('nt-list').classList.toggle('trash', id === 'trash');
+			ntRenderList();
+			push($('nt-folders'), $('nt-list'));
+		}
+
+		function ntRenderList() {
+			var rows = ntRows(), h = '';
+			rows.forEach(function (n, i) {
+				h += '<div class="nt-row' + (i === 0 ? ' first' : '') +
+					(n.lock ? ' haslock' : '') +
+					(ntSel.indexOf(n) > -1 ? ' on' : '') + '" data-k="' + i + '">' +
+					'<div class="nt-ring">' + NT_TICK + '</div>' +
+					'<div class="nt-rtitle">' + esc(ntTitle(n)) + '</div>' +
+					'<div class="nt-rsub"><span class="nt-rdate">' + ntDate(n.d) + '</span>' +
+					'<span class="nt-rprev">' + (n.lock ? (n.lock.open ? 'Unlocked' : 'Locked')
+						: esc(ntPreview(n))) + '</span></div>' +
+					(n.lock ? '<div class="nt-rlock">' + (n.lock.open ? NT_LOCK_OPEN : NT_LOCK_SHUT) +
+						'</div>' : '') + '</div>';
+			});
+			$('ntRows').innerHTML = h;
+			var c = rows.length;
+			$('ntCount').textContent = c === 0 ? 'No Notes' : c + (c === 1 ? ' Note' : ' Notes');
+			$('nt-list').classList.toggle('anyopen', NT_NOTES.some(function (n) {
+				return n.lock && n.lock.open;
+			}));
+			ntSyncSelBar();
+			ntSyncSearch();
+		}
+
+		function ntSyncSelBar() {
+			var any = ntSel.length > 0;
+			$('ntMoveBtn').textContent = any ? 'Move' : 'Move All';
+			$('ntDelBtn').textContent = any ? 'Delete' : 'Delete All';
+			$('ntMoveBtn').classList.toggle('dim', !ntRows().length);
+			$('ntDelBtn').classList.toggle('dim', !ntRows().length);
+		}
+		function ntSetSelecting(on) {
+			ntSelecting = on;
+			if (!on) ntSel = [];
+			$('nt-list').classList.toggle('selecting', on);
+			$('ntLEdit').textContent = on ? 'Cancel' : 'Edit';
+			$('ntLBack').style.visibility = on ? 'hidden' : '';
+			ntRenderList();
+		}
+		$('ntLEdit').addEventListener('click', function () { ntSetSelecting(!ntSelecting); });
+		$('ntLBack').addEventListener('click', function () {
+			ntRenderFolders();
+			pop($('nt-list'), $('nt-folders'));
+		});
+
+		$('ntRows').addEventListener('click', function (e) {
+			var row = e.target.closest('.nt-row'); if (!row) return;
+			var n = ntRows()[+row.dataset.k]; if (!n) return;
+			if (ntSelecting) {
+				var i = ntSel.indexOf(n);
+				if (i > -1) ntSel.splice(i, 1); else ntSel.push(n);
+				ntRenderList();
+				return;
+			}
+			ntOpenNote(n);
+		});
+
+		/* Move puts the picked notes somewhere else; from the trash that is
+		   what "restore" means */
+		$('ntMoveBtn').addEventListener('click', function () {
+			var picked = ntSel.length ? ntSel.slice() : ntRows();
+			if (!picked.length) return;
+			ntSheet(NT_FOLDERS.map(function (f) {
+				return {
+					n: f.n, fn: function () {
+						picked.forEach(function (n) {
+							var t = NT_TRASH.indexOf(n);
+							if (t > -1) { NT_TRASH.splice(t, 1); NT_NOTES.push(n); }
+							n.f = f.id;
+						});
+						ntAfterBulk();
+					}
+				};
+			}));
+		});
+		$('ntDelBtn').addEventListener('click', function () {
+			var picked = ntSel.length ? ntSel.slice() : ntRows();
+			if (!picked.length) return;
+			picked.forEach(function (n) {
+				if (ntFolder === 'trash') {
+					var t = NT_TRASH.indexOf(n); if (t > -1) NT_TRASH.splice(t, 1);
+				} else ntDelete(n);
+			});
+			ntAfterBulk();
+		});
+		function ntAfterBulk() {
+			ntSel = [];
+			if (ntFolder === 'trash' && !NT_TRASH.length) {
+				ntRenderFolders();
+				pop($('nt-list'), $('nt-folders'));
+				ntSetSelecting(false);
+				return;
+			}
+			ntSetSelecting(false);
+		}
+		function ntDelete(n) {
+			var i = NT_NOTES.indexOf(n);
+			if (i > -1) { NT_NOTES.splice(i, 1); NT_TRASH.push(n); }
+		}
+
+		/* ---- search ---------------------------------------------------------- */
+		function ntSetSearching(on) {
+			ntSearching = on;
+			$('nt-list').classList.toggle('searching', on);
+			if (on) openKB(kbN3); else { closeKB(kbN3); ntQuery = ''; }
+			ntSyncSearch();
+		}
+		function ntSyncSearch() {
+			$('ntSField').classList.toggle('empty', !ntQuery);
+			$('ntSVal').innerHTML = esc(ntQuery) + (ntSearching ? '<span class="caret nt"></span>' : '');
+		}
+		$('ntSField').addEventListener('click', function () { if (!ntSearching) ntSetSearching(true); });
+		$('ntSCancel').addEventListener('click', function () { ntSetSearching(false); ntRenderList(); });
+
+		/* ---- the editor ------------------------------------------------------ */
+		var ntCur = null, ntEditingNote = false;
+
+		function ntReflow(n) {
+			var L = ntLines(n).length;
+			while (n.fmt.length < L) {
+				var p = n.fmt[n.fmt.length - 1] || 'body';
+				/* headings drop back to body on the next line; lists carry on */
+				var nx = (p === 'title' || p === 'heading') ? 'body' : p;
+				n.fmt.push(nx);
+				n.chk.push(nx === 'check' ? false : null);
+			}
+			n.fmt.length = L; n.chk.length = L;
+		}
+
+		function ntRenderNote() {
+			var n = ntCur; if (!n) return;
+			ntReflow(n);
+			var L = ntLines(n), h = '', num = 0;
+			for (var i = 0; i < L.length; i++) {
+				var f = n.fmt[i], mark = '';
+				if (f === 'number') { num++; mark = '<div class="nt-lmark">' + num + '.</div>'; }
+				else { num = 0; }
+				if (f === 'bullet') mark = '<div class="nt-lmark">&bull;</div>';
+				if (f === 'dash') mark = '<div class="nt-lmark">&ndash;</div>';
+				if (f === 'check') mark = '<div class="nt-check' + (n.chk[i] ? ' on' : '') +
+					'" data-chk="' + i + '">' + NT_TICK + '</div>';
+				var head = (i === 0 && f === 'body') ? ' head' : '';
+				var caret = (ntEditingNote && i === L.length - 1) ? '<span class="caret nt"></span>' : '';
+				h += '<div class="nt-line f-' + f + head + '" data-i="' + i + '">' + mark +
+					'<div class="nt-ltext">' + esc(L[i]) + caret + '</div></div>';
+			}
+			$('ntEditor').innerHTML = h;
+		}
+
+		function ntOpenNote(n) {
+			ntCur = n;
+			$('ntNBackLbl').textContent = ntFolderName(ntFolder);
+			ntSetEditingNote(false);
+			ntRenderNote();
+			ntSyncLock();
+			$('ntEditor').scrollTop = 0;
+			push($('nt-list'), $('nt-note'));
+		}
+		function ntSetEditingNote(on) {
+			ntEditingNote = on;
+			$('nt-note').classList.toggle('editing', on);
+			if (!on) $('nt-note').classList.remove('plusopen');
+			if (on) openKB(kbN); else closeKB(kbN);
+			ntRenderNote();
+		}
+		$('ntEditor').addEventListener('click', function (e) {
+			var c = e.target.closest('.nt-check');
+			if (c) { var i = +c.dataset.chk; ntCur.chk[i] = !ntCur.chk[i]; ntRenderNote(); return; }
+			if (!ntEditingNote) ntSetEditingNote(true);
+		});
+		$('ntDone').addEventListener('click', function () { ntSetEditingNote(false); });
+		$('ntNBack').addEventListener('click', function () {
+			ntSetEditingNote(false);
+			ntRenderList();
+			pop($('nt-note'), $('nt-list'));
+		});
+		$('ntShare').addEventListener('click', ntOpenShare);
+
+		$('ntTrash').addEventListener('click', function () {
+			if (!ntCur) return;
+			ntDelete(ntCur);
+			ntCur = null;
+			ntRenderList();
+			pop($('nt-note'), $('nt-list'));
+		});
+		function ntCompose() {
+			var fid = (ntFolder === 'all' || ntFolder === 'trash') ? 'notes' : ntFolder;
+			var n = ntMk(fid, new Date(), '');
+			NT_NOTES.push(n);
+			ntRenderList();
+			ntOpenNote(n);
+			ntSetEditingNote(true);
+		}
+		$('ntCompose').addEventListener('click', ntCompose);
+		$('ntNCompose').addEventListener('click', function () {
+			ntSetEditingNote(false);
+			pop($('nt-note'), $('nt-list'));
+			setTimeout(ntCompose, 340);
+		});
+
+		/* checklist button toggles the format of the line being written */
+		function ntToggleCheck() {
+			if (!ntCur) return;
+			var i = ntLines(ntCur).length - 1;
+			ntReflow(ntCur);
+			if (ntCur.fmt[i] === 'check') { ntCur.fmt[i] = 'body'; ntCur.chk[i] = null; }
+			else { ntCur.fmt[i] = 'check'; ntCur.chk[i] = false; }
+			ntRenderNote();
+		}
+		$('ntCheckBtn').addEventListener('click', function () {
+			if (!ntEditingNote) ntSetEditingNote(true);
+			ntToggleCheck();
+		});
+		$('ntPCheck').addEventListener('click', ntToggleCheck);
+
+		$('ntPlus').addEventListener('click', function () { $('nt-note').classList.add('plusopen'); });
+		$('ntPClose').addEventListener('click', function () { $('nt-note').classList.remove('plusopen'); });
+
+		/* ---- formatting ------------------------------------------------------ */
+		var NT_FMTS = [
+			{ k: 'title', n: 'Title', c: 's-title' },
+			{ k: 'heading', n: 'Heading', c: 's-heading' },
+			{ k: 'body', n: 'Body', c: 's-body' },
+			{ k: 'bullet', n: '&bull;&nbsp; Bulleted List', c: 's-list' },
+			{ k: 'dash', n: '&ndash;&nbsp; Dashed List', c: 's-list' },
+			{ k: 'number', n: '1.&nbsp; Numbered List', c: 's-list' }
+		];
+		var NT_BTICK = '<svg class="tick" width="17" height="13" viewBox="0 0 17 13" aria-hidden="true">' +
+			'<path d="M1.4 6.8 6 11.4 15.4 1.6" fill="none" stroke="#000" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+		function ntCurFmt() {
+			if (!ntCur) return 'body';
+			ntReflow(ntCur);
+			return ntCur.fmt[ntLines(ntCur).length - 1] || 'body';
+		}
+		function ntRenderFmt() {
+			var cur = ntCurFmt();
+			$('ntFRows').innerHTML = NT_FMTS.map(function (f) {
+				return '<div class="nt-frw ' + f.c + (f.k === cur ? ' on' : '') + '" data-k="' + f.k + '">' +
+					f.n + NT_BTICK + '</div>';
+			}).join('');
+		}
+		$('ntPFmt').addEventListener('click', function () {
+			ntRenderFmt();
+			$('ntFmt').classList.add('up');
+		});
+		$('ntFDone').addEventListener('click', function () { $('ntFmt').classList.remove('up'); });
+		$('ntFRows').addEventListener('click', function (e) {
+			var r = e.target.closest('.nt-frw'); if (!r || !ntCur) return;
+			var i = ntLines(ntCur).length - 1;
+			ntReflow(ntCur);
+			ntCur.fmt[i] = r.dataset.k;
+			ntCur.chk[i] = r.dataset.k === 'check' ? false : null;
+			ntRenderFmt();
+			ntRenderNote();
+		});
+
+		/* ---- action sheet ---------------------------------------------------- */
+		var ntSheetCb = null;
+		function ntSheet(buttons) {
+			$('ntSGroup').innerHTML = buttons.map(function (b, i) {
+				return '<div class="nt-sbtn" data-i="' + i + '">' + esc(b.n) + '</div>';
+			}).join('');
+			ntSheetCb = buttons;
+			$('ntSheet').classList.add('up');
+		}
+		$('ntSheet').addEventListener('click', function (e) {
+			var b = e.target.closest('.nt-sbtn');
+			if (!b) { if (e.target === $('ntSheet')) $('ntSheet').classList.remove('up'); return; }
+			var spec = b.id === 'ntSCancelBtn' ? null : ntSheetCb && ntSheetCb[+b.dataset.i];
+			$('ntSheet').classList.remove('up');
+			if (spec && spec.fn) spec.fn();
+		});
+
+		/* the camera button offers the same two choices the real app does; the
+		   Camera app owns the hardware, so this hands off to it */
+		function ntCamera() {
+			ntSheet([
+				{ n: 'Photo Library', fn: function () { appHandOff('photos'); } },
+				{ n: 'Take Photo or Video', fn: function () { appHandOff('camera'); } }
+			]);
+		}
+		$('ntCamBtn').addEventListener('click', ntCamera);
+		$('ntPCam').addEventListener('click', ntCamera);
+
+		/* ---- attachments ----------------------------------------------------- */
+		var NT_VIDBADGE = '<svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true">' +
+			'<path d="M0 1.6A1.6 1.6 0 011.6 0h5.6a1.6 1.6 0 011.6 1.6v7.8A1.6 1.6 0 017.2 11H1.6A1.6 1.6 0 010 ' +
+			'9.4zM10.4 4 15 1.2v8.6l-4.6-2.8z" fill="#fff"/></svg>';
+		var NT_DOCICON = '<svg width="30" height="38" viewBox="0 0 30 38" aria-hidden="true">' +
+			'<rect x="4" y="6" width="22" height="26" rx="3" fill="#3EA9E8"/>' +
+			'<rect x="12.5" y="12" width="5" height="14" rx="1" fill="#F5D33F"/></svg>';
+
+		function ntPicGlyph() {
+			return '<svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">' +
+				'<rect x="1" y="1" width="32" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>' +
+				'<circle cx="10" cy="10" r="3.2" fill="currentColor"/>' +
+				'<path d="M2.4 25.6 12 15.4l6.6 6.6 5.4-4.6 7.6 8.2z" fill="currentColor"/></svg>';
+		}
+		function ntAttachments() {
+			var all = [];
+			NT_NOTES.concat(NT_TRASH).forEach(function (n) {
+				n.att.forEach(function (a) { all.push(a); });
+			});
+			return all;
+		}
+		function ntRenderAttach() {
+			var all = ntAttachments(), h = '';
+			var pics = all.filter(function (a) { return a.k === 'photo' || a.k === 'video'; });
+			var auds = all.filter(function (a) { return a.k === 'audio'; });
+			var docs = all.filter(function (a) { return a.k === 'doc'; });
+
+			function head(name) {
+				return '<div class="nt-ahead"><div class="nt-aname">' + name +
+					'</div><div class="nt-aall">Show All</div></div>';
+			}
+			if (pics.length) {
+				h += '<div class="nt-asec">' + head('Photos and Videos') + '<div class="nt-astrip">' +
+					pics.map(function (a) {
+						return '<div class="nt-atile">' + ntPicGlyph() +
+							(a.k === 'video' ? '<div class="nt-abadge">' + NT_VIDBADGE +
+								'<span>' + a.x + '</span></div>' : '') + '</div>';
+					}).join('') + '</div></div>';
+			}
+			if (auds.length) {
+				h += '<div class="nt-asec">' + head('Audio') +
+					auds.map(function (a) {
+						return '<div class="nt-arow"><div class="nt-atext">' +
+							'<div class="nt-atitle">' + esc(a.n) + '</div>' +
+							'<div class="nt-asub">' + esc(a.s + ', ' + a.x) + '</div></div>' +
+							'<div class="nt-aplay"><svg width="20" height="24" viewBox="0 0 20 24">' +
+							'<path d="M2 1.5 19 12 2 22.5z" fill="currentColor"/></svg></div></div>';
+					}).join('') + '</div>';
+			}
+			if (docs.length) {
+				h += '<div class="nt-asec">' + head('Documents') +
+					docs.map(function (a) {
+						return '<div class="nt-arow"><div class="nt-atext">' +
+							'<div class="nt-atitle">' + esc(a.n) + '</div>' +
+							'<div class="nt-asub">' + esc(a.s) + '</div></div>' +
+							'<div class="nt-adoc">' + NT_DOCICON + '</div></div>';
+					}).join('') + '</div>';
+			}
+			$('ntABody').innerHTML = h || '<div class="nt-fhdr">No Attachments</div>';
+		}
+		$('ntAttachBtn').addEventListener('click', function () {
+			ntRenderAttach();
+			$('nt-attach').classList.add('active');
+		});
+		$('ntADone').addEventListener('click', function () {
+			$('nt-attach').classList.remove('active');
+		});
+
+		/* ---- New Folder ------------------------------------------------------ */
+		var ntFName = '';
+		function ntFSync() {
+			var up = $('ntAlert').classList.contains('up');
+			$('ntAField').classList.toggle('empty', !ntFName);
+			$('ntAVal').innerHTML = esc(ntFName) + (up ? '<span class="caret nt"></span>' : '');
+			$('ntASave').classList.toggle('dim', !ntFName.trim());
+		}
+		$('ntNewFolder').addEventListener('click', function () {
+			ntFName = '';
+			$('ntAlert').classList.add('up');
+			openKB(kbN2);
+			ntFSync();
+		});
+		function ntCloseAlert() { closeKB(kbN2); $('ntAlert').classList.remove('up'); }
+		$('ntACancel').addEventListener('click', ntCloseAlert);
+		$('ntASave').addEventListener('click', function () {
+			var nm = ntFName.trim(); if (!nm) return;
+			NT_FOLDERS.push({ id: 'f' + Date.now(), n: nm });
+			ntCloseAlert();
+			ntRenderFolders();
+		});
+
+		var kbN = buildKeyboard($('kbN'), { target: 'note' });
+		var kbN2 = buildKeyboard($('kbN2'), { target: 'ntfolder', nopred: true, retLabel: 'Save', retDim: true });
+		var kbN3 = buildKeyboard($('kbN3'), {
+			target: 'ntsearch', nopred: true, nocap: true, retLabel: 'Search', retDim: true
+		});
+		var kbN4 = buildKeyboard($('kbN4'), {
+			target: 'ntpw', nopred: true, nocap: true, retLabel: 'return', retDim: true
+		});
+
+		/* ---- lifecycle ------------------------------------------------------- */
+		function ntOpen() { ntRenderFolders(); }
+		function ntReset() {
+			ntSetEditingNote(false);
+			ntCloseAlert();
+			ntPwClose();
+			ntCloseShare();
+			$('ntActs').classList.remove('up');
+			NT_NOTES.forEach(function (n) { if (n.lock) n.lock.open = false; });
+			$('ntFmt').classList.remove('up');
+			$('ntSheet').classList.remove('up');
+			$('nt-attach').classList.remove('active');
+			ntSetSearching(false);
+			ntSetSelecting(false);
+			['nt-list', 'nt-note'].forEach(function (id) { $(id).classList.remove('active', 'behind'); });
+			$('nt-folders').classList.remove('behind');
+			$('nt-folders').classList.add('active');
+			if (ntFEditing) { ntFEditing = false; $('ntFEdit').textContent = 'Edit'; }
+			$('ntFolders').scrollTop = 0;
+		}
+
+		/* ------------------------------------------------------------------ */
+		/* SHARE SHEETS                                                       */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/ShareSheets/. Photos shows the sheet as a full
+		   page with the selection strip on top; Notes floats the same three
+		   sections as a card. Both feed the same Activities editor, so the
+		   glyphs and the row builders live here once. */
+
+		var SS = {
+			airdrop: '<svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">' +
+				'<path d="M23 41.5a4.2 4.2 0 004.2-4.2c0-2.4-4.2-8-4.2-8s-4.2 5.6-4.2 8a4.2 4.2 0 004.2 4.2z" ' +
+				'fill="currentColor"/>' +
+				'<path d="M15.6 27.4a9.6 9.6 0 0114.8 0M10.6 20.4a16.2 16.2 0 0124.8 0M5.6 13.4a22.8 22.8 0 0134.8 0" ' +
+				'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+			more: '<svg width="34" height="10" viewBox="0 0 34 10" aria-hidden="true">' +
+				'<circle cx="5" cy="5" r="4.2" fill="#6E6E73"/><circle cx="17" cy="5" r="4.2" fill="#6E6E73"/>' +
+				'<circle cx="29" cy="5" r="4.2" fill="#6E6E73"/></svg>',
+			mail: '<svg width="42" height="42" viewBox="0 0 42 42" aria-hidden="true">' +
+				'<path d="M4 12.5 21 24l17-11.5V30a1.6 1.6 0 01-1.6 1.6H5.6A1.6 1.6 0 014 30z" fill="#fff"/>' +
+				'<path d="M4.6 10.4h32.8L21 21.6z" fill="#fff"/></svg>',
+			notes: '<svg width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">' +
+				'<rect width="60" height="60" fill="#FEFEFC"/><rect width="60" height="15" fill="#FBCB3B"/>' +
+				'<rect y="14" width="60" height="1.6" fill="#E0B02F"/>' +
+				'<g stroke="#E7E5DD" stroke-width="1.1">' +
+				'<path d="M0 23h60M0 30h60M0 37h60M0 44h60M0 51h60"/></g></svg>',
+			fb: '<svg width="42" height="42" viewBox="0 0 42 42" aria-hidden="true">' +
+				'<path d="M25.6 42V25.7h5.5l.8-6.4h-6.3v-4.1c0-1.8.5-3.1 3.2-3.1h3.4V6.4a46 46 0 00-5-.3c-4.9 ' +
+				'0-8.2 3-8.2 8.5v4.7h-5.5v6.4H19V42z" fill="#fff"/></svg>',
+			tw: '<svg width="42" height="42" viewBox="0 0 42 42" aria-hidden="true">' +
+				'<path d="M37 11.6a12.9 12.9 0 01-3.7 1 6.5 6.5 0 002.9-3.6 13 13 0 01-4.1 1.6 6.5 6.5 0 ' +
+				'00-11 5.9A18.4 18.4 0 016.7 9.7a6.5 6.5 0 002 8.7 6.4 6.4 0 01-2.9-.8 6.5 6.5 0 005.2 6.4 ' +
+				'6.5 0 01-2.9.1 6.5 6.5 0 006 4.5A13 13 0 015 31.3a18.3 18.3 0 0028.2-16.4 13.2 13.2 0 ' +
+				'003.8-4z" fill="#fff"/></svg>',
+			flickr: '<svg width="46" height="24" viewBox="0 0 46 24" aria-hidden="true">' +
+				'<circle cx="12" cy="12" r="10.4" fill="#0063DC"/><circle cx="34" cy="12" r="10.4" fill="#FF0084"/></svg>',
+			ibooks: '<svg width="40" height="34" viewBox="0 0 40 34" aria-hidden="true">' +
+				'<path d="M20 6.4C16.6 3.4 12.4 2 7.4 2A1.4 1.4 0 006 3.4v24a1.4 1.4 0 001.4 1.4c5 0 9.2 1.4 ' +
+				'12.6 4.4V6.4z" fill="#fff"/>' +
+				'<path d="M20 6.4C23.4 3.4 27.6 2 32.6 2A1.4 1.4 0 0134 3.4v24a1.4 1.4 0 01-1.4 1.4c-5 ' +
+				'0-9.2 1.4-12.6 4.4V6.4z" fill="#fff" opacity=".82"/></svg>',
+			copy: '<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">' +
+				'<path d="M2 2h16v5h-11v18H2z" fill="#6E6E73"/>' +
+				'<path d="M11 9h13.5L32 16.5V32H11z" fill="#6E6E73"/>' +
+				'<path d="M24.5 9v7.5H32" fill="none" stroke="#F7F7F7" stroke-width="1.6"/></svg>',
+			print: '<svg width="36" height="32" viewBox="0 0 36 32" aria-hidden="true">' +
+				'<path d="M9 2h18v7H9z" fill="#6E6E73"/>' +
+				'<rect x="1" y="9" width="34" height="13" rx="2" fill="#6E6E73"/>' +
+				'<path d="M9 18h18v13H9z" fill="#F7F7F7" stroke="#6E6E73" stroke-width="2"/></svg>',
+			lock: '<svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true">' +
+				'<path d="M8 14V9.5a7 7 0 0114 0V14" fill="none" stroke="#6E6E73" stroke-width="3"/>' +
+				'<rect x="2" y="14" width="26" height="19" rx="2.6" fill="#6E6E73"/></svg>',
+			dup: '<svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">' +
+				'<rect x="12" y="1" width="21" height="17" rx="2" fill="#6E6E73"/>' +
+				'<rect x="1" y="8" width="21" height="17" rx="2" fill="#6E6E73" stroke="#F7F7F7" stroke-width="2"/>' +
+				'<path d="M11.5 13v7M8 16.5h7" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round"/></svg>',
+			slideshow: '<svg width="30" height="32" viewBox="0 0 30 32" aria-hidden="true">' +
+				'<path d="M3 2 28 16 3 30z" fill="#6E6E73"/></svg>',
+			hide: '<svg width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">' +
+				'<rect x="3" y="4" width="28" height="22" rx="2.4" fill="none" stroke="#6E6E73" stroke-width="2.4"/>' +
+				'<path d="M2 28 32 2" stroke="#6E6E73" stroke-width="2.4" stroke-linecap="round"/></svg>',
+			contact: '<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">' +
+				'<circle cx="17" cy="17" r="16" fill="#6E6E73"/>' +
+				'<circle cx="17" cy="13" r="5.4" fill="#F7F7F7"/>' +
+				'<path d="M6.6 29a11.4 11.4 0 0120.8 0" fill="#F7F7F7"/></svg>',
+			wallpaper: '<svg width="24" height="36" viewBox="0 0 24 36" aria-hidden="true">' +
+				'<rect x="1" y="1" width="22" height="34" rx="3.4" fill="none" stroke="#6E6E73" stroke-width="2"/>' +
+				'<circle cx="12" cy="30.5" r="2" fill="#6E6E73"/>' +
+				'<path d="M8 4.4h8" stroke="#6E6E73" stroke-width="1.6" stroke-linecap="round"/></svg>',
+			grip: '<div class="ss-grip"><i></i><i></i><i></i></div>',
+			tick: '<svg width="15" height="12" viewBox="0 0 15 12" aria-hidden="true">' +
+				'<path d="M1.2 6.2 5.4 10.4 13.6 1.6" fill="none" stroke="#fff" stroke-width="2.2" ' +
+				'stroke-linecap="round" stroke-linejoin="round"/></svg>',
+			vid: '<svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true">' +
+				'<path d="M0 1.6A1.6 1.6 0 011.6 0h5.6a1.6 1.6 0 011.6 1.6v7.8A1.6 1.6 0 017.2 11H1.6A1.6 ' +
+				'1.6 0 010 9.4zM10.4 4 15 1.2v8.6l-4.6-2.8z" fill="#fff"/></svg>'
+		};
+
+		var SS_AIR_OFF = '<b>AirDrop</b>. Tap to turn on Wi-Fi and Bluetooth to share with AirDrop.';
+		var SS_AIR_ON = '<b>AirDrop</b>. Share instantly with people nearby. If they turn on AirDrop from ' +
+			'Control Center on iOS or from Finder on the Mac, you&rsquo;ll see their names here. Just tap to share.';
+		var ssAir = false;
+
+		function ssRenderAir(el) {
+			el.className = 'ss-air' + (ssAir ? ' on' : '');
+			el.innerHTML = '<div class="ss-airtile">' + SS.airdrop + '</div>' +
+				'<div class="ss-airtext">' + (ssAir ? SS_AIR_ON : SS_AIR_OFF) + '</div>';
+		}
+		function ssRenderRow(el, items) {
+			el.innerHTML = items.map(function (it, i) {
+				return '<div class="ss-item" data-i="' + i + '">' +
+					'<div class="ss-tile ' + (it.cls || '') + '">' + (it.ic || '') + '</div>' +
+					'<div class="ss-label">' + it.n + '</div></div>';
+			}).join('');
+		}
+		function ssRenderActs(el, items, withIcons) {
+			el.innerHTML = items.map(function (it, i) {
+				return '<div class="ss-actrow" data-i="' + i + '">' +
+					(withIcons ? '<div class="ss-tile ' + (it.cls || '') + '">' + (it.ic || '') + '</div>' : '') +
+					'<div class="ss-actname">' + it.n + '</div>' +
+					(it.sw === undefined ? '' : '<div class="ss-sw' + (it.sw ? ' on' : '') + '"></div>') +
+					SS.grip + '</div>';
+			}).join('');
+		}
+
+		/* ================= PHOTOS ================= */
+		var PH_SS_APPS = [
+			{ n: 'Mail', ic: SS.mail, cls: 'mail' },
+			{ n: 'Add to Notes', ic: SS.notes, cls: 'notes' },
+			{ n: 'Facebook', ic: SS.fb, cls: 'fb', sw: true },
+			{ n: 'Twitter', ic: SS.tw, cls: 'tw', sw: true },
+			{ n: 'Flickr', ic: SS.flickr, cls: 'flickr', sw: true },
+			{ n: 'Save PDF to iBooks', ic: SS.ibooks, cls: 'ibooks' }
+		];
+		PH_SS_APPS[1].sw = true;
+		var PH_SS_ACTS = [
+			{ n: 'Duplicate', ic: SS.dup },
+			{ n: 'Slideshow', ic: SS.slideshow },
+			{ n: 'Hide', ic: SS.hide },
+			{ n: 'Copy', ic: SS.copy },
+			{ n: 'Print', ic: SS.print },
+			{ n: 'Assign to Contact', ic: SS.contact },
+			{ n: 'Use as Wallpaper', ic: SS.wallpaper }
+		];
+		var phSSItems = [], phActsWhich = 'acts';
+
+		function phMore() { return { n: 'More', ic: SS.more }; }
+
+		function phRenderShare() {
+			$('phSSTitle').textContent = phNoun(phSSItems) + ' Selected';
+			/* the strip shows the whole roll with the shared ones ticked */
+			var roll = phLive().slice().sort(function (a, b) { return b.taken - a.taken; });
+			$('phSSStrip').innerHTML = roll.map(function (p) {
+				var on = phSSItems.indexOf(p) > -1;
+				return '<div class="ss-shot' + (on ? ' on' : '') + '" data-id="' + p.id + '"' +
+					' style="background-image:url(' + phThumbURL(p) + ')">' +
+					'<div class="ss-ring">' + SS.tick + '</div>' +
+					(p.kind === 'video' ? '<div class="ss-dur">' + SS.vid + '<span>' + phDur(p.dur) +
+						'</span></div>' : '') +
+					'</div>';
+			}).join('');
+			ssRenderAir($('phSSAir'));
+			ssRenderRow($('phSSApps'), PH_SS_APPS.filter(function (a) { return a.sw !== false; }).concat([phMore()]));
+			ssRenderRow($('phSSActs'), PH_SS_ACTS.concat([phMore()]));
+		}
+
+		function phShareSheet(items) {
+			if (!items || !items.length) return;
+			phSSItems = items.slice();
+			phRenderShare();
+			$('ph-share').classList.add('active');
+		}
+		$('phSSCancel').addEventListener('click', function () { $('ph-share').classList.remove('active'); });
+
+		$('phSSAir').addEventListener('click', function () { ssAir = !ssAir; ssRenderAir($('phSSAir')); });
+		$('phSSStrip').addEventListener('click', function (e) {
+			var s = e.target.closest('.ss-shot'); if (!s) return;
+			var p = phById(+s.dataset.id); if (!p) return;
+			var i = phSSItems.indexOf(p);
+			if (i > -1) { if (phSSItems.length === 1) return; phSSItems.splice(i, 1); }
+			else phSSItems.push(p);
+			phRenderShare();
+		});
+
+		$('phSSApps').addEventListener('click', function (e) {
+			var it = e.target.closest('.ss-item'); if (!it) return;
+			var list = PH_SS_APPS.filter(function (a) { return a.sw !== false; });
+			var pick = list.concat([phMore()])[+it.dataset.i];
+			if (pick.n === 'More') { phActsWhich = 'apps'; phOpenActs(); return; }
+			if (pick.n === 'Add to Notes') { phAddToNotes(phSSItems); return; }
+			$('ph-share').classList.remove('active');
+		});
+		$('phSSActs').addEventListener('click', function (e) {
+			var it = e.target.closest('.ss-item'); if (!it) return;
+			var pick = PH_SS_ACTS.concat([phMore()])[+it.dataset.i];
+			if (pick.n === 'More') { phActsWhich = 'acts'; phOpenActs(); return; }
+			if (pick.n === 'Duplicate') { phDuplicate(phSSItems); return; }
+			$('ph-share').classList.remove('active');
+		});
+
+		function phOpenActs() {
+			if (phActsWhich === 'apps') ssRenderActs($('phActsBody'), PH_SS_APPS, true);
+			else ssRenderActs($('phActsBody'), PH_SS_ACTS, false);
+			$('ph-acts').classList.add('active');
+		}
+		$('phActsDone').addEventListener('click', function () { $('ph-acts').classList.remove('active'); });
+		$('phActsBody').addEventListener('click', function (e) {
+			var sw = e.target.closest('.ss-sw'); if (!sw) return;
+			var row = sw.closest('.ss-actrow');
+			PH_SS_APPS[+row.dataset.i].sw = !PH_SS_APPS[+row.dataset.i].sw;
+			sw.classList.toggle('on');
+		});
+
+		/* two of the activities are cheap enough to actually do */
+		function phDuplicate(items) {
+			$('ph-share').classList.remove('active');
+			if (!PH_DB) return;
+			var tx = phTx(['photos'], 'readwrite'), st = tx.objectStore('photos');
+			items.forEach(function (p) {
+				var c = {};
+				for (var k in p) if (k !== 'id') c[k] = p[k];
+				c.added = Date.now();
+				st.add(c);
+			});
+			tx.oncomplete = function () { phLoad(function () { phEndSelect(); phRepaint(); }); };
+		}
+		function phAddToNotes(items) {
+			$('ph-share').classList.remove('active');
+			var n = ntMk('notes', new Date(), '', null, items.map(function (p) {
+				return { k: p.kind === 'video' ? 'video' : 'photo', n: p.name || ('IMG_' + p.id),
+					x: p.kind === 'video' ? phDur(p.dur) : '' };
+			}));
+			NT_NOTES.push(n);
+			phEndSelect();
+			phRepaint();
+		}
+
+		/* ================= NOTES ================= */
+		var NT_SS_APPS = [
+			{ n: 'Mail', ic: SS.mail, cls: 'mail' }
+		];
+		function ntSSActs() {
+			var locked = ntCur && ntCur.lock;
+			return [
+				{ n: 'Copy', ic: SS.copy },
+				{ n: 'Print', ic: SS.print },
+				{ n: locked ? 'Remove Lock' : 'Lock Note', ic: SS.lock }
+			];
+		}
+		function ntRenderShare() {
+			ssRenderAir($('ntSSAir'));
+			ssRenderRow($('ntSSApps'), NT_SS_APPS.concat([{ n: 'More', ic: SS.more }]));
+			ssRenderRow($('ntSSActs'), ntSSActs().concat([{ n: 'More', ic: SS.more }]));
+		}
+		function ntOpenShare() {
+			if (!ntCur) return;
+			ntRenderShare();
+			$('ntSS').classList.add('up');
+		}
+		function ntCloseShare() { $('ntSS').classList.remove('up'); }
+		$('ntSSCancel').addEventListener('click', ntCloseShare);
+		$('ntSS').addEventListener('click', function (e) { if (e.target === $('ntSS')) ntCloseShare(); });
+		$('ntSSAir').addEventListener('click', function () { ssAir = !ssAir; ssRenderAir($('ntSSAir')); });
+
+		$('ntSSApps').addEventListener('click', function (e) {
+			var it = e.target.closest('.ss-item'); if (!it) return;
+			var pick = NT_SS_APPS.concat([{ n: 'More' }])[+it.dataset.i];
+			if (pick.n === 'More') { ntOpenActs('apps'); return; }
+			ntCloseShare();
+		});
+		$('ntSSActs').addEventListener('click', function (e) {
+			var it = e.target.closest('.ss-item'); if (!it) return;
+			var acts = ntSSActs();
+			var pick = acts.concat([{ n: 'More' }])[+it.dataset.i];
+			if (pick.n === 'More') { ntOpenActs('acts'); return; }
+			if (pick.n === 'Lock Note') { ntCloseShare(); ntAskPw('lock'); return; }
+			if (pick.n === 'Remove Lock') { ntCloseShare(); ntRemoveLock(); return; }
+			ntCloseShare();
+		});
+
+		var ntActsWhich = 'acts';
+		function ntOpenActs(which) {
+			ntActsWhich = which;
+			if (which === 'apps') ssRenderActs($('ntActsBody'), NT_SS_APPS, true);
+			else ssRenderActs($('ntActsBody'), ntSSActs(), false);
+			$('ntActs').classList.add('up');
+		}
+		$('ntActsDone').addEventListener('click', function () { $('ntActs').classList.remove('up'); });
+		$('ntActsBody').addEventListener('click', function (e) {
+			var sw = e.target.closest('.ss-sw'); if (!sw || ntActsWhich !== 'apps') return;
+			var row = sw.closest('.ss-actrow');
+			NT_SS_APPS[+row.dataset.i].sw = !NT_SS_APPS[+row.dataset.i].sw;
+			sw.classList.toggle('on');
+		});
+
+		/* ---- locking --------------------------------------------------------- */
+		/* One password for the app, set the first time a note is locked -- which
+		   is what the alert's wording assumes. `open` is per-session: locking a
+		   note leaves it readable until you hit Lock Now or leave Notes. */
+		var NT_PW = null, ntPwMode = 'lock', ntPwVal = '';
+
+		var NT_LOCK_SHUT = '<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true">' +
+			'<path d="M6.5 12V8a6.5 6.5 0 0113 0v4" fill="none" stroke="currentColor" stroke-width="2.4"/>' +
+			'<rect x="1.4" y="12" width="23.2" height="17" rx="2.6" fill="none" stroke="currentColor" ' +
+			'stroke-width="2.4"/></svg>';
+		var NT_LOCK_OPEN = '<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">' +
+			'<path d="M10.5 12V8a6.5 6.5 0 0113 0v1.6" fill="none" stroke="currentColor" stroke-width="2.4"/>' +
+			'<rect x="1.4" y="12" width="23.2" height="17" rx="2.6" fill="none" stroke="currentColor" ' +
+			'stroke-width="2.4"/></svg>';
+		var NT_LOCK_BIG = '<svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true">' +
+			'<path d="M27 44V30a23 23 0 0146 0v14" fill="none" stroke="currentColor" stroke-width="13"/>' +
+			'<rect x="19" y="44" width="62" height="46" rx="6" fill="currentColor"/></svg>';
+
+		$('ntLockView').addEventListener('click', function () { ntAskPw('view'); });
+		$('ntLockBtn').addEventListener('click', function () {
+			if (!ntCur || !ntCur.lock) return;
+			if (ntCur.lock.open) { ntCur.lock.open = false; ntSyncLock(); }
+			else ntAskPw('view');
+		});
+		$('ntLockNow').addEventListener('click', function () {
+			NT_NOTES.forEach(function (n) { if (n.lock) n.lock.open = false; });
+			ntRenderList();
+		});
+
+		function ntAskPw(mode) {
+			ntPwMode = mode; ntPwVal = '';
+			$('ntPwTitle').textContent = mode === 'lock' ? 'Lock Note' : 'View Note';
+			$('ntPwMsg').textContent = mode === 'lock'
+				? 'Enter your password to lock this note.'
+				: 'Enter your password to view this note.';
+			$('ntPwAlert').classList.add('up');
+			openKB(kbN4);
+			ntPwSync();
+		}
+		function ntPwSync() {
+			var up = $('ntPwAlert').classList.contains('up');
+			$('ntPwField').classList.toggle('empty', !ntPwVal);
+			$('ntPwVal').innerHTML = new Array(ntPwVal.length + 1).join('&bull;') +
+				(up ? '<span class="caret nt"></span>' : '');
+		}
+		function ntPwClose() { closeKB(kbN4); $('ntPwAlert').classList.remove('up'); }
+		$('ntPwCancel').addEventListener('click', ntPwClose);
+		$('ntPwOK').addEventListener('click', function () {
+			if (!ntPwVal) return;
+			if (ntPwMode === 'lock') {
+				if (NT_PW === null) NT_PW = ntPwVal;      /* first lock sets the password */
+				if (ntPwVal !== NT_PW) return ntPwShake();
+				ntCur.lock = { open: true };
+			} else {
+				if (ntPwVal !== NT_PW) return ntPwShake();
+				ntCur.lock.open = true;
+			}
+			ntPwClose();
+			ntSyncLock();
+			ntRenderList();
+		});
+		function ntPwShake() {
+			ntPwVal = ''; ntPwSync();
+			var a = $('ntPwAlert').firstElementChild;
+			a.style.transition = 'none'; a.style.transform = 'translateX(-10px)';
+			setTimeout(function () {
+				a.style.transition = 'transform .3s cubic-bezier(.36,.07,.19,.97)';
+				a.style.transform = '';
+			}, 20);
+		}
+		function ntRemoveLock() {
+			if (!ntCur) return;
+			ntCur.lock = null;
+			ntSyncLock();
+			ntRenderList();
+		}
+
+		/* the note screen reads its whole state off the note's lock */
+		function ntSyncLock() {
+			var n = ntCur, has = !!(n && n.lock), shut = has && !n.lock.open;
+			$('nt-note').classList.toggle('haslock', has);
+			$('nt-note').classList.toggle('locked', shut);
+			$('ntLockBtn').innerHTML = has ? (shut ? NT_LOCK_SHUT : NT_LOCK_OPEN) : '';
+			if (shut) ntSetEditingNote(false);
+		}
+		$('ntLocked').firstElementChild.innerHTML = NT_LOCK_BIG;
+
+		/* ------------------------------------------------------------------ */
+		/* REMINDERS                                                          */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/Reminders/. Lists are cards stacked under a dark
+		   strip; opening one slides it to the top and lets the rest peek along
+		   the bottom. Scheduled is not a real list -- it is a view over every
+		   dated reminder, which is why it has no colour of its own. */
+
+		var RM_COLORS = ['#C77BE0', '#5BD028', '#1CADE4', '#EFBE1B', '#A08464', '#FF2D6F', '#F5901E'];
+
+		function rmMk(t, o) {
+			o = o || {};
+			return {
+				t: t, done: !!o.done, pri: o.pri || 0,
+				due: o.due || null, notes: o.notes || ''
+			};
+		}
+
+		var RM_LISTS = [
+			{ id: 'l1', n: 'Reminders', c: '#1CADE4', items: [] },
+			{ id: 'l2', n: 'Reminders', c: '#F5901E', items: [] }
+		];
+		RM_LISTS[0].items = [
+			rmMk('Turn in my homework', { pri: 3, due: new Date(2023, 10, 23, 10, 15) }),
+			rmMk('Charge my computer', { pri: 3, due: new Date(2023, 11, 30, 20, 0) })
+		];
+
+		var rmOpen = null;        /* the open card's list id, or 'sched', or null */
+		var rmShowDone = false, rmEditing = false;
+		var rmAdding = false, rmAddText = '';
+		var rmQuery = '', rmSearching = false;
+		var rmNaming = null;      /* the list being named, while Create List is up */
+
+		var RM_CHEV = '<svg width="9" height="15" viewBox="0 0 9 15" aria-hidden="true">' +
+			'<path d="M1.4 1.3 7.4 7.5l-6 6.2" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		var RM_PLUS = '<svg width="21" height="21" viewBox="0 0 21 21" aria-hidden="true">' +
+			'<path d="M10.5 1v19M1 10.5h19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+		var RM_TICK = '<svg width="16" height="13" viewBox="0 0 16 13" aria-hidden="true">' +
+			'<path d="M1.4 6.6 5.8 11 14.6 1.8" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		var RM_ALARM = '<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">' +
+			'<circle cx="15" cy="17" r="10.4" fill="none" stroke="currentColor" stroke-width="1.8"/>' +
+			'<path d="M15 11v6.4h4.6" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/>' +
+			'<path d="M4.6 2.6 8.4 6M25.4 2.6 21.6 6" stroke="currentColor" stroke-width="2.2" ' +
+			'stroke-linecap="round"/>' +
+			'<path d="M3.2 8.4A7 7 0 018.6 2M26.8 8.4A7 7 0 0021.4 2" fill="none" stroke="currentColor" ' +
+			'stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+		/* ---- reading the model ---------------------------------------------- */
+		function rmListById(id) {
+			for (var i = 0; i < RM_LISTS.length; i++) if (RM_LISTS[i].id === id) return RM_LISTS[i];
+			return null;
+		}
+		function rmListOf(item) {
+			for (var i = 0; i < RM_LISTS.length; i++)
+				if (RM_LISTS[i].items.indexOf(item) > -1) return RM_LISTS[i];
+			return null;
+		}
+		function rmOpenCount(l) {
+			return l.items.filter(function (r) { return !r.done; }).length;
+		}
+		function rmLate(r) { return r.due && !r.done && r.due < new Date(); }
+		function rmOverdue(l) { return l.items.filter(rmLate).length; }
+
+		/* every dated, unfinished reminder, oldest first */
+		function rmScheduled() {
+			var out = [];
+			RM_LISTS.forEach(function (l) {
+				l.items.forEach(function (r) { if (r.due && (rmShowDone || !r.done)) out.push(r); });
+			});
+			return out.sort(function (a, b) { return a.due - b.due; });
+		}
+		function rmDueToday() { return rmScheduled().filter(rmLate).length; }
+
+		var RM_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		var RM_MONS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+			'August', 'September', 'October', 'November', 'December'];
+		function rmMD(d) {
+			return (d.getMonth() + 1) + '/' + d.getDate() + '/' + ('' + d.getFullYear()).slice(-2);
+		}
+		function rmHM(d) {
+			var h = d.getHours(), m = d.getMinutes();
+			return ((h % 12) || 12) + ':' + ('0' + m).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
+		}
+		function rmDueLabel(r, withTime) {
+			return rmMD(r.due) + (withTime ? ', ' + rmHM(r.due) : '');
+		}
+		function rmDayTitle(d) {
+			return RM_DAYS[d.getDay()] + ', ' + RM_MONS[d.getMonth()] + ' ' + d.getDate() +
+				', ' + d.getFullYear();
+		}
+		function rmBang(r, c) {
+			return r.pri ? '<span class="rm-bang" style="color:' + c + '">' +
+				new Array(r.pri + 1).join('!') + '</span>' : '';
+		}
+
+		/* whichever keyboard is up, the cards give back exactly its height */
+		function rmKbPx() {
+			if (kbR3 && kbR3.el.classList.contains('up')) return 216;
+			if ((kbR && kbR.el.classList.contains('up')) ||
+				(kbR4 && kbR4.el.classList.contains('up'))) return 252;
+			return 0;
+		}
+		function rmOpenH() { return Math.min(500, 548 - rmKbPx()); }
+		function rmSyncKb() {
+			$('rmapp').style.setProperty('--rm-kb', rmKbPx() + 'px');
+			$('rmapp').style.setProperty('--rm-openh', rmOpenH() + 'px');
+		}
+
+		/* the strip is dark but an open card is paper, so the ink has to follow */
+		function rmInk() {
+			BG_LUMA.rm = (rmOpen || $('rm-detail').classList.contains('up')) ? 0.95 : 0.08;
+			refreshInk();
+		}
+
+		/* ---- the stack ------------------------------------------------------- */
+		function rmRowHTML(r, c, opts) {
+			opts = opts || {};
+			var late = rmLate(r);
+			return '<div class="rm-row' + (r.done ? ' done' : '') + '" data-r="' + opts.k + '">' +
+				'<div class="rm-ring" style="color:' + c + (opts.tintRing ? ';border-color:' + c : '') + '">' +
+				'<i></i></div>' +
+				'<div class="rm-rtext">' + rmBang(r, c) + (opts.hit ? opts.hit : esc(r.t)) +
+				(r.due ? '<div class="rm-rdue' + (late ? ' late' : '') + '">' +
+					rmDueLabel(r, !opts.dateOnly) + '</div>' : '') +
+				(opts.listName ? '<div class="rm-rlist">' + esc(opts.listName) + '</div>' : '') +
+				'</div></div>';
+		}
+		function rmAddHTML() {
+			return '<div class="rm-add" data-add="1"><div class="rm-addplus">' + RM_PLUS + '</div>' +
+				(rmAdding ? '<div class="rm-addtext">' + esc(rmAddText) +
+					'<span class="caret rm"></span></div>' : '') + '</div>';
+		}
+
+		function rmCardBody(l) {
+			if (rmNaming && l && l.id === rmNaming.id) {
+				return '<div class="rm-cinner"><div class="rm-dots">' + RM_COLORS.map(function (c, i) {
+					return '<div class="rm-dot' + (c === rmNaming.c ? ' on' : '') +
+						'" style="color:' + c + '" data-c="' + i + '"></div>';
+				}).join('') + '</div></div>';
+			}
+			if (!l) {                                  /* Scheduled groups by day */
+				var rows = rmScheduled(), h = '<div class="rm-cinner">', cur = null;
+				rows.forEach(function (r, i) {
+					var d = new Date(r.due); d.setHours(0, 0, 0, 0);
+					/* anything already past sits in one bucket labelled Today */
+					var key = rmLate(r) ? 'late' : d.getTime();
+					if (cur !== key) {
+						if (cur !== null) h += rmAddHTML();
+						cur = key;
+						h += '<div class="rm-day">' +
+							(key === 'late' ? 'Today' : rmDayTitle(d)) + '</div>';
+					}
+					var late = rmLate(r), c = (rmListOf(r) || {}).c || '#9A9A9F';
+					h += '<div class="rm-row' + (r.done ? ' done' : '') + '" data-s="' + i + '">' +
+						'<div class="rm-ring" style="color:' + c + '"><i></i></div>' +
+						'<div class="rm-rtext">' + rmBang(r, c) + esc(r.t) +
+						'<div class="rm-rdue' + (late ? ' late' : '') + '">' +
+						(late ? rmMD(r.due) : rmHM(r.due)) + '</div></div></div>';
+				});
+				h += rmAddHTML();
+				return h + '</div>';
+			}
+			var items = l.items.filter(function (r) { return rmShowDone || !r.done; });
+			var body = '<div class="rm-cinner">';
+			items.forEach(function (r) {
+				body += rmRowHTML(r, l.c, { k: l.items.indexOf(r) });
+			});
+			body += rmAddHTML();
+			body += '<div class="rm-showdone" data-done="1">' +
+				(rmShowDone ? 'Hide Completed' : 'Show Completed') + '</div>';
+			return body + '</div>';
+		}
+
+		function rmCardHTML(l, i, open) {
+			var sched = !l;
+			var name = sched ? 'Scheduled' : l.n;
+			var col = sched ? '#9A9A9F' : l.c;
+			var count = sched ? '' : rmOpenCount(l);
+			var over = sched ? rmScheduled().filter(rmLate).length : rmOverdue(l);
+			var naming = rmNaming && l && l.id === rmNaming.id;
+			return '<div class="rm-card' + (open ? ' up' : '') + '" data-i="' + i + '">' +
+				'<div class="rm-chead">' +
+				'<div class="rm-cname' + (naming ? ' edit' : '') + '" style="color:' +
+				(naming ? rmNaming.c : col) + '">' +
+				(naming ? esc(rmNaming.n) + '<span class="caret rm"></span>' : esc(name)) + '</div>' +
+				(sched ? '<div class="rm-csub">' + rmDueToday() + ' item' +
+					(rmDueToday() === 1 ? '' : 's') + ' due today</div>' : '') +
+				(sched ? '<div class="rm-clock">' + RM_ALARM + '</div>'
+					: '<div class="rm-ccount" style="color:' + (naming ? '#A8A7A2' : col) + '">' +
+					(naming ? RM_PLUS : count) + '</div>') +
+				(over ? '<div class="rm-cover">' + over + ' overdue</div>' : '') +
+				(naming ? '<div class="rm-cedit" id="rmNameDone">Done</div>'
+					: '<div class="rm-cedit">' + (rmEditing ? 'Done' : 'Edit') + '</div>') +
+				'</div>' +
+				'<div class="rm-cbody">' + (open ? rmCardBody(l) : '') + '</div></div>';
+		}
+
+		function rmRender() {
+			var cards = [null].concat(RM_LISTS);      /* Scheduled rides on top */
+			var openIdx = rmOpen === null ? -1
+				: (rmOpen === 'sched' ? 0 : cards.indexOf(rmListById(rmOpen)));
+			var h = '';
+			cards.forEach(function (l, i) { h += rmCardHTML(l, i, i === openIdx); });
+			$('rmstack').innerHTML = h;
+			$('rmstack').classList.toggle('open', openIdx > -1);
+			rmSyncKb();
+
+			var els = $('rmstack').children, PEEK = 15;
+			var openH = rmOpenH(), seen = 0;
+			for (var i = 0; i < els.length; i++) {
+				var y;
+				if (openIdx < 0) y = 50 + i * 76;       /* hanging off the dark strip */
+				else if (i === openIdx) y = 0;
+				else y = openH + 20 + (seen++) * PEEK;  /* the rest peek along the bottom */
+				els[i].style.transform = 'translateY(' + y + 'px)';
+				els[i].style.zIndex = i === openIdx ? 40 : i;
+				if (i === openIdx && !rmNaming) rmFillRules(els[i]);
+			}
+			rmInk();
+		}
+
+		function rmFillRules(card) {
+			var body = card.querySelector('.rm-cbody'), inner = card.querySelector('.rm-cinner');
+			if (!body || !inner) return;
+			var tail = inner.querySelector('.rm-showdone');
+			if (tail) tail.parentNode.removeChild(tail);
+			var gap = (rmOpenH() - 76) - inner.offsetHeight - (tail ? 46 : 0);
+			var n = Math.max(0, Math.floor(gap / 38));
+			for (var i = 0; i < n; i++) {
+				var f = document.createElement('div');
+				f.className = 'rm-fill';
+				inner.appendChild(f);
+			}
+			if (tail) inner.appendChild(tail);
+		}
+
+		$('rmstack').addEventListener('click', function (e) {
+			var card = e.target.closest('.rm-card'); if (!card) return;
+			var i = +card.dataset.i, cards = [null].concat(RM_LISTS), l = cards[i];
+			var isOpen = card.classList.contains('up');
+
+			if (e.target.closest('#rmNameDone')) { rmFinishNaming(); return; }
+			if (e.target.closest('.rm-dot')) {
+				rmNaming.c = RM_COLORS[+e.target.closest('.rm-dot').dataset.c];
+				rmRender();
+				return;
+			}
+			if (!isOpen) {                            /* tapping any other card opens it */
+				rmCloseAdd();
+				rmOpen = l ? l.id : 'sched';
+				rmRender();
+				return;
+			}
+			if (e.target.closest('.rm-cedit')) { rmEditing = !rmEditing; rmRender(); return; }
+			if (e.target.closest('.rm-showdone')) { rmShowDone = !rmShowDone; rmRender(); return; }
+			if (e.target.closest('.rm-add')) { rmStartAdd(); return; }
+
+			var ring = e.target.closest('.rm-ring'), row = e.target.closest('.rm-row');
+			if (row) {
+				var item = row.dataset.s !== undefined
+					? rmScheduled()[+row.dataset.s] : l.items[+row.dataset.r];
+				if (!item) return;
+				if (ring) { item.done = !item.done; rmRender(); return; }
+				rmOpenDetail(item, rmListOf(item));
+			}
+		});
+
+		/* swiping the open card down drops it back into the stack */
+		(function () {
+			var y0 = 0, x0 = 0, live = false;
+			$('rmstack').addEventListener('pointerdown', function (e) {
+				live = !!rmOpen; y0 = e.clientY; x0 = e.clientX;
+			});
+			$('rmstack').addEventListener('pointermove', function (e) {
+				if (!live) return;
+				var dy = e.clientY - y0;
+				if (Math.abs(e.clientX - x0) > Math.abs(dy)) { live = false; return; }
+				if (dy > 46) {
+					live = false;
+					rmCloseAdd();
+					rmOpen = null; rmEditing = false;
+					rmRender();
+				}
+			});
+			$('rmstack').addEventListener('pointerup', function () { live = false; });
+			$('rmstack').addEventListener('pointercancel', function () { live = false; });
+		})();
+
+		/* ---- adding inline --------------------------------------------------- */
+		function rmStartAdd() {
+			rmAdding = true; rmAddText = '';
+			openKB(kbR);
+			rmRender();
+		}
+		function rmCommitAdd() {
+			var t = rmAddText.trim();
+			if (t) {
+				var l = rmOpen === 'sched' ? RM_LISTS[0] : rmListById(rmOpen);
+				if (l) l.items.push(rmMk(t));
+			}
+			rmAddText = '';
+			rmRender();
+		}
+		function rmCloseAdd() {
+			if (!rmAdding) return;
+			rmCommitAdd();
+			rmAdding = false;
+			closeKB(kbR);
+			rmRender();
+		}
+
+		/* ---- search ---------------------------------------------------------- */
+		function rmSetSearching(on) {
+			rmSearching = on;
+			$('rmapp').classList.toggle('searching', on);
+			if (on) { rmCloseAdd(); openKB(kbR3); }
+			else { closeKB(kbR3); rmQuery = ''; }
+			rmSyncSearch();
+		}
+		function rmSyncSearch() {
+			$('rmSField').classList.toggle('empty', !rmQuery);
+			$('rmSVal').innerHTML = esc(rmQuery) + (rmSearching ? '<span class="caret rm"></span>' : '');
+			rmRenderResults();
+		}
+		function rmRenderResults() {
+			if (!rmSearching) return;
+			var q = rmQuery.trim().toLowerCase(), h = '';
+			if (q) {
+				RM_LISTS.forEach(function (l) {
+					l.items.forEach(function (r) {
+						var i = r.t.toLowerCase().indexOf(q);
+						if (i < 0) return;
+						var hit = esc(r.t.slice(0, i)) + '<span class="rm-hit">' +
+							esc(r.t.slice(i, i + q.length)) + '</span>' + esc(r.t.slice(i + q.length));
+						h += rmRowHTML(r, l.c, {
+							k: l.items.indexOf(r), hit: hit, listName: l.n,
+							dateOnly: true, tintRing: true
+						});
+					});
+				});
+			}
+			$('rmResults').innerHTML = h;
+		}
+		$('rmSField').addEventListener('click', function () { if (!rmSearching) rmSetSearching(true); });
+		$('rmSCancel').addEventListener('click', function () { rmSetSearching(false); });
+		$('rmSClear').addEventListener('click', function (e) {
+			e.stopPropagation(); rmQuery = ''; rmSyncSearch();
+		});
+		$('rmResults').addEventListener('click', function (e) {
+			var row = e.target.closest('.rm-row'); if (!row) return;
+			var ring = e.target.closest('.rm-ring');
+			var all = [];
+			RM_LISTS.forEach(function (l) {
+				l.items.forEach(function (r) {
+					if (r.t.toLowerCase().indexOf(rmQuery.trim().toLowerCase()) > -1) all.push(r);
+				});
+			});
+			var idx = Array.prototype.indexOf.call($('rmResults').children, row);
+			var item = all[idx]; if (!item) return;
+			if (ring) { item.done = !item.done; rmRenderResults(); return; }
+			rmOpenDetail(item, rmListOf(item));
+		});
+
+		/* ---- Create new... --------------------------------------------------- */
+		$('rmPlus').addEventListener('click', function () { $('rmSheet').classList.add('up'); });
+		$('rmSheetCancel').addEventListener('click', function () { $('rmSheet').classList.remove('up'); });
+		$('rmSheet').addEventListener('click', function (e) {
+			if (e.target === $('rmSheet')) $('rmSheet').classList.remove('up');
+		});
+		$('rmNewRem').addEventListener('click', function () {
+			$('rmSheet').classList.remove('up');
+			var l = (rmOpen && rmOpen !== 'sched' && rmListById(rmOpen)) || RM_LISTS[0];
+			rmOpenDetail(rmMk(''), l, true);
+		});
+		$('rmNewList').addEventListener('click', function () {
+			$('rmSheet').classList.remove('up');
+			var l = { id: 'l' + Date.now(), n: '', c: RM_COLORS[1], items: [] };
+			RM_LISTS.unshift(l);                      /* new lists land nearest the top card */
+			rmNaming = l;
+			rmOpen = l.id;
+			openKB(kbR4);
+			rmRender();
+		});
+		function rmFinishNaming() {
+			if (!rmNaming) return;
+			var l = rmNaming;
+			if (!l.n.trim()) {
+				RM_LISTS = RM_LISTS.filter(function (x) { return x !== l; });
+				rmOpen = null;
+			}
+			rmNaming = null;
+			closeKB(kbR4);
+			rmRender();
+			if (rmOpen) rmStartAdd();
+		}
+
+		/* ---- Create Reminder ------------------------------------------------- */
+		var rmDraft = null, rmDraftList = null, rmDraftNew = false, rmField = 'title';
+		var RM_REPEATS = ['Never', 'Every Day', 'Every Week', 'Every 2 Weeks', 'Every Month', 'Every Year'];
+
+		function rmOpenDetail(item, list, isNew) {
+			rmDraft = {
+				t: item.t, pri: item.pri, notes: item.notes,
+				due: item.due ? new Date(item.due) : null,
+				rep: item.rep || 'Never', src: item
+			};
+			rmDraftList = list || RM_LISTS[0];
+			rmDraftNew = !!isNew;
+			rmField = null;
+			$('rmDTitle').textContent = isNew ? 'Create Reminder' : 'Details';
+			rmRenderDetail();
+			$('rm-detail').classList.add('up');
+			rmInk();
+		}
+		function rmDefaultDue() {
+			var d = new Date();
+			d.setHours(22, 0, 0, 0);
+			return d;
+		}
+		function rmRenderDetail() {
+			var d = rmDraft, on = !!d.due;
+			var h = '<div class="rm-gap"></div><div class="rm-group">' +
+				'<div class="rm-frow"><div class="rm-ffield' + (d.t ? '' : ' empty') + '" data-f="title">' +
+				esc(d.t) + (rmField === 'title' ? '<span class="caret"></span>' : '') + '</div></div></div>' +
+				'<div class="rm-gap"></div><div class="rm-group">' +
+				'<div class="rm-frow"><div class="rm-flabel">Remind me on a day</div>' +
+				'<div class="rm-sw' + (on ? ' on' : '') + '" data-f="day"></div></div>';
+			if (on) {
+				h += '<div class="rm-frow"><div class="rm-flabel">Alarm</div>' +
+					'<div class="rm-fval">' + RM_DAYS[d.due.getDay()].slice(0, 3) + ', ' +
+					rmMD(d.due) + ', ' + rmHM(d.due) + '</div></div>' +
+					'<div class="rm-frow pick" data-f="rep"><div class="rm-flabel">Repeat</div>' +
+					'<div class="rm-fval">' + d.rep + '</div><div class="rm-fchev">' + RM_CHEV + '</div></div>';
+			}
+			h += '</div><div class="rm-gap"></div><div class="rm-group">' +
+				'<div class="rm-frow"><div class="rm-flabel">Priority</div><div class="rm-seg">' +
+				['None', '!', '!!', '!!!'].map(function (s, i) {
+					return '<div class="rm-segbtn' + (d.pri === i ? ' on' : '') + '" data-p="' + i + '">' +
+						s + '</div>';
+				}).join('') + '</div></div>' +
+				'<div class="rm-frow pick" data-f="list"><div class="rm-flabel">List</div>' +
+				'<div class="rm-fval">' + esc(rmDraftList.n) + '</div>' +
+				'<div class="rm-fchev">' + RM_CHEV + '</div></div>' +
+				'<div class="rm-frow tall"><div class="rm-fnotes rm-ffield' + (d.notes ? '' : ' empty') +
+				'" data-f="notes">' + esc(d.notes) +
+				(rmField === 'notes' ? '<span class="caret"></span>' : '') + '</div></div>' +
+				'</div><div class="rm-gap"></div>';
+			$('rmDBody').innerHTML = h;
+		}
+		$('rmDBody').addEventListener('click', function (e) {
+			var seg = e.target.closest('.rm-segbtn');
+			if (seg) { rmDraft.pri = +seg.dataset.p; rmRenderDetail(); return; }
+			var sw = e.target.closest('.rm-sw');
+			if (sw) { rmDraft.due = rmDraft.due ? null : rmDefaultDue(); rmRenderDetail(); return; }
+			var f = e.target.closest('[data-f]'); if (!f) return;
+			if (f.dataset.f === 'title' || f.dataset.f === 'notes') {
+				rmField = f.dataset.f; openKB(kbR2); rmRenderDetail(); return;
+			}
+			if (f.dataset.f === 'list') rmOpenPick('list');
+			if (f.dataset.f === 'rep') rmOpenPick('rep');
+		});
+		$('rmDCancel').addEventListener('click', function () {
+			closeKB(kbR2); $('rm-detail').classList.remove('up'); rmDraft = null; rmInk();
+		});
+		$('rmDDone').addEventListener('click', function () {
+			var d = rmDraft, s = d.src;
+			s.t = d.t.trim() || 'Reminder';
+			s.pri = d.pri; s.notes = d.notes; s.due = d.due; s.rep = d.rep;
+			var was = rmListOf(s);
+			if (was && was !== rmDraftList) was.items.splice(was.items.indexOf(s), 1);
+			if (rmDraftList.items.indexOf(s) < 0) rmDraftList.items.push(s);
+			closeKB(kbR2);
+			$('rm-detail').classList.remove('up');
+			rmDraft = null;
+			rmRender();
+			if (rmSearching) rmRenderResults();
+		});
+
+		/* ---- the shared picker ----------------------------------------------- */
+		var rmPickKind = 'list';
+		function rmOpenPick(kind) {
+			rmPickKind = kind;
+			$('rmPTitle').textContent = kind === 'list' ? 'List' : 'Repeat';
+			var h = '<div class="rm-gap"></div><div class="rm-group">';
+			if (kind === 'list') {
+				RM_LISTS.forEach(function (l, i) {
+					h += '<div class="rm-frow pick' + (l === rmDraftList ? ' on' : '') + '" data-k="' + i + '">' +
+						'<div class="rm-swatch" style="color:' + l.c + '"></div>' +
+						'<div class="rm-flabel">' + esc(l.n) + '</div>' +
+						'<div class="rm-ptick">' + RM_TICK + '</div></div>';
+				});
+			} else {
+				RM_REPEATS.forEach(function (r, i) {
+					h += '<div class="rm-frow pick' + (r === rmDraft.rep ? ' on' : '') + '" data-k="' + i + '">' +
+						'<div class="rm-flabel">' + r + '</div>' +
+						'<div class="rm-ptick">' + RM_TICK + '</div></div>';
+				});
+			}
+			$('rmPBody').innerHTML = h + '</div>';
+			closeKB(kbR2);
+			$('rm-pick').classList.add('up');
+		}
+		$('rmPBack').addEventListener('click', function () {
+			$('rm-pick').classList.remove('up'); rmRenderDetail();
+		});
+		$('rmPBody').addEventListener('click', function (e) {
+			var row = e.target.closest('.rm-frow'); if (!row) return;
+			var k = +row.dataset.k;
+			if (rmPickKind === 'list') rmDraftList = RM_LISTS[k];
+			else rmDraft.rep = RM_REPEATS[k];
+			$('rm-pick').classList.remove('up');
+			rmRenderDetail();
+		});
+
+		var kbR = buildKeyboard($('kbR'), { target: 'rmadd', retLabel: 'return' });
+		var kbR2 = buildKeyboard($('kbR2'), { target: 'rmfield', retLabel: 'return' });
+		var kbR3 = buildKeyboard($('kbR3'), {
+			target: 'rmsearch', nopred: true, nocap: true, retLabel: 'Search', retDim: false
+		});
+		var kbR4 = buildKeyboard($('kbR4'), { target: 'rmname', retLabel: 'Done', retGo: true });
+
+		/* ---- lifecycle ------------------------------------------------------- */
+		function rmAppOpen() { rmRender(); }
+		function rmAppReset() {
+			rmCloseAdd();
+			rmNaming = null;
+			rmSetSearching(false);
+			rmOpen = null;
+			rmEditing = false;
+			rmShowDone = false;
+			$('rmSheet').classList.remove('up');
+			$('rm-detail').classList.remove('up');
+			$('rm-pick').classList.remove('up');
+			closeKB(kbR2); closeKB(kbR4);
+			rmDraft = null;
+			rmRender();
+		}
+
+		/* ------------------------------------------------------------------ */
+		/* STOCKS                                                             */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/Stocks/. Quotes and stats are the numbers on the
+		   screenshots; there is no quote feed behind them, so nothing ticks.
+		   The charts are a seeded random walk anchored to each symbol's real
+		   high and low, which is honest synthetic data rather than a straight
+		   line pretending to be a price. */
+
+		var ST_SYMS = [
+			{
+				s: '^IXIC', e: '', n: 'NASDAQ Composite', p: 26180.46, ch: 0.43,
+				open: '26,198.83', high: '26,269.85', low: '26,049.30', vol: '6.319B',
+				pe: '—', cap: '—', wh: '27,190.21', wl: '20,690.25',
+				avg: '9.435B', yld: '—', lo: 20690.25, hi: 27190.21
+			},
+			{
+				s: '^NYA', e: '', n: 'NYSE COMPOSITE (DJ)', p: 24728.67, ch: 0.73,
+				open: '24,548.10', high: '24,771.92', low: '24,502.35', vol: '3.114B',
+				pe: '—', cap: '—', wh: '25,004.88', wl: '19,882.41',
+				avg: '3.902B', yld: '—', lo: 19882.41, hi: 25004.88
+			},
+			{
+				s: '^DJI', e: '', n: 'Dow Jones Industrial Average', p: 53277.01, ch: 0.98,
+				open: '52,760.44', high: '53,318.70', low: '52,701.19', vol: '412.6M',
+				pe: '—', cap: '—', wh: '53,318.70', wl: '41,844.89',
+				avg: '498.2M', yld: '—', lo: 41844.89, hi: 53318.70
+			},
+			{
+				s: 'AAPL', e: 'NASDAQ', n: 'Apple Inc.', p: 309.35, ch: -0.63,
+				open: '312.05', high: '312.38', low: '307.01', vol: '46.88M',
+				pe: '35.48', cap: '4.515T', wh: '344.57', wl: '224.69',
+				avg: '56.65M', yld: '0.35%', lo: 224.69, hi: 344.57
+			},
+			{
+				s: 'SBUX', e: 'NASDAQ', n: 'Starbucks Corporation', p: 107.08, ch: 2.97,
+				open: '104.02', high: '107.44', low: '103.88', vol: '11.20M',
+				pe: '32.71', cap: '121.7B', wh: '117.46', wl: '75.50',
+				avg: '9.842M', yld: '2.27%', lo: 75.50, hi: 117.46
+			},
+			{
+				s: 'NKE', e: 'NYSE', n: 'NIKE, Inc.', p: 40.76, ch: 1.37,
+				open: '40.21', high: '40.94', low: '40.05', vol: '14.63M',
+				pe: '21.09', cap: '60.28B', wh: '58.13', wl: '38.02',
+				avg: '12.41M', yld: '3.92%', lo: 38.02, hi: 58.13
+			},
+			{
+				s: 'YHOO', e: 'Industry', n: '20318540', p: 33.26, ch: 0.12,
+				open: '33.22', high: '33.41', low: '33.10', vol: '1.004M',
+				pe: '—', cap: '—', wh: '38.75', wl: '28.44',
+				avg: '1.221M', yld: '—', lo: 28.44, hi: 38.75
+			}
+		];
+
+		/* the headlines that are legible on the screenshots, per symbol; anything
+		   without its own set falls back to the market-wide one */
+		var ST_NEWS = {
+			'^IXIC': [
+				['Dow Jones Futures Fall With Market At Key Point; Nvidia, Tariffs, Warsh In Focus',
+					'The m…', "Investor's Business Daily", '5:11 PM'],
+				['UBS revamps S&P 500 target for rest of 2026',
+					'Stronger profits are changing the math for sto…', 'TheStreet', '3:23 PM'],
+				['Why Tempus AI Skyrocketed This Week',
+					"Tempus AI's latest acquisition is looking like a…", 'Motley Fool', '6:35 AM']
+			],
+			'AAPL': [
+				["'Its a new tool for creativity': Dr Dre on use of AI in creating music",
+					'Washington DC [US], Au…', 'mint', '12:38 PM'],
+				["Nvidia's 15% Price Hike Reveals the Hidden Cost of the AI Boom",
+					'The AI boom is quietly se…', '24/7 Wall St.', '9:43 AM'],
+				['Amid the faltering position of Tesla, the "favorite stock of Western scholars," the "M…',
+					'', '매일경제', '8:01 AM']
+			],
+			'SBUX': [
+				['Starbucks sold a lot of Unicorn drinks last weekend',
+					'The coffee shop giant had its strong…', "Nation's Restaurant News",
+					'8/21/26 at 2:08 PM'],
+				['Starbucks lays off 100+ employees who refused Nashville relocation',
+					'Starbucks is layi…', 'The Tennessean', '8/21/26 at 12:34 PM'],
+				['Starbucks Is Up 25% This Year While Dutch Bros Lags. Is the Gap Justified?',
+					'Starbucks is…', 'Motley Fool', '8/21/26 at 12:05 PM']
+			]
+		};
+
+		/* what the search can find -- a fixed table, since nothing here is online */
+		var ST_UNIVERSE = ST_SYMS.concat([
+			{ s: 'L', e: 'NYSE', n: 'Loews Corporation' },
+			{ s: 'BZ=F', e: 'NY Mercantile', n: 'Brent Crude Oil Last Day Financ' },
+			{ s: 'TDCL', e: 'NASDAQ', n: 'GraniteShares 2x Long TDC Daily ETF' },
+			{ s: 'LKR=X', e: 'CCY', n: 'USD/LKR' },
+			{ s: 'LBPUSD=X', e: 'CCY', n: 'LBP/USD' },
+			{ s: 'GOOG', e: 'NASDAQ', n: 'Alphabet Inc.' },
+			{ s: 'MSFT', e: 'NASDAQ', n: 'Microsoft Corporation' },
+			{ s: 'TSLA', e: 'NASDAQ', n: 'Tesla, Inc.' },
+			{ s: 'AMZN', e: 'NASDAQ', n: 'Amazon.com, Inc.' },
+			{ s: 'NVDA', e: 'NASDAQ', n: 'NVIDIA Corporation' },
+			{ s: 'DIS', e: 'NYSE', n: 'The Walt Disney Company' },
+			{ s: 'KO', e: 'NYSE', n: 'Coca-Cola Company' }
+		]);
+
+		var ST_RANGES = ['1D', '1W', '1M', '3M', '6M', '1Y', '2Y'];
+		var stSel = 0, stPage = 0, stRange = '6M', stMode = 'pct';
+		var stLoading = false, stLoadTimer = null, stArmed = null;
+		var stQuery = '';
+
+		function stCur() { return ST_SYMS[stSel] || ST_SYMS[0]; }
+		function stNum(v, dec) {
+			return v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+		}
+		function stPillText(k) {
+			if (stMode === 'cap') return k.cap === '—' ? '—' : k.cap;
+			var sign = k.ch < 0 ? '−' : '+';
+			if (stMode === 'price') return sign + stNum(Math.abs(k.p * k.ch / 100), 2);
+			return sign + Math.abs(k.ch).toFixed(2) + '%';
+		}
+
+		/* ---- the quotes ------------------------------------------------------ */
+		function stRenderTickers() {
+			$('sttickers').innerHTML = ST_SYMS.map(function (k, i) {
+				return '<div class="st-row' + (i === stSel ? ' on' : '') + '" data-i="' + i + '">' +
+					'<div class="st-sym">' + esc(k.s === '^IXIC' ? 'NASDAQ'
+						: k.s === '^NYA' ? 'NYSE' : k.s === '^DJI' ? 'DOW J' : k.s) + '</div>' +
+					'<div class="st-price">' + stNum(k.p, 2) + '</div>' +
+					'<div class="st-pill' + (k.ch < 0 ? ' down' : '') + '">' + stPillText(k) + '</div>' +
+					'</div>';
+			}).join('');
+		}
+		$('sttickers').addEventListener('click', function (e) {
+			if (e.target.closest('.st-pill')) {
+				stMode = stMode === 'pct' ? 'price' : stMode === 'price' ? 'cap' : 'pct';
+				stRenderTickers();
+				return;
+			}
+			var row = e.target.closest('.st-row'); if (!row) return;
+			stSel = +row.dataset.i;
+			stRenderTickers();
+			if (stPage > 0) stBusy(stRenderPanel); else stRenderPanel();
+		});
+
+		/* ---- stats ----------------------------------------------------------- */
+		function stRenderStats() {
+			var k = stCur();
+			var rows = [
+				['OPEN', k.open, 'MKT CAP', k.cap],
+				['HIGH', k.high, '52W HIGH', k.wh],
+				['LOW', k.low, '52W LOW', k.wl],
+				['VOL', k.vol, 'AVG VOL', k.avg],
+				['P/E', k.pe, 'YIELD', k.yld]
+			];
+			var cells = '';
+			rows.forEach(function (r) {
+				cells += '<div class="st-cell"><div class="st-k">' + r[0] + '</div>' +
+					'<div class="st-v">' + r[1] + '</div></div>' +
+					'<div class="st-cell"><div class="st-k">' + r[2] + '</div>' +
+					'<div class="st-v">' + r[3] + '</div></div>';
+			});
+			$('stStats').innerHTML = '<div class="st-name">' + esc(k.n) + '</div>' +
+				'<div class="st-grid">' + cells + '</div>';
+		}
+
+		/* ---- the chart ------------------------------------------------------- */
+		/* one deterministic walk per symbol and range, so a chart looks the same
+		   every time you come back to it */
+		function stRand(seed) {
+			var x = seed;
+			return function () {
+				x = (x * 1664525 + 1013904223) % 4294967296;
+				return x / 4294967296;
+			};
+		}
+		function stSeed(str) {
+			var h = 2166136261;
+			for (var i = 0; i < str.length; i++) {
+				h ^= str.charCodeAt(i);
+				h = (h * 16777619) >>> 0;
+			}
+			return h;
+		}
+		function stSeries(k, range) {
+			var n = { '1D': 78, '1W': 70, '1M': 66, '3M': 90, '6M': 130, '1Y': 160, '2Y': 200 }[range];
+			var rnd = stRand(stSeed(k.s + range));
+			/* how far back the window reaches, as a share of the 52-week band */
+			var reach = { '1D': .02, '1W': .06, '1M': .13, '3M': .34, '6M': .62, '1Y': .95, '2Y': 1 }[range];
+			var band = (k.hi - k.lo) * reach;
+			var end = k.p, v = end - band * (rnd() * .5 + .1);
+			var out = [v], drift = (end - v) / n;
+			for (var i = 1; i < n; i++) {
+				v += drift + (rnd() - .5) * band * .09;
+				out.push(v);
+			}
+			out[out.length - 1] = end;
+			var vols = [];
+			for (var j = 0; j < n; j++) vols.push(.25 + rnd() * (rnd() < .06 ? 2.4 : .75));
+			return { p: out, v: vols };
+		}
+		var ST_AXIS = {
+			'1D': ['10', '11', '12', '1', '2', '3'],
+			'1W': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+			'1M': ['Aug 1', 'Aug 8', 'Aug 15', 'Aug 22'],
+			'3M': ['June', 'July', 'August'],
+			'6M': ['March', 'April', 'May', 'June', 'July'],
+			'1Y': ['Oct', 'Jan', 'Apr', 'Jul'],
+			'2Y': ['2025', '2026']
+		};
+
+		function stRenderChart() {
+			$('stRanges').innerHTML = ST_RANGES.map(function (r) {
+				return '<div class="st-range' + (r === stRange ? ' on' : '') + '" data-r="' + r + '">' +
+					r + '</div>';
+			}).join('');
+			if (stLoading) {
+				$('stPlot').innerHTML = '<div class="st-load"><span class="spin">' +
+					new Array(13).join('<i></i>') + '</span><span>Retrieving Chart…</span></div>';
+				return;
+			}
+			var k = stCur(), d = stSeries(k, stRange);
+			var W = 320, H = 144, L = 10, R = 46, T = 6, VB = 20;
+			var PH = H - VB - T - 14;                  /* room for the month labels */
+			var lo = Math.min.apply(null, d.p), hi = Math.max.apply(null, d.p);
+			if (hi - lo < 1e-6) hi = lo + 1;
+			var pad = (hi - lo) * .12; lo -= pad; hi += pad;
+			var x = function (i) { return L + (W - L - R) * (i / (d.p.length - 1)); };
+			var y = function (v) { return T + PH * (1 - (v - lo) / (hi - lo)); };
+
+			var line = '', area = '';
+			d.p.forEach(function (v, i) {
+				line += (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1);
+			});
+			area = line + 'L' + x(d.p.length - 1).toFixed(1) + ' ' + (T + PH) + 'L' + L + ' ' + (T + PH) + 'Z';
+
+			var labels = ST_AXIS[stRange] || [], grid = '', axis = '';
+			labels.forEach(function (t, i) {
+				var gx = L + (W - L - R) * ((i + .5) / labels.length);
+				var lx = L + (W - L - R) * (i / labels.length);
+				grid += '<path d="M' + lx.toFixed(1) + ' ' + T + 'V' + (T + PH) + '" stroke="#3A3A3C" ' +
+					'stroke-width="1"/>';
+				axis += '<text x="' + gx.toFixed(1) + '" y="' + (T + PH + 13) + '" fill="#7C7C81" ' +
+					'font-size="13" text-anchor="middle" font-family="var(--sf-text)">' + t + '</text>';
+			});
+
+			/* 1D draws the previous close as a dashed rule */
+			var prev = '';
+			if (stRange === '1D') {
+				var pc = k.p / (1 + k.ch / 100);
+				if (pc > lo && pc < hi) {
+					prev = '<path d="M' + L + ' ' + y(pc).toFixed(1) + 'H' + (W - R) + '" stroke="#9A9A9F" ' +
+						'stroke-width="1" stroke-dasharray="3 3"/>';
+				}
+			}
+
+			var vmax = Math.max.apply(null, d.v), bars = '';
+			d.v.forEach(function (v, i) {
+				var bh = Math.max(1, (v / vmax) * (VB - 4));
+				bars += '<rect x="' + (x(i) - 1).toFixed(1) + '" y="' + (H - bh).toFixed(1) +
+					'" width="2" height="' + bh.toFixed(1) + '" fill="#5A5A5E"/>';
+			});
+
+			$('stPlot').innerHTML =
+				'<svg viewBox="0 0 ' + W + ' ' + H + '">' +
+				'<defs><linearGradient id="stFade" x1="0" y1="0" x2="0" y2="1">' +
+				'<stop offset="0" stop-color="#fff" stop-opacity=".26"/>' +
+				'<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>' +
+				grid + prev +
+				'<path d="' + area + '" fill="url(#stFade)"/>' +
+				'<path d="' + line + '" fill="none" stroke="#fff" stroke-width="1.4" ' +
+				'stroke-linejoin="round" vector-effect="non-scaling-stroke"/>' +
+				'<path d="M' + L + ' ' + (T + PH) + 'H' + (W - R) + '" stroke="#3A3A3C" stroke-width="1"/>' +
+				axis + bars +
+				'<text x="' + (W - 6) + '" y="' + (T + 13) + '" fill="#8A8A8F" font-size="15" ' +
+				'text-anchor="end" font-family="var(--sf-text)">' + stNum(hi - pad, 0) + '</text>' +
+				'<text x="' + (W - 6) + '" y="' + (T + PH - 3) + '" fill="#8A8A8F" font-size="15" ' +
+				'text-anchor="end" font-family="var(--sf-text)">' + stNum(lo + pad, 0) + '</text>' +
+				'</svg>';
+		}
+		$('stRanges').addEventListener('click', function (e) {
+			var r = e.target.closest('.st-range'); if (!r) return;
+			stRange = r.dataset.r;
+			stBusy(stRenderChart);
+		});
+
+		/* both panels show a spinner for a beat, the way a fetch would */
+		function stBusy(after) {
+			clearTimeout(stLoadTimer);
+			stLoading = true;
+			$('stapp').classList.add('busy');
+			after();
+			stLoadTimer = setTimeout(function () {
+				stLoading = false;
+				$('stapp').classList.remove('busy');
+				after();
+			}, 620);
+		}
+
+		/* ---- news ------------------------------------------------------------ */
+		function stRenderNews() {
+			if (stLoading) {
+				$('stNews').innerHTML = '<div class="st-load"><span class="spin">' +
+					new Array(13).join('<i></i>') + '</span><span>Retrieving News…</span></div>';
+				return;
+			}
+			var k = stCur(), list = ST_NEWS[k.s] || ST_NEWS['^IXIC'];
+			$('stNews').innerHTML = list.map(function (n) {
+				return '<div class="st-story"><div class="st-head">' + esc(n[0]) +
+					(n[1] ? ' <em>' + esc(n[1]) + '</em>' : '') + '</div>' +
+					'<div class="st-src">' + esc(n[2]) + ' - ' + esc(n[3]) + '</div></div>';
+			}).join('');
+		}
+
+		/* ---- the panel ------------------------------------------------------- */
+		function stRenderPanel() {
+			stRenderStats();
+			stRenderChart();
+			stRenderNews();
+			$('stDots').innerHTML = '<i class="' + (stPage === 0 ? 'on' : '') + '"></i>' +
+				'<i class="' + (stPage === 1 ? 'on' : '') + '"></i>' +
+				'<i class="' + (stPage === 2 ? 'on' : '') + '"></i>';
+			$('stTrack').style.transform = 'translateX(' + (-stPage * 33.3333) + '%)';
+		}
+		function stGoPage(p) {
+			p = Math.max(0, Math.min(2, p));
+			if (p === stPage) return;
+			stPage = p;
+			if (p === 1 || p === 2) stBusy(stRenderPanel); else stRenderPanel();
+		}
+		(function () {
+			var x0 = 0, y0 = 0, live = false;
+			$('stpanel').addEventListener('pointerdown', function (e) {
+				if (e.target.closest('.st-info') || e.target.closest('.st-range')) return;
+				live = true; x0 = e.clientX; y0 = e.clientY;
+			});
+			$('stpanel').addEventListener('pointermove', function (e) {
+				if (!live) return;
+				var dx = e.clientX - x0;
+				if (Math.abs(e.clientY - y0) > Math.abs(dx)) { live = false; return; }
+				if (Math.abs(dx) > 40) { live = false; stGoPage(stPage + (dx < 0 ? 1 : -1)); }
+			});
+			$('stpanel').addEventListener('pointerup', function () { live = false; });
+			$('stpanel').addEventListener('pointercancel', function () { live = false; });
+		})();
+
+		/* ---- managing the list ----------------------------------------------- */
+		function stRenderEdit() {
+			$('stEList').innerHTML = ST_SYMS.map(function (k, i) {
+				return '<div class="st-erow" data-i="' + i + '">' +
+					'<div class="st-edel">Delete</div>' +
+					'<div class="st-eslide">' +
+					'<div class="st-eminus"></div>' +
+					'<div class="st-etext">' +
+					'<div class="st-etop"><div class="st-esym">' + esc(k.s) + '</div>' +
+					(k.e ? '<div class="st-eexch">' + esc(k.e) + '</div>' : '') + '</div>' +
+					'<div class="st-ename">' + esc(k.n) + '</div></div>' +
+					'<div class="st-grip"><i></i><i></i><i></i></div>' +
+					'</div></div>';
+			}).join('');
+			var seg = $('stSeg').children;
+			for (var i = 0; i < seg.length; i++) {
+				seg[i].classList.toggle('on', seg[i].dataset.m === stMode);
+			}
+		}
+		function stDisarm() { if (stArmed) { stArmed.classList.remove('armed'); stArmed = null; } }
+		function stArm(row) {
+			if (stArmed === row) return stDisarm();
+			stDisarm(); row.classList.add('armed'); stArmed = row;
+		}
+		function stRemove(i) {
+			ST_SYMS.splice(i, 1);
+			if (!ST_SYMS.length) ST_SYMS.push(ST_UNIVERSE[0]);
+			if (stSel >= ST_SYMS.length) stSel = ST_SYMS.length - 1;
+			stArmed = null;
+			stRenderEdit(); stRenderTickers(); stRenderPanel();
+		}
+		$('stEList').addEventListener('click', function (e) {
+			var row = e.target.closest('.st-erow'); if (!row) return;
+			var i = +row.dataset.i;
+			if (e.target.closest('.st-edel')) { stRemove(i); return; }
+			if (e.target.closest('.st-eminus')) { stArm(row); return; }
+			if (stArmed) stDisarm();
+		});
+		(function () {
+			var x0 = 0, y0 = 0, live = false, row = null;
+			$('stEList').addEventListener('pointerdown', function (e) {
+				row = e.target.closest('.st-erow'); live = !!row; x0 = e.clientX; y0 = e.clientY;
+			});
+			$('stEList').addEventListener('pointermove', function (e) {
+				if (!live || !row) return;
+				var dx = e.clientX - x0;
+				if (Math.abs(e.clientY - y0) > Math.abs(dx)) { live = false; return; }
+				if (dx < -26 && stArmed !== row) { stArm(row); live = false; }
+				else if (dx > 26 && stArmed === row) { stDisarm(); live = false; }
+			});
+			$('stEList').addEventListener('pointerup', function () { live = false; });
+			$('stEList').addEventListener('pointercancel', function () { live = false; });
+		})();
+		$('stSeg').addEventListener('click', function (e) {
+			var b = e.target.closest('.st-segbtn'); if (!b) return;
+			stMode = b.dataset.m;
+			stRenderEdit(); stRenderTickers();
+		});
+		$('stInfo').addEventListener('click', function () {
+			stRenderEdit();
+			$('st-edit').classList.add('up');
+		});
+		$('stDone').addEventListener('click', function () {
+			stDisarm();
+			$('st-edit').classList.remove('up');
+		});
+
+		/* ---- adding one ------------------------------------------------------ */
+		function stSyncSearch() {
+			$('stSField').classList.toggle('has', !!stQuery);
+			$('stSVal').innerHTML = stQuery
+				? esc(stQuery) + '<span class="caret"></span>'
+				: '<span class="caret"></span>';
+			var q = stQuery.trim().toLowerCase(), h = '';
+			if (q) {
+				var have = ST_SYMS.map(function (k) { return k.s; });
+				var hits = ST_UNIVERSE.filter(function (k) {
+					return have.indexOf(k.s) < 0 &&
+						(k.s.toLowerCase().indexOf(q) === 0 || k.n.toLowerCase().indexOf(q) > -1);
+				}).slice(0, 12);
+				h = hits.map(function (k) {
+					return '<div class="st-hit" data-s="' + esc(k.s) + '">' +
+						'<div class="st-etop"><div class="st-esym">' + esc(k.s) + '</div>' +
+						(k.e ? '<div class="st-eexch">' + esc(k.e) + '</div>' : '') + '</div>' +
+						'<div class="st-ename">' + esc(k.n) + '</div></div>';
+				}).join('') || '<div class="st-none">No results</div>';
+			}
+			$('stSRes').innerHTML = h;
+		}
+		$('stAdd').addEventListener('click', function () {
+			stQuery = '';
+			$('st-add').classList.add('up');
+			openKB(kbS);
+			stSyncSearch();
+		});
+		function stCloseAdd() { closeKB(kbS); $('st-add').classList.remove('up'); }
+		$('stSCancel').addEventListener('click', stCloseAdd);
+		$('stSClear').addEventListener('click', function (e) {
+			e.stopPropagation(); stQuery = ''; stSyncSearch();
+		});
+		$('stSRes').addEventListener('click', function (e) {
+			var hit = e.target.closest('.st-hit'); if (!hit) return;
+			var sym = hit.dataset.s;
+			var base = ST_UNIVERSE.filter(function (k) { return k.s === sym; })[0];
+			if (!base) return;
+			/* a symbol added from the table has no quote behind it, so give it one */
+			var k = base.p !== undefined ? base : stSynth(base);
+			ST_SYMS.push(k);
+			stCloseAdd();
+			stRenderEdit(); stRenderTickers();
+		});
+		function stSynth(base) {
+			var rnd = stRand(stSeed(base.s));
+			var p = Math.round((6 + rnd() * 340) * 100) / 100;
+			var ch = Math.round((rnd() * 6 - 2.4) * 100) / 100;
+			return {
+				s: base.s, e: base.e, n: base.n, p: p, ch: ch,
+				open: stNum(p * (1 - ch / 200), 2), high: stNum(p * 1.012, 2),
+				low: stNum(p * .988, 2), vol: stNum(Math.round(rnd() * 40 + 2), 2) + 'M',
+				pe: stNum(rnd() * 40 + 9, 2), cap: stNum(rnd() * 400 + 8, 2) + 'B',
+				wh: stNum(p * 1.28, 2), wl: stNum(p * .68, 2),
+				avg: stNum(Math.round(rnd() * 40 + 2), 2) + 'M', yld: (rnd() * 3).toFixed(2) + '%',
+				lo: p * .68, hi: p * 1.28
+			};
+		}
+
+		var kbS = buildKeyboard($('kbS'), {
+			target: 'stsearch', nopred: true, nocap: true, retLabel: 'Search', retDim: false
+		});
+
+		/* ---- lifecycle ------------------------------------------------------- */
+		function stOpen() {
+			stRenderTickers();
+			stRenderPanel();
+		}
+		function stReset() {
+			clearTimeout(stLoadTimer);
+			stLoading = false;
+			$('stapp').classList.remove('busy');
+			stDisarm();
+			stCloseAdd();
+			$('st-edit').classList.remove('up');
+			stPage = 0;
+			stRange = '6M';
+			$('sttickers').scrollTop = 0;
+			stRenderTickers();
+			stRenderPanel();
+		}
+
+		/* ------------------------------------------------------------------ */
+		/* APP STORE                                                          */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/AppStore/. The glyphs are drawn rather than
+		   masked, because there is no MobileStore artwork for this tab bar.
+		   Every path below is in CSS pixels measured off the 2x shots, so the
+		   viewBox is the glyph's real size and nothing has to be scaled.
+
+		   Updates is the punchline: it does not open a tab, it restarts the
+		   iPod. */
+
+		/* Two radii, not one: the outline star is drawn a shade smaller so its
+		   1.9px stroke lands on the same silhouette the filled one fills. Both
+		   were fitted against the screenshots rather than guessed. */
+		var AS_STAR = 'M13.75 1.51 L16.59 10.31 L25.83 10.29 L18.34 15.70 L21.21 24.48 ' +
+			'L13.75 19.04 L6.29 24.48 L9.16 15.70 L1.67 10.29 L10.91 10.31 Z';
+		var AS_STAR_F = 'M13.75 0.88 L16.74 10.16 L26.49 10.14 L18.59 15.85 L21.63 25.12 ' +
+			'L13.75 19.37 L5.87 25.12 L8.91 15.85 L1.01 10.14 L10.76 10.16 Z';
+		var AS_STAR_SM = 'M2.45 0.00 L3.00 1.69 L4.78 1.69 L3.34 2.74 L3.89 4.43 ' +
+			'L2.45 3.39 L1.01 4.43 L1.56 2.74 L0.12 1.69 L1.90 1.69 Z';
+
+		/* the three star-and-bar rows inside Top Charts, at either colour */
+		function asRows(c) {
+			var h = '';
+			[3.85, 9.55, 15.25].forEach(function (y) {
+				h += '<g transform="translate(4.6 ' + y + ')"><path d="' + AS_STAR_SM + '" fill="' + c + '"/></g>' +
+					'<path d="M10.5 ' + (y + 2.45) + 'H20" stroke="' + c + '" stroke-width="2" stroke-linecap="round"/>';
+			});
+			return h;
+		}
+
+		/* the Safari-style needle: solid to the north-east, hollow to the
+		   south-west, both halves meeting at the waist */
+		function asNeedle(c) {
+			return '<path d="M19.29 5.71 13.98 13.98 11.02 11.02 Z" fill="' + c + '"/>' +
+				'<path d="M5.71 19.29 13.98 13.98 11.02 11.02 Z" fill="none" stroke="' + c +
+				'" stroke-width="1.3" stroke-linejoin="round"/>';
+		}
+
+		var AS_SEARCH =
+			'<svg width="24.5" height="24.5" viewBox="0 0 24.5 24.5" aria-hidden="true">' +
+			'<circle cx="9.75" cy="9.75" r="8.55" fill="none" stroke="currentColor" stroke-width="2.3"/>' +
+			'<path d="M16 16 23.2 23.2" stroke="currentColor" stroke-width="2.6" ' +
+			'stroke-linecap="round"/></svg>';
+
+		/* a tray open at the top with an arrow dropping into it */
+		var AS_UPDATES =
+			'<svg width="19" height="24" viewBox="0 0 19 24" aria-hidden="true" ' +
+			'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+			'stroke-linejoin="round">' +
+			'<path d="M6.5 5.5H1V23h17V5.5h-5.5"/>' +
+			'<path d="M9.5 1v14.5"/>' +
+			'<path d="M5.5 12 9.5 16 13.5 12"/></svg>';
+
+		var AS_TABS = [
+			{
+				k: 'featured', n: 'Featured',
+				ic: '<svg width="27.5" height="26" viewBox="0 0 27.5 26" aria-hidden="true">' +
+					'<path d="' + AS_STAR + '" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+					'stroke-linejoin="round"/></svg>',
+				ics: '<svg width="27.5" height="26" viewBox="0 0 27.5 26" aria-hidden="true">' +
+					'<path d="' + AS_STAR_F + '" fill="currentColor" stroke="currentColor" ' +
+					'stroke-width="0.8" stroke-linejoin="round"/></svg>'
+			},
+			{
+				k: 'charts', n: 'Top Charts', dy: 1,
+				ic: '<svg width="23" height="23" viewBox="0 0 23 23" aria-hidden="true">' +
+					'<rect x="1" y="1" width="21" height="21" rx="1" fill="none" ' +
+					'stroke="currentColor" stroke-width="2"/>' + asRows('currentColor') + '</svg>',
+				ics: '<svg width="23" height="23" viewBox="0 0 23 23" aria-hidden="true">' +
+					'<rect x="1" y="1" width="21" height="21" rx="1" fill="currentColor" ' +
+					'stroke="currentColor" stroke-width="2"/>' + asRows('#fff') + '</svg>'
+			},
+			{
+				k: 'explore', n: 'Explore', dy: 1,
+				ic: '<svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true">' +
+					'<circle cx="12.5" cy="12.5" r="11.4" fill="none" stroke="currentColor" ' +
+					'stroke-width="2.2"/>' + asNeedle('currentColor') + '</svg>',
+				ics: '<svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true">' +
+					'<circle cx="12.5" cy="12.5" r="12.5" fill="currentColor"/>' +
+					asNeedle('#fff') + '</svg>'
+			},
+			{ k: 'search', n: 'Search', ic: AS_SEARCH, ics: AS_SEARCH, dy: 0.5 },
+			{ k: 'updates', n: 'Updates', ic: AS_UPDATES, ics: AS_UPDATES, dy: -1 }
+		];
+
+		/* null = the launch state: the Cannot Connect sheet, no tab lit */
+		var asTab = null, asBusyTimer = null;
+
+		function asRenderTabs() {
+			$('asTabs').innerHTML = AS_TABS.map(function (t) {
+				var on = t.k === asTab;
+				var dy = t.dy ? ' style="position:relative;top:' + t.dy + 'px"' : '';
+				return '<div class="as-tab' + (on ? ' on' : '') + '" data-k="' + t.k + '">' +
+					'<div class="as-glyph"' + dy + '>' + (on ? t.ics : t.ic) + '</div>' +
+					'<span>' + t.n + '</span></div>';
+			}).join('');
+		}
+
+		function asRenderBody() {
+			if ($('asapp').classList.contains('busy')) { $('asBody').innerHTML = ''; return; }
+			$('asBody').innerHTML = '<div class="as-fail">Cannot Connect to<br>App Store</div>';
+		}
+
+		/* every tab tries the store, waits, and comes up with the same sheet */
+		function asReach() {
+			clearTimeout(asBusyTimer);
+			$('asapp').classList.add('busy');
+			asRenderBody();
+			asBusyTimer = setTimeout(function () {
+				$('asapp').classList.remove('busy');
+				asRenderBody();
+			}, 900);
+		}
+
+		$('asTabs').addEventListener('click', function (e) {
+			var t = e.target.closest('.as-tab'); if (!t) return;
+			/* the one tab that does something, and what it does is reboot */
+			if (t.dataset.k === 'updates') { restart(); return; }
+			if (t.dataset.k === asTab) return;
+			asTab = t.dataset.k;
+			asRenderTabs();
+			asReach();
+		});
+
+		/* ---- lifecycle ------------------------------------------------------- */
+		function asOpen() {
+			asTab = null;
+			asRenderTabs();
+			asReach();
+		}
+		function asReset() {
+			clearTimeout(asBusyTimer);
+			$('asapp').classList.remove('busy');
+			asTab = null;
+			$('asBody').scrollTop = 0;
+			asRenderTabs();
+			asRenderBody();
+		}
+
+		/* ------------------------------------------------------------------ */
+		/* iTUNES STORE                                                       */
+		/* ------------------------------------------------------------------ */
+		/* Traced off ref_pic/iTunesStore/. There is no storefront left to talk
+		   to, so every section reaches for one, fails, and shows you what the
+		   real app shows: nothing. Only More has anything to draw, because its
+		   list is local. */
+
+		var IT_TABS = [
+			{
+				k: 'music', n: 'Music', dark: false,
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarMusic.png);--ms:url(icons/MobileStore/UITabBarMusicSelected.png);width:19px;height:24px"></i>'
+			},
+			{
+				k: 'movies', n: 'Movies', dark: true,
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarMovies.png);--ms:url(icons/MobileStore/UITabBarMoviesSelected.png);width:25px;height:21px"></i>'
+            },
+			{
+				k: 'tv', n: 'TV Shows', dark: true,
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarTVShows.png);--ms:url(icons/MobileStore/UITabBarTVShowsSelected.png);width:29px;height:20px"></i>'
+			},
+			{
+				k: 'search', n: 'Search', dark: false,
+				ic: '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">' +
+					'<circle cx="11" cy="11" r="8.6" fill="none" stroke="currentColor" stroke-width="2.2"/>' +
+					'<path d="M17.4 17.4 24.4 24.4" stroke="currentColor" stroke-width="2.6" ' +
+					'stroke-linecap="round"/></svg>'
+			},
+			{
+				k: 'more', n: 'More', dark: false,
+				ic: '<svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true">' +
+					'<circle cx="6" cy="13" r="3.1" fill="currentColor"/>' +
+					'<circle cx="15" cy="13" r="3.1" fill="currentColor"/>' +
+					'<circle cx="24" cy="13" r="3.1" fill="currentColor"/></svg>'
+			}
+		];
+
+		var IT_MORE = [
+			{
+				n: 'Tones',
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarTones.png);--ms:url(icons/MobileStore/UITabBarTonesSelected.png);width:22px;height:25px"></i>'
+			},
+			{
+				n: 'Genius',
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarGenius.png);--ms:url(icons/MobileStore/UITabBarGeniusSelected.png);width:25px;height:25px"></i>'
+			},
+			{
+				n: 'Purchased',
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarPurchased.png);--ms:url(icons/MobileStore/UITabBarPurchasedSelected.png);width:25px;height:25px"></i>'
+			},
+			{
+				n: 'Downloads',
+				ic: '<i style="--m:url(icons/MobileStore/UITabBarDownloads.png);--ms:url(icons/MobileStore/UITabBarDownloadsSelected.png);width:19px;height:24px"></i>'
+			}
+		];
+
+		var IT_CHEV = '<svg width="9" height="15" viewBox="0 0 9 15" aria-hidden="true">' +
+			'<path d="M1.4 1.3 7.4 7.5l-6 6.2" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+			'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+		/* null = the launch state, which is the Cannot Connect sheet with no
+		   tab lit at all */
+		var itTab = null, itSub = null, itBusyTimer = null, itEditing = false;
+
+		function itDark() {
+			var t = IT_TABS.filter(function (x) { return x.k === itTab; })[0];
+			return !!(t && t.dark) && !itSub;
+		}
+
+		function itRenderTabs() {
+			$('itTabs').innerHTML = IT_TABS.map(function (t) {
+				return '<div class="it-tab' + (t.k === itTab ? ' on' : '') + '" data-k="' + t.k + '">' +
+					t.ic + '<span>' + t.n + '</span></div>';
+			}).join('');
+		}
+
+		function itRenderBody() {
+			var app = $('itapp');
+			app.classList.toggle('dark', itDark());
+			app.classList.toggle('more', itTab === 'more' && !itSub);
+			app.classList.toggle('sub', !!itSub);
+			$('itTitle').textContent = itSub ? itSub : (itTab === 'more' ? 'More' : '');
+
+			if ($('itapp').classList.contains('busy')) { $('itBody').innerHTML = ''; itInk(); return; }
+
+			if (itTab === 'more' && !itSub) {
+				var h = IT_MORE.map(function (r) {
+					return '<div class="it-row" data-n="' + esc(r.n) + '">' +
+						'<div class="it-icon">' + r.ic + '</div>' +
+						'<div class="it-label">' + esc(r.n) + '</div>' +
+						'<div class="it-chev">' + IT_CHEV + '</div></div>';
+				}).join('');
+				/* the blank ruled rows that run to the foot of the list */
+				for (var i = 0; i < 6; i++) h += '<div class="it-rule"></div>';
+				$('itBody').innerHTML = h;
+			} else if (itTab === null || itSub) {
+				$('itBody').innerHTML = '<div class="it-fail">Cannot Connect to<br>iTunes Store</div>';
+			} else {
+				/* Music, Movies, TV Shows and Search each come back with nothing */
+				$('itBody').innerHTML = '';
+			}
+			itInk();
+		}
+
+		/* the status bar rides whichever chrome is showing */
+		function itInk() {
+			BG_LUMA.it = itDark() ? 0.10 : 0.97;
+			refreshInk();
+		}
+
+		function itGo(k) {
+			itSub = null;
+			itEditing = false;
+			$('itEdit').textContent = 'Edit';
+			itTab = k;
+			itRenderTabs();
+			/* More is local, so it never has to reach for anything */
+			if (k === 'more') { itRenderBody(); return; }
+			itReach();
+		}
+
+		/* every section tries the store, waits, and comes up empty */
+		function itReach() {
+			clearTimeout(itBusyTimer);
+			$('itapp').classList.add('busy');
+			itRenderBody();
+			itBusyTimer = setTimeout(function () {
+				$('itapp').classList.remove('busy');
+				itRenderBody();
+			}, 900);
+		}
+
+		$('itTabs').addEventListener('click', function (e) {
+			var t = e.target.closest('.it-tab'); if (!t) return;
+			if (t.dataset.k === itTab && !itSub) return;
+			itGo(t.dataset.k);
+		});
+		$('itBody').addEventListener('click', function (e) {
+			var r = e.target.closest('.it-row'); if (!r) return;
+			itSub = r.dataset.n;
+			itReach();
+		});
+		$('itBack').addEventListener('click', function () {
+			itSub = null;
+			itRenderBody();
+		});
+		$('itEdit').addEventListener('click', function () {
+			itEditing = !itEditing;
+			$('itEdit').textContent = itEditing ? 'Done' : 'Edit';
+		});
+
+		/* ---- lifecycle ------------------------------------------------------- */
+		function itOpen() {
+			itTab = null; itSub = null;
+			itRenderTabs();
+			itReach();
+		}
+		function itReset() {
+			clearTimeout(itBusyTimer);
+			$('itapp').classList.remove('busy');
+			itTab = null; itSub = null; itEditing = false;
+			$('itEdit').textContent = 'Edit';
+			$('itBody').scrollTop = 0;
+			itRenderTabs();
+			itRenderBody();
+		}
 		})();
 	</script>
 </body>
