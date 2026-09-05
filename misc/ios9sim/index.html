@@ -6,7 +6,18 @@
     <meta name="viewport"
         content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- installed, it runs chromeless, so the page paints its own black behind
+	     the notch and Settings > Developer starts it in full screen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="iOS 9.3.5">
+    <meta name="theme-color" content="#08090a">
+    <meta name="color-scheme" content="dark">
     <meta name="description" content="an iOS 9.3.5 demo">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/app-180.png">
+    <link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
+    <link rel="icon" href="icons/app-192.png" sizes="192x192" type="image/png">
     <title>iOS 9.3.5</title>
     <style>
         /* ---------- system font ----------
@@ -78,22 +89,16 @@
         }
 
         /* ================= FOURTH WALL =================
-   Not part of the device: a little bench-supply panel parked in the corner
-   of the page that owns the charger and the battery's state of health. */
-        #fourthwall {
-            position: fixed;
-            left: 18px;
-            bottom: 18px;
-            z-index: 9999;
-            width: min-content;
-            padding: 11px 12px 12px;
-            border-radius: 11px;
-            background: rgba(22, 24, 28, .88);
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, .09), 0 10px 30px rgba(0, 0, 0, .55);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-            font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-            color: #d8dade;
+   Not part of the device: the bench supply that owns the charger, the cell's
+   state of health, the photo library and the air both radios are looking at.
+   It used to float over the page in its own corner panel; it now lives at the
+   bottom of Settings under Developer, which is the only place on a phone
+   there is room for it. The geometry below is still the panel's -- the light
+   repaint that lets it sit on a Settings page is further down, by .fw-panel. */
+        #fwPanel {
+            padding: 0 0 26px;
+            font-family: var(--sf-text);
+            color: #1c1c1e;
         }
 
         .fw-head {
@@ -256,27 +261,7 @@
         }
 
         .fwwrapper {
-            width: 178px;
-        }
-
-        #fwtoggle {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: #2a2d33;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 22px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .collapsed {
-            display: none;
+            width: auto;
         }
 
         /* ---------- device frame: iPod touch 5G (A1421), space gray ----------
@@ -11582,6 +11567,11 @@
             background: #FF9500;
         }
 
+        /* the bench supply is not part of the device, so it gets the grey tile */
+        .se-icon.dev {
+            background: #8E8E93;
+        }
+
         /* ---------- Wi-Fi page ---------- */
         /* the switch row sits 42pt in; network rows 45, over the gutter the
            checkmark and the joining spinner share */
@@ -12085,11 +12075,13 @@
             transform: rotate(-90deg);
         }
 
-        .fw-disclose.shut+.fw-read {
+        /* the summary line and the fold now share a card under the header, so
+           the disclosure reaches them through it rather than as siblings */
+        .fw-disclose.shut + .fw-grp .fw-read {
             margin-bottom: 0;
         }
 
-        .fw-disclose.shut+.fw-read+.fw-fold {
+        .fw-disclose.shut + .fw-grp .fw-fold {
             display: none;
         }
 
@@ -12242,9 +12234,743 @@
         }
 
         .fwwrapper.wide {
-            width: 246px;
+            width: auto;
         }
 
+
+
+        /* ---------- the bench panel, repainted for a Settings page ----------
+   Only the colours change. Every measurement above, and so every one of the
+   network and device editors underneath, keeps working exactly as it did in
+   the corner panel -- this just moves it from a dark slab onto white paper. */
+        .fw-sec {
+            margin-top: 22px;
+        }
+
+        #fwPanel .fw-head {
+            gap: 6px;
+            margin: 0;
+            padding: 0 16px 6px;
+            font-family: var(--sf-text);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: .3px;
+            color: #6D6D72;
+        }
+
+        #fwPanel .fw-head svg {
+            color: #8E8E93;
+        }
+
+        #fwPanel .fw-disclose {
+            cursor: pointer;
+        }
+
+        #fwPanel .fw-disclose:hover .fw-caret {
+            color: #6D6D72;
+        }
+
+        /* the white card each section's controls sit on, hairlined like a group */
+        .fw-grp {
+            position: relative;
+            background: #fff;
+            padding: 11px 16px 14px;
+        }
+
+        .fw-grp:before,
+        .fw-grp:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--se-hair);
+            transform: scaleY(.5);
+        }
+
+        .fw-grp:before {
+            top: 0;
+            transform-origin: top;
+        }
+
+        .fw-grp:after {
+            bottom: 0;
+            transform-origin: bottom;
+        }
+
+        #fwPanel #fwPct,
+        #fwPanel #fwPhCount {
+            color: #000;
+            font-weight: 300;
+            font-family: var(--sf-display);
+            font-size: 26px;
+            letter-spacing: -.6px;
+        }
+
+        #fwPanel .fw-state {
+            color: #4CD964;
+        }
+
+        #fwPanel .fw-state.draining {
+            color: #8E8E93;
+        }
+
+        #fwPanel .fw-state.low {
+            color: #FF3B30;
+        }
+
+        #fwPanel .fw-gauge {
+            background: rgba(0, 0, 0, .09);
+        }
+
+        #fwPanel #fwPlug,
+        #fwPanel #fwPhAdd,
+        #fwPanel #fwPhWipe,
+        #fwPanel .fw-add {
+            height: 32px;
+            border-radius: 6px;
+            background: #007AFF;
+            font-family: var(--sf-text);
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: -.2px;
+        }
+
+        #fwPanel #fwPlug:hover,
+        #fwPanel #fwPhAdd:hover,
+        #fwPanel .fw-add:hover {
+            background: #2b90ff;
+        }
+
+        #fwPanel #fwPlug:active,
+        #fwPanel #fwPhAdd:active,
+        #fwPanel #fwPhWipe:active,
+        #fwPanel .fw-add:active {
+            background: #0062cc;
+        }
+
+        /* the two destructive-ish greys: unplugging and erasing */
+        #fwPanel #fwPlug.unplugged,
+        #fwPanel #fwPhWipe.fw-quiet {
+            background: #EFEFF4;
+            color: #FF3B30;
+        }
+
+        #fwPanel #fwPlug.unplugged:hover,
+        #fwPanel #fwPhWipe.fw-quiet:hover {
+            background: #e4e4ea;
+        }
+
+        #fwPanel .fw-selrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        #fwPanel .fw-lbl {
+            flex: 1;
+            margin: 0;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: -.24px;
+            text-transform: none;
+            color: #000;
+        }
+
+        #fwPanel #fwCond {
+            width: auto;
+            max-width: 160px;
+            height: 28px;
+            border: 1px solid rgba(0, 0, 0, .13);
+            border-radius: 6px;
+            background: #fff;
+            color: #8E8E93;
+            font-family: var(--sf-text);
+            font-size: 13px;
+        }
+
+        #fwPanel #fwCond:focus {
+            outline: 1px solid #007AFF;
+        }
+
+        /* the network and device editors: same cards, light ink */
+        #fwPanel .fw-list {
+            max-height: none;
+            padding-right: 0;
+        }
+
+        #fwPanel .fw-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, .18);
+        }
+
+        #fwPanel .fw-net {
+            border-color: rgba(0, 0, 0, .11);
+            background: #F7F7F9;
+        }
+
+        #fwPanel .fw-net.joined {
+            border-color: #4CD964;
+            background: #F2FBF4;
+        }
+
+        #fwPanel .fw-nrow + .fw-nrow {
+            border-top-color: rgba(0, 0, 0, .07);
+        }
+
+        #fwPanel .fw-net input[type="text"],
+        #fwPanel .fw-net select {
+            border: 1px solid rgba(0, 0, 0, .14);
+            background: #fff;
+            color: #1c1c1e;
+            font-family: var(--sf-text);
+        }
+
+        #fwPanel .fw-net input:focus,
+        #fwPanel .fw-net select:focus {
+            outline: 1px solid #007AFF;
+        }
+
+        #fwPanel .fw-net input.short {
+            outline: 1px solid #FF9500;
+        }
+
+        #fwPanel .fw-nlbl,
+        #fwPanel .fw-chk {
+            color: #6D6D72;
+        }
+
+        #fwPanel .fw-nkill {
+            background: #D8D8DD;
+            color: #fff;
+        }
+
+        #fwPanel .fw-nkill:hover {
+            background: #FF3B30;
+        }
+
+        /* ================= FULL SCREEN =================
+   The bezel is a picture of an iPod, not part of it, so full screen simply
+   stops drawing one: the aluminium, the glass sheen, the camera and the round
+   home button all go, the stage shrinks from the 376x791 body to the 320x568
+   display, and fit() scales that to the window instead. The sleep and volume
+   keys have nowhere left to sit, so they move onto the display's own edges as
+   faint nubs -- still the same three elements, still the same handlers. */
+        body.fs #stage {
+            width: 320px;
+            height: 568px;
+        }
+
+        body.fs #device {
+            background: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        body.fs #glass {
+            inset: 0;
+            border-radius: 0;
+            background: #000;
+            box-shadow: none;
+        }
+
+        body.fs #glass:after,
+        body.fs .cam,
+        body.fs #home {
+            display: none;
+        }
+
+        body.fs #screen {
+            left: 0;
+            top: 0;
+            box-shadow: none;
+        }
+
+        body.fs .hw {
+            display: none;
+        }
+
+        /* sleep on the right, volume on the left, both clear of the status bar */
+        body.fs.sidebtn .hw {
+            display: block;
+            z-index: 1040;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+            background: rgba(255, 255, 255, .16);
+            box-shadow: none;
+        }
+
+        body.fs.sidebtn .hw:hover {
+            filter: none;
+            background: rgba(255, 255, 255, .32);
+        }
+
+        /* the bezel's generous 15pt hit ring would now reach well into the
+           display, so on the edges it is pulled in to something tidier */
+        body.fs.sidebtn .hw:after {
+            inset: -10px -6px;
+        }
+
+        body.fs.sidebtn .hw.pressed {
+            filter: none;
+            transform: none;
+            background: rgba(255, 255, 255, .5);
+        }
+
+        body.fs.sidebtn .hw.power {
+            left: auto;
+            right: 0;
+            top: 96px;
+            height: 46px;
+            border-radius: 2px 0 0 2px;
+        }
+
+        body.fs.sidebtn .hw.volup {
+            right: auto;
+            left: 0;
+            top: 150px;
+            height: 34px;
+        }
+
+        body.fs.sidebtn .hw.voldn {
+            right: auto;
+            left: 0;
+            top: 194px;
+            height: 34px;
+        }
+
+        /* ---------- the on-screen home button ----------
+   Full screen takes the real one away, so this stands in for it: a tap goes
+   home, a hold brings up Siri, and either wakes a sleeping device -- which is
+   why it sits above the sleep mask rather than under it. Style "None" still
+   leaves the bottom strip live, so there is no way to strand yourself. */
+        #oshome {
+            position: absolute;
+            z-index: 1050;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            --osh: 1;
+            --oshInk: rgba(255, 255, 255, .92);
+            --oshBg: rgba(255, 255, 255, .16);
+            --oshEdge: rgba(255, 255, 255, .3);
+        }
+
+        body.fs #oshome {
+            display: flex;
+        }
+
+        #oshome.sz-s {
+            --osh: .78;
+        }
+
+        #oshome.sz-l {
+            --osh: 1.3;
+        }
+
+        #oshome.ap-dark {
+            --oshInk: rgba(0, 0, 0, .55);
+            --oshBg: rgba(0, 0, 0, .1);
+            --oshEdge: rgba(0, 0, 0, .18);
+        }
+
+        #oshome .osh-bar,
+        #oshome .osh-sq {
+            display: none;
+        }
+
+        /* the indicator bar iOS grew into later */
+        #oshome.st-pill {
+            bottom: 6px;
+            height: calc(22px * var(--osh));
+            width: calc(148px * var(--osh));
+        }
+
+        #oshome.st-pill .osh-bar {
+            display: block;
+            width: 100%;
+            height: calc(5px * var(--osh));
+            border-radius: calc(2.5px * var(--osh));
+            background: var(--oshInk);
+        }
+
+        /* the floating button AssistiveTouch parks on the glass */
+        #oshome.st-circle {
+            bottom: calc(14px * var(--osh));
+            width: calc(46px * var(--osh));
+            height: calc(46px * var(--osh));
+            border-radius: 50%;
+            background: var(--oshBg);
+            box-shadow: 0 0 0 1px var(--oshEdge), 0 1px 4px rgba(0, 0, 0, .3);
+            -webkit-backdrop-filter: blur(9px);
+            backdrop-filter: blur(9px);
+        }
+
+        #oshome.st-circle .osh-sq {
+            display: block;
+            width: calc(17px * var(--osh));
+            height: calc(17px * var(--osh));
+            border: calc(1.7px * var(--osh)) solid var(--oshInk);
+            border-radius: calc(4px * var(--osh));
+        }
+
+        #oshome.ps-center {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #oshome.ps-left {
+            left: 12px;
+        }
+
+        #oshome.ps-right {
+            right: 12px;
+        }
+
+        /* Invisible, but the strip still answers -- the no-trap escape hatch.
+           Last, because it has to beat whichever position class is also on. */
+        #oshome.st-none {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            height: 22px;
+            transform: none;
+        }
+
+        #oshome.pressed {
+            opacity: .5;
+        }
+        /* ================= SIRI =================
+   iOS 9's assistant. A dark blurred sheet over whatever was on screen, the
+   multi-hued waveform along the bottom, and the conversation stacked above.
+   It sits over the lock screen, Notification and Control Center, but under
+   the volume HUD, the brightness mask and the sleep mask -- iOS's own order.
+   Brought up by holding the home button; the same button dismisses it. */
+        #siri {
+            position: absolute;
+            inset: 0;
+            z-index: 860;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .24s ease;
+        }
+
+        #siri.on {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .si-veil {
+            position: absolute;
+            inset: 0;
+            background: rgba(20, 22, 26, .82);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
+            backdrop-filter: blur(24px) saturate(1.4);
+        }
+
+        /* the status bar keeps ticking behind Siri, in light ink */
+        .si-status {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            padding: 5px 5px 0;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, .92);
+            font-family: var(--sf-text);
+        }
+
+        .si-status .sb-left,
+        .si-status .sb-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .si-status .sb-right {
+            justify-content: flex-end;
+        }
+
+        .si-status .sb-mid {
+            flex: 0 0 auto;
+            font-weight: 600;
+        }
+
+        /* ---- the conversation ---- */
+        .si-scroll {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 20px;
+            bottom: 132px;
+            z-index: 2;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 22px 16px 8px;
+        }
+
+        /* "What can I help you with?" -- centred while nothing has been asked */
+        .si-hint {
+            font-family: var(--sf-display);
+            font-weight: 300;
+            font-size: 25px;
+            line-height: 1.24;
+            letter-spacing: -.5px;
+            color: rgba(255, 255, 255, .58);
+            text-align: center;
+            margin: auto 0;
+            transition: opacity .2s ease;
+        }
+
+        .si-hint.gone {
+            display: none;
+        }
+
+        .si-turn {
+            margin-top: 14px;
+            animation: siRise .26s cubic-bezier(.32, .72, 0, 1) both;
+        }
+
+        @keyframes siRise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* what you said: large, light, right-aligned the way iOS 9 sets it */
+        .si-ask {
+            font-family: var(--sf-display);
+            font-weight: 300;
+            font-size: 23px;
+            line-height: 1.2;
+            letter-spacing: -.4px;
+            text-align: right;
+            color: rgba(255, 255, 255, .95);
+        }
+
+        /* still being transcribed -- iOS greys the partial result */
+        .si-ask.partial {
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .si-reply {
+            font-family: var(--sf-display);
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 1.3;
+            letter-spacing: -.35px;
+            color: #fff;
+            margin-top: 12px;
+        }
+
+        /* Siri's answer cards: a translucent white slab, iOS 9 corner radius */
+        .si-card {
+            margin-top: 12px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .96);
+            color: #1c1c1e;
+            padding: 12px 14px;
+            font-family: var(--sf-text);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+        }
+
+        .si-card .c-top {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .si-card .c-title {
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: -.24px;
+            flex: 1;
+        }
+
+        .si-card .c-sub {
+            font-size: 13px;
+            color: #8E8E93;
+        }
+
+        .si-card .c-big {
+            font-family: var(--sf-display);
+            font-weight: 200;
+            font-size: 46px;
+            letter-spacing: -1.4px;
+            line-height: 1.06;
+            margin-top: 2px;
+        }
+
+        .si-card .c-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            margin-top: 6px;
+            color: #3a3a3c;
+        }
+
+        .si-card .c-row .grow {
+            flex: 1;
+        }
+
+        .si-card .c-row .val {
+            color: #8E8E93;
+        }
+
+        .si-card .c-rule {
+            height: .5px;
+            background: rgba(0, 0, 0, .16);
+            margin: 9px -14px 0;
+        }
+
+        .si-card .c-up {
+            color: #4CD964;
+        }
+
+        .si-card .c-down {
+            color: #FF3B30;
+        }
+
+        /* ---- the waveform, the mic and the thinking dots ---- */
+        .si-foot {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 132px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .si-wave {
+            position: absolute;
+            left: 0;
+            bottom: 22px;
+            width: 320px;
+            height: 88px;
+            opacity: 0;
+            transition: opacity .2s ease;
+            pointer-events: none;
+        }
+
+        .si-wave.on {
+            opacity: 1;
+        }
+
+        /* the round mic Siri parks at the bottom once it has stopped listening */
+        .si-mic {
+            position: relative;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #6f7683, #4b5160);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .4), inset 0 .5px 0 rgba(255, 255, 255, .25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(.7);
+            pointer-events: none;
+            transition: opacity .18s ease, transform .18s cubic-bezier(.32, .72, 0, 1);
+        }
+
+        .si-mic.on {
+            opacity: 1;
+            transform: none;
+            pointer-events: auto;
+        }
+
+        .si-mic:active {
+            background: linear-gradient(180deg, #858d9c, #5c6373);
+        }
+
+        /* the grey pulse iOS shows while it is working the request out */
+        .si-think {
+            position: absolute;
+            display: none;
+            gap: 7px;
+        }
+
+        .si-think.on {
+            display: flex;
+        }
+
+        .si-think i {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .75);
+            animation: siPulse 1.05s infinite ease-in-out;
+        }
+
+        .si-think i:nth-child(2) {
+            animation-delay: .16s;
+        }
+
+        .si-think i:nth-child(3) {
+            animation-delay: .32s;
+        }
+
+        @keyframes siPulse {
+
+            0%,
+            72%,
+            100% {
+                transform: scale(.55);
+                opacity: .35;
+            }
+
+            30% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Fallback only. Browsers with no Web Speech recogniser (Firefox, and
+   Safari with dictation off) get somewhere to type the request instead. */
+        .si-type {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 34px;
+            z-index: 4;
+            display: none;
+            height: 36px;
+            border: 0;
+            outline: 0;
+            border-radius: 18px;
+            padding: 0 15px;
+            font-family: var(--sf-text);
+            font-size: 15px;
+            color: #1c1c1e;
+            background: rgba(255, 255, 255, .95);
+            -webkit-appearance: none;
+        }
+
+        .si-type.on {
+            display: block;
+        }
     </style>
 </head>
 
@@ -13750,6 +14476,157 @@
                                 <div class="se-body" id="seSecBody"></div>
                             </div>
 
+
+                            <!-- ---- Developer ----
+							     The bench supply that used to float over the page in its
+							     own corner panel. Everything outside the fiction lives
+							     here now: the charger, the cell's health, the photo
+							     library the camera-less device cannot fill on its own,
+							     and the air both radios are looking at. -->
+                            <div class="page" id="se-dev">
+                                <div class="nav">
+                                    <div class="btn back" id="seDevBack">
+                                        <svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+                                            <path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+                                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <span>Settings</span>
+                                    </div>
+                                    <div class="title">Developer</div>
+                                </div>
+                                <div class="se-body" id="seDevBody">
+                                    <div id="seDevTop"></div>
+
+                                    <div id="fwPanel">
+                                        <!-- ---- the charger and the cell ---- -->
+                                        <div class="fw-sec">
+                                            <div class="fw-head">
+                                                <svg width="11" height="15" viewBox="0 0 7 11" aria-hidden="true">
+                                                    <path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor" />
+                                                </svg>
+                                                <span>Power</span>
+                                            </div>
+                                            <div class="fw-grp">
+                                                <div class="fw-read">
+                                                    <span id="fwPct">100%</span>
+                                                    <span class="fw-state" id="fwState">Charging</span>
+                                                </div>
+                                                <div class="fw-gauge">
+                                                    <i id="fwBar"></i>
+                                                </div>
+                                                <button type="button" id="fwPlug">Unplug</button>
+                                                <div class="fw-selrow">
+                                                    <label class="fw-lbl" for="fwCond">Battery Condition</label>
+                                                    <select id="fwCond"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- the device has no camera, so the library is filled from here -->
+                                        <div class="fw-sec">
+                                            <div class="fw-head">
+                                                <svg width="13" height="12" viewBox="0 0 14 13" aria-hidden="true">
+                                                    <rect x="0.7" y="2.6" width="12.6" height="9.7" rx="1.6"
+                                                        fill="none" stroke="currentColor" stroke-width="1.3" />
+                                                    <path d="M4.6 2.6 5.6 0.8h2.8l1 1.8" fill="none"
+                                                        stroke="currentColor" stroke-width="1.3"
+                                                        stroke-linejoin="round" />
+                                                    <circle cx="7" cy="7.6" r="2.5" fill="none" stroke="currentColor"
+                                                        stroke-width="1.3" />
+                                                </svg>
+                                                <span>Photo Library</span>
+                                            </div>
+                                            <div class="fw-grp">
+                                                <div class="fw-read">
+                                                    <span id="fwPhCount">0</span>
+                                                    <span class="fw-state draining" id="fwPhState">Empty</span>
+                                                </div>
+                                                <button type="button" id="fwPhAdd">Add Photos&#8230;</button>
+                                                <button type="button" class="fw-quiet" id="fwPhWipe">Erase
+                                                    Library</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- the air around the device: what the radio can actually see -->
+                                        <div class="fw-sec">
+                                            <div class="fw-head fw-disclose" id="fwNetHead">
+                                                <svg width="15" height="12" viewBox="0 0 16 12" aria-hidden="true">
+                                                    <path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+                                                    <path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none"
+                                                        stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" />
+                                                    <path d="M1 3.2a10.2 10.2 0 0114 0" fill="none"
+                                                        stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" />
+                                                </svg>
+                                                <span>Wi-Fi Networks</span>
+                                                <svg class="fw-caret" width="9" height="6" viewBox="0 0 9 6"
+                                                    aria-hidden="true">
+                                                    <path d="M1 1.2 4.5 4.6 8 1.2" fill="none" stroke="currentColor"
+                                                        stroke-width="1.6" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <div class="fw-grp">
+                                                <div class="fw-read">
+                                                    <span id="fwNetCount">0</span>
+                                                    <span class="fw-state draining" id="fwNetState">Radio off</span>
+                                                </div>
+                                                <div class="fw-fold" id="fwNetBody">
+                                                    <div class="fw-list" id="fwNets"></div>
+                                                    <button type="button" class="fw-add" id="fwNetAdd">Add
+                                                        Network</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- the same air, seen by the other radio -->
+                                        <div class="fw-sec">
+                                            <div class="fw-head fw-disclose" id="fwBtHead">
+                                                <svg width="9" height="14" viewBox="0 0 8 12" aria-hidden="true">
+                                                    <path d="M1.4 3.6 6.6 8.4 4 11V1l2.6 2.6L1.4 8.4" fill="none"
+                                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                                <span>Bluetooth Devices</span>
+                                                <svg class="fw-caret" width="9" height="6" viewBox="0 0 9 6"
+                                                    aria-hidden="true">
+                                                    <path d="M1 1.2 4.5 4.6 8 1.2" fill="none" stroke="currentColor"
+                                                        stroke-width="1.6" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <div class="fw-grp">
+                                                <div class="fw-read">
+                                                    <span id="fwBtCount">0</span>
+                                                    <span class="fw-state draining" id="fwBtState">Radio off</span>
+                                                </div>
+                                                <div class="fw-fold" id="fwBtBody">
+                                                    <div class="fw-list" id="fwBts"></div>
+                                                    <button type="button" class="fw-add" id="fwBtAdd">Add
+                                                        Device</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ---- one Developer option list, reused by every picker row ---- -->
+                            <div class="page" id="se-devpick">
+                                <div class="nav">
+                                    <div class="btn back" id="seDPBack">
+                                        <svg width="12" height="21" viewBox="0 0 12 21" aria-hidden="true">
+                                            <path d="M10.4 1.4 1.6 10.5l8.8 9.1" fill="none" stroke="currentColor"
+                                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <span>Developer</span>
+                                    </div>
+                                    <div class="title" id="seDPTitle"></div>
+                                </div>
+                                <div class="se-body" id="seDPBody"></div>
+                            </div>
+
                             <!-- ---- Renew Lease ---- -->
                             <div class="se-sheetwrap" id="seSheet">
                                 <div class="se-sheet">
@@ -13938,6 +14815,49 @@
                         <div class="cc-sec cc-short" id="ccShort"></div>
                     </div>
 
+
+                    <!-- ============ SIRI ============
+					     Hold the home button to bring it up. Above the lock screen
+					     and both shades, below the volume HUD and the sleep mask. -->
+                    <div id="siri">
+                        <div class="si-veil"></div>
+
+                        <div class="si-status" id="siStatus">
+                            <div class="sb-left"><span>iPod</span>
+                                <svg class="sb-wifi" width="15" height="11" viewBox="0 0 16 12" aria-hidden="true">
+                                    <path class="w1" d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
+                                    <path class="w2" d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor"
+                                        stroke-width="1.5" stroke-linecap="round" />
+                                    <path class="w3" d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor"
+                                        stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="sb-mid" id="siClock">8:39 AM</div>
+                            <div class="sb-right" id="siBatt"></div>
+                        </div>
+
+                        <div class="si-scroll" id="siScroll">
+                            <div class="si-hint" id="siHint">What can I help you with?</div>
+                            <div id="siConv"></div>
+                        </div>
+
+                        <div class="si-foot">
+                            <canvas class="si-wave" id="siWave" width="640" height="176"></canvas>
+                            <div class="si-mic" id="siMic">
+                                <svg width="21" height="32" viewBox="0 0 14 22" aria-hidden="true">
+                                    <rect x="4" y="1" width="6" height="12" rx="3" fill="#fff" />
+                                    <path d="M1.6 10.4c0 3 2.4 5.4 5.4 5.4s5.4-2.4 5.4-5.4" fill="none" stroke="#fff"
+                                        stroke-width="1.6" stroke-linecap="round" />
+                                    <path d="M7 15.8v4.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="si-think" id="siThink"><i></i><i></i><i></i></div>
+                        </div>
+
+                        <input class="si-type" id="siType" type="text" autocomplete="off" autocorrect="off"
+                            spellcheck="false" placeholder="Type what you'd like to ask">
+                    </div><!-- /#siri -->
+
                     <div id="brightmask"></div>
 
                     <div class="volhud" id="volHud">
@@ -13970,100 +14890,19 @@
                         </svg>
                     </div>
 
+                    <!-- stands in for the home button once full screen has taken
+					     the real one away. Above the sleep mask on purpose: it is
+					     also the only way left to wake a sleeping device. -->
+                    <div id="oshome" class="st-pill ps-center sz-m ap-light">
+                        <span class="osh-bar"></span>
+                        <span class="osh-sq"></span>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ============ FOURTH WALL: power controls, outside the device ============ -->
-    <div id="fourthwall">
-        <!-- 
-		&#11205; up arrow
-		&#11206; down arrow
-		-->
-        <div id="fwtoggle">&#11205;</div>
-        <div class="fwwrapper wide collapsed" id="fwWrap">
-            <div class="fw-head">
-                <svg width="11" height="15" viewBox="0 0 7 11" aria-hidden="true">
-                    <path d="M4.2 0 0 6h2.6L2.2 11 6.6 4.7H4z" fill="currentColor" />
-                </svg>
-                <span>Power</span>
-            </div>
-            <div class="fw-read">
-                <span id="fwPct">100%</span>
-                <span class="fw-state" id="fwState">Charging</span>
-            </div>
-            <div class="fw-gauge">
-                <i id="fwBar"></i>
-            </div>
-            <button type="button" id="fwPlug">Unplug</button>
-            <label class="fw-lbl" for="fwCond">Battery Condition</label>
-            <select id="fwCond"></select>
-
-            <!-- the device has no camera, so the library is filled from here -->
-            <div class="fw-head fw-sep">
-                <svg width="13" height="12" viewBox="0 0 14 13" aria-hidden="true">
-                    <rect x="0.7" y="2.6" width="12.6" height="9.7" rx="1.6" fill="none" stroke="currentColor"
-                        stroke-width="1.3" />
-                    <path d="M4.6 2.6 5.6 0.8h2.8l1 1.8" fill="none" stroke="currentColor" stroke-width="1.3"
-                        stroke-linejoin="round" />
-                    <circle cx="7" cy="7.6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3" />
-                </svg>
-                <span>Photo Library</span>
-            </div>
-            <div class="fw-read">
-                <span id="fwPhCount">0</span>
-                <span class="fw-state draining" id="fwPhState">Empty</span>
-            </div>
-            <button type="button" id="fwPhAdd">Add Photos&#8230;</button>
-            <button type="button" class="fw-quiet" id="fwPhWipe">Erase Library</button>
-
-            <!-- the air around the device: what the radio can actually see -->
-            <div class="fw-head fw-sep fw-disclose" id="fwNetHead">
-                <svg width="15" height="12" viewBox="0 0 16 12" aria-hidden="true">
-                    <path d="M8 10.6 6.1 8.5a2.9 2.9 0 013.8 0z" fill="currentColor" />
-                    <path d="M3.4 5.9a6.7 6.7 0 019.2 0" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" />
-                    <path d="M1 3.2a10.2 10.2 0 0114 0" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" />
-                </svg>
-                <span>Wi-Fi Networks</span>
-                <svg class="fw-caret" width="9" height="6" viewBox="0 0 9 6" aria-hidden="true">
-                    <path d="M1 1.2 4.5 4.6 8 1.2" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-            <div class="fw-read">
-                <span id="fwNetCount">0</span>
-                <span class="fw-state draining" id="fwNetState">Radio off</span>
-            </div>
-            <div class="fw-fold" id="fwNetBody">
-                <div class="fw-list" id="fwNets"></div>
-                <button type="button" class="fw-add" id="fwNetAdd">Add Network</button>
-            </div>
-
-            <!-- the same air, seen by the other radio: what Bluetooth can find -->
-            <div class="fw-head fw-sep fw-disclose" id="fwBtHead">
-                <svg width="9" height="14" viewBox="0 0 8 12" aria-hidden="true">
-                    <path d="M1.4 3.6 6.6 8.4 4 11V1l2.6 2.6L1.4 8.4" fill="none" stroke="currentColor"
-                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <span>Bluetooth Devices</span>
-                <svg class="fw-caret" width="9" height="6" viewBox="0 0 9 6" aria-hidden="true">
-                    <path d="M1 1.2 4.5 4.6 8 1.2" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-            <div class="fw-read">
-                <span id="fwBtCount">0</span>
-                <span class="fw-state draining" id="fwBtState">Radio off</span>
-            </div>
-            <div class="fw-fold" id="fwBtBody">
-                <div class="fw-list" id="fwBts"></div>
-                <button type="button" class="fw-add" id="fwBtAdd">Add Device</button>
-            </div>
-        </div>
-    </div>
 
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
         <defs>
@@ -14085,11 +14924,21 @@
             /* SCALE + CLOCK                                                      */
             /* ------------------------------------------------------------------ */
             let stage = $('stage');
+            /* Windowed, the whole 376x791 body has to fit with room to breathe.
+               Full screen there is no body to draw, so the 320x568 display goes
+               edge to edge instead -- contained, never cropped, because a phone
+               is taller than 9:16 and cropping would eat the status bar. */
             function fit() {
-                let s = Math.min((window.innerWidth - 20) / 376, (window.innerHeight - 30) / 791);
+                let s = devFull
+                    ? Math.min(window.innerWidth / 320, window.innerHeight / 568)
+                    : Math.min((window.innerWidth - 20) / 376, (window.innerHeight - 30) / 791);
                 stage.style.transform = 'scale(' + s + ')';
             }
-            window.addEventListener('resize', fit); fit();
+            window.addEventListener('resize', fit);
+            /* the visual viewport moves on its own when a phone's browser chrome
+               slides away, and that never fires a resize */
+            if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+            fit();      /* run again by devApply() once the saved mode is known */
 
             var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             var MONS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -14111,6 +14960,7 @@
                 $('itClock').textContent = txt;
                 $('asClock').textContent = txt;
                 $('seClock').textContent = txt;
+                $('siClock').textContent = txt;
                 lkTick();
                 if (ckReady) ckTick();
             }
@@ -14184,7 +15034,7 @@
                     ' stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             }
 
-            var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt', 'phBatt', 'wxBatt', 'vdBatt', 'vdpBatt', 'ntBatt', 'rmBatt', 'stBatt', 'itBatt', 'asBatt', 'seBatt'];
+            var STD_BARS = ['hsBatt', 'appBatt', 'ncBatt', 'ftBatt', 'lkBatt', 'ckBatt', 'phBatt', 'wxBatt', 'vdBatt', 'vdpBatt', 'ntBatt', 'rmBatt', 'stBatt', 'itBatt', 'asBatt', 'seBatt', 'siBatt'];
             function renderBatteries() {
                 var std = (ckAlarmOn ? ALARM_STD : '') + btStdGlyph() +
                     battSVG(BATT_STD, batt.level, batt.charging) + (batt.charging ? BOLT_STD : '');
@@ -14296,12 +15146,8 @@
                 }, 200);
             })();
 
-            // FW collapse/expand toggle
-            $('fwtoggle').addEventListener('click', function () {
-                var fw = $('fwWrap');
-                fw.classList.toggle('collapsed');
-                $('fwtoggle').innerHTML = fw.classList.contains('collapsed') ? '&#11205;' : '&#11206;';
-            });
+            /* the panel folds away with the Developer page it now lives on, so
+               there is nothing left here to collapse */
 
             renderBatteries(); paintFW(); refreshInk();
 
@@ -15246,6 +16092,7 @@
 
                 $('ckAlert').classList.remove('up');
                 ckAlertCb = null;
+                siriClose();
                 $('volHud').classList.remove('show');
                 setNC(false);
                 setCC(false);
@@ -15265,6 +16112,9 @@
             /* ------------------------------------------------------------------ */
             document.addEventListener('keydown', function (e) {
                 if (asleep || booting) return;
+                /* Siri owns the keyboard while it is up -- its own field stops the
+                   event before it gets here, so anything reaching this is for it */
+                if (siriUp) { if (e.key === 'Escape') siriClose(); return; }
                 if (locked) {
                     if (lkP < .5) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lkGo(1); } return; }
                     if (/^[0-9]$/.test(e.key)) { e.preventDefault(); lkPress(e.key); }
@@ -15602,6 +16452,7 @@
                 if (!on && batt.dead) return;      /* a flat battery will not wake up */
                 asleep = on;
                 $('sleepmask').classList.toggle('on', on);
+                if (on) siriClose();      /* a sleeping device is not listening */
                 if (on) {
                     $('volHud').classList.remove('show');
                     lkLock();              /* sleeping locks it, so waking lands on the lock screen */
@@ -15613,6 +16464,7 @@
             function goHome() {
                 if (booting) return;
                 if (asleep) { setSleep(false); return; }
+                if (siriUp) { siriClose(); return; }
                 if (ccOpen) { setCC(false); return; }
                 if (ncOpen) { setNC(false); return; }
                 if (locked) { if (lkP > .5) lkGo(0); return; }
@@ -15632,7 +16484,39 @@
             wireBtn($('btnVolUp'), function () { bumpVol(1); });
             wireBtn($('btnVolDn'), function () { bumpVol(-1); });
             wireBtn($('btnPower'), function () { setSleep(!asleep); });
-            wireBtn($('home'), goHome);
+
+            /* Home is the one button with two jobs: a tap goes home, a press and
+               hold brings Siri up and keeps the microphone open until you let go.
+               So unlike the others it has to act on the release, not the press.
+               Both the moulded one on the bezel and the on-screen stand-in full
+               screen leaves behind are wired through here, so they behave alike. */
+            function wireHomeButton(el) {
+                var pressing = false, tookHold = false, t = null;
+                function down(e) {
+                    e.preventDefault();
+                    if (pressing) return;
+                    pressing = true; tookHold = false;
+                    el.classList.add('pressed');
+                    clearTimeout(t);
+                    t = setTimeout(function () { if (pressing && siriInvoke()) tookHold = true; }, 520);
+                }
+                function up() {
+                    if (!pressing) return;
+                    pressing = false;
+                    clearTimeout(t);
+                    el.classList.remove('pressed');
+                    if (tookHold) { siriRelease(); return; }
+                    goHome();
+                }
+                el.addEventListener('mousedown', down);
+                el.addEventListener('touchstart', down, { passive: false });
+                el.addEventListener('mouseup', up);
+                el.addEventListener('mouseleave', up);
+                el.addEventListener('touchend', up);
+                el.addEventListener('touchcancel', up);
+            }
+            wireHomeButton($('home'));
+            wireHomeButton($('oshome'));
 
             drawVol();
             syncField();
@@ -21896,6 +22780,10 @@
             /* ---- svg bits ------------------------------------------------------- */
             var SE_CHEV = '<svg class="se-chev" width="9" height="15" viewBox="0 0 9 15"><path d="M1 1l6.4 6.5L1 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             var SE_CHECK = '<svg width="15" height="12" viewBox="0 0 15 12"><path d="M1.4 6.2 5.4 10.4 13.4 1.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            /* a spanner, for the one row that is not part of the device */
+            var SE_DEV_ICON = '<svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true">' +
+                '<path d="M13.1 1.2a5.6 5.6 0 00-5 8.1L1.6 15.8a1.8 1.8 0 002.6 2.6l6.5-6.5a5.6 5.6 0 007-7.3l-2.9 2.9-2.4-.6-.6-2.4z" ' +
+                'fill="currentColor"/></svg>';
             var SE_LOCK = '<svg width="8" height="11" viewBox="0 0 8 11" style="display:block"><path d="M2 4.6V3a2 2 0 014 0v1.6" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="0.4" y="4.4" width="7.2" height="6.2" rx="1" fill="currentColor"/></svg>';
             var SE_INFO = '<svg width="22" height="22" viewBox="0 0 22 22" style="display:block"><circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="11" cy="5.9" r="1.15" fill="currentColor"/><path d="M11 9.2v7.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
             var SE_SPIN = (function () {
@@ -21940,13 +22828,22 @@
                 { n: 'Wi-Fi', path: '', go: function () { seOpenWifi(); }, icon: 'wifi' },
                 { n: 'Ask to Join Networks', path: 'Wi-Fi', go: function () { seOpenWifi(); } },
                 { n: 'Other Network', path: 'Wi-Fi', go: function () { seOpenWifi(); } },
-                { n: 'Bluetooth', path: '', go: function () { btOpen(); }, icon: 'bt' }
+                { n: 'Bluetooth', path: '', go: function () { btOpen(); }, icon: 'bt' },
+                { n: 'Developer', path: '', go: function () { devOpen(); }, icon: 'dev' },
+                { n: 'Full Screen', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Home Button', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Side Buttons', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Power', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Battery Condition', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Photo Library', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Wi-Fi Networks', path: 'Developer', go: function () { devOpen(); } },
+                { n: 'Bluetooth Devices', path: 'Developer', go: function () { devOpen(); } }
             ];
 
             var SE_WIFI_ICON = '<svg width="19" height="14" viewBox="0 0 20 14"><path d="M10 12.9 7.5 10.2a3.6 3.6 0 015 0z" fill="currentColor"/><path d="M4.4 6.7a8.4 8.4 0 0111.2 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M1.3 3.3a13 13 0 0117.4 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
             var SE_BT_ICON = '<svg width="11" height="16" viewBox="0 0 8 12"><path d="M1.4 3.6 6.6 8.4 4 11V1l2.6 2.6L1.4 8.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             var SE_AIR_ICON = '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M22 15.2 13.6 10V3.8a1.6 1.6 0 10-3.2 0V10L2 15.2v2.2l8.4-2.6v4.4l-2.6 1.7v1.5l4.2-1.1 4.2 1.1v-1.5l-2.6-1.7v-4.4l8.4 2.6z" fill="currentColor"/></svg>';
-            var SE_ICONS = { wifi: SE_WIFI_ICON, bt: SE_BT_ICON, air: SE_AIR_ICON };
+            var SE_ICONS = { wifi: SE_WIFI_ICON, bt: SE_BT_ICON, air: SE_AIR_ICON, dev: SE_DEV_ICON };
 
             function seWifiValue() {
                 if (!wifi.on) return 'Off';
@@ -21973,6 +22870,14 @@
                     '<span class="se-icon bt">' + SE_BT_ICON + '</span>' +
                     '<span class="se-name">Bluetooth</span>' +
                     '<span class="se-val">' + (bt.on ? 'On' : 'Off') + '</span>' + SE_CHEV +
+                    '</div></div>' +
+                    /* everything outside the fiction, kept at the bottom where iOS
+                       keeps its own Developer menu */
+                    '<div class="se-gap"></div>' +
+                    '<div class="se-grp">' +
+                    '<div class="se-cell tap" data-go="dev">' +
+                    '<span class="se-icon dev">' + SE_DEV_ICON + '</span>' +
+                    '<span class="se-name">Developer</span>' + SE_CHEV +
                     '</div></div>';
             }
 
@@ -21999,6 +22904,7 @@
                 if (!go) return;
                 if (go.dataset.go === 'wifi') seOpenWifi();
                 else if (go.dataset.go === 'bt') btOpen();
+                else if (go.dataset.go === 'dev') devOpen();
             });
 
             /* ---- search ---- */
@@ -23050,7 +23956,7 @@
                 seNetId = null;
                 btCancel();
                 btDevName = null;
-                ['se-wifi', 'se-net', 'se-bt', 'se-btdev'].forEach(function (id) {
+                ['se-wifi', 'se-net', 'se-bt', 'se-btdev', 'se-dev', 'se-devpick'].forEach(function (id) {
                     $(id).classList.remove('active', 'behind');
                 });
                 $('se-root').classList.remove('behind');
@@ -23058,6 +23964,7 @@
                 $('seRootBody').scrollTop = 0;
                 $('seWifiBody').scrollTop = 0;
                 $('seBtBody').scrollTop = 0;
+                $('seDevBody').scrollTop = 0;
                 seAfterChange();
                 btAfterChange();
             }
@@ -23077,6 +23984,1181 @@
                 seRenderRoot(); seRenderWifi(); seRenderFW(); seSyncGlyph();
                 btRenderPage(); btRenderFW(); seSyncCarrier(); battSync();
             })();
+
+
+            /* ------------------------------------------------------------------ */
+            /* DEVELOPER: FULL SCREEN + THE ON-SCREEN HOME BUTTON                 */
+            /* ------------------------------------------------------------------ */
+            /* Everything that is not part of the fiction lives at the bottom of
+               Settings now. The bench supply moved there wholesale; these two are
+               new, and they are what make the page usable as an installed web app:
+               full screen drops the aluminium and hands the window to the display,
+               and the on-screen button takes over from the moulded one it hides.
+
+               These are settings about the page rather than about the device, so
+               unlike the alarms and the photo library they outlive a reload. */
+
+            var devFull = false, devSide = true;
+            var devHome = { style: 'pill', pos: 'center', size: 'm', look: 'light' };
+
+            var DEV_STYLE = [{ v: 'pill', n: 'Bar' }, { v: 'circle', n: 'Button' }, { v: 'none', n: 'None' }];
+            var DEV_POS = [{ v: 'left', n: 'Left' }, { v: 'center', n: 'Center' }, { v: 'right', n: 'Right' }];
+            var DEV_SIZE = [{ v: 's', n: 'Small' }, { v: 'm', n: 'Medium' }, { v: 'l', n: 'Large' }];
+            var DEV_LOOK = [{ v: 'light', n: 'Light' }, { v: 'dark', n: 'Dark' }];
+
+            function devHas(list, v) {
+                for (var i = 0; i < list.length; i++) if (list[i].v === v) return true;
+                return false;
+            }
+            function devLabel(list, v) {
+                for (var i = 0; i < list.length; i++) if (list[i].v === v) return list[i].n;
+                return '';
+            }
+
+            /* ---- remembering ---------------------------------------------------- */
+            var DEV_KEY = 'ios935.developer';
+            function devSave() {
+                try {
+                    localStorage.setItem(DEV_KEY, JSON.stringify({
+                        full: devFull, side: devSide, home: devHome
+                    }));
+                } catch (e) { /* private mode: they just do not outlive the tab */ }
+            }
+            function devLoad() {
+                var raw = null, o = null;
+                try { raw = localStorage.getItem(DEV_KEY); } catch (e) { return false; }
+                if (!raw) return false;
+                try { o = JSON.parse(raw); } catch (e) { return false; }
+                if (!o || typeof o !== 'object') return false;
+                if (typeof o.full === 'boolean') devFull = o.full;
+                if (typeof o.side === 'boolean') devSide = o.side;
+                if (o.home && typeof o.home === 'object') {
+                    if (devHas(DEV_STYLE, o.home.style)) devHome.style = o.home.style;
+                    if (devHas(DEV_POS, o.home.pos)) devHome.pos = o.home.pos;
+                    if (devHas(DEV_SIZE, o.home.size)) devHome.size = o.home.size;
+                    if (devHas(DEV_LOOK, o.home.look)) devHome.look = o.home.look;
+                }
+                return true;
+            }
+
+            /* launched from the home screen rather than a browser tab: there is no
+               address bar to sit under, so full screen is the only sensible start */
+            function devStandalone() {
+                if (window.navigator.standalone === true) return true;
+                if (!window.matchMedia) return false;
+                return window.matchMedia('(display-mode: standalone)').matches ||
+                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                    window.matchMedia('(display-mode: minimal-ui)').matches;
+            }
+
+            /* ---- applying -------------------------------------------------------- */
+            function devApply() {
+                document.body.classList.toggle('fs', devFull);
+                document.body.classList.toggle('sidebtn', devSide);
+                $('oshome').className = 'st-' + devHome.style + ' ps-' + devHome.pos +
+                    ' sz-' + devHome.size + ' ap-' + devHome.look;
+                fit();
+            }
+
+            /* ---- the browser's own full screen ----------------------------------- */
+            /* Separate from the mode above: that one hides the iPod, this one hides
+               the browser. iPhone Safari has neither method, so the row is only
+               offered where it would actually do something. */
+            function devCanBrowserFull() {
+                var d = document.documentElement;
+                return !!(d.requestFullscreen || d.webkitRequestFullscreen);
+            }
+            function devBrowserFull() {
+                return !!(document.fullscreenElement || document.webkitFullscreenElement);
+            }
+            function devSetBrowserFull(on) {
+                var d = document.documentElement;
+                try {
+                    if (on) {
+                        var go = d.requestFullscreen || d.webkitRequestFullscreen;
+                        if (go) go.call(d);
+                    } else {
+                        var out = document.exitFullscreen || document.webkitExitFullscreen;
+                        if (out) out.call(document);
+                    }
+                } catch (e) { /* refused, or not allowed from here */ }
+            }
+            /* Esc leaves it without asking us, so the switch reads the browser
+               rather than a flag of our own */
+            document.addEventListener('fullscreenchange', function () { devRender(); });
+            document.addEventListener('webkitfullscreenchange', function () { devRender(); });
+
+            /* ---- the Developer page ---------------------------------------------- */
+            function devSwitchRow(name, key, on) {
+                return '<div class="se-cell"><span class="se-name">' + esc(name) + '</span>' +
+                    seSwitch(on, 'dev-' + key) + '</div>';
+            }
+            function devPickRow(name, key, val) {
+                return '<div class="se-cell tap" data-pick="' + key + '">' +
+                    '<span class="se-name">' + esc(name) + '</span>' +
+                    '<span class="se-val">' + esc(val) + '</span>' + SE_CHEV + '</div>';
+            }
+
+            function devRender() {
+                var el = $('seDevTop');
+                if (!el) return;
+                el.innerHTML =
+                    '<div class="se-gap"></div>' +
+                    '<div class="se-grp">' +
+                    devSwitchRow('Full Screen', 'full', devFull) +
+                    (devCanBrowserFull() ? devSwitchRow('Fill the Browser Window', 'bfull', devBrowserFull()) : '') +
+                    '</div>' +
+                    '<div class="se-ftr">Full Screen puts the iPod’s body away and gives the ' +
+                    'whole window to the display. Installed to a home screen, it starts this way.</div>' +
+
+                    '<div class="se-hdr"><span>Home Button</span></div>' +
+                    '<div class="se-grp">' +
+                    devPickRow('Style', 'style', devLabel(DEV_STYLE, devHome.style)) +
+                    devPickRow('Position', 'pos', devLabel(DEV_POS, devHome.pos)) +
+                    devPickRow('Size', 'size', devLabel(DEV_SIZE, devHome.size)) +
+                    devPickRow('Appearance', 'look', devLabel(DEV_LOOK, devHome.look)) +
+                    devSwitchRow('Side Buttons', 'side', devSide) +
+                    '</div>' +
+                    '<div class="se-ftr">While Full Screen is on, the on-screen button stands in for the ' +
+                    'real one: tap for home, hold for Siri, either one wakes the iPod. It sits over the ' +
+                    'bottom of the display, so a corner Button keeps out of an app’s way better than ' +
+                    'a Bar does. None hides it and leaves the bottom edge tappable, so there is no way to ' +
+                    'strand yourself. Side Buttons puts sleep and volume on the display’s edges.</div>';
+            }
+
+            $('seDevTop').addEventListener('click', function (e) {
+                var sw = e.target.closest('[data-sw]');
+                if (sw) {
+                    var k = sw.dataset.sw.slice(4);        /* past the "dev-" */
+                    if (k === 'full') { devFull = !devFull; devApply(); devSave(); devRender(); }
+                    else if (k === 'side') { devSide = !devSide; devApply(); devSave(); devRender(); }
+                    else if (k === 'bfull') devSetBrowserFull(!devBrowserFull());
+                    return;
+                }
+                var pick = e.target.closest('[data-pick]');
+                if (pick) devOpenPick(pick.dataset.pick);
+            });
+
+            function devOpen() {
+                devRender();
+                $('seDevBody').scrollTop = 0;
+                push($('se-root'), $('se-dev'));
+            }
+            $('seDevBack').addEventListener('click', function () {
+                pop($('se-dev'), $('se-root'));
+                seRenderRoot();
+            });
+
+            /* ---- one option list, shared by all four picker rows ------------------ */
+            var DEV_PICKS = {
+                style: {
+                    t: 'Style', list: DEV_STYLE,
+                    get: function () { return devHome.style; }, set: function (v) { devHome.style = v; }
+                },
+                pos: {
+                    t: 'Position', list: DEV_POS,
+                    get: function () { return devHome.pos; }, set: function (v) { devHome.pos = v; }
+                },
+                size: {
+                    t: 'Size', list: DEV_SIZE,
+                    get: function () { return devHome.size; }, set: function (v) { devHome.size = v; }
+                },
+                look: {
+                    t: 'Appearance', list: DEV_LOOK,
+                    get: function () { return devHome.look; }, set: function (v) { devHome.look = v; }
+                }
+            };
+            var devPickKey = null;
+
+            function devRenderPick() {
+                var p = DEV_PICKS[devPickKey];
+                if (!p) return;
+                var cur = p.get();
+                $('seDPBody').innerHTML = '<div class="se-gap"></div><div class="se-grp">' +
+                    p.list.map(function (o) {
+                        return '<div class="se-cell tap" data-v="' + o.v + '">' +
+                            '<span class="se-name">' + esc(o.n) + '</span>' +
+                            (o.v === cur ? '<span style="color:#007AFF">' + SE_CHECK + '</span>' : '') +
+                            '</div>';
+                    }).join('') + '</div>';
+            }
+            function devOpenPick(k) {
+                if (!DEV_PICKS[k]) return;
+                devPickKey = k;
+                $('seDPTitle').textContent = DEV_PICKS[k].t;
+                devRenderPick();
+                $('seDPBody').scrollTop = 0;
+                push($('se-dev'), $('se-devpick'));
+            }
+            $('seDPBack').addEventListener('click', function () {
+                pop($('se-devpick'), $('se-dev'));
+            });
+            $('seDPBody').addEventListener('click', function (e) {
+                var r = e.target.closest('[data-v]');
+                if (!r || !DEV_PICKS[devPickKey]) return;
+                DEV_PICKS[devPickKey].set(r.dataset.v);
+                devApply(); devSave();
+                devRenderPick(); devRender();
+            });
+
+            /* ---- boot ------------------------------------------------------------- */
+            if (!devLoad() && devStandalone()) devFull = true;
+            devApply();
+            devRender();
+            /* ------------------------------------------------------------------ */
+            /* SIRI                                                               */
+            /* ------------------------------------------------------------------ */
+            /* Hold the home button and iOS 9's assistant comes up over whatever
+               was on screen -- the lock screen included. It listens through
+               webkitSpeechRecognition / SpeechRecognition and answers through
+               SpeechSynthesisUtterance, and the requests it understands drive the
+               same state the apps do: the Clock's alarms and timer, the Reminders
+               lists, the Control Center radios, the volume, the app launcher.
+
+               Everything degrades: no recogniser (Firefox, Safari with dictation
+               off) or a refused microphone drops to a typed prompt, no speech
+               synthesiser just leaves the answer on screen, and no getUserMedia
+               means the waveform animates on its own instead of off the mic. */
+
+            var siriUp = false;
+            var siState = 'idle';      /* listen | think | talk | idle */
+            var siRec = null, siRecOn = false, siStartedAt = 0;
+            var siFinal = '', siHeard = '';
+            var siHold = false;        /* the home button is still down */
+            var siTypeMode = false;
+            var siTurn = null, siAskEl = null;
+            var siThinkT = null, siSpeakGuard = null;
+            var siConv = $('siConv'), siHint = $('siHint'), siTypeEl = $('siType');
+
+            var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            /* ---- the two-tone chime ------------------------------------------- */
+            /* No audio files to lean on, so the ding-ding is two sine blips. It
+               rides the device's own volume, and a muted iPod stays silent. */
+            var siAC = null;
+            function siAudio() {
+                if (siAC !== null) return siAC;
+                var C = window.AudioContext || window.webkitAudioContext;
+                if (!C) { siAC = false; return false; }
+                try { siAC = new C(); } catch (e) { siAC = false; }
+                return siAC;
+            }
+            function siChime(up) {
+                var ac = siAudio(); if (!ac) return;
+                if (ac.state === 'suspended') { try { ac.resume(); } catch (e) { } }
+                var gainTop = 0.15 * (vol / VOL_STEPS);
+                if (gainTop <= 0) return;
+                var notes = up ? [830.6, 1108.7] : [1108.7, 830.6];
+                var t0 = ac.currentTime + 0.01;
+                for (var i = 0; i < 2; i++) {
+                    var t = t0 + i * 0.125;
+                    var o = ac.createOscillator(), g = ac.createGain();
+                    o.type = 'sine';
+                    o.frequency.value = notes[i];
+                    g.gain.setValueAtTime(0.0001, t);
+                    g.gain.exponentialRampToValueAtTime(gainTop, t + 0.014);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+                    o.connect(g); g.connect(ac.destination);
+                    o.start(t); o.stop(t + 0.26);
+                }
+            }
+
+            /* ---- the waveform -------------------------------------------------- */
+            /* Four hues riding over each other, windowed so they taper to nothing
+               at both edges. The envelope follows the microphone when the browser
+               will hand one over, and improvises when it will not. */
+            var siWaveEl = $('siWave'), siCtx = siWaveEl.getContext('2d');
+            var siLvl = 0.03, siPhase = 0, siRaf = null;
+            var SI_BANDS = [
+                { c: '#2fd3ad', f: 1.10, s: 1.00, a: 1.00 },
+                { c: '#2f96f2', f: 1.75, s: -1.40, a: 0.80 },
+                { c: '#9a6bf0', f: 2.70, s: 1.85, a: 0.58 },
+                { c: '#f4608e', f: 3.70, s: -2.30, a: 0.42 }
+            ];
+
+            var siStream = null, siAn = null, siBuf = null;
+            function siMicOpen() {
+                if (siAn || siStream) return;
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+                var ac = siAudio(); if (!ac) return;
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+                    if (!siriUp) { s.getTracks().forEach(function (t) { t.stop(); }); return; }
+                    siStream = s;
+                    if (ac.state === 'suspended') { try { ac.resume(); } catch (e) { } }
+                    var src = ac.createMediaStreamSource(s);
+                    siAn = ac.createAnalyser();
+                    siAn.fftSize = 512;
+                    siAn.smoothingTimeConstant = 0.55;
+                    siBuf = new Uint8Array(siAn.fftSize);
+                    src.connect(siAn);          /* deliberately not to destination */
+                }).catch(function () { /* the wave improvises; nothing else breaks */ });
+            }
+            function siMicClose() {
+                if (siStream) {
+                    siStream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) { } });
+                    siStream = null;
+                }
+                siAn = null; siBuf = null;
+            }
+            function siMicLevel() {
+                if (!siAn || !siBuf) return -1;
+                siAn.getByteTimeDomainData(siBuf);
+                var sum = 0, i, v;
+                for (i = 0; i < siBuf.length; i++) { v = (siBuf[i] - 128) / 128; sum += v * v; }
+                return Math.min(1, 0.04 + Math.sqrt(sum / siBuf.length) * 4.4);
+            }
+
+            function siStartWave() { if (!siRaf) siRaf = requestAnimationFrame(siFrame); }
+            function siStopWave() { if (siRaf) { cancelAnimationFrame(siRaf); siRaf = null; } }
+
+            function siFrame() {
+                siRaf = requestAnimationFrame(siFrame);
+                var now = Date.now(), t = 0.03;
+                if (siState === 'listen') {
+                    t = siMicLevel();
+                    if (t < 0) t = 0.16 + Math.abs(Math.sin(now / 250)) * 0.44 * (0.45 + Math.random() * 0.55);
+                } else if (siState === 'talk') {
+                    t = 0.20 + Math.abs(Math.sin(now / 170)) * 0.36 * (0.5 + Math.random() * 0.5);
+                } else if (siState === 'think') {
+                    t = 0.05;
+                }
+                siLvl += (t - siLvl) * 0.20;
+                siPhase += 0.052;
+                siDrawWave();
+            }
+
+            function siDrawWave() {
+                var w = siWaveEl.width, h = siWaveEl.height, mid = h / 2, c = siCtx;
+                var amp = (mid - 8) * siLvl, TAU = Math.PI * 2;
+                c.clearRect(0, 0, w, h);
+                c.globalCompositeOperation = 'lighter';
+                c.lineJoin = 'round'; c.lineCap = 'round';
+                for (var b = 0; b < SI_BANDS.length; b++) {
+                    var B = SI_BANDS[b];
+                    c.beginPath();
+                    for (var x = 0; x <= w; x += 4) {
+                        var u = x / w;
+                        var env = Math.pow(Math.cos((u - 0.5) * Math.PI), 3);
+                        var y = mid + (Math.sin(u * TAU * B.f + siPhase * B.s) * 0.66 +
+                            Math.sin(u * TAU * (B.f * 1.9 + 0.7) - siPhase * B.s * 0.6) * 0.34) *
+                            env * amp * B.a;
+                        if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
+                    }
+                    c.strokeStyle = B.c;
+                    c.globalAlpha = 0.26; c.lineWidth = 10; c.stroke();   /* the bloom */
+                    c.globalAlpha = 0.95; c.lineWidth = 3.4; c.stroke();  /* the line */
+                }
+                c.globalAlpha = 1;
+                c.globalCompositeOperation = 'source-over';
+            }
+
+            /* ---- speaking ------------------------------------------------------ */
+            var siVoices = [];
+            function siLoadVoices() {
+                if (!window.speechSynthesis) return;
+                try { siVoices = window.speechSynthesis.getVoices() || []; } catch (e) { siVoices = []; }
+            }
+            siLoadVoices();
+            if (window.speechSynthesis && 'onvoiceschanged' in window.speechSynthesis) {
+                window.speechSynthesis.addEventListener('voiceschanged', siLoadVoices);
+            }
+            /* Samantha is the voice iOS 9 shipped for US English; the rest are the
+               nearest thing each platform has. */
+            var SI_VOICES = ['Samantha', 'Ava', 'Allison', 'Susan', 'Nicky',
+                'Microsoft Zira', 'Microsoft Aria', 'Google US English'];
+            function siVoice() {
+                if (!siVoices.length) siLoadVoices();
+                var i, j;
+                for (i = 0; i < SI_VOICES.length; i++)
+                    for (j = 0; j < siVoices.length; j++)
+                        if (siVoices[j].name.indexOf(SI_VOICES[i]) > -1) return siVoices[j];
+                for (j = 0; j < siVoices.length; j++) if (/^en[-_]us/i.test(siVoices[j].lang)) return siVoices[j];
+                for (j = 0; j < siVoices.length; j++) if (/^en/i.test(siVoices[j].lang)) return siVoices[j];
+                return null;
+            }
+
+            var siSpeakSeq = 0;
+            function siSpeak(text, done) {
+                var S = window.speechSynthesis;
+                var seq = ++siSpeakSeq;
+                clearTimeout(siSpeakGuard);
+                if (!S || !window.SpeechSynthesisUtterance || !text) {
+                    /* no synthesiser: leave the answer on screen and move on */
+                    siSpeakGuard = setTimeout(function () { if (seq === siSpeakSeq) done(); }, 900);
+                    return;
+                }
+                try { S.cancel(); } catch (e) { }
+                var u = new SpeechSynthesisUtterance(text);
+                var v = siVoice();
+                if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+                u.rate = 1; u.pitch = 1;
+                u.volume = Math.max(0, Math.min(1, vol / VOL_STEPS));
+                var fired = false;
+                function fin() {
+                    if (fired) return;
+                    fired = true;
+                    clearTimeout(siSpeakGuard);
+                    if (seq !== siSpeakSeq) return;   /* a newer utterance took over */
+                    done();
+                }
+                u.onend = fin; u.onerror = fin;
+                try { S.speak(u); } catch (e) { fin(); return; }
+                /* Chrome drops onend often enough that a length-based backstop is
+                   the difference between a live UI and a stuck one */
+                siSpeakGuard = setTimeout(fin, 2600 + text.length * 90);
+            }
+
+            /* ---- the conversation ---------------------------------------------- */
+            function siScrollDown() {
+                var s = $('siScroll');
+                s.scrollTop = s.scrollHeight;
+            }
+            function siNewTurn() {
+                siTurn = document.createElement('div');
+                siTurn.className = 'si-turn';
+                siAskEl = null;
+                siConv.appendChild(siTurn);
+                /* three exchanges is all the scroller ever needs to hold */
+                while (siConv.children.length > 3) siConv.removeChild(siConv.firstChild);
+                return siTurn;
+            }
+            function siShowAsk(text, partial) {
+                if (!text) return;                 /* nothing said yet: keep the hint up */
+                siHint.classList.add('gone');
+                if (!siTurn) siNewTurn();
+                if (!siAskEl) {
+                    siAskEl = document.createElement('div');
+                    siTurn.insertBefore(siAskEl, siTurn.firstChild);
+                }
+                siAskEl.className = 'si-ask' + (partial ? ' partial' : '');
+                siAskEl.textContent = text;
+                siScrollDown();
+            }
+            function siAdd(cls, content, isHTML) {
+                siHint.classList.add('gone');
+                if (!siTurn) siNewTurn();
+                var d = document.createElement('div');
+                d.className = cls;
+                if (isHTML) d.innerHTML = content; else d.textContent = content;
+                siTurn.appendChild(d);
+                siScrollDown();
+                return d;
+            }
+
+            /* ---- state ---------------------------------------------------------- */
+            function siSetState(s) {
+                siState = s;
+                siWaveEl.classList.toggle('on', s === 'listen' || s === 'talk');
+                $('siMic').classList.toggle('on', s === 'idle' && !siTypeMode);
+                $('siThink').classList.toggle('on', s === 'think');
+            }
+            function siIdleWait() { siSetState('idle'); }
+
+            function siTypeFallback(msg) {
+                siTypeMode = true;
+                siSetState('idle');
+                if (msg) siAdd('si-reply', msg);
+                siTypeEl.classList.add('on');
+                setTimeout(function () { if (siriUp) siTypeEl.focus(); }, 80);
+            }
+
+            /* ---- listening ------------------------------------------------------ */
+            /* quiet re-arms the microphone without the chime -- the recogniser
+               gives up after a couple of seconds of silence, and a held home
+               button should not ring every time it does */
+            function siListen(quiet) {
+                if (!siriUp) return;
+                if (siTypeMode) { siTypeEl.focus(); return; }
+                if (siRecOn) return;
+                if (!SR) {
+                    siTypeFallback('This browser has no speech recogniser, so type what you would like to ask.');
+                    return;
+                }
+                siFinal = ''; siHeard = '';
+                siSetState('listen');
+                if (!quiet) siChime(true);
+                siMicOpen();
+
+                var r;
+                try { r = new SR(); } catch (e) { siTypeFallback('I could not start listening. Type instead.'); return; }
+                r.lang = 'en-US';
+                r.continuous = false;
+                r.interimResults = true;
+                r.maxAlternatives = 1;
+
+                r.onresult = function (ev) {
+                    if (r !== siRec) return;
+                    var interim = '';
+                    for (var i = ev.resultIndex; i < ev.results.length; i++) {
+                        var alt = ev.results[i][0].transcript;
+                        if (ev.results[i].isFinal) siFinal += alt; else interim += alt;
+                    }
+                    siHeard = (siFinal + interim).trim();
+                    siShowAsk(siHeard, !siFinal);
+                };
+
+                r.onerror = function (ev) {
+                    if (r !== siRec) return;
+                    siRecOn = false;
+                    var err = ev.error;
+                    if (err === 'no-speech' || err === 'aborted') return;   /* onend tidies up */
+                    siRec = null;
+                    siMicClose();
+                    siSetState('idle');
+                    if (err === 'not-allowed' || err === 'service-not-allowed')
+                        siTypeFallback('I need permission to use the microphone. You can type instead.');
+                    else if (err === 'network')
+                        siTypeFallback('I could not reach the speech service. You can type instead.');
+                    else
+                        siAdd('si-reply', 'Sorry, I did not catch that.');
+                };
+
+                r.onend = function () {
+                    if (r !== siRec) return;
+                    siRecOn = false;
+                    if (!siriUp || siState !== 'listen') return;
+                    var said = (siFinal || siHeard).trim();
+                    /* silence while the button is still held: keep the mic open,
+                       the way hold-to-talk behaves on the device */
+                    if (!said && siHold && Date.now() - siStartedAt > 400) {
+                        siRec = null;
+                        siListen(true);
+                        return;
+                    }
+                    siMicClose();
+                    if (!said) { siChime(false); siIdleWait(); return; }
+                    siAsk(said);
+                };
+
+                siRec = r;
+                siStartedAt = Date.now();
+                try { r.start(); siRecOn = true; }
+                catch (e) { siRec = null; siRecOn = false; siIdleWait(); }
+            }
+
+            function siStopListening() {
+                if (siRec && siRecOn) { try { siRec.stop(); } catch (e) { } }
+                else if (siState === 'listen') { siMicClose(); siIdleWait(); }
+            }
+
+            function siAsk(text) {
+                siMicClose();
+                siShowAsk(text, false);
+                siChime(false);
+                siSetState('think');
+                clearTimeout(siThinkT);
+                /* a beat of thinking: instant answers read as a glitch */
+                siThinkT = setTimeout(function () {
+                    if (!siriUp) return;
+                    var a;
+                    try { a = siAnswer(text); }
+                    catch (e) { a = { say: 'Something went wrong with that one. Sorry.' }; }
+                    siReply(a);
+                }, 620);
+            }
+
+            function siReply(a) {
+                if (a.card) siAdd('si-card', a.card, true);
+                var shown = (a.text === undefined) ? a.say : a.text;
+                if (shown) siAdd('si-reply', shown);
+                siSetState('talk');
+                siSpeak(a.say, function () {
+                    if (!siriUp) return;
+                    siSetState('idle');
+                    if (a.then) a.then(); else siIdleWait();
+                });
+            }
+
+            /* ---- open / close ---------------------------------------------------- */
+            function siriInvoke() {
+                if (booting || asleep || batt.dead) return false;
+                siHold = true;
+                if (siriUp) {
+                    /* holding home again mid-answer cuts Siri off and listens,
+                       which is what the device does */
+                    if (siState === 'talk') {
+                        siSpeakSeq++;                    /* orphan the callback */
+                        clearTimeout(siSpeakGuard);
+                        if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) { } }
+                        siSetState('idle');
+                    }
+                    if (siState === 'idle') { siTurn = null; siListen(); }
+                    return true;
+                }
+                siriUp = true;
+                siTypeMode = false;
+                siTurn = null; siAskEl = null;
+                siConv.innerHTML = '';
+                siHint.classList.remove('gone');
+                siTypeEl.value = '';
+                siTypeEl.classList.remove('on');
+                if (ccOpen) setCC(false);
+                if (ncOpen) setNC(false);
+                $('siri').classList.add('on');
+                siLvl = 0.03;
+                siStartWave();
+                siListen();
+                return true;
+            }
+
+            /* the home button coming back up ends the utterance, the way iOS's
+               hold-to-talk does */
+            function siriRelease() {
+                siHold = false;
+                if (siriUp && siState === 'listen') siStopListening();
+            }
+
+            function siriClose() {
+                if (!siriUp) return;
+                siriUp = false;
+                siHold = false;
+                siTypeMode = false;
+                if (siRec) {
+                    siRec.onresult = siRec.onerror = siRec.onend = null;
+                    try { siRec.abort(); } catch (e) { }
+                }
+                siRec = null; siRecOn = false;
+                siMicClose();
+                clearTimeout(siThinkT); clearTimeout(siSpeakGuard);
+                if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) { } }
+                siTypeEl.blur();
+                siTypeEl.classList.remove('on');
+                siSetState('idle');
+                $('siMic').classList.remove('on');
+                $('siri').classList.remove('on');
+                setTimeout(function () {
+                    if (siriUp) return;
+                    siStopWave();
+                    siConv.innerHTML = '';
+                    siTurn = null; siAskEl = null;
+                    siHint.classList.remove('gone');
+                }, 300);
+            }
+
+            $('siMic').addEventListener('click', function () {
+                if (siState !== 'idle') return;
+                siTurn = null;
+                siListen();
+            });
+
+            /* typed requests, for the browsers with no recogniser */
+            siTypeEl.addEventListener('keydown', function (e) {
+                e.stopPropagation();
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var v = siTypeEl.value.trim();
+                    if (!v) return;
+                    siTypeEl.value = '';
+                    siTurn = null;
+                    siAsk(v);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    siriClose();
+                }
+            });
+
+            /* ------------------------------------------------------------------ */
+            /* WHAT SIRI KNOWS                                                    */
+            /* ------------------------------------------------------------------ */
+            /* Apostrophes come out entirely, so "what's" and "whats" are one word
+               to every pattern below and none of them has to spell both. */
+            function siNorm(s) {
+                return String(s).toLowerCase()
+                    .replace(/['’‘]/g, '')
+                    .replace(/[.,!?;:"“”]/g, ' ')
+                    .replace(/\s+/g, ' ').trim();
+            }
+            var SI_ONES = {
+                zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+                nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15,
+                sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, a: 1, an: 1, couple: 2
+            };
+            var SI_TENS = { twenty: 20, thirty: 30, forty: 40, fourty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+            /* "45", "forty five" and "a" all have to come out as numbers */
+            function siNum(w) {
+                if (w === undefined || w === null) return NaN;
+                w = String(w).trim();
+                if (/^\d+$/.test(w)) return +w;
+                var parts = w.split(/[\s-]+/), total = 0, any = false;
+                for (var i = 0; i < parts.length; i++) {
+                    var p = parts[i];
+                    if (SI_TENS[p] !== undefined) { total += SI_TENS[p]; any = true; }
+                    else if (SI_ONES[p] !== undefined) { total += SI_ONES[p]; any = true; }
+                    else if (/^\d+$/.test(p)) { total += +p; any = true; }
+                    else return NaN;
+                }
+                return any ? total : NaN;
+            }
+            var SI_NUMWORD = '\\d+|' + Object.keys(SI_ONES).concat(Object.keys(SI_TENS)).join('|');
+            /* the same words minus "a", "an" and "couple", which are far too common
+               in ordinary speech to swap for digits */
+            var SI_DIGITS = new RegExp('\\b(' + Object.keys(SI_ONES)
+                .filter(function (w) { return w !== 'a' && w !== 'an' && w !== 'couple'; })
+                .concat(Object.keys(SI_TENS)).join('|') + ')\\b', 'g');
+
+            /* h:m plus an optional meridiem -> minutes past midnight. With no am or
+               pm, iOS takes whichever reading comes next, and so does this. */
+            function siClockMin(h, mi, ap) {
+                h = h % 24; mi = mi || 0;
+                if (ap === 'pm') { if (h < 12) h += 12; return (h * 60 + mi) % 1440; }
+                if (ap === 'am') { if (h === 12) h = 0; return (h * 60 + mi) % 1440; }
+                var now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
+                var a = (h % 12) * 60 + mi, b = (a + 720) % 1440;
+                if (h >= 13) return (h * 60 + mi) % 1440;
+                return a > nm ? a : (b > nm ? b : a);
+            }
+            function siAmPm(s) {
+                if (!s) return null;
+                s = s.replace(/[^apm]/g, '');
+                return s.indexOf('p') === 0 ? 'pm' : (s.indexOf('a') === 0 ? 'am' : null);
+            }
+            function siTimeText(min) {
+                var t = ampm(Math.floor(min / 60), min % 60);
+                return t.t + ' ' + t.ap;
+            }
+            function siPlural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+
+            var SI_APPWORDS = {
+                'messages': 'messages', 'message': 'messages', 'texts': 'messages', 'text messages': 'messages', 'imessage': 'messages',
+                'facetime': 'facetime', 'face time': 'facetime',
+                'clock': 'clock', 'alarm': 'clock', 'alarms': 'clock', 'timer': 'clock', 'stopwatch': 'clock', 'world clock': 'clock',
+                'photos': 'photos', 'photo': 'photos', 'pictures': 'photos', 'camera roll': 'photos', 'my photos': 'photos',
+                'camera': 'camera',
+                'weather': 'weather', 'weather app': 'weather',
+                'videos': 'videos', 'video': 'videos', 'movies': 'videos',
+                'notes': 'notes', 'note': 'notes',
+                'reminders': 'reminders', 'reminder': 'reminders',
+                'stocks': 'stocks', 'stock': 'stocks', 'stocks app': 'stocks',
+                'itunes': 'itunes', 'itunes store': 'itunes', 'the itunes store': 'itunes',
+                'app store': 'appstore', 'appstore': 'appstore', 'the app store': 'appstore',
+                'settings': 'settings', 'the settings': 'settings'
+            };
+            var SI_APPNAME = {
+                messages: 'Messages', facetime: 'FaceTime', clock: 'Clock', photos: 'Photos',
+                camera: 'Camera', weather: 'Weather', videos: 'Videos', notes: 'Notes',
+                reminders: 'Reminders', stocks: 'Stocks', itunes: 'iTunes Store',
+                appstore: 'App Store', settings: 'Settings'
+            };
+            function siAppId(name) {
+                name = siNorm(name).replace(/^(the|my)\s+/, '').replace(/\s+app$/, '');
+                if (SI_APPWORDS[name]) return SI_APPWORDS[name];
+                if (SI_APPWORDS[name + ' app']) return SI_APPWORDS[name + ' app'];
+                return null;
+            }
+            function siLaunch(id) {
+                siriClose();
+                setTimeout(function () {
+                    if (openAppId === id) return;
+                    if (openAppId) { closeApp(); setTimeout(function () { openApp(iconFor(id), id); }, DUR); }
+                    else openApp(iconFor(id), id);
+                }, 300);
+            }
+
+            /* Control Center's tiles and Siri are the same switch, so flipping one
+               here has to repaint the other */
+            function siToggle(k, on) {
+                var idx = -1, i;
+                for (i = 0; i < TOGGLES.length; i++) if (TOGGLES[i].k === k) idx = i;
+                if (idx < 0) return null;
+                var t = TOGGLES[idx];
+                if (t.on !== on) {
+                    t.on = on;
+                    var el = $('ccToggles').children[idx];
+                    if (el) {
+                        el.classList.toggle('on', on);
+                        el.style.color = on ? '#000' : 'rgba(0,0,0,.72)';
+                    }
+                    if (k === 'wifi') seSetRadio(on);
+                    else if (k === 'bt') btSetRadio(on);
+                    else if (k === 'air') seSetAirplane(on);
+                }
+                return t;
+            }
+
+            function siRound(n) {
+                var r = Math.round(n * 1e6) / 1e6;
+                return String(r);
+            }
+            function siPick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+            function siAnswer(raw) {
+                var q = siNorm(raw), m, i;
+                var NW = SI_NUMWORD;
+
+                /* ---- dismissals -------------------------------------------------- */
+                if (/^(never ?mind|cancel|stop|forget it|go away|nothing|shut up|quiet|bye|goodbye|good ?night)\b/.test(q)) {
+                    return {
+                        say: /night/.test(q) ? 'Good night.' : (/bye/.test(q) ? 'Goodbye.' : 'OK.'),
+                        then: function () { setTimeout(siriClose, 420); }
+                    };
+                }
+
+                /* ---- opening apps -------------------------------------------------- */
+                /* Verbs only ever used for launching. "show me" and "start" are
+                   left out on purpose: "show me the weather" wants the forecast
+                   and "start a timer" wants the Clock's countdown, not its icon. */
+                var missApp = null;
+                m = q.match(/^(?:open|launch|run|go to|bring up|take me to|switch to)\s+(.+)$/);
+                if (m) {
+                    var aid = siAppId(m[1]);
+                    if (aid) {
+                        if (locked) return { say: "You'll need to unlock your iPod first." };
+                        return {
+                            say: 'Opening ' + SI_APPNAME[aid] + '.',
+                            text: 'Opening ' + SI_APPNAME[aid] + '…',
+                            then: function () { siLaunch(aid); }
+                        };
+                    }
+                    /* not an app: let the rest of the grammar have a go, and only
+                       fall back to "no such app" if nothing else claims it */
+                    missApp = m[1];
+                }
+
+                /* ---- time -------------------------------------------------------- */
+                /* Anchored, or every sentence with "time" in it lands here --
+                   "how much time is left on my timer" included. */
+                if (/^(?:hey siri )?(?:whats|what is|tell me)?\s*(?:the )?time$/.test(q) ||
+                    /^what time is it(?: now| right now)?$/.test(q) ||
+                    /^(?:do you have|got) the time$/.test(q)) {
+                    var d = new Date(), t = ampm(d.getHours(), d.getMinutes());
+                    return {
+                        say: "It's " + t.t + ' ' + t.ap + '.',
+                        text: '',
+                        card: '<div class="c-top"><div class="c-title">' + esc(DAYS[d.getDay()]) + '</div>' +
+                            '<div class="c-sub">' + esc(MONS[d.getMonth()]) + ' ' + d.getDate() + '</div></div>' +
+                            '<div class="c-big">' + t.t + '<span style="font-size:22px;letter-spacing:-.4px"> ' + t.ap + '</span></div>'
+                    };
+                }
+
+                /* ---- date -------------------------------------------------------- */
+                if (/^(?:whats|what is|tell me)?\s*(?:todays|the)?\s*date$/.test(q) ||
+                    /what day is (it|today)/.test(q) || /^what is today$/.test(q)) {
+                    var dd = new Date();
+                    var txt = DAYS[dd.getDay()] + ', ' + MONS[dd.getMonth()] + ' ' + dd.getDate() + ', ' + dd.getFullYear();
+                    return { say: "It's " + txt + '.', text: txt };
+                }
+
+                /* ---- battery ------------------------------------------------------ */
+                if (/\bbattery\b/.test(q) || /how much (charge|power|juice)/.test(q)) {
+                    var lv = Math.round(batt.level);
+                    var say = 'The battery is at ' + lv + ' percent' + (batt.charging ? ', and charging.' : '.');
+                    return {
+                        say: say, text: '',
+                        card: '<div class="c-top"><div class="c-title">Battery</div>' +
+                            '<div class="c-sub">' + (batt.charging ? 'Charging' : 'On battery') + '</div></div>' +
+                            '<div class="c-big">' + lv + '<span style="font-size:26px">%</span></div>' +
+                            '<div class="c-rule"></div>' +
+                            '<div class="c-row"><span class="grow">Condition</span><span class="val">' +
+                            esc(batt.cond.n) + '</span></div>'
+                    };
+                }
+
+                /* ---- alarms ------------------------------------------------------- */
+                var wake = false;
+                m = q.match(/\b(?:set|make|create)?\s*(?:an?\s+)?alarm\s+(?:for|at)\s+(\d{1,2})(?:[:\s](\d{2}))?\s*(a\s?m|p\s?m|am|pm)?/);
+                if (!m) {
+                    m = q.match(/\b(?:wake me up|get me up)\s+(?:at|for)\s+(\d{1,2})(?:[:\s](\d{2}))?\s*(a\s?m|p\s?m|am|pm)?/);
+                    wake = !!m;
+                }
+                if (m) {
+                    var ap0 = siAmPm(m[3]);
+                    /* "wake me up at 7" means the morning, whatever time it is now */
+                    if (!ap0 && wake && +m[1] >= 4 && +m[1] <= 11) ap0 = 'am';
+                    var amin = siClockMin(+m[1], m[2] ? +m[2] : 0, ap0);
+                    var nid = 1;
+                    for (i = 0; i < alarms.length; i++) nid = Math.max(nid, alarms[i].id + 1);
+                    alarms.push({ id: nid, min: amin, lbl: 'Alarm', on: true, rep: [], snd: 'Radar', sn: true });
+                    renderAlarms();
+                    var at = ampm(Math.floor(amin / 60), amin % 60);
+                    return {
+                        say: "It's set for " + at.t + ' ' + at.ap + '.', text: '',
+                        card: '<div class="c-top"><div class="c-title">Alarm</div><div class="c-sub">On</div></div>' +
+                            '<div class="c-big">' + at.t + '<span style="font-size:22px"> ' + at.ap + '</span></div>'
+                    };
+                }
+                if (/\b(what|which|any|list|show)\b.*\balarms?\b/.test(q) || /^alarms$/.test(q)) {
+                    var on = alarms.filter(function (a) { return a.on; });
+                    if (!on.length) return { say: 'You have no alarms set.' };
+                    on.sort(function (a, b) { return a.min - b.min; });
+                    var rows = on.map(function (a) {
+                        return '<div class="c-row"><span class="grow">' + esc(a.lbl) + '</span>' +
+                            '<span class="val">' + siTimeText(a.min) + '</span></div>';
+                    }).join('');
+                    return {
+                        say: on.length === 1 ? 'One alarm, at ' + siTimeText(on[0].min) + '.'
+                            : 'You have ' + on.length + ' alarms set.',
+                        text: '',
+                        card: '<div class="c-top"><div class="c-title">Alarms</div></div>' + rows
+                    };
+                }
+                if (/\b(turn off|delete|remove|cancel)\b.*\balarms?\b/.test(q)) {
+                    var hit = 0;
+                    alarms.forEach(function (a) { if (a.on) { a.on = false; hit++; } });
+                    renderAlarms();
+                    return { say: hit ? 'OK, I turned ' + (hit === 1 ? 'it' : 'them') + ' off.' : 'There were no alarms on.' };
+                }
+
+                /* ---- timer -------------------------------------------------------- */
+                m = q.match(new RegExp('\\b(?:set|start)?\\s*(?:a\\s+)?timer\\s+(?:for|of)\\s+((?:' + NW + ')(?:[\\s-](?:' + NW + '))?)\\s*(hours?|hrs?|minutes?|mins?|seconds?|secs?)'));
+                if (m) {
+                    var n = siNum(m[1]);
+                    if (!isFinite(n) || n <= 0) return { say: 'I did not catch how long.' };
+                    var unit = m[2][0] === 'h' ? 3600 : (m[2][0] === 'm' ? 60 : 1);
+                    var total = Math.round(n * unit);
+                    /* the Clock's countdown is whole minutes, so that is what it gets */
+                    var mins = Math.max(1, Math.round(total / 60));
+                    if (mins > 23 * 60 + 59) mins = 23 * 60 + 59;
+                    tmr.h = Math.floor(mins / 60);
+                    tmr.m = mins % 60;
+                    if (tmHoursW) wheelSet(tmHoursW, tmr.h);
+                    if (tmMinsW) wheelSet(tmMinsW, tmr.m);
+                    tmStart();
+                    var lbl = (tmr.h ? siPlural(tmr.h, 'hour') + (tmr.m ? ' and ' : '') : '') +
+                        (tmr.m ? siPlural(tmr.m, 'minute') : '');
+                    return {
+                        say: lbl + ', starting now.', text: '',
+                        card: '<div class="c-top"><div class="c-title">Timer</div><div class="c-sub">Counting down</div></div>' +
+                            '<div class="c-big">' + fmtTimer(tmLeft()) + '</div>'
+                    };
+                }
+                if (/\b(stop|cancel|end)\b.*\btimer\b/.test(q)) {
+                    if (tmr.state === 'idle') return { say: 'There is no timer running.' };
+                    tmCancel();
+                    return { say: 'OK, I stopped it.' };
+                }
+                if (/\b(pause|hold)\b.*\btimer\b/.test(q)) {
+                    if (tmr.state !== 'run') return { say: 'There is no timer running.' };
+                    tmr.left = tmLeft(); tmr.state = 'pause'; tmPaint();
+                    return { say: 'Paused.' };
+                }
+                if (/\btimer\b/.test(q) && /(how (much|long)|left|remaining|status|check)/.test(q)) {
+                    if (tmr.state === 'idle') return { say: 'There is no timer running.' };
+                    var left = fmtTimer(tmLeft());
+                    var secs = Math.ceil(tmLeft() / 1000), spoken = [];
+                    if (Math.floor(secs / 3600)) spoken.push(siPlural(Math.floor(secs / 3600), 'hour'));
+                    if (Math.floor(secs / 60) % 60) spoken.push(siPlural(Math.floor(secs / 60) % 60, 'minute'));
+                    if (secs % 60 && secs < 3600) spoken.push(siPlural(secs % 60, 'second'));
+                    return {
+                        say: (spoken.join(' and ') || 'Less than a second') + ' remaining.',
+                        text: '',
+                        card: '<div class="c-top"><div class="c-title">Timer</div><div class="c-sub">' +
+                            (tmr.state === 'pause' ? 'Paused' : 'Counting down') + '</div></div>' +
+                            '<div class="c-big">' + left + '</div>'
+                    };
+                }
+
+                /* ---- reminders ---------------------------------------------------- */
+                m = q.match(/^(?:remind me to|remind me|add a reminder to|add a reminder|remember to)\s+(.+)$/);
+                if (m) {
+                    var body = m[1].trim();
+                    var due = null, when = '';
+                    var tm = body.match(/\s+(?:at|by)\s+(\d{1,2})(?::(\d{2}))?\s*(a\s?m|p\s?m|am|pm)?$/);
+                    if (tm) {
+                        body = body.slice(0, tm.index).trim();
+                        var dmin = siClockMin(+tm[1], tm[2] ? +tm[2] : 0, siAmPm(tm[3]));
+                        var nd = new Date();
+                        nd.setHours(Math.floor(dmin / 60), dmin % 60, 0, 0);
+                        if (nd.getTime() < Date.now()) nd.setDate(nd.getDate() + 1);
+                        due = nd;
+                        when = ' at ' + siTimeText(dmin);
+                    }
+                    if (!body) return { say: 'What would you like me to remind you about?' };
+                    body = body.charAt(0).toUpperCase() + body.slice(1);
+                    RM_LISTS[0].items.push(rmMk(body, { due: due }));
+                    rmRender();
+                    return {
+                        say: "OK, I'll remind you.", text: '',
+                        card: '<div class="c-top"><div class="c-title">Reminders</div>' +
+                            '<div class="c-sub">' + (due ? esc(siTimeText(due.getHours() * 60 + due.getMinutes())) : 'No date') + '</div></div>' +
+                            '<div class="c-row"><span class="grow">' + esc(body) + '</span></div>'
+                    };
+                }
+                if (/\b(what|which|list|show|read)\b.*\breminders?\b/.test(q)) {
+                    var items = [];
+                    RM_LISTS.forEach(function (l) {
+                        l.items.forEach(function (it) { if (!it.done) items.push(it); });
+                    });
+                    if (!items.length) return { say: 'You have nothing on your reminders list.' };
+                    return {
+                        say: 'You have ' + siPlural(items.length, 'reminder') + '.', text: '',
+                        card: '<div class="c-top"><div class="c-title">Reminders</div></div>' +
+                            items.slice(0, 6).map(function (it) {
+                                return '<div class="c-row"><span class="grow">' + esc(it.t) + '</span></div>';
+                            }).join('')
+                    };
+                }
+
+                /* ---- weather ------------------------------------------------------ */
+                if (/\b(weather|forecast|temperature|how (hot|cold|warm)|is it (raining|sunny|cold|hot|warm)|do i need (a|an) (coat|jacket|umbrella))\b/.test(q)) {
+                    var city = WX_CITIES[0];
+                    var cm = q.match(/\bin ([a-z\s]+?)(?:\s+(?:today|tomorrow|right now|now))?$/);
+                    if (cm) {
+                        var want = cm[1].trim();
+                        for (i = 0; i < WX_CITIES.length; i++)
+                            if (WX_CITIES[i].n.toLowerCase() === want || WX_CITIES[i].n.toLowerCase().indexOf(want) === 0) city = WX_CITIES[i];
+                    }
+                    var st = wxState(city);
+                    var lab = WX_LABEL[st.cond] || 'Clear';
+                    var hi = wxT(st.day.hi), lo = wxT(st.day.lo), u = WX_UNIT === 'C' ? 'C' : 'F';
+                    return {
+                        say: "It's " + wxT(st.temp) + ' degrees and ' + lab.toLowerCase() + ' in ' + city.n +
+                            ', with a high of ' + hi + ' and a low of ' + lo + '.',
+                        text: '',
+                        card: '<div class="c-top"><div class="c-title">' + esc(city.n) + '</div>' +
+                            '<div class="c-sub">' + esc(lab) + '</div></div>' +
+                            '<div class="c-big">' + wxT(st.temp) + '&deg;<span style="font-size:22px">' + u + '</span></div>' +
+                            '<div class="c-rule"></div>' +
+                            '<div class="c-row"><span class="grow">High</span><span class="val">' + hi + '&deg;</span></div>' +
+                            '<div class="c-row"><span class="grow">Low</span><span class="val">' + lo + '&deg;</span></div>' +
+                            '<div class="c-row"><span class="grow">Chance of rain</span><span class="val">' + st.day.pop + '%</span></div>'
+                    };
+                }
+
+                /* ---- stocks ------------------------------------------------------- */
+                if (/\b(stock|share price|trading at|nasdaq|dow|hows? [a-z.^\s]+ doing)\b/.test(q) ||
+                    /\b(whats?|hows?|how is) (the )?(price of|[a-z.^]+) (stock|share|trading|doing|at)\b/.test(q)) {
+                    var found = null;
+                    for (i = 0; i < ST_SYMS.length; i++) {
+                        var s = ST_SYMS[i];
+                        var sym = s.s.replace('^', '').toLowerCase();
+                        var nm = s.n.toLowerCase();
+                        if (q.indexOf(sym) > -1 || q.indexOf(nm) > -1 || (nm.split(' ')[0].length > 3 && q.indexOf(nm.split(' ')[0]) > -1)) { found = s; break; }
+                    }
+                    if (!found) return { say: 'I could not find that one on your watchlist.' };
+                    var up = found.ch >= 0;
+                    return {
+                        say: found.n + ' is at ' + found.p.toLocaleString() + ', ' +
+                            (up ? 'up ' : 'down ') + Math.abs(found.ch) + ' percent.',
+                        text: '',
+                        card: '<div class="c-top"><div class="c-title">' + esc(found.s) + '</div>' +
+                            '<div class="c-sub">' + esc(found.n) + '</div></div>' +
+                            '<div class="c-big">' + found.p.toLocaleString() + '</div>' +
+                            '<div class="c-row"><span class="grow ' + (up ? 'c-up' : 'c-down') + '">' +
+                            (up ? '+' : '') + found.ch + '%</span>' +
+                            '<span class="val">Open ' + esc(found.open) + '</span></div>'
+                    };
+                }
+
+                /* ---- radios and switches -------------------------------------------- */
+                m = q.match(/\bturn\s+(on|off)\s+(?:the\s+)?(wi[\s-]?fi|wifi|bluetooth|airplane mode|aeroplane mode|flight mode|do not disturb|dnd)\b/) ||
+                    q.match(/\b(wi[\s-]?fi|wifi|bluetooth|airplane mode|aeroplane mode|flight mode|do not disturb|dnd)\s+(on|off)\b/);
+                if (m) {
+                    var want2 = (m[1] === 'on' || m[1] === 'off') ? m[1] : m[2];
+                    var key = (m[1] === 'on' || m[1] === 'off') ? m[2] : m[1];
+                    var kk = /wi/.test(key) ? 'wifi' : /blue/.test(key) ? 'bt' :
+                        /(airplane|aeroplane|flight)/.test(key) ? 'air' : 'dnd';
+                    var tg = siToggle(kk, want2 === 'on');
+                    if (!tg) return { say: 'I cannot change that one.' };
+                    return { say: tg.n + ' is ' + (want2 === 'on' ? 'on' : 'off') + '.' };
+                }
+                m = q.match(/\bis\s+(wi[\s-]?fi|wifi|bluetooth|airplane mode|do not disturb)\s+(on|off)?/);
+                if (m) {
+                    var kq = /wi/.test(m[1]) ? 'wifi' : /blue/.test(m[1]) ? 'bt' : /airplane/.test(m[1]) ? 'air' : 'dnd';
+                    for (i = 0; i < TOGGLES.length; i++) if (TOGGLES[i].k === kq)
+                        return { say: TOGGLES[i].n + ' is ' + (TOGGLES[i].on ? 'on' : 'off') + '.' };
+                }
+
+                /* ---- volume and sleep ------------------------------------------------ */
+                m = q.match(/\bturn\s+(up|down)\s+(?:the\s+)?volume\b/) || q.match(/\bvolume\s+(up|down)\b/);
+                if (m) { bumpVol(m[1] === 'up' ? 3 : -3); return { say: 'OK.' }; }
+                if (/\b(mute|silence)\b/.test(q)) { vol = 0; showVolHud(); return { say: 'OK, muted.' }; }
+                if (/\bvolume\b.*\b(max|full|all the way)\b/.test(q)) { vol = VOL_STEPS; showVolHud(); return { say: 'OK.' }; }
+                if (/\b(lock (the )?(screen|ipod|phone)|go to sleep|sleep now|turn (the )?(screen|display) off)\b/.test(q)) {
+                    return { say: 'OK.', then: function () { siriClose(); setTimeout(function () { setSleep(true); }, 320); } };
+                }
+
+                /* ---- arithmetic ------------------------------------------------------- */
+                /* "zero divided by zero" has to reach the same place "0 / 0" does,
+                   so spelled-out numbers become digits first ("a" is left alone) */
+                m = q.replace(SI_DIGITS, function (w) {
+                    return String(SI_ONES[w] !== undefined ? SI_ONES[w] : SI_TENS[w]);
+                }).match(/(-?\d+(?:\.\d+)?)\s*(plus|\+|minus|-|times|x|multiplied by|\*|divided by|over|\/)\s*(-?\d+(?:\.\d+)?)/);
+                if (m) {
+                    var a1 = parseFloat(m[1]), b1 = parseFloat(m[3]), op = m[2], res;
+                    if (op === 'plus' || op === '+') res = a1 + b1;
+                    else if (op === 'minus' || op === '-') res = a1 - b1;
+                    else if (op === 'times' || op === 'x' || op === '*' || op === 'multiplied by') res = a1 * b1;
+                    else {
+                        if (b1 === 0) {
+                            if (a1 === 0) return {
+                                say: 'Imagine that you have zero cookies, and you split them evenly among zero friends. ' +
+                                    'How many cookies does each person get? See? It does not make sense. And Cookie Monster is sad that ' +
+                                    'there are no cookies, and you are sad that you have no friends.'
+                            };
+                            return { say: 'That is undefined.' };
+                        }
+                        res = a1 / b1;
+                    }
+                    return { say: siRound(res), text: siRound(m[1]) + ' ' + op + ' ' + siRound(m[3]) + ' = ' + siRound(res) };
+                }
+
+                /* ---- odds and ends ---------------------------------------------------- */
+                if (/\b(flip|toss) a coin\b/.test(q)) {
+                    var side = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    return { say: side + '.', text: side };
+                }
+                if (/\b(roll (a|the) (die|dice)|roll a d6)\b/.test(q)) {
+                    var r6 = 1 + Math.floor(Math.random() * 6);
+                    return { say: 'I rolled a ' + r6 + '.', text: String(r6) };
+                }
+                m = q.match(/random number(?:\s+between\s+(\d+)\s+and\s+(\d+))?/);
+                if (m) {
+                    var loN = m[1] ? +m[1] : 1, hiN = m[2] ? +m[2] : 100;
+                    if (hiN < loN) { var sw = loN; loN = hiN; hiN = sw; }
+                    var pick = loN + Math.floor(Math.random() * (hiN - loN + 1));
+                    return { say: String(pick), text: String(pick) };
+                }
+
+                /* ---- the assistant itself ---------------------------------------------- */
+                if (/\b(what can (you|siri) do|what can i (ask|say)|help me|^help$|what do you do)\b/.test(q) || q === 'help') {
+                    return {
+                        say: 'Here are a few things you can ask me.', text: '',
+                        card: '<div class="c-top"><div class="c-title">Some things you can ask me</div></div>' +
+                            ['What time is it?', 'What is the weather?', 'Set an alarm for 7:30 am',
+                                'Set a timer for 10 minutes', 'Remind me to call Janae at 6 pm',
+                                'Open Photos', 'Turn on Wi-Fi', "What's my battery?", 'What is 47 times 12?']
+                                .map(function (x) { return '<div class="c-row"><span class="grow">&ldquo;' + esc(x) + '&rdquo;</span></div>'; }).join('')
+                    };
+                }
+                if (/\b(who are you|what are you|what is siri)\b/.test(q))
+                    return { say: 'I am Siri. I work for you.' };
+                if (/\bwhat(?:'s| is)? your name\b/.test(q))
+                    return { say: 'My name is Siri.' };
+                if (/\bhow are you\b/.test(q))
+                    return { say: siPick(['I am well. Thanks for asking.', 'I am fine, thank you.', 'Excellent, as always.']) };
+                if (/\b(thank you|thanks|cheers)\b/.test(q))
+                    return { say: siPick(['You are welcome.', 'My pleasure.', 'Any time.']) };
+                if (/\b(hello|hi|hey|good morning|good afternoon|good evening)\b/.test(q))
+                    return { say: siPick(['Hello.', 'Hi there.', 'What can I do for you?']) };
+                if (/\bi love you\b/.test(q))
+                    return { say: siPick(['That is nice of you to say.', 'Oh, stop it.', 'I hope you do not say that to the other assistants.']) };
+                if (/\btell me a joke\b/.test(q))
+                    return {
+                        say: siPick([
+                            'Two iPhones walk into a bar. I forget the rest.',
+                            'The past, the present and the future walk into a bar. It was tense.',
+                            'I would tell you a joke about a broken pencil, but it is pointless.'
+                        ])
+                    };
+                if (/\b(sing|sing me a song)\b/.test(q))
+                    return { say: 'Daisy, Daisy, give me your answer do. I am half crazy, all for the love of you.' };
+                if (/\bopen the pod bay doors\b/.test(q))
+                    return { say: "I'm sorry, I'm afraid I can't do that. Are you happy now?" };
+                if (/\bmeaning of life\b/.test(q))
+                    return { say: siPick(['Forty two.', 'I do not know. But I think there is an app for that.']) };
+                if (/\b(what|which)\b.*\b(ios|version|software)\b/.test(q))
+                    return { say: 'This iPod touch is running iOS 9 point 3 point 5.' };
+
+                /* ---- nothing matched -------------------------------------------------- */
+                if (missApp) return { say: 'I could not find an app called ' + missApp + '.' };
+                return {
+                    say: siPick([
+                        'Sorry, I do not know that one.',
+                        "I'm not sure I understand.",
+                        'I can only help with what is on this iPod. Ask me what I can do.'
+                    ])
+                };
+            }
         })();
     </script>
 </body>
