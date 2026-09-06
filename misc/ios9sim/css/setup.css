@@ -1,0 +1,949 @@
+/* ====================================================================
+   SETUP ASSISTANT
+   ====================================================================
+   Traced off ref_pic/setup/ -- photographs of a real iPad running
+   9.3.5, shot with a phone because a device stuck in Setup cannot take
+   a screenshot of itself.
+
+   The reference is an iPad, so the geometry here is not a pixel trace
+   of those photos: at 768pt Apple centres everything in a narrow column
+   inside a lot of empty space, and at 320pt there is no empty space to
+   spare. The wording, the order of the screens, the wording of every
+   alert and which words are blue all come straight off the photos; the
+   measurements are the 4-inch layout those same screens use. Copy says
+   "iPod touch" for the same reason the rest of this simulator does --
+   the device it is pretending to be is not an iPad.
+
+   Sits at z-index 700: over the lock screen (450) and the status bar
+   (600), under the sleep mask (1000) and the boot sheet (1100), so a
+   sleep or a restart still covers it. */
+
+#setup {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    background: #F7F7F7;
+    color: #000;
+    font-family: var(--sf-text);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#setup.on {
+    display: flex;
+}
+
+/* #screen is scaled by a fractional factor, so its clipped left edge is
+   an antialiased pixel that samples whatever is underneath -- which is
+   the home screen wallpaper, and paints a pink hairline down the side.
+   A 1px ring in the page's own colour lands under that clip and gives
+   the blend something correct to sample. */
+#setup {
+    box-shadow: 0 0 0 1px #F7F7F7;
+}
+
+/* Connect to iTunes is the one screen that goes black to the edges,
+   status bar and all (IMG_1285) */
+#setup.black,
+#setup.black #sustatus,
+#setup.black #suNav {
+    background: #000;
+}
+
+#setup.black {
+    box-shadow: 0 0 0 1px #000;
+}
+
+#setup.black #sustatus {
+    color: #fff;
+}
+
+/* the whole assistant fades out once Get Started is tapped */
+#setup.done {
+    opacity: 0;
+    transition: opacity .5s ease;
+    pointer-events: none;
+}
+
+/* ---------- status bar ----------
+   Before the iPod is activated there is no clock in the bar, only the
+   name and the battery -- IMG_1277 through IMG_1288. The clock appears
+   from the passcode screen on (IMG_1291), which is the first shot taken
+   after activation finished. #suClock carries that switch. */
+#sustatus {
+    position: relative;
+    flex: 0 0 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+}
+
+#sustatus .sb-left,
+#sustatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#sustatus .sb-right {
+    justify-content: flex-end;
+}
+
+#sustatus .sb-mid {
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity .4s ease;
+}
+
+#sustatus.activated .sb-mid {
+    opacity: 1;
+}
+
+/* the Wi-Fi rune only turns up once a network has been joined */
+#sustatus .sb-wifi {
+    display: none;
+}
+
+#sustatus.online .sb-wifi {
+    display: block;
+}
+
+/* ---------- nav row ----------
+   Back on the left, and on the pages that have one a right-hand action
+   (Next / Send). Both are blue, and the right-hand one greys out until
+   its field has something in it -- IMG_1296 has "Next" dimmed. */
+#suNav {
+    position: relative;
+    flex: 0 0 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 15px;
+    color: #007AFF;
+}
+
+.su-back,
+.su-next {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.su-back {
+    gap: 5px;
+}
+
+.su-next {
+    margin-left: auto;
+}
+
+.su-back.show,
+.su-next.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* shown but not usable yet: the field behind it is still empty */
+.su-next.dim {
+    opacity: .32;
+    pointer-events: none;
+}
+
+.su-back svg {
+    display: block;
+    margin-bottom: 1px;
+}
+
+/* ---------- the page itself ----------
+   One page lives in #suBody at a time. A move forward slides the new
+   page in from the right, a Back slides it in from the left, which is
+   the same push/pop the rest of the simulator uses. */
+#suBody {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.su-page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 0 18px;
+}
+
+/* Location Services and Diagnostics hang their two choices off the
+   bottom edge rather than letting them float under the copy */
+.su-page.bottom {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.su-page.in-right {
+    animation: suInRight .34s cubic-bezier(.32, .72, 0, 1) both;
+}
+
+.su-page.in-left {
+    animation: suInLeft .34s cubic-bezier(.32, .72, 0, 1) both;
+}
+
+@keyframes suInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes suInLeft {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* ---------- type ----------
+   Titles are the Display cut at its thinnest, the same face the lock
+   screen clock uses. iOS 9 sets these around 40pt on an iPad; 27px is
+   where "Select Your Country or Region" still breaks to two lines here
+   rather than three. */
+.su-title {
+    font-family: var(--sf-display);
+    font-weight: 100;
+    font-size: 27px;
+    line-height: 1.16;
+    letter-spacing: -.4px;
+    text-align: center;
+    padding: 14px 22px 0;
+}
+
+.su-sub {
+    font-size: 12.5px;
+    line-height: 1.36;
+    text-align: center;
+    padding: 9px 24px 0;
+}
+
+.su-note {
+    font-size: 10.5px;
+    line-height: 1.34;
+    color: #8A8A8F;
+    text-align: center;
+    padding: 7px 22px 0;
+}
+
+.su-link {
+    font-size: 12.5px;
+    color: #007AFF;
+    text-align: center;
+    padding: 9px 22px 0;
+    cursor: pointer;
+}
+
+/* the two stacked choices at the foot of Location Services, Siri and
+   Diagnostics: the affirmative one first, the decline well below it */
+.su-choice {
+    font-size: 15px;
+    color: #007AFF;
+    text-align: center;
+    padding: 14px 22px;
+    cursor: pointer;
+}
+
+.su-spacer {
+    flex: 1;
+}
+
+/* ---------- grouped rows ----------
+   Language, Country, Wi-Fi and Apps & Data are all the same table: a
+   white strip, 44pt rows, and a hairline that stops short of the left
+   edge the way every iOS table does. */
+.su-table {
+    background: #fff;
+    border-top: .5px solid #C8C7CC;
+    border-bottom: .5px solid #C8C7CC;
+    margin-top: 14px;
+}
+
+.su-table.flush {
+    margin-top: 0;
+}
+
+.su-row {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 15px;
+    letter-spacing: -.2px;
+    cursor: pointer;
+}
+
+.su-row + .su-row::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 0;
+    top: 0;
+    height: .5px;
+    background: #C8C7CC;
+}
+
+.su-row .grow {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.su-row .val {
+    color: #8A8A8F;
+    font-size: 15px;
+    margin-right: 6px;
+}
+
+.su-row .chev {
+    flex: 0 0 auto;
+    margin-left: 2px;
+}
+
+/* a section caption above a table, e.g. MORE COUNTRIES AND REGIONS */
+.su-hdr {
+    font-size: 11px;
+    color: #6D6D72;
+    letter-spacing: .1px;
+    padding: 20px 16px 6px;
+}
+
+/* the tick against the language / country already chosen */
+.su-row .tick {
+    color: #007AFF;
+    margin-left: 6px;
+}
+
+/* ---------- Wi-Fi rows ----------
+   A lock and a signal fan on the right, and while a network is being
+   joined a spinner takes the place of nothing on the left (IMG_1287). */
+.su-wifi-icons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #000;
+}
+
+.su-row .su-spin {
+    flex: 0 0 14px;
+    margin-right: 9px;
+}
+
+.su-spin {
+    width: 14px;
+    height: 14px;
+    border: 1.4px solid rgba(0, 0, 0, .18);
+    border-top-color: rgba(0, 0, 0, .5);
+    border-radius: 50%;
+    animation: suSpin .7s linear infinite;
+}
+
+.su-spin.big {
+    width: 19px;
+    height: 19px;
+    margin: 0 auto;
+}
+
+@keyframes suSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- Hello ----------
+   Nothing but the word, the shimmer under it and the regulatory ⓘ in
+   the corner. The greeting cycles through languages on a real device;
+   this one holds on the first, which is what every photo shows. */
+.su-hello {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.su-hello b {
+    font-family: var(--sf-display);
+    font-weight: 100;
+    font-size: 54px;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+/* "slide to set up" -- the same sheen the lock screen runs, so the two
+   read as the same control. Dragging is not wired: a tap moves on, the
+   way a tap on the lock screen's handle bounces it. */
+.su-slide {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #8E8E93;
+    cursor: pointer;
+}
+
+.su-slide span {
+    background: linear-gradient(100deg, #8E8E93 34%, #fff 50%, #8E8E93 66%) 0 0 / 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: suSheen 2.6s linear infinite;
+}
+
+@keyframes suSheen {
+    to {
+        background-position: -300% 0;
+    }
+}
+
+.su-info {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+    color: #8E8E93;
+}
+
+/* ---------- regulatory ----------
+   The ⓘ page: a column of agency marks and ID numbers, scrolled
+   through in IMG_1278 to IMG_1280. Centred, tiny, and very tall. */
+.su-reg {
+    padding: 8px 20px 26px;
+    text-align: center;
+    font-size: 8.5px;
+    line-height: 1.42;
+    color: #000;
+}
+
+.su-reg h4 {
+    font-size: 9px;
+    font-weight: 600;
+    margin-top: 13px;
+}
+
+.su-reg .mark {
+    font-size: 13px;
+    letter-spacing: .4px;
+    margin: 2px 0;
+}
+
+.su-reg .mark.big {
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.su-reg .boxed {
+    display: inline-block;
+    border: .5px solid #000;
+    padding: 1px 4px;
+    margin: 2px 0;
+    font-size: 8px;
+    line-height: 1.3;
+}
+
+/* ---------- a glyph over a title ----------
+   Location Services, Apps & Data, Forgot Password and Diagnostics each
+   hang an icon above the heading. */
+.su-glyph {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+}
+
+.su-glyph + .su-title {
+    padding-top: 6px;
+}
+
+/* ---------- fields ---------- */
+.su-fields {
+    background: #fff;
+    border-top: .5px solid #C8C7CC;
+    border-bottom: .5px solid #C8C7CC;
+    margin-top: 16px;
+}
+
+.su-field {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 14px;
+    cursor: text;
+}
+
+.su-field + .su-field::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 0;
+    top: 0;
+    height: .5px;
+    background: #C8C7CC;
+}
+
+.su-field label {
+    flex: 0 0 66px;
+    color: #000;
+    font-size: 13.5px;
+    pointer-events: none;
+}
+
+.su-field .inp {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #000;
+}
+
+.su-field .inp.ph {
+    color: #C7C7CD;
+}
+
+/* the caret only shows on the field the keyboard is pointed at */
+.su-field .caret {
+    display: none;
+    position: relative;
+    top: 2px;
+    width: 1.5px;
+    height: 17px;
+    background: #007AFF;
+    vertical-align: middle;
+    animation: suBlink 1.06s steps(1) infinite;
+}
+
+.su-field.focus .caret {
+    display: inline-block;
+}
+
+@keyframes suBlink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ---------- passcode ----------
+   Two filled dots and two dashes in IMG_1291: iOS 9 draws the places
+   not yet typed as a short rule, not an empty ring. */
+.su-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 17px;
+    padding-top: 40px;
+    height: 30px;
+}
+
+.su-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #000;
+}
+
+.su-dots i.off {
+    width: 12px;
+    height: 1.5px;
+    border-radius: 0;
+    background: #8E8E93;
+}
+
+/* ---------- Apple ID service icons ----------
+   The row of six under "Don't have an Apple ID or forgot it?" and the
+   two-column grid on the help page are the same little squircles. */
+.su-apps {
+    display: flex;
+    justify-content: center;
+    gap: 11px;
+    padding: 14px 16px 0;
+}
+
+.su-app {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.su-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px 11px;
+    padding: 14px 16px 0;
+}
+
+.su-cell {
+    display: flex;
+    gap: 7px;
+    font-size: 9.5px;
+    line-height: 1.3;
+    text-align: left;
+}
+
+.su-cell .su-app {
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+    border-radius: 5px;
+}
+
+/* ---------- Terms ----------
+   A boxed, scrolling agreement with Disagree / Agree pinned under it. */
+.su-terms {
+    margin: 12px 14px 0;
+    padding: 10px 11px;
+    height: 300px;
+    overflow-y: auto;
+    background: #fff;
+    border: .5px solid #C8C7CC;
+    font-size: 8.5px;
+    line-height: 1.45;
+    text-align: left;
+}
+
+.su-terms h5 {
+    font-size: 8.5px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.su-terms p {
+    margin-bottom: 8px;
+}
+
+.su-terms .tlink {
+    display: flex;
+    align-items: center;
+    color: #007AFF;
+    font-size: 9.5px;
+    padding: 6px 0;
+    border-top: .5px solid #C8C7CC;
+    border-bottom: .5px solid #C8C7CC;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.su-terms .tlink .grow {
+    flex: 1;
+}
+
+.su-agree {
+    display: flex;
+    align-items: center;
+    padding: 11px 16px 0;
+    font-size: 14px;
+    color: #007AFF;
+}
+
+.su-agree .grow {
+    flex: 1;
+}
+
+.su-agree div {
+    cursor: pointer;
+}
+
+/* ---------- Siri hero ----------
+   The photo on the Siri page is a device held in a hand with the
+   waveform lit. Drawn rather than shipped as an asset: a dark rounded
+   slab with the same six-band ribbon Siri uses elsewhere in here. */
+.su-hero {
+    width: 132px;
+    height: 176px;
+    margin: 14px auto 0;
+    border-radius: 13px;
+    background: radial-gradient(circle at 50% 34%, #4a4f63 0%, #23262f 58%, #14161c 100%);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 9px rgba(0, 0, 0, .3);
+}
+
+.su-hero .wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    height: 22px;
+}
+
+/* ---------- alerts ----------
+   Same slab the rest of the simulator uses: a small centred card with
+   its buttons split by hairlines. */
+.su-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .16);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.su-alertwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.su-alert {
+    width: 232px;
+    border-radius: 12px;
+    background: rgba(249, 249, 249, .94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+    text-align: center;
+    transform: scale(1.1);
+    transition: transform .2s ease;
+}
+
+.su-alertwrap.up .su-alert {
+    transform: scale(1);
+}
+
+.su-atitle {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 15px 16px 0;
+    line-height: 1.24;
+}
+
+.su-amsg {
+    font-size: 11.5px;
+    line-height: 1.32;
+    padding: 4px 16px 0;
+}
+
+.su-abtns {
+    display: flex;
+    margin-top: 14px;
+    border-top: .5px solid rgba(0, 0, 0, .18);
+}
+
+.su-abtn {
+    flex: 1;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: #007AFF;
+    cursor: pointer;
+}
+
+.su-abtn + .su-abtn {
+    border-left: .5px solid rgba(0, 0, 0, .18);
+}
+
+/* a single-button alert has nothing to split */
+.su-abtns.one .su-abtn {
+    font-weight: 500;
+}
+
+/* ---------- Other Network sheet ----------
+   A card that rises over a dimmed list with its own Cancel / Join bar
+   (IMG_1286). */
+.su-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 35;
+    background: rgba(0, 0, 0, .25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .24s ease;
+}
+
+.su-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.su-sheet {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 34px;
+    background: #F7F7F7;
+    border-radius: 8px;
+    overflow: hidden;
+    transform: translateY(-14px);
+    transition: transform .24s cubic-bezier(.32, .72, 0, 1);
+}
+
+.su-sheetwrap.up .su-sheet {
+    transform: translateY(0);
+}
+
+.su-sheet .cap {
+    text-align: center;
+    font-size: 9.5px;
+    color: #8A8A8F;
+    padding: 6px 0 0;
+}
+
+.su-sheet .bar {
+    display: flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #007AFF;
+}
+
+.su-sheet .bar b {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+}
+
+.su-sheet .bar .join.dim {
+    opacity: .32;
+    pointer-events: none;
+}
+
+.su-sheet .bar div {
+    cursor: pointer;
+    min-width: 40px;
+}
+
+.su-sheet .bar .join {
+    text-align: right;
+}
+
+/* ---------- Connect to iTunes ----------
+   The one black screen in the flow: a logo, a cable and nothing else. */
+.su-itunes {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.su-itunes b {
+    font-family: var(--sf-display);
+    font-weight: 400;
+    font-size: 21px;
+}
+
+/* ---------- Birthday wheel ----------
+   A three-column picker parked at the bottom. Only the selected row is
+   black; the rows either side fade out the further they sit. */
+.su-picker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 162px;
+    background: #D1D4DA;
+    border-top: .5px solid #B2B2B2;
+    display: flex;
+    overflow: hidden;
+}
+
+.su-wheel {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.su-wheel.yr {
+    flex: 0 0 74px;
+}
+
+.su-wheel.dy {
+    flex: 0 0 54px;
+}
+
+.su-wheel ul {
+    position: absolute;
+    left: 0;
+    right: 0;
+    list-style: none;
+    transition: transform .22s ease;
+}
+
+.su-wheel li {
+    height: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: rgba(0, 0, 0, .28);
+    cursor: pointer;
+}
+
+.su-wheel li.on {
+    color: #000;
+}
+
+.su-wheel li.near {
+    color: rgba(0, 0, 0, .55);
+}
+
+/* the two rules that mark the selected row, drawn over all three wheels */
+.su-picker .bandtop,
+.su-picker .bandbot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: .5px;
+    background: rgba(0, 0, 0, .22);
+    pointer-events: none;
+}
+
+.su-picker .bandtop {
+    top: 67.5px;
+}
+
+.su-picker .bandbot {
+    top: 94.5px;
+}

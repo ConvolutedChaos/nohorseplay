@@ -1,0 +1,379 @@
+/* lock screen + passcode */
+/* ================= LOCK SCREEN =================
+Geometry below is measured off ref_pic/IMG_2446.PNG and IMG_2447.PNG
+(both 640x1136 = 2x of the 320x568 screen).                        */
+:root {
+    /* flat yellow for the top ~54%, then a ramp to orange */
+    --lockwall: linear-gradient(180deg, #FFEC6D 0%, #FFEC6D 54%, #FFAB43 100%);
+    /* iOS vibrancy pulls the wallpaper's hue into the keypad strokes */
+    --lkvib: #FFFF48;
+    --lkink: rgba(0, 0, 0, .7);
+}
+
+#lock {
+    position: absolute;
+    inset: 0;
+    z-index: 450;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#lock.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lk-wall {
+    position: absolute;
+    inset: 0;
+    background-color: #FFEC6D;
+    /* two offset dot layers = the staggered halftone lattice, 6x9 repeat */
+    background-image:
+        radial-gradient(circle at 1.5px 1.5px, rgba(255, 45, 45, .14) 1.05px, transparent 1.3px),
+        radial-gradient(circle at 1.5px 1.5px, rgba(255, 45, 45, .14) 1.05px, transparent 1.3px),
+        var(--lockwall);
+    background-size: 6px 9px, 6px 9px, 100% 100%;
+    background-position: 0 0, 3px 4.5px, 0 0;
+}
+
+/* what the wallpaper turns into behind the passcode pad */
+.lk-blur {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #595317 0%, #595317 60%, #593E14 100%);
+    opacity: 0;
+}
+
+#lkStatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    /* identical metrics to every other status bar */
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--lkink);
+}
+
+#lkStatus .sb-left,
+#lkStatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#lkStatus .sb-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+#lkMain,
+#lkPass {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+}
+
+#lkPass {
+    transform: translateX(-320px);
+}
+
+/* ---------- grabber pills (Notification / Control Center) ---------- */
+.lk-grab {
+    position: absolute;
+    left: 50%;
+    margin-left: -17.75px;
+    width: 35.5px;
+    height: 6.5px;
+    border-radius: 3.25px;
+    background: rgba(0, 0, 0, .45);
+}
+
+.lk-grab.top {
+    top: 9.5px;
+}
+
+.lk-grab.bot {
+    top: 551.5px;
+}
+
+/* ---------- clock + date ---------- */
+.lk-clock {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 36.5px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-weight: 100;
+    /* -> SF UI Display Thin */
+    font-size: 90px;
+    line-height: 90px;
+    letter-spacing: -1px;
+    color: var(--lkink);
+}
+
+.lk-date {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 127.5px;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: -.5px;
+    color: var(--lkink);
+}
+
+/* ---------- slide to unlock ---------- */
+.lk-slide {
+    position: absolute;
+    left: 60.5px;
+    top: 474.5px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 11.5px;
+}
+
+.lk-chev {
+    flex: 0 0 auto;
+    display: block;
+}
+
+.lk-shine {
+    font-size: 24px;
+    font-family: var(--sf-display);
+    /* 400, not 300: the Thin cut would capture a 300 request, and the reference
+photo measures this text as Regular (within 3% of its ink coverage). */
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: -.2px;
+    white-space: nowrap;
+    /* the base colour and the highlight both live in one gradient, clipped
+to the glyphs, and slid from right to left */
+    background-image: linear-gradient(100deg,
+            #C67510 0%, #C67510 40%, #FFF7BE 50%, #C67510 60%, #C67510 100%);
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: lkshine 2.5s linear infinite;
+}
+
+@keyframes lkshine {
+    from {
+        background-position: 100% 0;
+    }
+
+    to {
+        background-position: 0 0;
+    }
+}
+
+/* ---------- camera grab handle ---------- */
+#lkCam {
+    position: absolute;
+    left: 278px;
+    top: 528px;
+    width: 44px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5px;
+}
+
+#lkCam svg {
+    display: block;
+    fill: rgba(0, 0, 0, .5);
+}
+
+#lkCam:active svg {
+    fill: rgba(0, 0, 0, .68);
+}
+
+/* ---------- passcode ---------- */
+.lk-ptitle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 64px;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: -.65px;
+    color: #fff;
+}
+
+/* the reason line, only after a restart */
+.lk-psub {
+    position: absolute;
+    left: 48px;
+    right: 48px;
+    top: 90px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -.08px;
+    color: #fff;
+    display: none;
+}
+
+/* with the reason line in, the whole header rides up and the dots follow it down */
+#lkPass.why .lk-psub {
+    display: block;
+}
+
+#lkPass.why .lk-ptitle {
+    top: 48px;
+}
+
+#lkPass.why .lk-psub {
+    top: 74px;
+}
+
+#lkPass.why .lk-dots {
+    top: 118px;
+}
+
+#lkPass.why .lk-fail {
+    top: 139px;
+}
+
+.lk-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 103px;
+    height: 12px;
+}
+
+.lk-dots i {
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.2px solid var(--lkvib);
+}
+
+.lk-dots i.f {
+    background: var(--lkvib);
+}
+
+.lk-dots.bad {
+    animation: lkshake .5s cubic-bezier(.36, .07, .19, .97);
+}
+
+@keyframes lkshake {
+
+    0%,
+    100% {
+        transform: translateX(0)
+    }
+
+    12% {
+        transform: translateX(-13px)
+    }
+
+    30% {
+        transform: translateX(11px)
+    }
+
+    50% {
+        transform: translateX(-8px)
+    }
+
+    70% {
+        transform: translateX(5px)
+    }
+
+    86% {
+        transform: translateX(-2px)
+    }
+}
+
+.lk-fail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 124px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 16px;
+    color: #fff;
+    letter-spacing: -.08px;
+    opacity: 0;
+}
+
+.lk-fail.on {
+    opacity: 1;
+}
+
+.lk-key {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 1.2px solid var(--lkvib);
+    color: #fff;
+}
+
+.lk-key b,
+.lk-key i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.lk-key b {
+    top: 12.5px;
+    font-weight: 300;
+    font-size: 36px;
+    font-family: var(--sf-display);
+    line-height: 36px;
+}
+
+.lk-key i {
+    top: 47.5px;
+    font-style: normal;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 1.1px;
+    text-indent: 1.1px;
+}
+
+.lk-key:active {
+    background: rgba(255, 255, 255, .28);
+}
+
+.lk-cancel {
+    position: absolute;
+    left: 217px;
+    width: 75px;
+    top: 526.5px;
+    height: 21px;
+    line-height: 21px;
+    text-align: center;
+    font-size: 17px;
+    letter-spacing: -.41px;
+    color: #fff;
+}
+
+.lk-cancel:active {
+    opacity: .45;
+}

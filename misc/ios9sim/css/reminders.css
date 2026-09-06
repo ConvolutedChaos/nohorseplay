@@ -1,0 +1,791 @@
+/* ================= REMINDERS =================
+Traced off ref_pic/Reminders/. Every list is a card on the same paper
+Notes uses; the stack hangs from a dark strip, and opening a card slides
+it up over the others, which then peek along the bottom edge. */
+#rmapp {
+    --rm-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='120' height='120' filter='url(%23p)' opacity='.055'/></svg>");
+    --rm-ink: #3A3A3C;
+    --rm-rule: #C9C8C3;
+    --rm-red: #FF3B30;
+    position: absolute;
+    inset: 0;
+    background: #0D0D0F;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+#rmapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#rmstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 800;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#rmstatus .sb-left,
+#rmstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#rmstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#rmstatus .sb-mid {
+    font-weight: 600;
+}
+
+/* ---------- the dark strip ---------- */
+#rmtop {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: linear-gradient(#232326, #131315);
+}
+
+.rm-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 30px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 9px;
+    color: #9A9A9F;
+    font-size: 17px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+}
+
+.rm-sfield span {
+    color: #fff;
+    white-space: nowrap;
+}
+
+.rm-sfield.empty span:after {
+    content: "Search";
+    color: #9A9A9F;
+    font-weight: 500;
+}
+
+/* once you are searching the field goes left-aligned and grows a clear key */
+#rmapp.searching .rm-sfield {
+    justify-content: flex-start;
+}
+
+.rm-sclear {
+    display: none;
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
+#rmapp.searching .rm-sclear {
+    display: block;
+}
+
+.rm-plus {
+    flex: 0 0 auto;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.rm-plus:active {
+    opacity: .4;
+}
+
+.rm-scancel {
+    display: none;
+    flex: 0 0 auto;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.4px;
+}
+
+#rmapp.searching .rm-scancel {
+    display: block;
+}
+
+#rmapp.searching .rm-plus {
+    display: none;
+}
+
+/* ---------- the stack ---------- */
+#rmapp>.kbwrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 650;
+}
+
+#rmstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 300;
+    overflow: hidden;
+}
+
+#rmstack.open {
+    z-index: 550;
+}
+
+.rm-card {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 76px;
+    border-radius: 10px 10px 0 0;
+    background: #F2F1EE var(--rm-paper);
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, .7) inset, 0 -3px 8px rgba(0, 0, 0, .38);
+    overflow: hidden;
+    transition: transform .38s cubic-bezier(.32, .72, 0, 1),
+        height .38s cubic-bezier(.32, .72, 0, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* the open card climbs to the top of the strip and takes the whole screen */
+#rmstack.open .rm-card {
+    height: var(--rm-openh, 500px);
+}
+
+.rm-card.up {
+    z-index: 40;
+}
+
+.rm-chead {
+    flex: 0 0 auto;
+    position: relative;
+    padding: 14px 16px 0;
+    height: 76px;
+}
+
+.rm-cname {
+    font-family: var(--sf-display);
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -.9px;
+    line-height: 1.06;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 76px;
+}
+
+.rm-csub {
+    margin-top: 1px;
+    font-size: 15px;
+    color: #8A8A8F;
+    letter-spacing: -.25px;
+}
+
+.rm-ccount {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    text-align: right;
+    font-family: var(--sf-display);
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -.9px;
+    line-height: 1.06;
+}
+
+.rm-cover {
+    position: absolute;
+    right: 16px;
+    top: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--rm-red);
+    letter-spacing: -.25px;
+}
+
+.rm-cedit {
+    position: absolute;
+    right: 16px;
+    top: 50px;
+    font-size: 15px;
+    color: #0A84FF;
+    letter-spacing: -.25px;
+    display: none;
+}
+
+.rm-card.up .rm-cedit {
+    display: block;
+}
+
+.rm-card.up .rm-cover {
+    display: none;
+}
+
+.rm-clock {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    color: #9A9A9F;
+}
+
+/* ---------- the ruled body ---------- */
+.rm-cbody {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* the rules keep going under the rows, like a legal pad */
+    display: none;
+}
+
+.rm-card.up .rm-cbody {
+    display: block;
+}
+
+.rm-row {
+    position: relative;
+    min-height: 38px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    padding: 8px 14px 8px 50px;
+}
+
+.rm-row:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}
+
+.rm-ring {
+    position: absolute;
+    left: 13px;
+    top: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid #B9B8B3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-ring i {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+}
+
+.rm-row.done .rm-ring i {
+    opacity: 1;
+}
+
+.rm-rtext {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    line-height: 1.32;
+    color: var(--rm-ink);
+    letter-spacing: -.35px;
+    word-break: break-word;
+}
+
+.rm-row.done .rm-rtext {
+    color: #9A9A9F;
+}
+
+.rm-bang {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.rm-rdue {
+    margin-top: 1px;
+    font-size: 15px;
+    letter-spacing: -.25px;
+    color: #6D6D72;
+}
+
+.rm-rdue.late {
+    color: var(--rm-red);
+}
+
+.rm-rlist {
+    margin-top: 0;
+    font-size: 15px;
+    color: #9A9A9F;
+    letter-spacing: -.25px;
+}
+
+/* the add row keeps a plus in the left gutter */
+.rm-add {
+    position: relative;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px 0 50px;
+    color: #A8A7A2;
+}
+
+.rm-add:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}
+
+.rm-addplus {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-addtext {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    color: var(--rm-ink);
+    letter-spacing: -.35px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Scheduled groups its rows under grey day headers */
+.rm-day {
+    position: relative;
+    padding: 4px 16px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    background: #DEDDD9;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: -.3px;
+}
+
+.rm-showdone {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.35px;
+    border-top: 1px dashed #B6B5B0;
+}
+
+.rm-showdone:active {
+    opacity: .4;
+}
+
+/* ---------- creating a list ---------- */
+.rm-dots {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 20px;
+}
+
+.rm-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rm-dot.on:after {
+    content: "";
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #F2F1EE;
+    box-shadow: 0 0 0 2px currentColor;
+}
+
+.rm-cname.edit {
+    padding-right: 76px;
+}
+
+/* ---------- search results ---------- */
+#rmResults {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: var(--rm-kb, 0px);
+    z-index: 350;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #F2F1EE var(--rm-paper);
+    display: none;
+}
+
+#rmapp.searching #rmResults {
+    display: block;
+}
+
+#rmResults .rm-row {
+    margin-left: 50px;
+}
+
+#rmResults .rm-ring {
+    border-color: currentColor;
+}
+
+.rm-hit {
+    font-weight: 700;
+}
+
+/* ---------- Create Reminder ---------- */
+.rm-page {
+    position: absolute;
+    inset: 0;
+    z-index: 600;
+    background: #EFEFF4;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
+    padding-top: 20px;
+}
+
+.rm-page:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: #F7F7F7;
+}
+
+.rm-page.up {
+    transform: translateY(0);
+}
+
+.rm-dbody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.rm-gap {
+    height: 35px;
+}
+
+.rm-group {
+    background: #fff;
+    border-top: 1px solid #C8C7CC;
+    border-bottom: 1px solid #C8C7CC;
+}
+
+.rm-frow {
+    position: relative;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 17px;
+    color: #000;
+    letter-spacing: -.4px;
+}
+
+.rm-frow+.rm-frow:before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+}
+
+.rm-flabel {
+    flex: 0 0 auto;
+}
+
+.rm-fval {
+    margin-left: auto;
+    color: #8A8A8F;
+    letter-spacing: -.4px;
+}
+
+.rm-fchev {
+    margin-left: 7px;
+    color: #C7C7CC;
+    display: flex;
+}
+
+.rm-ffield {
+    flex: 1;
+    min-width: 0;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.rm-ffield.empty:after {
+    content: "Reminder";
+    color: #C0C0C5;
+}
+
+.rm-fnotes.empty:after {
+    content: "Notes";
+    color: #C0C0C5;
+}
+
+.rm-frow.tall {
+    min-height: 88px;
+    align-items: flex-start;
+    padding-top: 12px;
+}
+
+/* the priority picker is four segments in one pill */
+.rm-seg {
+    margin-left: auto;
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #007AFF;
+}
+
+.rm-segbtn {
+    min-width: 46px;
+    height: 29px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #007AFF;
+    background: #fff;
+    letter-spacing: -.2px;
+}
+
+.rm-segbtn+.rm-segbtn {
+    border-left: 1px solid #007AFF;
+}
+
+.rm-segbtn.on {
+    background: #007AFF;
+    color: #fff;
+}
+
+.rm-sw {
+    margin-left: auto;
+    flex: 0 0 auto;
+    width: 51px;
+    height: 31px;
+    border-radius: 16px;
+    background: #E5E5EA;
+    position: relative;
+    transition: background .22s ease;
+}
+
+.rm-sw.on {
+    background: #4CD964;
+}
+
+.rm-sw:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .28);
+    transition: transform .22s cubic-bezier(.32, .72, 0, 1);
+}
+
+.rm-sw.on:after {
+    transform: translateX(20px);
+}
+
+.rm-frow.pick:active {
+    background: #D9D9DE;
+}
+
+.rm-ptick {
+    margin-left: auto;
+    color: #007AFF;
+    opacity: 0;
+}
+
+.rm-frow.on .rm-ptick {
+    opacity: 1;
+}
+
+.rm-swatch {
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-right: 10px;
+}
+
+/* ---------- Create new... ---------- */
+.rm-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    transition: opacity .28s ease, background .28s ease;
+}
+
+.rm-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .3);
+}
+
+.rm-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(20px);
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.rm-sheetwrap.up .rm-sheet {
+    transform: translateY(0);
+}
+
+.rm-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .86);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.rm-sgroup+.rm-sgroup {
+    margin-top: 8px;
+}
+
+.rm-shead {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #8A8A8F;
+    letter-spacing: -.35px;
+}
+
+.rm-sbtn {
+    position: relative;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #007AFF;
+    letter-spacing: -.4px;
+}
+
+.rm-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .16);
+    transform: scaleY(.5);
+}
+
+.rm-sbtn:active {
+    background: rgba(0, 0, 0, .09);
+}
+
+.rm-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .94);
+}
+
+.rm-sbtn.cancel:before {
+    display: none;
+}
+
+.caret.rm {
+    background: #0A84FF;
+}
+
+/* the empty rules under the last row -- generated so they line up with it */
+.rm-fill {
+    position: relative;
+    height: 38px;
+}
+
+.rm-fill:after {
+    content: "";
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rm-rule);
+    transform: scaleY(.5);
+}

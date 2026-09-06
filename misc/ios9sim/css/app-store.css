@@ -1,0 +1,189 @@
+/* ==================================================================
+APP STORE
+Traced off ref_pic/AppStore/. Same joke as the iTunes Store: every
+tab reaches for a storefront that is not there any more. The chrome
+never inverts, so there is no dark variant to carry.
+================================================================== */
+#asapp {
+    --as-blue: #007AFF;
+    --as-hair: #B2B2B2;
+    --as-bar: #F9F9F9;
+    --as-bg: #fff;
+    --as-idle: #929292;
+    position: absolute;
+    inset: 0;
+    background: var(--as-bg);
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+#asapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#asstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: var(--as-bar);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#asstatus .sb-left,
+#asstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#asstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#asstatus .sb-mid {
+    font-weight: 600;
+}
+
+#asapp.busy .sb-net {
+    display: block;
+}
+
+#asstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--as-bg);
+}
+
+/* ---------- nav ----------
+Nothing ever loads, so the bar stays empty; it is here for the hairline
+and the 44px it takes off the top. */
+.as-nav {
+    flex: 0 0 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--as-bar);
+}
+
+.as-nav:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--as-hair);
+    transform: scaleY(.5);
+}
+
+.as-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+    pointer-events: none;
+}
+
+/* ---------- body ---------- */
+.as-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--as-bg);
+}
+
+.as-fail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -.5px;
+    color: #8A8A8F;
+}
+
+/* ---------- tab bar ----------
+49px tall, glyphs on a 26px band 5px down from the hairline, labels at
+10px underneath -- the numbers come straight off the screenshots. */
+.as-tabs {
+    flex: 0 0 49px;
+    position: relative;
+    display: flex;
+    background: var(--as-bar);
+}
+
+.as-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--as-hair);
+    transform: scaleY(.5);
+}
+
+.as-tab {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5px;
+    color: var(--as-idle);
+}
+
+.as-tab.on {
+    color: var(--as-blue);
+}
+
+.as-tab .as-glyph {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.as-tab svg {
+    display: block;
+}
+
+.as-tab span {
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+.as-tab:active {
+    opacity: .5;
+}

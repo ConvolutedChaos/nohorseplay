@@ -1,0 +1,1125 @@
+/* ================= CLOCK =================
+Traced off ref_pic/Clock (2x screenshots), so everything below is in
+points: screen 320 x 568, status 20, nav 44, tab bar 49, leaving a
+455 pt content box. */
+#ckapp {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#ckapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ckstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#ckstatus .sb-left,
+#ckstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ckstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#ckstatus .sb-mid {
+    font-weight: 600;
+}
+
+#ckstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Clock's tint is the iOS 9 alarm red, not the system blue, and its bar
+buttons sit on the 16 pt margin rather than Messages' 8 */
+#ckstack .nav {
+    color: #FF3B30;
+}
+
+#ckstack .nav .btn {
+    padding: 0 16px;
+    min-width: 0;
+}
+
+#ckstack .nav .btn.right {
+    padding-right: 12px;
+}
+
+#ckstack .nav .btn.back {
+    padding: 0 8px 0 6px;
+}
+
+#ckstack .nav .btn.dim {
+    color: #C6C6CB;
+}
+
+.ck-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+}
+
+/* a long back label ("< When Timer Ends") crowds a centred title out, so
+that one page sets its title beside the button instead */
+#ckstack .nav .title.inline {
+    position: static;
+    text-align: left;
+    padding-left: 4px;
+    pointer-events: auto;
+}
+
+/* ---------- tab bar ---------- */
+.ck-tabs {
+    flex: 0 0 49px;
+    height: 49px;
+    background: #fff;
+    display: flex;
+    position: relative;
+    z-index: 3;
+}
+
+.ck-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #A7A7AA;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.ck-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 3px;
+    color: #8E8E93;
+}
+
+.ck-tab.on {
+    color: #FF3B30;
+}
+
+.ck-tab svg {
+    display: block;
+}
+
+.ck-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+/* ---------- pane switcher ---------- */
+.ck-body {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.ck-pane {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+}
+
+.ck-pane.on {
+    display: flex;
+}
+
+/* ---------- world clock ---------- */
+.wc-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+}
+
+.wc-row {
+    position: relative;
+    height: 85px;
+    padding: 14px 16px 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+}
+
+/* every row carries its own bottom hairline -- the reference has one under
+the last visible row too, which a between-rows rule would miss */
+.wc-row:after,
+.al-row:after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.wc-main {
+    display: flex;
+    align-items: baseline;
+    line-height: 26px;
+}
+
+.wc-name {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--sf-display);
+    font-size: 24px;
+    letter-spacing: -.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
+}
+
+.wc-time {
+    flex: 0 0 auto;
+    font-family: var(--sf-display);
+    font-size: 36px;
+    letter-spacing: -1.1px;
+    font-variant-numeric: tabular-nums;
+}
+
+.wc-time i {
+    font-style: normal;
+    font-size: 17px;
+    letter-spacing: -.2px;
+    margin-left: 5px;
+}
+
+.wc-sub {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 13px;
+    letter-spacing: -.08px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wc-sub b {
+    font-weight: 600;
+}
+
+/* edit mode: the minus badge slides the content right, grip sits at the end */
+.ck-minus {
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    margin-top: -12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #FF3B30;
+    transition: left .26s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ck-minus:before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+.ck-grip {
+    position: absolute;
+    right: -34px;
+    top: 50%;
+    margin-top: -6px;
+    width: 22px;
+    height: 12px;
+    transition: right .26s cubic-bezier(.32, .72, 0, 1);
+    cursor: grab;
+}
+
+.ck-grip i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #C7C7CC;
+}
+
+.ck-grip i:nth-child(1) {
+    top: 0;
+}
+
+.ck-grip i:nth-child(2) {
+    top: 5px;
+}
+
+.ck-grip i:nth-child(3) {
+    top: 10px;
+}
+
+.wc-list.editing .wc-row,
+.al-list.editing .al-row {
+    padding-left: 46px;
+    padding-right: 46px;
+}
+
+.wc-list.editing .ck-minus,
+.al-list.editing .ck-minus {
+    left: 12px;
+}
+
+.wc-list.editing .ck-grip {
+    right: 15px;
+}
+
+/* the reference drops the clock face while you are rearranging */
+.wc-list.editing .wc-time {
+    display: none;
+}
+
+.wc-row.drag,
+.al-row.drag {
+    z-index: 5;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .16);
+}
+
+/* ---------- alarm ---------- */
+.al-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #EFEFF4;
+}
+
+.al-row {
+    position: relative;
+    height: 85px;
+    padding: 17px 16px 0;
+    display: flex;
+    flex-direction: column;
+    background: #EFEFF4;
+    color: #8E8E93;
+}
+
+.al-row.on {
+    background: #fff;
+    color: #000;
+}
+
+.al-list.editing .al-row {
+    background: #EFEFF4;
+    color: #8E8E93;
+}
+
+.al-main {
+    display: flex;
+    align-items: baseline;
+    line-height: 34px;
+}
+
+.al-time {
+    font-family: var(--sf-display);
+    font-size: 48px;
+    letter-spacing: -1.6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.al-time i {
+    font-style: normal;
+    font-size: 20px;
+    letter-spacing: -.3px;
+    margin-left: 6px;
+}
+
+.al-lbl {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 600;
+    letter-spacing: -.08px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.al-sw {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    margin-top: -15.5px;
+    transition: opacity .2s, transform .26s cubic-bezier(.32, .72, 0, 1);
+}
+
+.al-chev {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    margin-top: -8px;
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.al-list.editing .al-sw {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.al-list.editing .al-chev {
+    opacity: 1;
+}
+
+.al-empty {
+    padding: 26px 16px;
+    text-align: center;
+    font-size: 15px;
+    color: #8E8E93;
+}
+
+/* ---------- stopwatch + timer shared face ---------- */
+.ck-pad {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: #EFEFF4;
+}
+
+.ck-pad:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #C8C8C8;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.ck-btn {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    letter-spacing: -.4px;
+    color: #000;
+}
+
+.ck-btn.left {
+    left: 57.5px;
+}
+
+.ck-btn.right {
+    left: 187.5px;
+}
+
+.ck-btn.green {
+    color: #4CD964;
+}
+
+.ck-btn.red {
+    color: #FF3B30;
+}
+
+.ck-btn.off {
+    background: rgba(255, 255, 255, .42);
+    color: rgba(142, 142, 147, .75);
+    pointer-events: none;
+}
+
+.ck-btn:active {
+    background: #E4E4EA;
+}
+
+/* ---------- stopwatch ---------- */
+.sw-face {
+    flex: 0 0 180px;
+    height: 180px;
+    position: relative;
+    background: #fff;
+}
+
+.sw-lap {
+    position: absolute;
+    right: 20px;
+    top: 29px;
+    font-family: var(--sf-display);
+    font-weight: 200;
+    font-size: 22px;
+    line-height: 1;
+    color: #8E8E93;
+    font-variant-numeric: tabular-nums;
+}
+
+.sw-big {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 56px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-weight: 200;
+    font-size: 73px;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: #000;
+    font-variant-numeric: tabular-nums;
+}
+
+.sw-btns .ck-btn {
+    top: 20px;
+}
+
+.sw-laps {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 115px;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sw-lrow {
+    position: relative;
+    height: 38.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 46px 0 45px;
+}
+
+.sw-lrow:after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.sw-lname {
+    font-size: 14px;
+    color: #8E8E93;
+    letter-spacing: -.2px;
+}
+
+.sw-ltime {
+    font-family: var(--sf-display);
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- timer ---------- */
+.tm-pick {
+    flex: 0 0 215px;
+    height: 215px;
+    position: relative;
+    background: #fff;
+}
+
+.tm-when {
+    flex: 0 0 44px;
+    height: 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 15px 0 16px;
+    background: #fff;
+    font-size: 17px;
+    letter-spacing: -.41px;
+}
+
+.tm-when:before,
+.tm-when:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+}
+
+.tm-when:before {
+    top: 0;
+    transform-origin: top;
+}
+
+.tm-when:after {
+    bottom: 0;
+    transform-origin: bottom;
+}
+
+.tm-when .grow {
+    flex: 1;
+}
+
+.tm-when .val {
+    color: #8E8E93;
+    margin-right: 8px;
+}
+
+.tm-run {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    /* above the wheel's band and its "hours" / "min" labels */
+    z-index: 5;
+    display: none;
+}
+
+.tm-run.on {
+    display: block;
+}
+
+.tm-big {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-weight: 200;
+    font-size: 73px;
+    line-height: 1;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+}
+
+.tm-btns .ck-btn {
+    top: 46px;
+}
+
+/* ---------- wheel picker ----------
+215 pt tall, 35 pt rows, so the middle row is pinned at 90..125. */
+.pk {
+    position: absolute;
+    inset: 0;
+}
+
+.pk-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 90px;
+    height: 35px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.pk-band:before,
+.pk-band:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #CDCDCD;
+    transform: scaleY(.5);
+}
+
+.pk-band:before {
+    top: 0;
+    transform-origin: top;
+}
+
+.pk-band:after {
+    bottom: 0;
+    transform-origin: bottom;
+}
+
+.pk-col {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 90px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.pk-col::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.pk-pad {
+    height: 90px;
+    flex: 0 0 90px;
+}
+
+.pk-i {
+    height: 35px;
+    line-height: 35px;
+    opacity: 0;
+    /* the wheel only paints the rows near the band */
+    scroll-snap-align: start;
+    font-family: var(--sf-display);
+    font-size: 24px;
+    letter-spacing: -.4px;
+    color: #000;
+    font-variant-numeric: tabular-nums;
+    backface-visibility: hidden;
+}
+
+.pk-lbl {
+    position: absolute;
+    top: 90px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.41px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* timer: hours right-aligned at 76, minutes at 181, labels beside them */
+#tmHours {
+    left: 0;
+    width: 160px;
+    padding-right: 84px;
+    text-align: right;
+}
+
+#tmMins {
+    left: 160px;
+    width: 160px;
+    padding-right: 139px;
+    text-align: right;
+}
+
+.pk-lbl.hours {
+    left: 82px;
+}
+
+.pk-lbl.mins {
+    left: 188px;
+}
+
+/* add alarm: hour / minute / meridiem */
+#aaHour {
+    left: 0;
+    width: 98px;
+    text-align: right;
+}
+
+#aaMin {
+    left: 98px;
+    width: 70px;
+    text-align: right;
+}
+
+#aaAp {
+    left: 201px;
+    width: 119px;
+    text-align: left;
+}
+
+/* ---------- add / edit alarm sheet ---------- */
+.aa-pick {
+    flex: 0 0 215px;
+    height: 215px;
+    position: relative;
+    background: #fff;
+}
+
+.aa-gap {
+    flex: 0 0 36px;
+    height: 36px;
+    background: #EFEFF4;
+}
+
+.aa-rest {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: #EFEFF4;
+}
+
+/* ---------- choose a city ---------- */
+.cy-head {
+    flex: 0 0 74px;
+    height: 74px;
+    position: relative;
+    background: #F9F9F9;
+}
+
+.cy-head:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #ACACAC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.cy-title {
+    height: 38px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.41px;
+}
+
+.cy-srow {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 16px;
+}
+
+.cy-field {
+    flex: 1;
+    height: 28px;
+    border-radius: 5px;
+    background: #E4E4E9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #8E8E93;
+    font-size: 13.5px;
+    letter-spacing: -.1px;
+    overflow: hidden;
+}
+
+.cy-head.searching .cy-field {
+    justify-content: flex-start;
+    padding: 0 8px;
+}
+
+.cy-field .q {
+    color: #000;
+    font-size: 15px;
+    letter-spacing: -.24px;
+}
+
+.cy-cancel {
+    flex: 0 0 auto;
+    font-size: 17px;
+    color: #FF3B30;
+    letter-spacing: -.41px;
+}
+
+.cy-list {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    /* so a section header's offsetTop is measured against the scroller */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+}
+
+.cy-sec {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #F7F7F7;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.24px;
+    position: relative;
+}
+
+.cy-sec:before,
+.cy-sec:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #ACACAC;
+    transform: scaleY(.5);
+}
+
+.cy-sec:before {
+    top: 0;
+    transform-origin: top;
+}
+
+.cy-sec:after {
+    bottom: 0;
+    transform-origin: bottom;
+}
+
+.cy-row {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 34px 0 16px;
+    font-size: 17px;
+    letter-spacing: -.41px;
+    background: #fff;
+}
+
+.cy-row:active {
+    background: #D9D9D9;
+}
+
+.cy-row+.cy-row:before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.cy-none {
+    padding: 30px 16px;
+    text-align: center;
+    color: #8E8E93;
+    font-size: 15px;
+}
+
+.cy-index {
+    position: absolute;
+    right: 1px;
+    top: 125px;
+    bottom: 39px;
+    width: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: #FF3B30;
+    z-index: 4;
+}
+
+/* ---------- ringtone list / plain grouped rows ---------- */
+.ck-check {
+    flex: 0 0 auto;
+    width: 15px;
+    margin-right: 6px;
+    color: #FF3B30;
+}
+
+.cell.tone {
+    padding-left: 45px;
+}
+
+.cell.tone .tick {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    margin-top: -7px;
+    opacity: 0;
+}
+
+.cell.tone.sel .tick {
+    opacity: 1;
+}
+
+.cell:active {
+    background: #D9D9D9;
+}
+
+.cell .chev {
+    flex: 0 0 auto;
+    margin-left: 2px;
+}
+
+.cell .rval {
+    color: #8E8E93;
+    margin-left: auto;
+    padding-left: 8px;
+}
+
+.cell .plain {
+    flex: 1;
+    font-weight: 400;
+}
+
+.cell.center {
+    justify-content: center;
+    color: #FF3B30;
+}
+
+.lbl-clear {
+    flex: 0 0 auto;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: #C7C7CC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* blue Done / Save key on the alarm-label keyboard */
+.key.alt.kreturn.go {
+    background: #007AFF;
+    color: #fff;
+    font-weight: 600;
+}
+
+.key.alt.kreturn.go:active {
+    background: #0062CC;
+}
+
+/* ---------- clock alerts (alarm rings / timer done) ---------- */
+.ck-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 560;
+    background: rgba(0, 0, 0, .32);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.ck-alertwrap.up {
+    display: flex;
+}
+
+.ck-alert {
+    width: 270px;
+    border-radius: 13px;
+    background: rgba(250, 250, 250, .94);
+    overflow: hidden;
+    text-align: center;
+    animation: ckpop .22s ease-out;
+}
+
+@keyframes ckpop {
+    from {
+        transform: scale(1.12);
+        opacity: .4
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+.ck-atitle {
+    padding: 18px 16px 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.41px;
+}
+
+.ck-amsg {
+    padding: 3px 16px 17px;
+    font-size: 13px;
+    line-height: 17px;
+    color: #000;
+}
+
+.ck-abtns {
+    display: flex;
+    position: relative;
+}
+
+.ck-abtns:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .22);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.ck-abtn {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #007AFF;
+    letter-spacing: -.41px;
+    position: relative;
+}
+
+.ck-abtn+.ck-abtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(0, 0, 0, .22);
+    transform: scaleX(.5);
+}
+
+.ck-abtn.bold {
+    font-weight: 600;
+}
+
+.ck-abtn:active {
+    background: rgba(0, 0, 0, .1);
+}

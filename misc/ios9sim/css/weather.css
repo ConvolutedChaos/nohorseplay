@@ -1,0 +1,854 @@
+/* ==================================================================== */
+/* WEATHER                                                              */
+/* ==================================================================== */
+/* Everything here is traced off ref_pic/Weather/ (2x screenshots of a
+320 x 568 screen, so every measurement below is the pixel value / 2).
+
+The city page is one long scroll made of six fixed-height blocks:
+228  the hero -- city, condition and the big temperature
+28  "Tuesday  84  66", today's high / low
+94  the hourly strip                (sticks 78 pt down once reached)
+252  nine daily rows at 28 pt each
+56  the "Today: ..." sentence
+228  the ten detail rows
+886 pt of content in a 511 pt window -> 375 pt of travel, which is
+exactly the distance between IMG_2509 (top) and IMG_2510 (bottom). */
+
+#wxapp {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#wxapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#wxstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, .28);
+    pointer-events: none;
+}
+
+#wxstatus .sb-left,
+#wxstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#wxstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#wxstatus .sb-mid {
+    font-weight: 600;
+}
+
+#wxstack {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: var(--sf-display);
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the weather scenes ----------------------------------------
+The real app runs a photograph behind each city. These are gradient
+stand-ins keyed off the condition; .wx-scene is shared, the sc-* class
+supplies the sky and ::before / ::after the sun, cloud and rain. */
+.wx-scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #4A9AC8;
+}
+
+.wx-scene::before,
+.wx-scene::after {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+}
+
+/* clear, sunny daylight -- the flare in the top-left corner of IMG_2509 */
+.sc-sun {
+    background:
+        radial-gradient(120% 70% at 6% -6%, #7FC4E8 0%, rgba(127, 196, 232, 0) 55%),
+        linear-gradient(180deg, #3D95CE 0%, #4A9AC8 46%, #56A0C2 100%);
+}
+
+.sc-sun::before {
+    background:
+        radial-gradient(circle at 9% 4%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, .5) 3.5%, rgba(255, 255, 255, 0) 15%),
+        radial-gradient(circle at 20% 16%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 7%),
+        radial-gradient(circle at 31% 30%, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, 0) 5.5%),
+        radial-gradient(circle at 44% 48%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 6.5%),
+        radial-gradient(circle at 62% 71%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 5%),
+        radial-gradient(circle at 78% 88%, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, 0) 7%);
+}
+
+.sc-sun::after {
+    background: linear-gradient(112deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, 0) 34%);
+}
+
+/* deep blue sky with a few wisps -- Bellevue in IMG_2512 */
+.sc-clear {
+    background: linear-gradient(180deg, #2E86C6 0%, #56A6D6 62%, #8CC4E2 100%);
+}
+
+.sc-clear::before {
+    background:
+        radial-gradient(60% 22% at 74% 26%, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(50% 14% at 26% 52%, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(70% 26% at 56% 82%, rgba(255, 255, 255, .30) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* bright, mostly-cloud daylight -- Cupertino and Tokyo */
+.sc-partly {
+    background: linear-gradient(180deg, #9FC4DA 0%, #B9D2E1 48%, #A8C7DB 100%);
+}
+
+.sc-partly::before {
+    background:
+        radial-gradient(48% 30% at 18% 22%, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(60% 34% at 72% 40%, rgba(255, 255, 255, .78) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(54% 26% at 40% 76%, rgba(255, 255, 255, .62) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+.sc-partly::after {
+    background: linear-gradient(180deg, rgba(70, 110, 140, .18) 0%, rgba(70, 110, 140, 0) 40%);
+}
+
+/* flat overcast */
+.sc-cloudy {
+    background: linear-gradient(180deg, #7E93A3 0%, #93A6B4 50%, #7C90A0 100%);
+}
+
+.sc-cloudy::before {
+    background:
+        radial-gradient(56% 30% at 26% 24%, rgba(255, 255, 255, .40) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(64% 32% at 76% 62%, rgba(255, 255, 255, .32) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* after dark -- New York and Guatemala City in IMG_2511 */
+.sc-night {
+    background: linear-gradient(180deg, #23272B 0%, #2C3136 46%, #1B1F23 100%);
+}
+
+.sc-night::before {
+    background:
+        radial-gradient(52% 30% at 22% 18%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 72%),
+        radial-gradient(64% 34% at 78% 58%, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(50% 26% at 44% 88%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+/* rain -- Estes Park, grey-blue with the streaks running down it */
+.sc-rain {
+    background: linear-gradient(180deg, #5A7488 0%, #6B8296 52%, #55697B 100%);
+}
+
+.sc-rain::before {
+    background:
+        radial-gradient(58% 28% at 30% 16%, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(60% 30% at 74% 54%, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, 0) 74%);
+}
+
+.sc-rain::after {
+    background-image: repeating-linear-gradient(76deg,
+            rgba(255, 255, 255, .13) 0 1px,
+            rgba(255, 255, 255, 0) 1px 9px);
+}
+
+/* ---------- the paged city deck --------------------------------------- */
+.wx-deck {
+    position: absolute;
+    inset: 0;
+}
+
+.wx-pages {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    will-change: transform;
+}
+
+.wx-page {
+    position: relative;
+    touch-action: pan-y;
+    flex: 0 0 320px;
+    width: 320px;
+    height: 568px;
+    overflow: hidden;
+}
+
+/* city + condition, pinned; they slide up 25 pt and stop (IMG_2509 -> 2510) */
+.wx-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+}
+
+.wx-name {
+    margin-top: 48px;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 42px;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+}
+
+.wx-cond {
+    margin-top: -5px;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: -.2px;
+}
+
+/* the two clipped windows the scroll actually happens inside: one above the
+hourly strip and one below it, so nothing ever shows through the strip */
+.wx-clip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 3;
+}
+
+.wx-clip>div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    will-change: transform;
+}
+
+/* the invisible thing the browser actually scrolls */
+.wx-scroll {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 37px;
+    z-index: 6;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- hero ---------- */
+.wx-hero {
+    height: 228px;
+    position: relative;
+}
+
+.wx-temp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 85px;
+    text-align: center;
+    line-height: 106px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .16);
+}
+
+.wx-degwrap {
+    position: relative;
+    display: inline-block;
+}
+
+.wx-degwrap .n {
+    font-size: 102px;
+    font-weight: 100;
+    letter-spacing: -2px;
+}
+
+.wx-degwrap .d {
+    position: absolute;
+    left: 100%;
+    top: 10px;
+    font-size: 36px;
+    font-weight: 100;
+    line-height: 36px;
+}
+
+/* ---------- today's high / low ---------- */
+.wx-today {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-today .dow {
+    flex: 1;
+}
+
+.wx-today .hi {
+    width: 40px;
+    text-align: right;
+}
+
+.wx-today .lo {
+    width: 31px;
+    text-align: right;
+    color: rgba(255, 255, 255, .5);
+}
+
+/* ---------- hourly strip ---------- */
+.wx-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 94px;
+    touch-action: pan-x;
+    z-index: 7;
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-hours {
+    display: flex;
+    height: 94px;
+    padding: 0 8px;
+    align-items: stretch;
+}
+
+.wx-hr {
+    flex: 0 0 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-hr .h,
+.wx-hr .t {
+    white-space: nowrap;
+}
+
+.wx-hr .h {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+
+.wx-hr .t {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+}
+
+.wx-hr svg {
+    display: block;
+}
+
+/* ---------- the nine day rows ---------- */
+.wx-day {
+    position: relative;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -.3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-day .dow {
+    flex: 1;
+}
+
+.wx-day .ic {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wx-day .hi {
+    width: 40px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.wx-day .lo {
+    width: 31px;
+    text-align: right;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .5);
+}
+
+/* ---------- the sentence, and the detail table ---------- */
+.wx-summary {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 17px;
+    line-height: 21px;
+    letter-spacing: -.3px;
+    border-top: .5px solid rgba(255, 255, 255, .42);
+    border-bottom: .5px solid rgba(255, 255, 255, .42);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-details {
+    height: 228px;
+    padding: 10px 0 19px;
+    font-size: 17px;
+    letter-spacing: -.3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .14);
+}
+
+.wx-drow {
+    height: 17px;
+    display: flex;
+    align-items: center;
+}
+
+.wx-drow.gap {
+    margin-top: 7px;
+}
+
+.wx-drow .k {
+    width: 165px;
+    text-align: right;
+    padding-right: 12.5px;
+}
+
+.wx-drow .v {
+    flex: 1;
+}
+
+/* ---------- bottom bar ---------- */
+.wx-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 37px;
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-top: .5px solid rgba(255, 255, 255, .32);
+    background: rgba(255, 255, 255, .06);
+}
+
+.wx-twc {
+    flex: 0 0 34px;
+    height: 24px;
+    background: rgba(255, 255, 255, .32);
+    color: rgba(0, 0, 0, .62);
+    font-family: var(--sf-text);
+    font-size: 6px;
+    line-height: 8px;
+    font-weight: 700;
+    padding: 0 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wx-dots {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+}
+
+.wx-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .38);
+}
+
+.wx-dots i.on {
+    background: #fff;
+}
+
+.wx-listbtn {
+    flex: 0 0 34px;
+    display: flex;
+    justify-content: flex-end;
+    color: rgba(255, 255, 255, .92);
+}
+
+.wx-listbtn:active {
+    opacity: .5;
+}
+
+/* ---------- every city at a glance (IMG_2511 / IMG_2512) ------------- */
+.wx-list {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.14);
+    transition: opacity .3s ease, transform .3s cubic-bezier(.32, .72, 0, 1);
+}
+
+.wx-list.on {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.wx-lscroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.wx-lscroll::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-lrow {
+    position: relative;
+    height: 83px;
+    overflow: hidden;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+
+.wx-lrow .wx-scene {
+    z-index: 0;
+}
+
+.wx-lrow .when,
+.wx-lrow .nm,
+.wx-lrow .temp {
+    position: absolute;
+    z-index: 2;
+}
+
+.wx-lrow .when {
+    left: 16px;
+    top: 19px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -.2px;
+}
+
+.wx-lrow .nm {
+    left: 16px;
+    top: 37px;
+    right: 96px;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: -.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wx-lrow .temp {
+    right: 26px;
+    top: 12px;
+    font-size: 62px;
+    font-weight: 100;
+    line-height: 60px;
+    letter-spacing: -2px;
+}
+
+/* the top row runs its photograph up behind the status bar, so it is 20 pt
+taller than the rest and its text sits 20 pt lower (IMG_2511) */
+.wx-lrow.first {
+    height: 103px;
+}
+
+.wx-lrow.first .when {
+    top: 39px;
+}
+
+.wx-lrow.first .nm {
+    top: 57px;
+}
+
+.wx-lrow.first .temp {
+    top: 32px;
+}
+
+.wx-lrow .temp .d {
+    position: absolute;
+    left: 100%;
+    top: 3px;
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: 0;
+}
+
+/* the footer is part of the scroll, which is why IMG_2511 has no toolbar
+and IMG_2512 -- scrolled to the end -- does */
+.wx-lfoot {
+    position: relative;
+    height: 133px;
+    background: #000;
+}
+
+.wx-unit {
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 21px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.wx-unit span {
+    color: rgba(255, 255, 255, .38);
+    padding: 6px 2px;
+}
+
+.wx-unit span.on {
+    color: #fff;
+}
+
+.wx-unit i {
+    display: block;
+    width: 12px;
+    height: 22px;
+    margin: 0 1px;
+    border-right: 1px solid rgba(255, 255, 255, .38);
+    transform: skewX(-20deg);
+}
+
+.wx-add {
+    position: absolute;
+    right: 16px;
+    top: 15px;
+    color: rgba(255, 255, 255, .82);
+}
+
+.wx-add:active {
+    opacity: .5;
+}
+
+.wx-twc.foot {
+    position: absolute;
+    left: 50%;
+    margin-left: -17px;
+    bottom: 22px;
+    flex: none;
+}
+
+/* ---------- add a city (IMG_2513 / IMG_2514) ------------------------- */
+.wx-search {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32, .72, 0, 1);
+}
+
+.wx-search.on {
+    transform: translateY(0);
+}
+
+.wx-sbackdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(80% 50% at 50% 42%, #23404E 0%, rgba(35, 64, 78, 0) 70%),
+        linear-gradient(180deg, #24272A 0%, #1E3542 44%, #16222A 100%);
+}
+
+.wx-shead {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 93px;
+    z-index: 3;
+    background: rgba(0, 0, 0, .74);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+.wx-stitle {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -.2px;
+    color: #fff;
+}
+
+.wx-srow {
+    display: flex;
+    align-items: center;
+    margin-top: 13px;
+    padding: 0 8px;
+}
+
+.wx-sfield {
+    flex: 1;
+    height: 26px;
+    border-radius: 5px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 6px;
+    overflow: hidden;
+}
+
+.wx-stext {
+    flex: 1;
+    font-family: var(--sf-text);
+    font-size: 15px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.wx-stext .caret {
+    display: inline-block;
+    width: 1.5px;
+    height: 18px;
+    background: #007AFF;
+    animation: blink 1.06s steps(1, end) infinite;
+    flex: 0 0 auto;
+}
+
+.wx-sclear {
+    display: none;
+    flex: 0 0 auto;
+    line-height: 0;
+}
+
+.wx-sfield.filled .wx-sclear {
+    display: block;
+}
+
+.wx-scancel {
+    flex: 0 0 auto;
+    padding: 0 4px 0 10px;
+    font-size: 21px;
+    color: #fff;
+    letter-spacing: -.4px;
+}
+
+.wx-scancel:active {
+    opacity: .5;
+}
+
+.wx-sresults {
+    position: absolute;
+    top: 93px;
+    left: 0;
+    right: 0;
+    bottom: 216px;
+    z-index: 2;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 2px;
+    scrollbar-width: none;
+}
+
+.wx-sresults::-webkit-scrollbar {
+    display: none;
+}
+
+.wx-sres {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px 0 36px;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -.4px;
+    color: rgba(255, 255, 255, .42);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.wx-sres b {
+    font-weight: 400;
+    color: #fff;
+}
+
+.wx-sres:active {
+    background: rgba(255, 255, 255, .1);
+}
+
+.wx-snone {
+    padding: 24px 0;
+    text-align: center;
+    font-size: 17px;
+    color: rgba(255, 255, 255, .45);
+}
+
+/* the keyboard is the standard one; it just needs to sit on top */
+.wx-search .kbwrap {
+    position: relative;
+    z-index: 4;
+}

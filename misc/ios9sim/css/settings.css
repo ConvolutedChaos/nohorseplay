@@ -1,0 +1,1141 @@
+/* ================= SETTINGS =================
+Traced off ref_pic/Settings/. Only Wi-Fi is wired -- it is the one screen
+there are photographs of -- and the panel outside the device owns the air
+the radio is looking at. The geometry below is measured off the 2x shots:
+nav bottom 64pt, group top gap 35pt, cells 44pt, group header 50.5pt,
+network rows indent 45pt (the checkmark gutter), the Wi-Fi switch row 42,
+segmented control 310 x 29pt inset 5pt a side.                        */
+#seapp {
+    --se-tint: #007AFF;
+    --se-bg: #EFEFF4;
+    --se-hair: #C8C7CC;
+    --se-dim: #8E8E93;
+    position: absolute;
+    inset: 0;
+    background: var(--se-bg);
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#seapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#sestatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#sestatus .sb-left,
+#sestatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#sestatus .sb-right {
+    justify-content: flex-end;
+}
+
+#sestatus .sb-mid {
+    font-weight: 600;
+}
+
+#sestack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+#sestack .page {
+    background: var(--se-bg);
+}
+
+#sestack .nav .btn.back {
+    padding-left: 10px;
+    gap: 6px;
+}
+
+/* a long SSID gets clipped rather than running under the back button */
+#sestack .nav .title {
+    padding: 0 78px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* "Other Network" is too wide to leave the title centred, so the title
+   sits beside it instead -- what UINavigationBar itself does */
+#se-sec .nav .title {
+    position: static;
+    padding: 0;
+    margin-left: 8px;
+    text-align: left;
+}
+
+/* ---------- the scrolling table ---------- */
+.se-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: var(--se-bg);
+}
+
+/* 35pt of grey above a group that carries no header of its own */
+.se-gap {
+    height: 35px;
+}
+
+.se-grp {
+    background: #fff;
+    position: relative;
+}
+
+.se-grp:before,
+.se-grp:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--se-hair);
+    transform: scaleY(.5);
+}
+
+.se-grp:before {
+    top: 0;
+    transform-origin: top;
+}
+
+.se-grp:after {
+    bottom: 0;
+    transform-origin: bottom;
+}
+
+/* group header: 50.5pt tall, label sitting on the 30pt line */
+.se-hdr {
+    height: 50.5px;
+    padding: 0 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 16px;
+    color: #6D6D72;
+    letter-spacing: -.08px;
+}
+
+.se-hdr > span {
+    transform: translateY(-9px);
+}
+
+.se-hdr .se-spin {
+    margin-bottom: 11px;
+}
+
+.se-ftr {
+    padding: 7px 16px 0;
+    font-size: 13px;
+    line-height: 17px;
+    color: #6D6D72;
+    letter-spacing: -.08px;
+}
+
+/* ---------- cells ---------- */
+.se-cell {
+    position: relative;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px 0 16px;
+    background: #fff;
+    font-size: 17px;
+    letter-spacing: -.41px;
+    color: #000;
+}
+
+.se-cell + .se-cell:before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--se-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+/* the row under the segmented control runs straight on, no hairline */
+.se-seg + .se-cell:before {
+    content: none;
+}
+
+.se-cell.tap:active {
+    background: #D9D9D9;
+}
+
+.se-cell.blue {
+    color: var(--se-tint);
+}
+
+.se-cell.dim {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+.se-cell .se-name {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.se-val {
+    color: var(--se-dim);
+    font-size: 17px;
+    letter-spacing: -.41px;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* the IP fields hold editable text, so their values are ink, not grey */
+.se-val.ink {
+    color: #000;
+}
+
+.se-chev {
+    flex: 0 0 auto;
+    margin-left: 7px;
+    color: #C7C7CC;
+}
+
+/* the 29pt rounded tile the root list hangs its rows off */
+.se-icon {
+    flex: 0 0 auto;
+    width: 29px;
+    height: 29px;
+    border-radius: 6px;
+    margin: 0 16px 0 -1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.se-icon.wifi {
+    background: #007AFF;
+}
+
+.se-icon.bt {
+    background: #007AFF;
+}
+
+/* Airplane Mode is the one orange tile in the group */
+.se-icon.air {
+    background: #FF9500;
+}
+
+/* the bench supply is not part of the device, so it gets the grey tile */
+.se-icon.dev {
+    background: #8E8E93;
+}
+
+/* ---------- Wi-Fi page ---------- */
+/* the switch row sits 42pt in; network rows 45, over the gutter the
+   checkmark and the joining spinner share */
+.se-cell.swrow {
+    padding-left: 42px;
+}
+
+.se-cell.net {
+    padding-left: 45px;
+}
+
+.se-gutter {
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    color: var(--se-tint);
+}
+
+.se-lock {
+    flex: 0 0 auto;
+    margin-left: 8px;
+    color: #000;
+}
+
+.se-bars {
+    flex: 0 0 auto;
+    margin-left: 10.5px;
+    color: #000;
+}
+
+.se-bars .w1,
+.se-bars .w2,
+.se-bars .w3 {
+    opacity: .22;
+}
+
+.se-bars.b1 .w1,
+.se-bars.b2 .w1,
+.se-bars.b2 .w2,
+.se-bars.b3 .w1,
+.se-bars.b3 .w2,
+.se-bars.b3 .w3 {
+    opacity: 1;
+}
+
+.se-info {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-left: 13px;
+    color: var(--se-tint);
+}
+
+.se-info:active {
+    opacity: .4;
+}
+
+/* ---------- the grey activity indicator ---------- */
+.se-spin {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    animation: sespin 1s steps(12, end) infinite;
+}
+
+.se-spin i {
+    position: absolute;
+    left: 9.2px;
+    top: 1px;
+    width: 1.6px;
+    height: 5px;
+    border-radius: .8px;
+    background: #8E8E93;
+    transform-origin: .8px 9px;
+}
+
+@keyframes sespin {
+    from {
+        transform: rotate(0turn);
+    }
+
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* ---------- segmented control ---------- */
+.se-seg {
+    position: relative;
+    height: 43.5px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.se-segs {
+    flex: 1;
+    height: 29px;
+    display: flex;
+    border: 1px solid var(--se-tint);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.se-segs > div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    letter-spacing: -.24px;
+    color: var(--se-tint);
+    border-left: 1px solid var(--se-tint);
+}
+
+.se-segs > div:first-child {
+    border-left: 0;
+}
+
+.se-segs > div.on {
+    background: var(--se-tint);
+    color: #fff;
+}
+
+/* ---------- root search bar ---------- */
+#sestack .searchwrap {
+    background: #C8C8CE;
+}
+
+#sestack .searchwrap:after {
+    background: #B4B4B5;
+}
+
+/* searching pulls the field up under the status bar and dims the table */
+#se-root.searching .nav {
+    display: none;
+}
+
+.se-dimmer {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .16);
+    z-index: 5;
+    display: none;
+}
+
+#se-root.dimmed .se-dimmer {
+    display: block;
+}
+
+.se-bodywrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    display: flex;
+}
+
+.se-sclear {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: #8E8E93;
+    display: none;
+}
+
+.searchwrap.hastext .se-sclear {
+    display: block;
+}
+
+/* a search hit carries the path it lives at underneath its name */
+.se-hit {
+    padding: 5px 15px 5px 16px;
+    align-items: center;
+}
+
+.se-hitwrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.se-hitpath {
+    font-size: 13px;
+    color: #6D6D72;
+    letter-spacing: -.08px;
+    margin-top: 1px;
+}
+
+/* ---------- the modal sheets (Enter Password / Other Network) -------- */
+/* both hang a 30pt prompt strip above their nav bar */
+.se-prompt {
+    flex: 0 0 30px;
+    height: 30px;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    letter-spacing: -.24px;
+    color: #000;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.se-field {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    letter-spacing: -.41px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.se-field .se-ph {
+    color: #C7C7CC;
+}
+
+.se-dots {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-right: 3px;
+}
+
+.se-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #000;
+}
+
+.se-caret {
+    flex: 0 0 auto;
+    width: 2px;
+    height: 22px;
+    background: var(--se-tint);
+    margin-left: 1px;
+    animation: secaret 1.06s steps(1, end) infinite;
+}
+
+@keyframes secaret {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Name / Password keep their label in a fixed column so the field lines
+   up with the network names one screen back */
+.se-cell .se-elabel {
+    flex: 0 0 auto;
+    width: 99px;
+}
+
+/* Security rides in from the right over the sheet, it does not slide up */
+#se-join.sebehind {
+    transform: translateX(-27%);
+}
+
+/* ---------- alerts ---------- */
+.se-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 660;
+    background: rgba(0, 0, 0, .32);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.se-alertwrap.up {
+    display: flex;
+}
+
+.se-alert {
+    width: 270px;
+    border-radius: 13px;
+    background: rgba(250, 250, 250, .94);
+    overflow: hidden;
+    text-align: center;
+    animation: ckpop .22s ease-out;
+}
+
+.se-atitle {
+    padding: 18px 16px 0;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: -.41px;
+}
+
+.se-amsg {
+    padding: 3px 16px 0;
+    font-size: 13px;
+    line-height: 17px;
+    color: #000;
+}
+
+.se-abtns {
+    display: flex;
+    position: relative;
+    margin-top: 17px;
+}
+
+.se-abtns:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .22);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.se-abtn {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: var(--se-tint);
+    letter-spacing: -.41px;
+    position: relative;
+}
+
+.se-abtn + .se-abtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(0, 0, 0, .22);
+    transform: scaleX(.5);
+}
+
+.se-abtn:active {
+    background: rgba(0, 0, 0, .07);
+}
+
+/* ---------- the Renew Lease action sheet ---------- */
+.se-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    background: rgba(0, 0, 0, .35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.se-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.se-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(110%);
+    transition: transform .3s cubic-bezier(.32, .72, 0, 1);
+}
+
+.se-sheetwrap.up .se-sheet {
+    transform: translateY(0);
+}
+
+.se-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(248, 248, 248, .93);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    margin-top: 8px;
+}
+
+.se-sbtn {
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--se-tint);
+    letter-spacing: -.45px;
+    position: relative;
+}
+
+.se-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .96);
+}
+
+.se-sbtn:active {
+    background: rgba(0, 0, 0, .08);
+}
+
+.se-sbtn + .se-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .16);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+/* ---------- the status-bar glyphs answer to the radios ---------- */
+/* Airplane mode takes the whole left slot: the carrier name gives it up,
+   and the arcs go dark on their own because the radio went down with it.
+   Traced off ref_pic/airplane mode.PNG -- 12 x 11pt, nose to the right. */
+.sb-air {
+    flex: 0 0 auto;
+    display: none;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity .28s ease, transform .42s cubic-bezier(.32, .72, 0, 1);
+}
+
+.sb-left.flying .sb-air {
+    display: flex;
+    align-items: center;
+}
+
+/* on the runway -> in its slot */
+.sb-left.flying.aloft .sb-air {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* and away to the right, fading as it goes */
+.sb-left.flying.away .sb-air {
+    opacity: 0;
+    transform: translateX(22px);
+}
+
+/* the carrier name stands down for as long as anything is in the air */
+.sb-left.flying > span:not(.sb-air) {
+    display: none;
+}
+
+/* On the way out the arcs wait for the runway to clear, so the pair come
+   back together once the aeroplane has gone instead of it flying through
+   them. Only on the way out: switching Wi-Fi back on mid-flight lights
+   the arcs beside the aeroplane, which is what iOS does. */
+.sb-left.away .sb-wifi {
+    display: none;
+}
+
+.sb-wifi {
+    display: none;
+}
+
+.sb-wifi.on {
+    display: block;
+}
+
+.sb-wifi.b1 .w2,
+.sb-wifi.b1 .w3,
+.sb-wifi.b2 .w3 {
+    opacity: .32;
+}
+
+/* ---------- fourth wall: the air the radio is looking at ---------- */
+/* the editor is the tall part of the panel, so it folds away behind its
+   own header; the one-line count stays out as the summary */
+.fw-disclose {
+    cursor: pointer;
+}
+
+.fw-disclose .fw-caret {
+    margin-left: auto;
+    color: #7d838d;
+    transition: transform .18s ease, color .18s ease;
+}
+
+.fw-disclose:hover .fw-caret {
+    color: #b9bfc8;
+}
+
+.fw-disclose.shut .fw-caret {
+    transform: rotate(-90deg);
+}
+
+/* the summary line and the fold now share a card under the header, so
+   the disclosure reaches them through it rather than as siblings */
+.fw-disclose.shut + .fw-grp .fw-read {
+    margin-bottom: 0;
+}
+
+.fw-disclose.shut + .fw-grp .fw-fold {
+    display: none;
+}
+
+/* the list scrolls inside the panel so a long one cannot grow taller
+   than the window and swallow the device */
+.fw-list {
+    margin-bottom: 8px;
+    max-height: 268px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.fw-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fw-list::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(255, 255, 255, .18);
+}
+
+.fw-net {
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 8px;
+    padding: 7px 8px 8px;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, .04);
+}
+
+.fw-net.joined {
+    border-color: rgba(76, 217, 100, .5);
+}
+
+.fw-nrow {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fw-nrow + .fw-nrow {
+    margin-top: 5px;
+}
+
+.fw-net input[type="text"],
+.fw-net select {
+    min-width: 0;
+    height: 23px;
+    padding: 0 4px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 5px;
+    background: #2a2d33;
+    color: #e6e8eb;
+    font: inherit;
+    font-size: 11.5px;
+}
+
+.fw-net input[type="text"] {
+    flex: 1;
+}
+
+.fw-net select {
+    flex: 1;
+    cursor: pointer;
+}
+
+.fw-net input:focus,
+.fw-net select:focus {
+    outline: 1px solid #3a80e8;
+}
+
+.fw-net input.short {
+    border-color: rgba(255, 69, 58, .65);
+    color: #ff8079;
+}
+
+.fw-net input[type="range"] {
+    flex: 1;
+    height: 14px;
+    accent-color: #4CD964;
+    cursor: pointer;
+}
+
+.fw-nlbl {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #7d838d;
+}
+
+.fw-nlbl.w {
+    width: 34px;
+}
+
+.fw-chk {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    color: #a8adb6;
+    cursor: pointer;
+}
+
+.fw-chk input {
+    accent-color: #3a80e8;
+    margin: 0;
+}
+
+.fw-nkill {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 5px;
+    background: #4a4e57;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    line-height: 20px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.fw-nkill:hover {
+    background: #a8434a;
+}
+
+.fw-add {
+    display: block;
+    width: 100%;
+    height: 30px;
+    border: 0;
+    border-radius: 7px;
+    background: #2f6fd0;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .18s ease;
+}
+
+.fw-add:hover {
+    background: #3a80e8;
+}
+
+.fw-add:active {
+    background: #275ba8;
+}
+
+.fwwrapper.wide {
+    width: auto;
+}
+
+
+
+/* ---------- the bench panel, repainted for a Settings page ----------
+Only the colours change. Every measurement above, and so every one of the
+network and device editors underneath, keeps working exactly as it did in
+the corner panel -- this just moves it from a dark slab onto white paper. */
+.fw-sec {
+    margin-top: 22px;
+}
+
+#fwPanel .fw-head {
+    gap: 6px;
+    margin: 0;
+    padding: 0 16px 6px;
+    font-family: var(--sf-text);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: .3px;
+    color: #6D6D72;
+}
+
+#fwPanel .fw-head svg {
+    color: #8E8E93;
+}
+
+#fwPanel .fw-disclose {
+    cursor: pointer;
+}
+
+#fwPanel .fw-disclose:hover .fw-caret {
+    color: #6D6D72;
+}
+
+/* the white card each section's controls sit on, hairlined like a group */
+.fw-grp {
+    position: relative;
+    background: #fff;
+    padding: 11px 16px 14px;
+}
+
+.fw-grp:before,
+.fw-grp:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--se-hair);
+    transform: scaleY(.5);
+}
+
+.fw-grp:before {
+    top: 0;
+    transform-origin: top;
+}
+
+.fw-grp:after {
+    bottom: 0;
+    transform-origin: bottom;
+}
+
+#fwPanel #fwPct,
+#fwPanel #fwPhCount {
+    color: #000;
+    font-weight: 300;
+    font-family: var(--sf-display);
+    font-size: 26px;
+    letter-spacing: -.6px;
+}
+
+#fwPanel .fw-state {
+    color: #4CD964;
+}
+
+#fwPanel .fw-state.draining {
+    color: #8E8E93;
+}
+
+#fwPanel .fw-state.low {
+    color: #FF3B30;
+}
+
+#fwPanel .fw-gauge {
+    background: rgba(0, 0, 0, .09);
+}
+
+#fwPanel #fwPlug,
+#fwPanel #fwPhAdd,
+#fwPanel #fwPhWipe,
+#fwPanel .fw-add {
+    height: 32px;
+    border-radius: 6px;
+    background: #007AFF;
+    font-family: var(--sf-text);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: -.2px;
+}
+
+#fwPanel #fwPlug:hover,
+#fwPanel #fwPhAdd:hover,
+#fwPanel .fw-add:hover {
+    background: #2b90ff;
+}
+
+#fwPanel #fwPlug:active,
+#fwPanel #fwPhAdd:active,
+#fwPanel #fwPhWipe:active,
+#fwPanel .fw-add:active {
+    background: #0062cc;
+}
+
+/* the two destructive-ish greys: unplugging and erasing */
+#fwPanel #fwPlug.unplugged,
+#fwPanel #fwPhWipe.fw-quiet {
+    background: #EFEFF4;
+    color: #FF3B30;
+}
+
+#fwPanel #fwPlug.unplugged:hover,
+#fwPanel #fwPhWipe.fw-quiet:hover {
+    background: #e4e4ea;
+}
+
+#fwPanel .fw-selrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+#fwPanel .fw-lbl {
+    flex: 1;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -.24px;
+    text-transform: none;
+    color: #000;
+}
+
+#fwPanel #fwCond {
+    width: auto;
+    max-width: 160px;
+    height: 28px;
+    border: 1px solid rgba(0, 0, 0, .13);
+    border-radius: 6px;
+    background: #fff;
+    color: #8E8E93;
+    font-family: var(--sf-text);
+    font-size: 13px;
+}
+
+#fwPanel #fwCond:focus {
+    outline: 1px solid #007AFF;
+}
+
+/* the network and device editors: same cards, light ink */
+#fwPanel .fw-list {
+    max-height: none;
+    padding-right: 0;
+}
+
+#fwPanel .fw-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .18);
+}
+
+#fwPanel .fw-net {
+    border-color: rgba(0, 0, 0, .11);
+    background: #F7F7F9;
+}
+
+#fwPanel .fw-net.joined {
+    border-color: #4CD964;
+    background: #F2FBF4;
+}
+
+#fwPanel .fw-nrow + .fw-nrow {
+    border-top-color: rgba(0, 0, 0, .07);
+}
+
+#fwPanel .fw-net input[type="text"],
+#fwPanel .fw-net select {
+    border: 1px solid rgba(0, 0, 0, .14);
+    background: #fff;
+    color: #1c1c1e;
+    font-family: var(--sf-text);
+}
+
+#fwPanel .fw-net input:focus,
+#fwPanel .fw-net select:focus {
+    outline: 1px solid #007AFF;
+}
+
+#fwPanel .fw-net input.short {
+    outline: 1px solid #FF9500;
+}
+
+#fwPanel .fw-nlbl,
+#fwPanel .fw-chk {
+    color: #6D6D72;
+}
+
+#fwPanel .fw-nkill {
+    background: #D8D8DD;
+    color: #fff;
+}
+
+#fwPanel .fw-nkill:hover {
+    background: #FF3B30;
+}

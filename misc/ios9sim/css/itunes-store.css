@@ -1,0 +1,305 @@
+/* ================= iTUNES STORE =================
+Traced off ref_pic/iTunesStore/. Music, Search and More are light; Movies
+and TV Shows are dark, the way the 2015 store shipped. Nothing loads,
+because there is nothing left on the other end to load from -- the empty
+panes and the Cannot Connect sheet are the app working correctly. */
+#itapp {
+    --it-blue: #0A84FF;
+    --it-hair: #C8C7CC;
+    --it-bar: #F7F7F7;
+    --it-bg: #fff;
+    --it-idle: #929296;
+    position: absolute;
+    inset: 0;
+    background: var(--it-bg);
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-text);
+}
+
+/* the two video sections invert the whole chrome */
+#itapp.dark {
+    --it-blue: #0A84FF;
+    --it-hair: #2A2A2C;
+    --it-bar: #1F1F21;
+    --it-bg: #1A1A1C;
+    --it-idle: #8A8A8F;
+}
+
+#itapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#itstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: var(--it-bar);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#itstatus .sb-left,
+#itstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#itstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#itstatus .sb-mid {
+    font-weight: 600;
+}
+
+#itapp.busy .sb-net {
+    display: block;
+}
+
+#itstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--it-bg);
+}
+
+/* ---------- nav ---------- */
+.it-nav {
+    flex: 0 0 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--it-bar);
+}
+
+.it-nav:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+    pointer-events: none;
+}
+
+#itapp.dark .it-title {
+    color: #fff;
+}
+
+.it-edit {
+    margin-left: auto;
+    padding: 0 14px;
+    font-size: 17px;
+    color: var(--it-blue);
+    letter-spacing: -.41px;
+    display: none;
+    z-index: 2;
+}
+
+#itapp.more .it-edit {
+    display: block;
+}
+
+.it-back {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    padding-left: 8px;
+    font-size: 17px;
+    color: var(--it-blue);
+    letter-spacing: -.41px;
+    z-index: 2;
+}
+
+#itapp.sub .it-back {
+    display: flex;
+}
+
+#itapp.sub .it-edit {
+    display: none;
+}
+
+/* ---------- body ---------- */
+.it-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--it-bg);
+}
+
+/* the message that is the whole point of the app */
+.it-fail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -.5px;
+    color: #8A8A8F;
+}
+
+/* ---------- the More list ---------- */
+.it-row {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 14px 0 12px;
+}
+
+.it-row:active {
+    background: rgba(0, 0, 0, .07);
+}
+
+.it-icon {
+    flex: 0 0 auto;
+    width: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--it-blue);
+}
+
+.it-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 17px;
+    color: #000;
+    letter-spacing: -.41px;
+}
+
+#itapp.dark .it-label {
+    color: #fff;
+}
+
+.it-chev {
+    flex: 0 0 auto;
+    color: #C7C7CC;
+    display: flex;
+}
+
+/* rows and the blank rules under them share one hairline */
+.it-row:after,
+.it-rule:after {
+    content: "";
+    position: absolute;
+    left: 55px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-rule {
+    position: relative;
+    height: 44px;
+}
+
+/* ---------- tab bar ---------- */
+.it-tabs {
+    flex: 0 0 49px;
+    position: relative;
+    display: flex;
+    background: var(--it-bar);
+}
+
+.it-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--it-hair);
+    transform: scaleY(.5);
+}
+
+.it-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    color: var(--it-idle);
+}
+
+.it-tab.on {
+    color: var(--it-blue);
+}
+
+.it-tab svg {
+    display: block;
+}
+
+.it-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+.it-tab:active {
+    opacity: .5;
+}
+
+/* The MobileStore artwork is black (or blue) on alpha, so it goes in as a
+mask and takes its colour from the row -- that keeps the unselected icons
+visible when Movies and TV Shows flip the bar dark. `--m` is the plain
+glyph, `--ms` the filled one a selected tab uses. */
+.it-tab i,
+.it-icon i {
+    display: block;
+    background: currentColor;
+    -webkit-mask-image: var(--m);
+    mask-image: var(--m);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+.it-tab.on i {
+    -webkit-mask-image: var(--ms);
+    mask-image: var(--ms);
+}

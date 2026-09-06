@@ -1,0 +1,743 @@
+/* fonts, reset, the device shell, the fourth wall, home screen, app window */
+/* ---------- system font ----------
+Apple's rule: SF UI Display at 20pt and up, SF UI Text below 20pt.
+
+Each cut is declared at the weight it actually is, so the browser's own
+font matching picks the right file: ask for 100 and you get Thin, ask for
+400 and you get Regular. Nothing is declared as a 100-900 range, which
+leaves the browser free to synthesise the semibold / bold weights the UI
+leans on (no Semibold cut is supplied yet -- drop one in and add a
+font-weight: 600 face here and the synthesis stops). */
+@font-face {
+    font-family: "SF UI Text";
+    src: url("../fonts/SFUIText-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "SF UI Display";
+    src: url("../fonts/SFUIDisplay-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+/* Apple calls this cut "Thin" (~200). Claiming 100-200 means font-weight:100
+resolves to it, while 300 still rounds to Regular -- which is what the
+reference photo's "slide to unlock" and keypad digits actually measure as. */
+@font-face {
+    font-family: "SF UI Display";
+    src: url("../fonts/SFUIDisplay-Thin.woff2") format("woff2");
+    font-weight: 100 200;
+    font-style: normal;
+    font-display: block;
+}
+
+:root {
+    --sf-text: "SF UI Text", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --sf-display: "SF UI Display", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    /* kept as an alias: the thin cut is now just a weight of --sf-display */
+    --sf-thin: var(--sf-display);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    height: 100%;
+    background: radial-gradient(circle at 50% 42%, #26282c 0%, #111214 62%, #08090a 100%);
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sf-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ================= FOURTH WALL =================
+Not part of the device: the bench supply that owns the charger, the cell's
+state of health, the photo library and the air both radios are looking at.
+It used to float over the page in its own corner panel; it now lives at the
+bottom of Settings under Developer, which is the only place on a phone
+there is room for it. The geometry below is still the panel's -- the light
+repaint that lets it sit on a Settings page is further down, by .fw-panel. */
+#fwPanel {
+    padding: 0 0 26px;
+    font-family: var(--sf-text);
+    color: #1c1c1e;
+}
+
+.fw-head {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: #7d838d;
+    margin-bottom: 9px;
+}
+
+.fw-head svg {
+    display: block;
+    color: #f0c040;
+}
+
+.fw-read {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+#fwPct {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.4px;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.fw-state {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    color: #4CD964;
+}
+
+.fw-state.draining {
+    color: #7d838d;
+}
+
+.fw-state.low {
+    color: #FF453A;
+}
+
+.fw-gauge {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, .12);
+    overflow: hidden;
+    margin-bottom: 11px;
+}
+
+.fw-gauge i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    background: #4CD964;
+    transition: width .25s linear, background-color .3s ease;
+}
+
+.fw-gauge i.low {
+    background: #FF453A;
+}
+
+.fw-head.fw-sep {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, .09);
+}
+
+#fwPhCount {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.4px;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+#fwPhAdd,
+#fwPhWipe {
+    margin-top: 6px;
+}
+
+#fwPhWipe.fw-quiet {
+    background: #4a4e57;
+}
+
+#fwPhWipe.fw-quiet:hover {
+    background: #585d68;
+}
+
+#fwPlug,
+#fwPhAdd,
+#fwPhWipe {
+    display: block;
+    width: 100%;
+    height: 30px;
+    border: 0;
+    border-radius: 7px;
+    background: #2f6fd0;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .18s ease;
+}
+
+#fwPlug:hover,
+#fwPhAdd:hover {
+    background: #3a80e8;
+}
+
+#fwPlug:active,
+#fwPhAdd:active,
+#fwPhWipe:active {
+    background: #275ba8;
+}
+
+#fwPlug.unplugged {
+    background: #4a4e57;
+}
+
+#fwPlug.unplugged:hover {
+    background: #585d68;
+}
+
+.fw-lbl {
+    display: block;
+    margin: 11px 0 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: #7d838d;
+}
+
+#fwCond {
+    width: 100%;
+    height: 27px;
+    padding: 0 6px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 6px;
+    background: #2a2d33;
+    color: #e6e8eb;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#fwCond:focus {
+    outline: 1px solid #3a80e8;
+}
+
+.fwwrapper {
+    width: auto;
+}
+
+/* ---------- device frame: iPod touch 5G (A1421), space gray ----------
+123.4 x 58.6 mm body, 88.6 x 49.9 mm display -> 6.41 pt/mm
+=> 791 x 376 pt body, 320 x 568 pt screen, 28 pt side bezels,
+95 pt top bezel, 128 pt bottom bezel.                            */
+#stage {
+    width: 376px;
+    height: 791px;
+    transform-origin: center center;
+    position: relative;
+}
+
+#device {
+    position: absolute;
+    inset: 0;
+    border-radius: 54px;
+    background:
+        linear-gradient(100deg, rgba(255, 255, 255, .13) 0%, rgba(255, 255, 255, 0) 12%,
+            rgba(255, 255, 255, 0) 88%, rgba(255, 255, 255, .10) 100%),
+        linear-gradient(168deg, #5d6167 0%, #474b51 14%, #3c4046 46%, #484c53 80%, #31343a 100%);
+    box-shadow: 0 0 0 1px #26292d, 0 2px 3px rgba(255, 255, 255, .10) inset,
+        0 34px 70px rgba(0, 0, 0, .65), 0 6px 18px rgba(0, 0, 0, .5);
+}
+
+#glass {
+    position: absolute;
+    inset: 3.5px;
+    border-radius: 50.5px;
+    background: #08090a;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07), inset 0 0 22px rgba(0, 0, 0, .9);
+}
+
+#glass:after {
+    /* faint glass sheen */
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50.5px;
+    pointer-events: none;
+    z-index: 50;
+    background: linear-gradient(122deg, rgba(255, 255, 255, .055) 0%, rgba(255, 255, 255, 0) 26%,
+            rgba(255, 255, 255, 0) 74%, rgba(255, 255, 255, .03) 100%);
+}
+
+.cam {
+    position: absolute;
+    top: 41px;
+    left: 50%;
+    margin-left: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #2b3038 0, #14171c 42%, #07080a 100%);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .05), inset 0 0 3px rgba(90, 120, 160, .5);
+}
+
+.cam:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2.2px;
+    width: 2.6px;
+    height: 2.6px;
+    border-radius: 50%;
+    background: rgba(120, 160, 210, .5);
+}
+
+#screen {
+    position: absolute;
+    left: 28px;
+    top: 95px;
+    width: 320px;
+    height: 568px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .9);
+}
+
+#home {
+    position: absolute;
+    bottom: 31px;
+    left: 50%;
+    margin-left: -33px;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 30%, #191c20 0%, #101216 55%, #0a0b0d 100%);
+    box-shadow: inset 0 1.5px 2px rgba(255, 255, 255, .13), inset 0 -1px 2px rgba(0, 0, 0, .8),
+        0 0 0 1px rgba(255, 255, 255, .05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#home .sq {
+    width: 21px;
+    height: 21px;
+    border: 1.7px solid #52565d;
+    border-radius: 4.5px;
+}
+
+#home:hover {
+    background: radial-gradient(circle at 50% 30%, #23262b 0%, #15181c 55%, #0d0e11 100%);
+}
+
+#home.pressed {
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, .9);
+}
+
+#home.pressed .sq {
+    border-color: #3e4249;
+}
+
+/* hardware buttons: only the protruding sliver is visible face-on */
+.hw {
+    position: absolute;
+    cursor: pointer;
+    z-index: 60;
+    background: linear-gradient(90deg, #7b8189 0%, #5a5f66 45%, #42464c 100%);
+    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .55);
+}
+
+.hw.top {
+    background: linear-gradient(180deg, #7b8189 0%, #5a5f66 45%, #42464c 100%);
+}
+
+.hw:after {
+    content: "";
+    position: absolute;
+    inset: -15px;
+}
+
+/* generous hit area */
+.hw:hover {
+    filter: brightness(1.45);
+}
+
+.hw.pressed {
+    filter: brightness(.72);
+}
+
+.hw.volup {
+    right: -3px;
+    top: 174px;
+    width: 5px;
+    height: 31px;
+    border-radius: 2.5px;
+}
+
+.hw.voldn {
+    right: -3px;
+    top: 216px;
+    width: 5px;
+    height: 31px;
+    border-radius: 2.5px;
+}
+
+.hw.volup.pressed,
+.hw.voldn.pressed {
+    transform: translateX(-1.5px);
+}
+
+.hw.power {
+    top: -3px;
+    right: 94px;
+    width: 56px;
+    height: 5px;
+    border-radius: 2.5px;
+}
+
+.hw.power.pressed {
+    transform: translateY(1.5px);
+}
+
+
+/* ---------- home screen (springboard) ---------- */
+#homescreen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1;
+    transform-origin: 50% 50%;
+    will-change: transform, opacity;
+}
+
+:root {
+    --wall:
+        radial-gradient(150% 95% at 20% 2%, rgba(14, 16, 20, .95) 0%, rgba(14, 16, 20, 0) 52%),
+        radial-gradient(120% 75% at 82% 22%, rgba(104, 80, 64, .8) 0%, rgba(104, 80, 64, 0) 62%),
+        radial-gradient(160% 95% at 50% 112%, #edc0c3 0%, #cf9497 34%, #8a6460 68%, #3d3130 100%);
+}
+
+#wallpaper {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-image: var(--wall);
+}
+
+.hs-status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    /* wallpaper is near-black across the top, so light ink is the default here */
+    color: #fff;
+}
+
+.hs-status .sb-left,
+.hs-status .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.hs-status .sb-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+.hs-status .sb-mid {
+    font-weight: 600;
+}
+
+.hs-pages {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 640px;
+    display: flex;
+    transition: transform .32s cubic-bezier(.32, .72, 0, 1);
+}
+
+.hs-page {
+    flex: 0 0 320px;
+    width: 320px;
+    position: relative;
+}
+
+.grid {
+    position: absolute;
+    top: 27.5px;
+    left: 16px;
+    right: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 60px);
+    column-gap: 16px;
+    row-gap: 10px;
+}
+
+.icon {
+    position: relative;
+    width: 60px;
+}
+
+.tile {
+    width: 60px;
+    height: 60px;
+    border-radius: 13.5px;
+    -webkit-clip-path: url(#squircle);
+    clip-path: url(#squircle);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #F4F4F6 0%, #DDDEE3 55%, #CBCCD2 100%);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .28);
+}
+
+.icon:active .tile {
+    filter: brightness(.82);
+}
+
+/* tiles whose artwork comes from icons/ */
+.tile.art {
+    background: none;
+}
+
+.tile.art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+/* ---------- live icons ----------
+Calendar and Clock ship blank artwork (an empty white squircle, a face with
+no hands); everything that moves is drawn on top of the img and driven by
+the tick in the script. Sizes are percentages of the 60px tile so the icons
+survive a change of grid metrics. */
+.tile.live-cal .cal-dow,
+.tile.live-cal .cal-day {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    white-space: nowrap;
+    font-family: var(--sf-display);
+    font-weight: 100;
+    pointer-events: none;
+}
+
+.tile.live-cal .cal-dow {
+    top: 12.9%;
+    font-size: 9.85px;
+    line-height: 1;
+    color: #FE2510;
+    letter-spacing: .1px;
+}
+
+/* an inline-block so the script can measure the weekday's natural width and
+squeeze the long ones; transforms don't disturb that measurement */
+.tile.live-cal .cal-dow span {
+    display: inline-block;
+    transform-origin: 50% 50%;
+}
+
+.tile.live-cal .cal-day {
+    top: 26.4%;
+    font-size: 37.8px;
+    line-height: 1;
+    color: #000;
+    letter-spacing: -.6px;
+    /* letter-spacing is added after the last digit too, which drags centred
+text off by half of it -- this pulls it back */
+    padding-right: .6px;
+}
+
+.tile.live-clock .clk-hands {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.tile.live-clock .h-hour,
+.tile.live-clock .h-min {
+    stroke: #000;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.tile.live-clock .h-sec {
+    stroke: #FF9500;
+    stroke-width: .76;
+    stroke-linecap: round;
+}
+
+.tile.live-clock .h-cap {
+    fill: #000;
+}
+
+.tile.messages {
+    background: linear-gradient(180deg, #5CE86B 0%, #2BD03C 48%, #12BE2B 100%);
+}
+
+.tile.messages svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.tile.folder {
+    background: rgba(206, 206, 212, .42);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 3px;
+    padding: 5.5px;
+}
+
+.tile.folder u {
+    display: block;
+    border-radius: 3.2px;
+    background: transparent;
+}
+
+.tile.folder u.f {
+    background: linear-gradient(180deg, #F2F2F4, #CFD0D6);
+}
+
+.lbl {
+    margin-top: 4px;
+    font-size: 11.5px;
+    line-height: 14px;
+    height: 14px;
+    text-align: center;
+    color: #fff;
+    letter-spacing: -.1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 2px rgba(0, 0, 0, .35);
+}
+
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: linear-gradient(180deg, #FF5B50, #E8291B);
+    border: 1.5px solid rgba(255, 255, 255, .9);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    padding: 0 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+    z-index: 5;
+}
+
+.hs-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 98px;
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    z-index: 20;
+}
+
+.hs-dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .45);
+    box-shadow: 0 0 2px rgba(0, 0, 0, .25);
+}
+
+.hs-dots i.on {
+    background: #fff;
+}
+
+.hs-dock {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 86px;
+    z-index: 20;
+    background: rgba(255, 255, 255, .24);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 7.5px 16px 0;
+}
+
+.hs-dock:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .35);
+    transform: scaleY(.5);
+}
+
+/* ---------- app window (zoom in/out of its icon) ---------- */
+#app {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#app.on {
+    opacity: 1;
+    pointer-events: auto;
+}

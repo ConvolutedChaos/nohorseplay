@@ -1,0 +1,208 @@
+/* on-screen keyboard + dictation */
+/* ---------- keyboard ---------- */
+.kbwrap {
+    flex: 0 0 0px;
+    height: 0;
+    overflow: hidden;
+    background: #D1D4DA;
+    transition: height .27s cubic-bezier(.32, .72, 0, 1), flex-basis .27s cubic-bezier(.32, .72, 0, 1);
+}
+
+.kbwrap.up {
+    flex-basis: 252px;
+    height: 252px;
+}
+
+.kbwrap.up.nopred {
+    flex-basis: 216px;
+    height: 216px;
+}
+
+.pred {
+    height: 36px;
+    display: flex;
+    align-items: stretch;
+    background: #D1D4DA;
+}
+
+.kbwrap.nopred .pred {
+    display: none;
+}
+
+.pred .slot {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #000;
+    position: relative;
+    letter-spacing: -.31px;
+}
+
+.pred .slot:not(:first-child):before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    bottom: 7px;
+    width: 1px;
+    background: #AFB3BB;
+    transform: scaleX(.5);
+}
+
+.pred .slot:active {
+    background: #B9BDC6;
+}
+
+.keys {
+    padding: 8px 3px 4px;
+    background: #D1D4DA;
+    height: 216px;
+}
+
+.krow {
+    display: flex;
+    gap: 6px;
+    height: 42px;
+    margin-bottom: 12px;
+}
+
+.krow:last-child {
+    margin-bottom: 0;
+}
+
+.krow.mid {
+    padding: 0 15px;
+}
+
+.key {
+    flex: 1 1 0;
+    background: #FCFCFE;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 #898A8D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-family: var(--sf-display);
+    color: #000;
+    font-weight: 400;
+    letter-spacing: .12px;
+    line-height: 1;
+    padding-bottom: 2px;
+}
+
+.key.small {
+    font-size: 20px;
+    font-family: var(--sf-display);
+    letter-spacing: .19px;
+}
+
+.key.alt {
+    background: #ADB3BC;
+}
+
+.key.alt.lit {
+    background: #FCFCFE;
+}
+
+.key:active {
+    background: #B9BDC6;
+}
+
+.key.alt:active {
+    background: #FCFCFE;
+}
+
+.key svg {
+    display: block;
+}
+
+.key.wide15 {
+    flex: 1.32 1 0;
+}
+
+.key.k123 {
+    flex: 1.18 1 0;
+    font-size: 16px;
+    padding-bottom: 0;
+    letter-spacing: -.31px;
+}
+
+.key.kglobe,
+.key.kmic {
+    flex: 1.02 1 0;
+}
+
+.key.kspace {
+    flex: 4.2 1 0;
+    font-size: 15px;
+    color: #6a6a6e;
+    letter-spacing: -.24px;
+}
+
+.key.kreturn {
+    flex: 2.58 1 0;
+    font-size: 16px;
+    padding-bottom: 0;
+    letter-spacing: -.31px;
+}
+
+.key.kreturn.off {
+    color: #8E8E93;
+}
+
+/* ---------- dictation ---------- */
+.dictwrap {
+    flex: 0 0 0px;
+    height: 0;
+    overflow: hidden;
+    background: #A6ACB3;
+    transition: height .27s cubic-bezier(.32, .72, 0, 1), flex-basis .27s cubic-bezier(.32, .72, 0, 1);
+}
+
+.dictwrap.up {
+    flex-basis: 216px;
+    height: 216px;
+}
+
+.dict {
+    height: 216px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #A6ACB3;
+}
+
+.wave {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0 6px;
+}
+
+.wave i {
+    width: 2px;
+    min-height: 2px;
+    background: #fff;
+    border-radius: 1px;
+}
+
+.dict .done {
+    color: #fff;
+    font-size: 24px;
+    font-family: var(--sf-display);
+    letter-spacing: -.41px;
+    margin-top: 34px;
+}
+
+.dict .done:active {
+    opacity: .5;
+}
+
+input[type=file] {
+    display: none;
+}

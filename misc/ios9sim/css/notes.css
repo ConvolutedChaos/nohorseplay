@@ -1,0 +1,1014 @@
+/* ================= NOTES =================
+Traced off ref_pic/Notes/. Everything sits on paper: one tiled
+feTurbulence sheet stands in for the linen the real app draws, which keeps
+the app self-contained the way the rest of this page is. */
+#ntapp {
+    --nt-tint: #D9A21A;
+    --nt-ink: #3A3A3C;
+    --nt-dim: #8E8E93;
+    --nt-hair: #C6C5C0;
+    /* the paper: fine noise over a warm off-white */
+    --nt-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='120' height='120' filter='url(%23p)' opacity='.055'/></svg>");
+    position: absolute;
+    inset: 0;
+    background: #F4F3F0;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#ntapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ntstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F4F3F0 var(--nt-paper);
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#ntstatus .sb-left,
+#ntstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ntstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#ntstatus .sb-mid {
+    font-weight: 600;
+}
+
+#ntstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+#ntstack .page {
+    background: #F4F3F0 var(--nt-paper);
+}
+
+#ntstack .nav {
+    background: rgba(255, 255, 255, .34);
+    color: var(--nt-tint);
+}
+
+#ntstack .nav .title {
+    color: #1c1c1e;
+}
+
+#ntstack .nav:after {
+    background: var(--nt-hair);
+}
+
+#ntstack .nav .btn.back {
+    padding-left: 12px;
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+#ntstack .nav .btn.back svg {
+    margin-right: 6px;
+    flex: 0 0 auto;
+}
+
+.nt-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- bottom bars ---------- */
+.nt-tbar {
+    flex: 0 0 44px;
+    height: 44px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, .34);
+    color: var(--nt-tint);
+}
+
+.nt-tbar:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.nt-tgrow {
+    flex: 1;
+}
+
+.nt-tlabel {
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+.nt-tlabel:active,
+.nt-tbtn:active {
+    opacity: .35;
+}
+
+.nt-tlabel.dim {
+    color: #B9B9BE;
+    pointer-events: none;
+}
+
+.nt-tbtn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+}
+
+.nt-tcount {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c2c2e;
+    letter-spacing: -.1px;
+}
+
+/* the note toolbar spreads four buttons evenly */
+#ntNBar {
+    justify-content: space-between;
+    padding: 0 22px;
+}
+
+/* select mode swaps one bar for the other */
+#ntSelBar {
+    display: none;
+}
+
+#nt-list.selecting #ntLBar {
+    display: none;
+}
+
+#nt-list.selecting #ntSelBar {
+    display: flex;
+}
+
+/* ---------- folders ---------- */
+.nt-fhdr {
+    padding: 26px 16px 6px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #6D6D72;
+    letter-spacing: .3px;
+}
+
+.nt-frow,
+.nt-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, .18);
+}
+
+.nt-frow {
+    height: 45px;
+    padding: 0 14px 0 16px;
+}
+
+.nt-frow:active,
+.nt-row:active {
+    background: rgba(0, 0, 0, .07);
+}
+
+.nt-fname {
+    flex: 1;
+    min-width: 0;
+    font-size: 19px;
+    letter-spacing: -.4px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-fcount {
+    font-size: 19px;
+    color: var(--nt-ink);
+    letter-spacing: -.4px;
+    margin-right: 9px;
+}
+
+.nt-chev {
+    color: #C0C0C0;
+    display: flex;
+}
+
+/* the hairline is inset to the label, iOS-style */
+.nt-frow:after,
+.nt-row:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+.nt-frow.first:before,
+.nt-rows>.nt-row.first:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.nt-frow.first:before {
+    left: 0;
+}
+
+/* ---------- the note list ---------- */
+.nt-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+}
+
+.nt-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 28px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, .075);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    color: #8A8A8F;
+    font-size: 17px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+}
+
+.nt-sfield span {
+    color: #1c1c1e;
+    white-space: nowrap;
+}
+
+.nt-sfield.empty span:after {
+    content: "Search";
+    color: #8A8A8F;
+}
+
+.nt-scancel {
+    display: none;
+    font-size: 17px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+#nt-list.searching .nt-scancel {
+    display: block;
+}
+
+.nt-banner {
+    display: none;
+    padding: 14px 24px;
+    text-align: center;
+    font-size: 19px;
+    line-height: 1.24;
+    color: #4a4a4c;
+    letter-spacing: -.4px;
+    background: rgba(0, 0, 0, .045);
+    border-top: 1px solid var(--nt-hair);
+    border-bottom: 1px solid var(--nt-hair);
+}
+
+#nt-list.trash .nt-banner {
+    display: block;
+}
+
+#nt-list.trash .nt-search {
+    display: none;
+}
+
+.nt-row {
+    min-height: 53px;
+    padding: 8px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.nt-rtitle {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.45px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-rsub {
+    margin-top: 2px;
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    letter-spacing: -.25px;
+    color: var(--nt-dim);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.nt-rdate {
+    flex: 0 0 auto;
+    color: #77777C;
+}
+
+.nt-rprev {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* select mode slides a ring in on the left */
+.nt-ring {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 28px;
+    height: 28px;
+    margin-top: -14px;
+    border-radius: 50%;
+    border: 1.5px solid #C7C7CC;
+    opacity: 0;
+    transition: opacity .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-row.on .nt-ring {
+    background: var(--nt-tint);
+    border-color: var(--nt-tint);
+}
+
+.nt-ring svg {
+    opacity: 0;
+}
+
+.nt-row.on .nt-ring svg {
+    opacity: 1;
+}
+
+#nt-list.selecting .nt-ring {
+    opacity: 1;
+}
+
+#nt-list.selecting .nt-row {
+    padding-left: 56px;
+}
+
+#nt-list.selecting .nt-row:after {
+    left: 56px;
+}
+
+/* ---------- the editor ---------- */
+.nt-editor {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 16px 20px;
+}
+
+.nt-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--nt-ink);
+    letter-spacing: -.4px;
+    line-height: 1.32;
+    padding: 1px 0;
+}
+
+.nt-ltext {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.nt-line.f-title .nt-ltext {
+    font-family: var(--sf-display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.6px;
+}
+
+.nt-line.f-heading .nt-ltext {
+    font-family: var(--sf-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -.45px;
+}
+
+.nt-line.f-body .nt-ltext {
+    font-size: 19px;
+}
+
+.nt-line.f-bullet,
+.nt-line.f-dash,
+.nt-line.f-number,
+.nt-line.f-check {
+    font-size: 19px;
+}
+
+.nt-line.f-bullet .nt-ltext,
+.nt-line.f-dash .nt-ltext,
+.nt-line.f-number .nt-ltext,
+.nt-line.f-check .nt-ltext {
+    font-size: 19px;
+}
+
+.nt-lmark {
+    flex: 0 0 auto;
+    color: var(--nt-ink);
+    font-size: 19px;
+    line-height: 1.32;
+}
+
+/* the first line of a note is drawn as its title, the way iOS does */
+.nt-line.head .nt-ltext {
+    font-weight: 600;
+    font-size: 19px;
+}
+
+.nt-check {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    border-radius: 50%;
+    border: 1.5px solid #C0C0C0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-check.on {
+    background: var(--nt-tint);
+    border-color: var(--nt-tint);
+}
+
+.nt-check svg {
+    opacity: 0;
+}
+
+.nt-check.on svg {
+    opacity: 1;
+}
+
+.caret.nt {
+    background: var(--nt-tint);
+}
+
+/* Done only exists while the keyboard is up; the share button slides over */
+.nt-done {
+    display: none;
+    margin-left: auto;
+    text-align: right;
+    font-weight: 600;
+}
+
+#nt-note.editing .nt-done {
+    display: block;
+}
+
+.nt-share {
+    margin-left: auto;
+}
+
+#nt-note.editing .nt-share {
+    margin-left: auto;
+    margin-right: 4px;
+}
+
+#nt-note.editing #ntNBar {
+    display: none;
+}
+
+/* the round + parks above the keyboard */
+.nt-plus {
+    position: absolute;
+    right: 14px;
+    bottom: 260px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(120, 120, 125, .55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.nt-plus:active {
+    opacity: .6;
+}
+
+#nt-note.editing .nt-plus {
+    display: flex;
+}
+
+#nt-note.plusopen .nt-plus {
+    display: none;
+}
+
+.nt-plusbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 252px;
+    height: 52px;
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 20px;
+    color: var(--nt-tint);
+    z-index: 5;
+}
+
+#nt-note.plusopen .nt-plusbar {
+    display: flex;
+}
+
+.nt-pbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+}
+
+.nt-pbtn:active {
+    opacity: .35;
+}
+
+.nt-pbtn.dim {
+    color: #9A9A9F;
+}
+
+.nt-aa {
+    font-family: var(--sf-display);
+    font-size: 25px;
+    font-weight: 500;
+    letter-spacing: -.5px;
+}
+
+/* ---------- attachments ---------- */
+.nt-abody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-asec {
+    border-bottom: 1px solid var(--nt-hair);
+    padding-bottom: 18px;
+}
+
+.nt-ahead {
+    display: flex;
+    align-items: baseline;
+    padding: 18px 16px 14px;
+}
+
+.nt-aname {
+    flex: 1;
+    font-family: var(--sf-display);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: -.5px;
+    color: #1c1c1e;
+}
+
+.nt-aall {
+    font-size: 17px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-aall:active {
+    opacity: .35;
+}
+
+.nt-astrip {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-atile {
+    position: relative;
+    flex: 0 0 auto;
+    width: 96px;
+    height: 128px;
+    background: #C4C3BE center/cover no-repeat;
+    color: #8A8A85;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-abadge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 6px;
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .55));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.nt-arow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.nt-atext {
+    flex: 1;
+    min-width: 0;
+}
+
+.nt-atitle {
+    font-size: 19px;
+    letter-spacing: -.4px;
+    color: var(--nt-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nt-asub {
+    margin-top: 2px;
+    font-size: 15px;
+    color: var(--nt-dim);
+    letter-spacing: -.25px;
+}
+
+.nt-aplay {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 1px solid #D0CFCA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007AFF;
+}
+
+.nt-adoc {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 78px;
+    background: #fff;
+    border: 1px solid #DAD9D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- the formatting panel ---------- */
+.nt-fmtwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 820;
+    pointer-events: none;
+}
+
+.nt-fmtwrap.up {
+    pointer-events: auto;
+}
+
+.nt-fmt {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 302px;
+    background: #F7F7F5 var(--nt-paper);
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32, .72, 0, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.nt-fmtwrap.up .nt-fmt {
+    transform: translateY(0);
+}
+
+.nt-fhead {
+    flex: 0 0 46px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #fff;
+}
+
+.nt-fhead:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+}
+
+.nt-ftitle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: -.4px;
+    pointer-events: none;
+}
+
+.nt-fdone {
+    margin-left: auto;
+    z-index: 2;
+    font-size: 19px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-fdone:active {
+    opacity: .35;
+}
+
+.nt-frows {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nt-frw {
+    position: relative;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    color: #1c1c1e;
+}
+
+.nt-frw:active {
+    background: rgba(0, 0, 0, .06);
+}
+
+.nt-frw:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--nt-hair);
+    transform: scaleY(.5);
+}
+
+.nt-frw .tick {
+    position: absolute;
+    right: 16px;
+    opacity: 0;
+}
+
+.nt-frw.on .tick {
+    opacity: 1;
+}
+
+.nt-frw.s-title {
+    font-family: var(--sf-display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.6px;
+}
+
+.nt-frw.s-heading {
+    font-family: var(--sf-display);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -.5px;
+}
+
+.nt-frw.s-body {
+    font-size: 19px;
+}
+
+.nt-frw.s-list {
+    font-size: 19px;
+}
+
+/* ---------- action sheet ---------- */
+.nt-sheetwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 830;
+    background: rgba(0, 0, 0, .0);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease, background .28s ease;
+}
+
+.nt-sheetwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .34);
+}
+
+.nt-sheet {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    transform: translateY(20px);
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.nt-sheetwrap.up .nt-sheet {
+    transform: translateY(0);
+}
+
+.nt-sgroup {
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .84);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.nt-sgroup+.nt-sgroup {
+    margin-top: 8px;
+}
+
+.nt-sbtn {
+    position: relative;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--nt-tint);
+    letter-spacing: -.4px;
+}
+
+.nt-sbtn+.nt-sbtn:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .18);
+    transform: scaleY(.5);
+}
+
+.nt-sbtn:active {
+    background: rgba(0, 0, 0, .09);
+}
+
+.nt-sbtn.cancel {
+    font-weight: 600;
+    background: rgba(255, 255, 255, .93);
+}
+
+/* ---------- New Folder ---------- */
+.nt-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 840;
+    background: rgba(0, 0, 0, .0);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, background .25s ease;
+}
+
+.nt-alertwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, .32);
+}
+
+.nt-alert {
+    position: absolute;
+    left: 27px;
+    right: 27px;
+    top: 92px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(249, 249, 249, .94);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    transform: scale(1.1);
+    transition: transform .25s cubic-bezier(.32, .72, 0, 1);
+}
+
+.nt-alertwrap.up .nt-alert {
+    transform: scale(1);
+}
+
+.nt-afield {
+    margin: 4px 16px 16px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #C8C7CC;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 7px;
+    font-size: 15px;
+    color: #1c1c1e;
+    text-align: left;
+    overflow: hidden;
+}
+
+.nt-afield.empty:after {
+    content: "Name";
+    color: #B0B0B5;
+}
+
+.nt-alertwrap .ft-abtn {
+    color: var(--nt-tint);
+}
+
+/* the red minus that Edit slides into a deletable folder row */
+.nt-fminus {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #FF3B30;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nt-fminus:before {
+    content: "";
+    width: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+}

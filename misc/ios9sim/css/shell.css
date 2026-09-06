@@ -1,0 +1,244 @@
+/* volume HUD, sleep, status bar, page stack */
+/* ---------- volume HUD ---------- */
+.volhud {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 152px;
+    height: 152px;
+    margin: -76px 0 0 -76px;
+    border-radius: 14px;
+    z-index: 900;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(228, 230, 233, .96), rgba(196, 199, 205, .96));
+    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity .16s ease;
+}
+
+.volhud.show {
+    opacity: 1;
+}
+
+.vh-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #6E7277;
+    letter-spacing: -.41px;
+    margin-top: 15px;
+}
+
+.vh-icon {
+    margin-top: 12px;
+}
+
+.vh-bar {
+    margin-top: auto;
+    margin-bottom: 19px;
+    width: 130px;
+    height: 13px;
+    background: #6E7378;
+    display: flex;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.vh-bar i {
+    flex: 1 1 0;
+    background: #6E7378;
+}
+
+.vh-bar i.on {
+    background: #fff;
+}
+
+/* ---------- sleep ---------- */
+#sleepmask {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s ease;
+}
+
+#sleepmask.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------- boot ----------
+Above the sleep mask, so the device comes up dark no matter what else
+is already painted underneath. The logo fades up on its own, then the
+whole sheet fades out onto the lock screen. */
+#boot {
+    position: absolute;
+    inset: 0;
+    z-index: 1100;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+#boot.on {
+    display: flex;
+}
+
+#boot.off {
+    opacity: 0;
+}
+
+/* the logo trails the black by a beat, the way the real one warms up */
+#bootLogo {
+    opacity: 0;
+    transition: opacity .55s ease-out;
+}
+
+#boot.lit #bootLogo {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #boot,
+    #bootLogo {
+        transition: none;
+    }
+}
+
+
+/* ---------- status bar ink ----------
+Every bar draws its glyphs with currentColor, so the whole thing fades
+between black and white ink when what sits behind it changes brightness.
+JS drives `color`; see setInk() / refreshInk(). */
+.hs-status,
+#statusbar,
+#ckstatus,
+#ftstatus,
+#vdstatus,
+.nc-status,
+#lkStatus {
+    transition: color .3s ease;
+}
+
+.hs-status.nofade,
+#statusbar.nofade,
+#ckstatus.nofade,
+#ftstatus.nofade,
+.nc-status.nofade,
+#lkStatus.nofade {
+    transition: none;
+}
+
+/* ---------- status bar ---------- */
+#statusbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+#statusbar .sb-left,
+#statusbar .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#statusbar .sb-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+#statusbar .sb-mid {
+    font-weight: 600;
+}
+
+/* ---------- the network-activity throbber iOS parks next to the wi-fi glyph ----------
+traced off a 2x device shot: a 10px box, eight 1x3px spokes with round caps
+ringed from 2px to 5px out of the middle, stepped a spoke at a time */
+.sb-net {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    display: none;
+    animation: sbnet .8s steps(8, end) infinite;
+}
+
+.sb-net i {
+    position: absolute;
+    left: 4.5px;
+    top: 0;
+    width: 1px;
+    height: 3px;
+    border-radius: .5px;
+    background: currentColor;
+    transform-origin: .5px 5px;
+}
+
+/* the trail the shot caught: darkest spoke leading, fading off behind it */
+.sb-net i:nth-child(1) {
+    transform: rotate(0deg);
+    opacity: .3;
+}
+
+.sb-net i:nth-child(2) {
+    transform: rotate(45deg);
+    opacity: .4;
+}
+
+.sb-net i:nth-child(3) {
+    transform: rotate(90deg);
+    opacity: .5;
+}
+
+.sb-net i:nth-child(4) {
+    transform: rotate(135deg);
+    opacity: .6;
+}
+
+.sb-net i:nth-child(5) {
+    transform: rotate(180deg);
+    opacity: .8;
+}
+
+.sb-net i:nth-child(6) {
+    transform: rotate(225deg);
+    opacity: 1;
+}
+
+.sb-net i:nth-child(7) {
+    transform: rotate(270deg);
+    opacity: .1;
+}
+
+.sb-net i:nth-child(8) {
+    transform: rotate(315deg);
+    opacity: .2;
+}
+
+@keyframes sbnet {
+    to {
+        transform: rotate(1turn);
+    }
+}

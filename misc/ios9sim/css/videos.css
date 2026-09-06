@@ -1,0 +1,515 @@
+/* ================= VIDEOS =================
+Traced off ref_pic/Videos/. The library is a plain table view; playback
+forces landscape, which on a screen that cannot rotate means the player
+stage is turned a quarter turn inside the portrait window. */
+#vdapp {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#vdapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#vdstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#vdstatus .sb-left,
+#vdstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#vdstatus .sb-right {
+    justify-content: flex-end;
+}
+
+#vdstatus .sb-mid {
+    font-weight: 600;
+}
+
+#vdstack {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+/* ---------- tab bar (one tab: this library only holds music videos) ---------- */
+.vd-tabs {
+    flex: 0 0 49px;
+    height: 49px;
+    background: #F7F7F7;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+}
+
+.vd-tabs:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: #A7A7AA;
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.vd-tab {
+    width: 106px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #8E8E93;
+}
+
+.vd-tab.on {
+    color: #29A9E0;
+}
+
+.vd-tab svg {
+    display: block;
+}
+
+.vd-tab span {
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: .06px;
+}
+
+/* ---------- the library list ---------- */
+.vd-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+}
+
+.vd-row {
+    position: relative;
+    height: 76px;
+    overflow: hidden;
+}
+
+/* everything that slides left when Delete is revealed */
+.vd-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.vd-row.armed .vd-slide {
+    transform: translateX(-85px);
+}
+
+.vd-minus {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #FF3B30;
+    margin-left: -42px;
+    margin-right: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: margin-left .28s cubic-bezier(.32, .72, 0, 1), opacity .2s ease;
+}
+
+.vd-minus:before {
+    content: "";
+    width: 11px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+#vd-root.editing .vd-minus {
+    margin-left: 11px;
+    opacity: 1;
+}
+
+.vd-thumb {
+    flex: 0 0 auto;
+    width: 100px;
+    height: 56px;
+    margin-left: 16px;
+    background: #B4B4B4 center/cover no-repeat;
+    color: #6E6E6E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin-left .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+#vd-root.editing .vd-thumb {
+    margin-left: 0;
+}
+
+.vd-thumb.art {
+    color: transparent;
+}
+
+.vd-title {
+    flex: 1;
+    min-width: 0;
+    margin-left: 13px;
+    padding-right: 14px;
+    font-size: 19px;
+    letter-spacing: -.3px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* the hairline starts at the title, the way iOS insets a cell separator */
+.vd-slide:after {
+    content: "";
+    position: absolute;
+    left: 129px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: #C8C7CC;
+    transform: scaleY(.5);
+    transform-origin: bottom;
+}
+
+#vd-root.editing .vd-slide:after {
+    left: 166px;
+}
+
+.vd-row:active .vd-slide {
+    background: #D9D9D9;
+}
+
+#vd-root.editing .vd-row:active .vd-slide {
+    background: #fff;
+}
+
+.vd-del {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -85px;
+    width: 85px;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.vd-row.armed .vd-del {
+    transform: translateX(-85px);
+}
+
+.vd-del:active {
+    background: #D8271D;
+}
+
+/* ---------- one video ---------- */
+.vd-dbody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(#fff 0 55%, #EFEFF1);
+}
+
+.vd-hero {
+    flex: 0 0 152px;
+    height: 152px;
+    background: #B4B4B4 center/cover no-repeat;
+    color: #6E6E6E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-hero.art {
+    color: transparent;
+}
+
+.vd-dtitle {
+    margin: 20px 16px 0;
+    text-align: center;
+    font-family: var(--sf-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -.7px;
+    color: #000;
+}
+
+.vd-ddate {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 17px;
+    color: #8E8E93;
+    letter-spacing: -.3px;
+}
+
+.vd-dplay {
+    margin: 26px auto 0;
+    color: #000;
+}
+
+.vd-dplay:active {
+    opacity: .35;
+}
+
+.vd-meta {
+    margin: auto 0 22px;
+    padding: 26px 16px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 18px;
+}
+
+.vd-mk {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    color: #000;
+}
+
+.vd-mv {
+    margin-top: 2px;
+    font-size: 15px;
+    letter-spacing: -.2px;
+    color: #1c1c1e;
+}
+
+/* ---------- the player ---------- */
+#vdPlayer {
+    position: absolute;
+    inset: 0;
+    z-index: 800;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+}
+
+#vdPlayer.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* a quarter turn: the app wants landscape, the window cannot give it one */
+.vd-stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 568px;
+    height: 320px;
+    margin: -160px 0 0 -284px;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+.vd-screen {
+    position: absolute;
+    inset: 0;
+    background: #000 center/contain no-repeat;
+    color: #4a4a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-screen.art {
+    color: transparent;
+}
+
+.vd-ptop,
+.vd-pbot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(246, 246, 246, .62);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    backdrop-filter: blur(18px) saturate(1.7);
+    color: #000;
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.vd-ptop {
+    top: 0;
+    height: 50px;
+}
+
+.vd-pbot {
+    bottom: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+#vdPlayer.bare .vd-ptop {
+    opacity: 0;
+    transform: translateY(-100%);
+}
+
+#vdPlayer.bare .vd-pbot {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+.vd-pstatus {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.vd-pstatus .sb-left,
+.vd-pstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.vd-pstatus .sb-right {
+    justify-content: flex-end;
+}
+
+.vd-pstatus .sb-mid {
+    font-weight: 600;
+}
+
+.vd-prow {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 14px;
+}
+
+.vd-done {
+    font-family: var(--sf-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+}
+
+.vd-done:active {
+    opacity: .35;
+}
+
+.vd-time {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+    min-width: 42px;
+}
+
+.vd-time.rem {
+    text-align: right;
+}
+
+/* the scrubber and the volume slider share one skin */
+.vd-scrub,
+.vd-vol {
+    position: relative;
+    height: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.vd-scrub {
+    flex: 1;
+}
+
+.vd-vol {
+    flex: 0 0 115px;
+    margin-left: 15px;
+}
+
+.vd-scrub i,
+.vd-vol i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 1.5px;
+    background: rgba(0, 0, 0, .78);
+}
+
+.vd-vol i {
+    background: rgba(0, 0, 0, .3);
+}
+
+.vd-scrub b,
+.vd-vol b {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
+
+.vd-transport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 52px;
+}
+
+.vd-tbtn {
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vd-tbtn:active {
+    opacity: .35;
+}

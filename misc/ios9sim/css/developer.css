@@ -1,0 +1,195 @@
+/* full screen + the on-screen home button */
+/* ================= FULL SCREEN =================
+The bezel is a picture of an iPod, not part of it, so full screen simply
+stops drawing one: the aluminium, the glass sheen, the camera and the round
+home button all go, the stage shrinks from the 376x791 body to the 320x568
+display, and fit() scales that to the window instead. The sleep and volume
+keys have nowhere left to sit, so they move onto the display's own edges as
+faint nubs -- still the same three elements, still the same handlers. */
+body.fs #stage {
+    width: 320px;
+    height: 568px;
+}
+
+body.fs #device {
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+body.fs #glass {
+    inset: 0;
+    border-radius: 0;
+    background: #000;
+    box-shadow: none;
+}
+
+body.fs #glass:after,
+body.fs .cam,
+body.fs #home {
+    display: none;
+}
+
+body.fs #screen {
+    left: 0;
+    top: 0;
+    box-shadow: none;
+}
+
+body.fs .hw {
+    display: none;
+}
+
+/* sleep on the right, volume on the left, both clear of the status bar */
+body.fs.sidebtn .hw {
+    display: block;
+    z-index: 1040;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: rgba(255, 255, 255, .16);
+    box-shadow: none;
+}
+
+body.fs.sidebtn .hw:hover {
+    filter: none;
+    background: rgba(255, 255, 255, .32);
+}
+
+/* the bezel's generous 15pt hit ring would now reach well into the
+   display, so on the edges it is pulled in to something tidier */
+body.fs.sidebtn .hw:after {
+    inset: -10px -6px;
+}
+
+body.fs.sidebtn .hw.pressed {
+    filter: none;
+    transform: none;
+    background: rgba(255, 255, 255, .5);
+}
+
+body.fs.sidebtn .hw.power {
+    left: auto;
+    right: 0;
+    top: 96px;
+    height: 46px;
+    border-radius: 2px 0 0 2px;
+}
+
+body.fs.sidebtn .hw.volup {
+    right: auto;
+    left: 0;
+    top: 150px;
+    height: 34px;
+}
+
+body.fs.sidebtn .hw.voldn {
+    right: auto;
+    left: 0;
+    top: 194px;
+    height: 34px;
+}
+
+/* ---------- the on-screen home button ----------
+Full screen takes the real one away, so this stands in for it: a tap goes
+home, a hold brings up Siri, and either wakes a sleeping device -- which is
+why it sits above the sleep mask rather than under it. Style "None" still
+leaves the bottom strip live, so there is no way to strand yourself. */
+#oshome {
+    position: absolute;
+    z-index: 1050;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    --osh: 1;
+    --oshInk: rgba(255, 255, 255, .92);
+    --oshBg: rgba(255, 255, 255, .16);
+    --oshEdge: rgba(255, 255, 255, .3);
+}
+
+body.fs #oshome {
+    display: flex;
+}
+
+#oshome.sz-s {
+    --osh: .78;
+}
+
+#oshome.sz-l {
+    --osh: 1.3;
+}
+
+#oshome.ap-dark {
+    --oshInk: rgba(0, 0, 0, .55);
+    --oshBg: rgba(0, 0, 0, .1);
+    --oshEdge: rgba(0, 0, 0, .18);
+}
+
+#oshome .osh-bar,
+#oshome .osh-sq {
+    display: none;
+}
+
+/* the indicator bar iOS grew into later */
+#oshome.st-pill {
+    bottom: 6px;
+    height: calc(22px * var(--osh));
+    width: calc(148px * var(--osh));
+}
+
+#oshome.st-pill .osh-bar {
+    display: block;
+    width: 100%;
+    height: calc(5px * var(--osh));
+    border-radius: calc(2.5px * var(--osh));
+    background: var(--oshInk);
+}
+
+/* the floating button AssistiveTouch parks on the glass */
+#oshome.st-circle {
+    bottom: calc(14px * var(--osh));
+    width: calc(46px * var(--osh));
+    height: calc(46px * var(--osh));
+    border-radius: 50%;
+    background: var(--oshBg);
+    box-shadow: 0 0 0 1px var(--oshEdge), 0 1px 4px rgba(0, 0, 0, .3);
+    -webkit-backdrop-filter: blur(9px);
+    backdrop-filter: blur(9px);
+}
+
+#oshome.st-circle .osh-sq {
+    display: block;
+    width: calc(17px * var(--osh));
+    height: calc(17px * var(--osh));
+    border: calc(1.7px * var(--osh)) solid var(--oshInk);
+    border-radius: calc(4px * var(--osh));
+}
+
+#oshome.ps-center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#oshome.ps-left {
+    left: 12px;
+}
+
+#oshome.ps-right {
+    right: 12px;
+}
+
+/* Invisible, but the strip still answers -- the no-trap escape hatch.
+   Last, because it has to beat whichever position class is also on. */
+#oshome.st-none {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: 22px;
+    transform: none;
+}
+
+#oshome.pressed {
+    opacity: .5;
+}

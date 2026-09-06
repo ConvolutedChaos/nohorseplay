@@ -1,0 +1,376 @@
+/* FaceTime sign-in + the shared iOS 9 alert */
+/* ================= FACETIME ================= */
+#ftapp {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+#ftapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ftstatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 600;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#ftstatus .sb-left,
+#ftstatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ftstatus .sb-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+#ftstatus .sb-mid {
+    font-weight: 600;
+}
+
+.ftpage {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    /* the near-black FaceTime setup backdrop */
+    background:
+        radial-gradient(120% 70% at 50% 0%, #131315 0%, #0a0a0b 55%, #050506 100%);
+}
+
+.ft-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-align: center;
+    padding-top: 38px;
+}
+
+.ft-scroll::-webkit-scrollbar {
+    width: 0;
+}
+
+.ft-title {
+    font-family: var(--sf-display);
+    font-weight: 300;
+    font-size: 34px;
+    line-height: 42px;
+    color: #fff;
+    letter-spacing: -.4px;
+}
+
+.ft-sub {
+    margin-top: 18px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 21px;
+    color: #fff;
+    letter-spacing: -.41px;
+}
+
+.ft-link {
+    margin-top: 2px;
+    font-size: 17px;
+    line-height: 21px;
+    color: #1E9CFF;
+    letter-spacing: -.41px;
+}
+
+.ft-link:active {
+    opacity: .45;
+}
+
+.ft-form {
+    margin: 52px 16px 0;
+    border-radius: 5px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13);
+    text-align: left;
+    overflow: hidden;
+}
+
+.ft-row {
+    position: relative;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    padding: 0 17px;
+    font-size: 17px;
+    letter-spacing: -.41px;
+}
+
+.ft-row+.ft-row:before {
+    content: "";
+    position: absolute;
+    left: 17px;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .13);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.ft-row:active {
+    background: rgba(255, 255, 255, .05);
+}
+
+.ft-lbl {
+    flex: 0 0 86px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.ft-val {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ft-val .plc {
+    color: #6E6E73;
+}
+
+.ft-go {
+    margin-top: 24px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 28px;
+    font-family: var(--sf-display);
+    color: #fff;
+    letter-spacing: -.4px;
+}
+
+.ft-go.off {
+    color: #4A4A4E;
+    pointer-events: none;
+}
+
+.ft-go.busy {
+    color: #4A4A4E;
+    pointer-events: none;
+}
+
+.ft-go:active {
+    opacity: .45;
+}
+
+.ft-go .spin {
+    display: none;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+}
+
+.ft-go.busy .spin {
+    display: block;
+}
+
+.spin i {
+    position: absolute;
+    left: 9px;
+    top: 1px;
+    width: 2px;
+    height: 5.5px;
+    border-radius: 1px;
+    background: #8E8E93;
+    transform-origin: 1px 9px;
+    animation: ftspin 1s linear infinite;
+}
+
+.spin i:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -.917s
+}
+
+.spin i:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -.833s
+}
+
+.spin i:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -.75s
+}
+
+.spin i:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -.667s
+}
+
+.spin i:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -.583s
+}
+
+.spin i:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -.5s
+}
+
+.spin i:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -.417s
+}
+
+.spin i:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -.333s
+}
+
+.spin i:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -.25s
+}
+
+.spin i:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -.167s
+}
+
+.spin i:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -.083s
+}
+
+.spin i:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s
+}
+
+@keyframes ftspin {
+    0% {
+        opacity: 1
+    }
+
+    100% {
+        opacity: .15
+    }
+}
+
+#ftForgot {
+    margin-top: 22px;
+}
+
+#ftCreate {
+    margin-top: 15px;
+}
+
+.ft-pad {
+    height: 24px;
+}
+
+/* ---------- iOS 9 alert ---------- */
+.ft-alertwrap {
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+}
+
+.ft-alertwrap.up {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ft-alert {
+    width: 270px;
+    border-radius: 13px;
+    overflow: hidden;
+    background: rgba(248, 248, 248, .94);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    text-align: center;
+    transform: scale(1.14);
+    transition: transform .22s cubic-bezier(.32, .72, 0, 1);
+}
+
+.ft-alertwrap.up .ft-alert {
+    transform: scale(1);
+}
+
+.ft-atitle {
+    padding: 17px 16px 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: -.41px;
+}
+
+.ft-amsg {
+    padding: 2px 16px 17px;
+    font-size: 13px;
+    line-height: 17px;
+    color: #000;
+    letter-spacing: -.08px;
+}
+
+.ft-abtns {
+    position: relative;
+    display: flex;
+}
+
+.ft-abtns:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, .22);
+    transform: scaleY(.5);
+}
+
+.ft-abtn {
+    flex: 1;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #007AFF;
+    letter-spacing: -.41px;
+}
+
+.ft-abtn:active {
+    background: rgba(0, 0, 0, .1);
+}

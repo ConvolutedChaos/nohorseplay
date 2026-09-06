@@ -1,0 +1,596 @@
+/* Control Center + Notification Center */
+/* ================= CONTROL CENTER ================= */
+#cc {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 427px;
+    z-index: 520;
+    transform: translateY(427px);
+    will-change: transform;
+    -webkit-backdrop-filter: blur(28px) saturate(1.9);
+    backdrop-filter: blur(28px) saturate(1.9);
+    background: rgba(255, 255, 255, .30);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#ccShade {
+    position: absolute;
+    inset: 0;
+    z-index: 510;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .34s cubic-bezier(.32, .72, 0, 1);
+}
+
+.cc-sec {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.cc-sec:not(:first-child):before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .45);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.cc-head {
+    height: 85px;
+}
+
+.cc-hint {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    height: 18px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, .75);
+    letter-spacing: -.24px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .22);
+}
+
+.cc-hint svg {
+    opacity: .65;
+}
+
+.cc-toggles {
+    position: absolute;
+    top: 31px;
+    left: 19px;
+    right: 19px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ccT {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .3);
+}
+
+.ccT svg {
+    fill: rgba(0, 0, 0, .72);
+}
+
+.ccT.on {
+    background: #fff;
+    box-shadow: none;
+}
+
+.ccT.on svg {
+    fill: #000;
+}
+
+.ccT:active {
+    filter: brightness(.9);
+}
+
+.cc-bright {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 18px;
+    background: rgba(255, 255, 255, .10);
+}
+
+.cc-slider {
+    position: relative;
+    flex: 1;
+    height: 14px;
+}
+
+.cc-slider .trk {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5.5px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, .55);
+}
+
+.cc-slider .fil {
+    position: absolute;
+    left: 0;
+    top: 5.5px;
+    height: 3px;
+    border-radius: 2px;
+    background: #fff;
+}
+
+.cc-slider .knb {
+    position: absolute;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+}
+
+.cc-music {
+    height: 153px;
+}
+
+.cc-mtitle {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 20px;
+    font-family: var(--sf-display);
+    color: #fff;
+    letter-spacing: -.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+.cc-tr {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 42px;
+}
+
+.cc-tr div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-tr svg {
+    fill: #1b1b1d;
+}
+
+.cc-tr div:active {
+    opacity: .45;
+}
+
+.cc-vol {
+    position: absolute;
+    top: 110px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 22px;
+}
+
+.cc-vol svg {
+    fill: #1b1b1d;
+    flex: 0 0 auto;
+}
+
+.cc-air {
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    background: rgba(255, 255, 255, .10);
+    font-size: 20px;
+    font-family: var(--sf-display);
+    color: #111;
+    letter-spacing: -.3px;
+}
+
+.cc-air svg {
+    fill: none;
+    stroke: #111;
+    stroke-width: 2.2;
+}
+
+.cc-short {
+    height: 98px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+}
+
+.ccS {
+    width: 60px;
+    height: 58px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .22);
+    box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ccS svg {
+    fill: #141416;
+}
+
+.ccS.on {
+    background: #fff;
+    box-shadow: none;
+}
+
+.ccS:active {
+    filter: brightness(.9);
+}
+
+/* ================= NOTIFICATION CENTER ================= */
+#nc {
+    position: absolute;
+    inset: 0;
+    z-index: 500;
+    transform: translateY(-100%);
+    will-change: transform;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.nc-bg {
+    position: absolute;
+    inset: -30px;
+    background-image: var(--wall);
+    background-size: cover;
+    background-position: center;
+    filter: blur(26px) saturate(1.1) brightness(.52);
+}
+
+.nc-status {
+    position: relative;
+    flex: 0 0 20px;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    /* Notification Center dims the wallpaper heavily behind it */
+    color: #fff;
+    z-index: 2;
+}
+
+.nc-status .sb-left,
+.nc-status .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.nc-status .sb-right {
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+.nc-status .sb-mid {
+    font-weight: 600;
+}
+
+.nc-tabs {
+    position: relative;
+    flex: 0 0 33px;
+    padding: 5px 4px 1px;
+    z-index: 2;
+}
+
+.nc-tabs:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .28);
+    transform: scaleY(.5);
+}
+
+.nc-seg {
+    display: flex;
+    height: 27px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .32);
+}
+
+.nc-seg div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    letter-spacing: -.24px;
+    color: #fff;
+    background: rgba(0, 0, 0, .28);
+}
+
+.nc-seg div.on {
+    background: rgba(255, 255, 255, .5);
+    color: #000;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.nc-scroll {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 2;
+    min-height: 0;
+}
+
+.nc-foot {
+    position: relative;
+    flex: 0 0 22px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nc-foot:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, .22);
+    transform: scaleY(.5);
+}
+
+.nc-date {
+    padding: 31px 0 24px 47px;
+    font-size: 38px;
+    font-family: var(--sf-display);
+    font-weight: 300;
+    line-height: 44px;
+    color: #fff;
+    letter-spacing: -.8px;
+}
+
+.nc-date sup {
+    font-size: 19px;
+    vertical-align: super;
+    line-height: 0;
+}
+
+.wg-head {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 13px;
+    background: rgba(0, 0, 0, .30);
+}
+
+.wg-head .ttl {
+    font-size: 20px;
+    font-family: var(--sf-display);
+    color: rgba(255, 255, 255, .62);
+    letter-spacing: -.3px;
+}
+
+.wg-ico {
+    width: 26px;
+    height: 26px;
+    border-radius: 5.8px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.wg-body {
+    background: rgba(0, 0, 0, .10);
+    position: relative;
+}
+
+.wg-body.pad {
+    padding-left: 47px;
+    padding-right: 14px;
+}
+
+.hairline {
+    height: 1px;
+    background: rgba(255, 255, 255, .22);
+    transform: scaleY(.5);
+    margin-left: 47px;
+}
+
+.cal-empty {
+    height: 154px;
+    position: relative;
+}
+
+.cal-empty i {
+    position: absolute;
+    left: 47px;
+    right: 14px;
+    height: 1px;
+    background: rgba(255, 255, 255, .22);
+    transform: scaleY(.5);
+}
+
+.cal-empty span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 56px;
+    text-align: center;
+    font-size: 19px;
+    color: rgba(255, 255, 255, .42);
+    letter-spacing: -.3px;
+}
+
+.rem {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 9px 14px 10px 13px;
+}
+
+.rem .cir {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.6px solid #2FA8E0;
+    flex: 0 0 auto;
+    margin-top: 1px;
+}
+
+.rem .tx {
+    font-size: 17px;
+    color: #fff;
+    letter-spacing: -.41px;
+    line-height: 21px;
+}
+
+.rem .tx b {
+    color: #3D9CE8;
+    font-weight: 600;
+}
+
+.rem .dt {
+    font-size: 13px;
+    color: rgba(255, 255, 255, .42);
+    margin-top: 2px;
+}
+
+.stk {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 13px 0 47px;
+    gap: 10px;
+}
+
+.stk .sym {
+    font-size: 17px;
+    color: #fff;
+    letter-spacing: -.41px;
+    flex: 1;
+}
+
+.stk .prc {
+    font-size: 17px;
+    color: rgba(255, 255, 255, .55);
+    letter-spacing: -.41px;
+}
+
+.stk .pct {
+    width: 75px;
+    height: 29px;
+    border-radius: 3px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -.41px;
+}
+
+.stk .pct.up {
+    background: #4CD964;
+}
+
+.stk .pct.dn {
+    background: #FF3B30;
+}
+
+.tmw {
+    padding: 14px 14px 18px 47px;
+    font-size: 17px;
+    color: #fff;
+    line-height: 22px;
+    letter-spacing: -.41px;
+}
+
+.nc-edit {
+    margin: 14px 48px 12px;
+    height: 25px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .34);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #1b1b1d;
+    letter-spacing: -.41px;
+}
+
+.nc-cred {
+    padding: 4px 14px 18px 47px;
+    font-size: 13px;
+    line-height: 17px;
+    color: rgba(255, 255, 255, .42);
+}
+
+.nc-cred u {
+    text-decoration: underline;
+}
+
+.nc-none {
+    text-align: center;
+    padding-top: 236px;
+    font-size: 34px;
+    font-family: var(--sf-display);
+    font-weight: 400;
+    color: rgba(255, 255, 255, .55);
+    letter-spacing: -.6px;
+}
+
+#brightmask {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 950;
+    transition: opacity .08s linear;
+}

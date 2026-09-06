@@ -1,0 +1,718 @@
+/* ================= STOCKS =================
+Traced off ref_pic/Stocks/. Black all the way down: quotes on top, then a
+three-page panel you swipe between, and a footer that never moves. */
+#stapp {
+    --st-green: #4CD661;
+    --st-red: #FF3B30;
+    --st-hair: #3A3A3C;
+    --st-dim: #8A8A8F;
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 400;
+    overflow: hidden;
+    transform-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    font-family: var(--sf-display);
+    color: #fff;
+}
+
+#stapp.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#ststatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 700;
+    background: #000;
+    display: flex;
+    align-items: center;
+    padding: 5px 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--sf-text);
+}
+
+#ststatus .sb-left,
+#ststatus .sb-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+#ststatus .sb-right {
+    justify-content: flex-end;
+}
+
+#ststatus .sb-mid {
+    font-weight: 600;
+}
+
+#stapp.busy .sb-net {
+    display: block;
+}
+
+/* ---------- the quotes ---------- */
+#sttickers {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 336px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-row {
+    position: relative;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+}
+
+.st-row.on {
+    background: #2C2C2E;
+}
+
+.st-row:before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+    transform-origin: top;
+}
+
+.st-row:first-child:before,
+.st-row.on:before,
+.st-row.on+.st-row:before {
+    display: none;
+}
+
+.st-sym {
+    flex: 0 0 auto;
+    font-size: 21px;
+    letter-spacing: -.4px;
+}
+
+.st-price {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    font-size: 21px;
+    letter-spacing: -.4px;
+}
+
+.st-pill {
+    flex: 0 0 auto;
+    width: 94px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--st-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -.3px;
+}
+
+.st-pill.down {
+    background: var(--st-red);
+}
+
+/* ---------- the panel ---------- */
+#stpanel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 356px;
+    bottom: 0;
+    background: #1C1C1E;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.st-track {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    width: 300%;
+    transition: transform .34s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-page {
+    width: 33.3333%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---------- stats ---------- */
+.st-name {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 7px 12px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+
+.st-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 16px 4px;
+}
+
+.st-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 2px;
+}
+
+.st-cell:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-cell:nth-child(1):after,
+.st-cell:nth-child(2):after {
+    display: none;
+}
+
+.st-k {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--st-dim);
+    letter-spacing: .2px;
+}
+
+.st-v {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    font-size: 19px;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* ---------- chart ---------- */
+.st-ranges {
+    flex: 0 0 34px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.st-ranges:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-range {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
+    color: var(--st-dim);
+    letter-spacing: -.3px;
+}
+
+.st-range.on {
+    color: #fff;
+    font-weight: 700;
+}
+
+.st-plot {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.st-plot svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ---------- news ---------- */
+#stNews {
+    position: relative;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+}
+
+.st-story {
+    position: relative;
+    padding: 9px 16px 8px;
+    font-family: var(--sf-text);
+}
+
+.st-story:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-head {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.4px;
+}
+
+.st-head em {
+    font-style: normal;
+    font-weight: 400;
+    color: #C7C7CC;
+}
+
+.st-src {
+    margin-top: 2px;
+    font-size: 15px;
+    color: #7C7C81;
+    letter-spacing: -.3px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* ---------- both loading states ---------- */
+.st-load {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 19px;
+    color: var(--st-dim);
+    letter-spacing: -.4px;
+}
+
+.st-load .spin {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+}
+
+.st-load .spin i {
+    left: 12px;
+    top: 1px;
+    width: 2px;
+    height: 7px;
+    transform-origin: 1px 12px;
+    background: #6E6E73;
+}
+
+/* ---------- footer ---------- */
+.st-foot {
+    flex: 0 0 34px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+}
+
+.st-foot:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-yahoo {
+    flex: 0 0 auto;
+    width: 74px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #6E6E73;
+    letter-spacing: .4px;
+}
+
+.st-yahoo span {
+    color: #8A8A8F;
+}
+
+.st-fmid {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+.st-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.st-dots i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #48484A;
+}
+
+.st-dots i.on {
+    background: #fff;
+}
+
+.st-market {
+    font-size: 13px;
+    color: #8A8A8F;
+    letter-spacing: -.1px;
+}
+
+.st-info {
+    flex: 0 0 auto;
+    width: 74px;
+    display: flex;
+    justify-content: flex-end;
+    color: #8A8A8F;
+}
+
+.st-info:active {
+    opacity: .4;
+}
+
+/* ---------- the two full-screen sheets ---------- */
+.st-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 600;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transform: translateY(100%);
+    transition: transform .4s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-sheet.up {
+    transform: translateY(0);
+}
+
+.st-sheet .nav {
+    background: #1C1C1E;
+    color: #0A84FF;
+}
+
+.st-sheet .nav .title {
+    color: #fff;
+}
+
+.st-sheet .nav:after {
+    background: var(--st-hair);
+}
+
+/* ---------- the editable list ---------- */
+.st-elist {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-erow {
+    position: relative;
+    height: 50px;
+    overflow: hidden;
+}
+
+.st-eslide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 16px;
+    background: #000;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-erow.armed .st-eslide {
+    transform: translateX(-85px);
+}
+
+.st-eslide:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-eminus {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #FF3B30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.st-eminus:before {
+    content: "";
+    width: 15px;
+    height: 2.4px;
+    border-radius: 1px;
+    background: #fff;
+}
+
+.st-etext {
+    flex: 1;
+    min-width: 0;
+}
+
+.st-etop {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.st-esym {
+    font-size: 23px;
+    letter-spacing: -.6px;
+    white-space: nowrap;
+}
+
+.st-eexch {
+    font-size: 21px;
+    color: #6E6E73;
+    letter-spacing: -.5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.st-ename {
+    margin-top: 0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.st-grip {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.st-grip i {
+    display: block;
+    width: 28px;
+    height: 2px;
+    background: #6E6E73;
+}
+
+.st-edel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -85px;
+    width: 85px;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+}
+
+.st-erow.armed .st-edel {
+    transform: translateX(-85px);
+}
+
+/* ---------- percentage / price / market cap ---------- */
+.st-segwrap {
+    flex: 0 0 auto;
+    padding: 12px 16px 10px;
+}
+
+.st-seg {
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #0A84FF;
+}
+
+.st-segbtn {
+    flex: 1;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #0A84FF;
+    letter-spacing: -.3px;
+}
+
+.st-segbtn+.st-segbtn {
+    border-left: 1px solid #0A84FF;
+}
+
+.st-segbtn.on {
+    background: #35AEE8;
+    color: #000;
+}
+
+.st-yfin {
+    flex: 0 0 auto;
+    padding: 6px 0 14px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    color: #4A4A4C;
+    letter-spacing: .6px;
+}
+
+.st-yfin em {
+    display: block;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #3A3A3C;
+}
+
+/* ---------- add a symbol ---------- */
+.st-prompt {
+    flex: 0 0 auto;
+    padding: 12px 16px 8px;
+    text-align: center;
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+.st-srow {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px 10px;
+}
+
+.st-sfield {
+    flex: 1;
+    min-width: 0;
+    height: 34px;
+    border-radius: 6px;
+    background: #1C1C1E;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 9px;
+    color: var(--st-dim);
+    font-size: 19px;
+    letter-spacing: -.4px;
+    overflow: hidden;
+    font-family: var(--sf-text);
+}
+
+.st-sfield span {
+    color: #fff;
+    white-space: nowrap;
+}
+
+.st-sclear {
+    margin-left: auto;
+    flex: 0 0 auto;
+    display: none;
+}
+
+.st-sfield.has .st-sclear {
+    display: block;
+}
+
+.st-scancel {
+    flex: 0 0 auto;
+    font-size: 21px;
+    color: #0A84FF;
+    letter-spacing: -.4px;
+}
+
+.st-sres {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.st-hit {
+    position: relative;
+    padding: 9px 16px 8px;
+}
+
+.st-hit:after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--st-hair);
+    transform: scaleY(.5);
+}
+
+.st-hit:active {
+    background: #1C1C1E;
+}
+
+.st-none {
+    padding: 22px 0;
+    text-align: center;
+    font-size: 17px;
+    color: var(--st-dim);
+}
