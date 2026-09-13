@@ -1,0 +1,108 @@
+/* desktop icons, the rubber-band selection, and the desktop context menu.
+
+   Measured off the reference shots: the grid is 122 x 112, the rightmost
+   column is centred 65px from the right edge, the first row's art box tops
+   out at y 31, and an image icon is a 52x32 thumbnail inside a 3px white
+   frame (58 x 38 overall).  Labels are 12px on a 16px line. */
+
+#desktop {
+    position: absolute;
+    top: var(--menubar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+}
+
+.dicon {
+    position: absolute;
+    width: 122px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.dicon .art {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+}
+
+.dicon .art img,
+.dicon .art .glyph {
+    max-width: 64px;
+    max-height: 64px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45));
+}
+
+/* a screenshot on the desktop shows its own thumbnail in a white frame */
+.dicon .art .shot { box-shadow: 0 1px 3px rgba(0, 0, 0, .45); }
+
+.dicon .name {
+    margin-top: 6px;
+    max-width: 118px;
+    padding: 0 4px 1px;
+    border-radius: 3px;
+    font: 12px/16px var(--sf-text);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .75);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Measured at 11.59.52: the block behind a selected desktop icon is white
+   at 26%, and its name sits in the same #2168d6 pill the Finder uses. */
+.dicon.sel .art {
+    background: rgba(255, 255, 255, .26);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, .26);
+}
+
+.dicon.sel .art img,
+.dicon.sel .art .glyph,
+.dicon.sel .art .shot {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45)) brightness(.88) saturate(1.1);
+}
+
+.dicon.sel .name {
+    background: var(--hl-label);
+    text-shadow: none;
+}
+
+/* once a window takes the focus the desktop's selection greys out, which
+   is exactly what the 12.00.07 shot shows */
+#desktop.blur .dicon.sel .name {
+    background: var(--hl-dim);
+    color: #000;
+    text-shadow: none;
+}
+
+#desktop.blur .dicon.sel .art {
+    background: rgba(255, 255, 255, .16);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, .16);
+}
+
+.dicon.dragging { opacity: .55; }
+
+/* the rename field is styled once, in finder.css, so the desktop and a
+   Finder window edit a name the same way */
+
+/* ---------- rubber band ---------- */
+#marquee {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, .85);
+    background: rgba(255, 255, 255, .22);
+    pointer-events: none;
+    z-index: 150;
+}
+
+/* ---------- context menus ---------- */
+/* Same look as a pull-down, minus the square top corners. */
+.menu.context { min-width: 190px; }

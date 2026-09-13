@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="37.333332"
+   height="33.333332"
+   viewBox="0 0 37.333332 33.333332"
+   sodipodi:docname="cursor.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="37.333332"
+       height="33.333332"
+       margin="8 4 2.6666667"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="layer-MC0"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       id="path1"
+       d="m 0,0 c -1.93,0 -3.5,1.57 -3.5,3.5 v 7 c 0,1.93 1.57,3.5 3.5,3.5 h 1 c 0.466,0 0.887,0.51 1.105,0.947 C 2.739,16.214 3.528,17 5.5,17 h 4 c 1.972,0 2.761,-0.786 3.395,-2.053 C 13.113,14.51 13.534,14 14,14 h 1 c 1.93,0 3.5,-1.57 3.5,-3.5 v -7 C 18.5,1.57 16.93,0 15,0 Z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       transform="matrix(1.3333333,0,0,-1.3333333,8.6666667,25.333333)" />
+    <path
+       id="path2"
+       d="m 0,0 c -2.762,0 -5,2.238 -5,5 0,2.762 2.238,5 5,5 C 2.762,10 5,7.762 5,5 5,2.238 2.762,0 0,0 m 7.5,10 h -1 c -1,0 -1.684,0.868 -2,1.5 C 4,12.5 3.5,13 2,13 H 0 -2 c -1.5,0 -2,-0.5 -2.5,-1.5 -0.316,-0.632 -1,-1.5 -2,-1.5 h -1 C -8.881,10 -10,8.881 -10,7.5 v -7 c 0,-1.381 1.119,-2.5 2.5,-2.5 h 15 c 1.381,0 2.5,1.119 2.5,2.5 v 7 C 10,8.881 8.881,10 7.5,10"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       transform="matrix(1.3333333,0,0,-1.3333333,18.666667,21.333333)" />
+    <path
+       id="path3"
+       d="m 0,0 c 0,-1.656 -1.344,-3 -3,-3 -1.656,0 -3,1.344 -3,3 0,1.656 1.344,3 3,3 1.656,0 3,-1.344 3,-3"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       transform="matrix(1.3333333,0,0,-1.3333333,22.666667,14.666667)" />
+  </g>
+</svg>

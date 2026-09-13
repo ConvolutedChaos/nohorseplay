@@ -1,0 +1,263 @@
+/* pull-down menus, their submenus, and the menu-extra popups.
+   One stylesheet because a menu extra's popup is just a menu that
+   happens to hang off an icon.
+
+   Measured off the reference shots: the Apple menu panel runs x 10..266 and
+   the highlight fills it edge to edge; rows are 19px with the text ink
+   starting 4px down; label text begins 22px in and shortcuts finish 10px
+   from the right; a separator occupies 12px with its hairline centred. */
+
+#menuLayer {
+    position: absolute;
+    inset: 0;
+    z-index: 900;
+}
+
+#menuLayer.idle {
+    pointer-events: none;
+}
+
+/* the invisible sheet that swallows the click that dismisses a menu */
+#menuShield {
+    position: absolute;
+    inset: 0;
+}
+
+.menu {
+    position: absolute;
+    min-width: 160px;
+    padding: 3px 0 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .28), 0 0 0 .5px rgba(0, 0, 0, .08);
+    font: 14px/1 var(--sf-text);
+    color: var(--ink);
+    animation: menuIn .06s ease-out;
+}
+
+/* a pull-down hangs off the bar, so its top corners stay square */
+.menu.pulldown {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+}
+
+@keyframes menuIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.menu .row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 19px;
+    padding: 0 10px 0 22px;
+    white-space: nowrap;
+}
+
+.menu .row .label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu .row .key {
+    margin-left: 26px;
+    color: rgba(0, 0, 0, .62);
+    font-family: var(--sf-text);
+    letter-spacing: .5px;
+}
+
+.menu .row.on {
+    background: var(--hl);
+    color: #fff;
+}
+
+.menu .row.on .key,
+.menu .row.on .arrow { color: #fff; }
+
+.menu .row.on .ico { filter: brightness(0) invert(1); }
+
+.menu .row.disabled {
+    color: var(--ink-dim);
+}
+
+.menu .row.disabled .key { color: var(--ink-dim); }
+
+/* the 21px gutter every row reserves, used by a tick or a small icon */
+.menu .row .mark {
+    position: absolute;
+    left: 8px;
+    width: 12px;
+    text-align: center;
+    font-size: 11px;
+}
+
+.menu .row .ico {
+    position: absolute;
+    left: 5px;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu .row .arrow {
+    position: absolute;
+    right: 7px;
+    width: 0;
+    height: 0;
+    border: 4px solid transparent;
+    border-left-color: rgba(0, 0, 0, .72);
+    border-right-width: 0;
+}
+
+.menu .row.on .arrow { border-left-color: #fff; }
+
+/* 5 above, the hairline, 6 below -- the 12px the reference measures */
+.menu .sep {
+    height: 1px;
+    margin: 5px 0 6px;
+    background: var(--sep);
+}
+
+/* a non-interactive group heading -- "Applications", "Help Topics" */
+.menu .head {
+    height: 19px;
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    color: rgba(0, 0, 0, .45);
+}
+
+.menu .head.right {
+    justify-content: flex-end;
+    padding-right: 8px;
+}
+
+/* rows that hold a control rather than a command */
+.menu .row.tall { height: 24px; }
+
+.menu .field {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+}
+
+.menu .field label {
+    color: rgba(0, 0, 0, .45);
+    margin-right: 8px;
+}
+
+.menu .field input {
+    flex: 1;
+    height: 19px;
+    border: 1px solid rgba(0, 0, 0, .22);
+    border-radius: 3px;
+    background: #fff;
+    font: 13px var(--sf-text);
+    padding: 0 18px 0 5px;
+    outline: none;
+}
+
+/* the little tag swatches at the foot of Finder's File menu */
+.menu .tags {
+    display: flex;
+    gap: 9px;
+    padding: 6px 22px 4px;
+}
+
+.menu .tags i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+}
+
+/* ---------- menu-extra popups ---------- */
+/* Same chrome, but they hang under an icon and are a touch wider. */
+.menu.extra-menu { min-width: 190px; }
+
+.menu.extra-menu .row { padding-right: 14px; }
+
+/* the volume extra is a vertical slider, not a list */
+#volPopup {
+    position: absolute;
+    width: 24px;
+    height: 128px;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-top: none;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .28);
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+}
+
+#volTrack {
+    position: relative;
+    width: 4px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, .17);
+}
+
+#volFill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 2px;
+    background: var(--hl);
+}
+
+#volKnob {
+    position: absolute;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    margin-bottom: -6px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 .5px rgba(0, 0, 0, .28), 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+/* the Wi-Fi list: each row carries a lock and a signal bar */
+.menu .row .sig {
+    margin-left: 10px;
+    width: 15px;
+    height: 11px;
+}
+
+.menu .row .lock {
+    margin-left: 12px;
+    width: 8px;
+    height: 11px;
+}
+
+.menu .row .lock svg { width: 8px; height: 11px; fill: rgba(0, 0, 0, .6); }
+.menu .row.on .lock svg { fill: #fff; }
+.menu .row .sig { color: rgba(0, 0, 0, .72); }
+.menu .row.on .sig { color: #fff; }
+
+/* ---------- Dock menus ---------- */
+/* They hang above the icon with a pointer, and the reference draws them
+   opaque white rather than with the menu bar's vibrancy. */
+.menu.dock-menu {
+    background: rgba(250, 250, 250, .96);
+    border-radius: 5px;
+    min-width: 170px;
+}
+
+.menu.dock-menu .point {
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: rgba(250, 250, 250, .96);
+    border-bottom-width: 0;
+}

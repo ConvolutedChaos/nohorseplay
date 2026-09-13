@@ -1,0 +1,28 @@
+/* the stand-in for the OS pointer that js/cursors.js drives -- base.css
+   turns the real cursor off, so this is the only thing the user sees. It
+   is sized to one frame at its native points (object-fit: none keeps a
+   multi-frame strip from being squashed into that box), and scaled up
+   around its own hotspot by --cs, so the hot pixel never drifts. */
+#cursorLayer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    pointer-events: none;
+    visibility: hidden;
+    --cs: 1;
+}
+
+#cursorLayer.strip {
+    object-fit: none;
+    object-position: 0 0;
+}
+
+#cursorLayer.spin {
+    animation: cursorSpin 1s linear infinite;
+}
+
+@keyframes cursorSpin {
+    from { transform: scale(var(--cs)) rotate(0deg); }
+    to { transform: scale(var(--cs)) rotate(360deg); }
+}

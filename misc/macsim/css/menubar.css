@@ -1,0 +1,154 @@
+/* the 22px menu bar: app menus on the left, menu extras on the right.
+
+   Measured off the reference shots (1280 wide): the Apple glyph sits at
+   x 21..33, so the bar carries a 10px left inset and the Apple item 11px of
+   padding; every other title has 10px.  Text is 14px with the app name
+   semibold.  On the right the glyph boxes are, in order, 34 26 32 33 35
+   87 31 49 wide, which lands the Time Machine glyph at x 961 and leaves the
+   notification lines 23px clear of the screen edge. */
+
+#menubar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--menubar-h);
+    z-index: 700;
+    display: flex;
+    align-items: stretch;
+    font: 14px/1 var(--sf-text);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .18);
+}
+
+#mbLeft,
+#mbRight {
+    display: flex;
+    align-items: stretch;
+}
+
+#mbLeft { padding-left: 10px; }
+
+#mbRight { margin-left: auto; }
+
+/* ---------- an item in the bar ---------- */
+.mb-item {
+    display: flex;
+    align-items: center;
+    padding: 0 9px;
+    height: 100%;
+    white-space: nowrap;
+    color: #000;
+}
+
+/* the semibold cut shipped here measures ~3px narrower than Apple's, so
+   the app title carries a little extra padding; that keeps every title
+   after it on the same pixel as the reference shots */
+.mb-item.app {
+    font-weight: 600;
+    padding: 0 10.5px;
+}
+
+.mb-item.open,
+.mb-item.open .glyph {
+    background: var(--hl);
+    color: #fff;
+    fill: #fff;
+}
+
+.mb-item.open svg { fill: #fff; }
+
+#mbApple {
+    padding: 0 9px;
+}
+
+#mbApple svg {
+    width: 16px;
+    height: 20px;
+    fill: #000;
+    display: block;
+    margin-top: -1px;
+}
+
+/* ---------- menu extras ---------- */
+/* Each box is the measured width and the glyph is centred in it, so the
+   whole right-hand run lands on the reference pixels. */
+.extra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: 100%;
+}
+
+.extra svg {
+    fill: currentColor;
+    color: #000;
+    display: block;
+}
+
+/* Apple's own glyphs (js/core.js barGlyph) carry their size inline and
+   centre by their canvas; the traced SVGs are drawn at their ink size and
+   nudged where the reference centres them a pixel above the middle */
+.extra .bar-glyph { display: block; }
+
+#mbTimeMachine { width: 34px; }
+
+/* Time Machine is not configured, so its extra sits dimmed */
+#mbTimeMachine { opacity: .45; }
+
+#mbBluetooth { width: 26px; }
+
+#mbWifi { width: 32px; }
+#mbWifi svg { width: 20px; height: 15px; margin-top: -1px; }
+
+#mbVolume { width: 33px; }
+
+#mbBattery { width: 35px; }
+
+/* the shell, with the level laid into its 16x8 well */
+#mbBattery .batt { position: relative; display: block; }
+#mbBattery .lvl { position: absolute; left: 2px; top: 2px; height: 8px; overflow: hidden; }
+#mbBattery .lvl img { position: absolute; top: 0; }
+#mbBattery .lvl img:first-child { left: 0; }
+#mbBattery .lvl img:last-child { right: 0; }
+#mbBattery .lvl img:not(:first-child):not(:last-child) { left: 2px; transform-origin: 0 0; }
+
+/* 87px is what the reference measures; a longer string grows the box
+   rather than wrapping onto a second line */
+#mbClock {
+    min-width: 87px;
+    padding: 0 6px;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+#mbClock canvas {
+    display: block;
+    width: 17px;
+    height: 17px;
+}
+
+/* the percentage widens the battery box rather than shifting the glyph */
+#mbBattery .pct {
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+#mbBattery.pct-on { width: 66px; }
+
+#mbSpotlight { width: 31px; }
+#mbSpotlight svg { width: 15px; height: 15px; }
+
+/* an open extra inverts to white on the selection blue */
+.extra.open { background: var(--hl); color: #fff; }
+.extra.open svg { color: #fff; }
+.extra.open .bar-glyph { filter: brightness(0) invert(1); }
+
+/* the notification lines finish 23px short of the screen edge */
+#mbNotify {
+    width: 49px;
+    justify-content: flex-start;
+    padding-left: 8px;
+}
+
+#mbNotify svg { width: 18px; height: 10px; }

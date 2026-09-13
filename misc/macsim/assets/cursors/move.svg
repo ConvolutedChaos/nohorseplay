@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   sodipodi:docname="cursor.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="24"
+       height="24"
+       margin="1.3528666 1.3541334 1.3509333 1.35352"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-MC0">
+      <path
+         id="path2"
+         d="m 11,12 h 1 v -1 h -1 z m 1,-6 h -1 v 1 h 1 z M 7,11 H 6 v 1 H 7 Z M 7,6 H 6 V 7 H 7 Z M 9,16.987 1.015,8.999 6.237,3.778 9,1.015 16.984,9 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,24)" />
+      <path
+         id="path3"
+         d="M 0,0 -2.557,2.809 V 0.98 h -4.009 -4.001 V 2.809 L -13.138,0 -10.566,-2.808 -10.567,-1 h 4.001 4.009 l -10e-4,-1.808 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,20.7552,11.996133)" />
+      <path
+         id="path4"
+         d="M 0,0 H 0.013 V 4.001 L 1.82,4 -0.987,6.571 -3.796,4.001 h 1.809 V 0 h 0.008 V -4.002 L -3.807,-4.001 -1,-6.578 1.805,-4.002 H 0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,13.3164,12)" />
+    </g>
+  </g>
+</svg>

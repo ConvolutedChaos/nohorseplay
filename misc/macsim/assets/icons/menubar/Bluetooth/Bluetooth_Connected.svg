@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="14.666667"
+   height="22.666668"
+   viewBox="0 0 14.666667 22.666668"
+   sodipodi:docname="Bluetooth_Connected.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2">
+      <path
+         d="M -3.6056001,-9.7910002 H 5.8674001 V 6.4230002 h -9.4730002 z"
+         id="path2" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3">
+      <path
+         d="M 1.059468,0.524 H 13.690667 V 22.143209 H 1.059468 Z"
+         id="path3" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath8">
+      <path
+         d="M 0,22.666667 H 14.666667 V 0 H 0 Z"
+         id="path8" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath12">
+      <path
+         d="M -9.5000005,-10 H 1.4999998 V 7.0000002 H -9.5000005 Z"
+         id="path12" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="14.666667"
+       height="22.666668"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-MC0">
+      <g
+         opacity="0.5"
+         id="g7"
+         clip-path="url(#clipPath8)">
+        <g
+           clip-path="url(#clipPath3)"
+           id="g4">
+          <path
+             d="M 0,0 -2.929,2.666 -3.606,1.923 -0.672,-0.746 C -0.512,-0.445 -0.284,-0.186 0,0"
+             style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             transform="matrix(1.3333333,0,0,-1.3333333,5.8674667,9.088)"
+             clip-path="url(#clipPath2)"
+             id="path4" />
+        </g>
+        <path
+           d="m 0,0 2.104,-1.841 -2.735,-2.393 v 3.952 c -0.163,-0.042 -0.331,-0.072 -0.507,-0.072 -0.173,0 -0.338,0.028 -0.497,0.069 V -6.448 L 3.629,-1.841 0.655,0.762 C 0.502,0.456 0.28,0.192 0,0"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           transform="matrix(1.3333333,0,0,-1.3333333,8.8512,13.545867)"
+           id="path5" />
+        <path
+           d="M 0,0 C 0.176,0 0.344,-0.03 0.507,-0.072 V 3.88 L 3.242,1.487 1.138,-0.354 C 1.418,-0.546 1.64,-0.81 1.793,-1.116 L 4.768,1.487 -0.497,6.093 V -0.069 C -0.337,-0.028 -0.173,0 0,0"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           transform="matrix(1.3333333,0,0,-1.3333333,7.3333333,8.6486667)"
+           id="path6" />
+        <path
+           d="m 0,0 -2.933,-2.668 0.677,-0.743 2.928,2.665 C 0.388,-0.56 0.16,-0.302 0,0"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           transform="matrix(1.3333333,0,0,-1.3333333,4.9708,12.583467)"
+           id="path7" />
+      </g>
+      <path
+         id="path9"
+         d="M 0,0 C 0.828,0 1.5,-0.672 1.5,-1.5 1.5,-2.328 0.828,-3 0,-3 c -0.828,0 -1.5,0.672 -1.5,1.5 0,0.828 0.672,1.5 1.5,1.5"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7.3333333,9.3333333)" />
+      <path
+         id="path10"
+         d="M 0,0 C 0.828,0 1.5,-0.672 1.5,-1.5 1.5,-2.328 0.828,-3 0,-3 c -0.828,0 -1.5,0.672 -1.5,1.5 0,0.828 0.672,1.5 1.5,1.5"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,2,9.3333333)" />
+      <path
+         id="path11"
+         d="M 0,0 C 0.828,0 1.5,-0.672 1.5,-1.5 1.5,-2.328 0.828,-3 0,-3 c -0.828,0 -1.5,0.672 -1.5,1.5 0,0.828 0.672,1.5 1.5,1.5"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,12.666667,9.3333333)"
+         clip-path="url(#clipPath12)" />
+    </g>
+  </g>
+</svg>

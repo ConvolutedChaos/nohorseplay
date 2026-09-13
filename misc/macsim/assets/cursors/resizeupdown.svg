@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   sodipodi:docname="cursor.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="32"
+       height="32"
+       margin="4 5.3333335 4 5.3339868"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="layer-MC0"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       id="path1"
+       d="m 0,0 -5.461,-5.962 h 3.478 V -7 h -6.005 v -0.019 -3.942 -0.02 h 6.005 v -1.058 H -5.449 L 0.023,-18 5.485,-12.039 H 2.007 v 1.058 H 8.012 V -7 H 2.006 v 1.038 h 3.467 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="matrix(1.3333333,0,0,-1.3333333,15.9844,4)" />
+    <path
+       id="path2"
+       d="m 0,0 h -5.981 v 3.039 h 2.26 l -3.251,3.319 -3.223,-3.319 h 2.254 V 0 h -5.98 -0.02 v -1.961 h 0.02 6 V -5 h -2.28 L -6.95,-8.32 -3.727,-5 H -5.98 v 3.039 H 0 0.02 L 0.02,0 Z"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="matrix(1.3333333,0,0,-1.3333333,25.2812,14.692667)" />
+  </g>
+</svg>

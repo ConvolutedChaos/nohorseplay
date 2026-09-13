@@ -1,0 +1,255 @@
+/* fonts, reset, the screen itself, and the shared vibrancy recipe */
+
+/* ---------- system fonts ----------
+   Apple's rule on El Capitan: SF UI Display at 20pt and up, SF UI Text
+   below it.  Every cut is declared at the weight it really is, so the
+   browser's own matching picks the right file and is left free to
+   synthesise the semibold the menu bar leans on. */
+@font-face {
+    font-family: "SF UI Text";
+    src: url("../assets/fonts/SFUIText-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "SF UI Display";
+    src: url("../assets/fonts/SFUIDisplay-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "SF UI Display";
+    src: url("../assets/fonts/SFUIDisplay-Thin.woff2") format("woff2");
+    font-weight: 100 200;
+    font-style: normal;
+    font-display: block;
+}
+
+:root {
+    --sf-text: "SF UI Text", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --sf-display: "SF UI Display", -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+    /* sampled off the reference shots */
+    --hl: #4b8ffa;          /* menu / list selection blue */
+    --hl-label: #2168d6;    /* the pill behind a selected icon's name */
+    --hl-dim: #d0d0d0;      /* the same pill once the window loses focus */
+    --sel-block: #e0e0e0;   /* the block behind a selected icon in a window */
+    --ink: #000;
+    --ink-dim: rgba(0, 0, 0, .38);   /* a disabled menu item */
+    --sep: rgba(0, 0, 0, .13);
+
+    --menubar-h: 22px;
+    --dock-h: 77px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Every icon is drawn into a box that already knows its size, and the PNG
+   handed to it is the next cut up (128 in a 64pt slot, and so on), so no
+   image is ever allowed to push past the box it was placed in. */
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+body {
+    font: 13px/1 var(--sf-text);
+    color: var(--ink);
+    background: #1d1f21;
+    cursor: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the screen ---------- */
+#screen {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+}
+
+#wallpaper {
+    position: absolute;
+    inset: 0;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+}
+
+/* Vibrancy, the cheap way: a translucent white wash over a blurred copy
+   of whatever is behind it.  El Capitan pushes the saturation up so the
+   wallpaper's colour bleeds through -- that pink cast the menus pick up
+   over the cliff in the reference shots. */
+.vibrant-light {
+    background: rgba(246, 246, 246, .76);
+    -webkit-backdrop-filter: blur(22px) saturate(1.9);
+    backdrop-filter: blur(22px) saturate(1.9);
+}
+
+.vibrant-dark {
+    background: rgba(42, 42, 44, .82);
+    -webkit-backdrop-filter: blur(22px) saturate(1.6);
+    backdrop-filter: blur(22px) saturate(1.6);
+}
+
+/* a browser without backdrop-filter gets an opaque panel rather than an
+   unreadable transparent one */
+@supports not (backdrop-filter: blur(1px)) {
+    .vibrant-light { background: #eef0f2; }
+    .vibrant-dark  { background: #2b2b2d; }
+}
+
+.hidden { display: none !important; }
+
+/* ---------- notification banners ---------- */
+#banners {
+    position: absolute;
+    top: 28px;
+    right: 10px;
+    z-index: 690;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.nc-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 320px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: rgba(250, 250, 250, .92);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .3), inset 0 0 0 .5px rgba(0, 0, 0, .12);
+    font: 13px/1.35 var(--sf-text);
+    pointer-events: auto;
+    transform: translateX(calc(100% + 16px));
+    transition: transform .3s cubic-bezier(.2, .8, .3, 1);
+}
+
+.nc-banner.in { transform: translateX(0); }
+
+.nc-banner .art {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nc-banner .art img,
+.nc-banner .art .ph { width: 34px; height: 34px; border-radius: 8px; }
+
+.nc-banner .t { font-weight: 600; }
+.nc-banner .m { color: rgba(0, 0, 0, .6); }
+
+/* ---------- sleep / restart / shut down ---------- */
+#veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    background: #000;
+    color: rgba(255, 255, 255, .8);
+    font: 13px var(--sf-text);
+}
+
+#veil.on { display: flex; }
+#veil.sleep { background: #000; }
+
+#veil .hint {
+    opacity: .45;
+    animation: veilPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes veilPulse {
+    0%, 100% { opacity: .2; }
+    50% { opacity: .6; }
+}
+
+#veil .mark svg {
+    width: 74px;
+    height: 88px;
+    fill: #fff;
+}
+
+#veil .spinner {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-top-color: rgba(255, 255, 255, .85);
+    animation: veilSpin .8s linear infinite;
+}
+
+@keyframes veilSpin { to { transform: rotate(360deg); } }
+
+/* ---------- placeholder app tile ----------
+   Shown anywhere an icon file is missing: the Dock, a menu row, Spotlight,
+   a banner.  Drop a real PNG into assets/icons/ and it disappears. */
+.ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22%;
+    background: linear-gradient(180deg, #fdfdfd, #d3d7dc);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .13), inset 0 1px 0 rgba(255, 255, 255, .9);
+    color: rgba(0, 0, 0, .5);
+    font-family: var(--sf-display);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: -.5px;
+    overflow: hidden;
+}
+
+.menu .row .ico .ph { border-radius: 3px; font-size: 7px; }
+#spotHitIcon .ph { border-radius: 7px; font-size: 13px; }
+#spotList .row .art .ph { border-radius: 3px; font-size: 7px; }
+
+/* a screenshot file previews itself; fs.js sizes each instance inline */
+.shot {
+    background: #333 url("../assets/img/wallpaper.jpg") center / cover;
+    border: 1px solid #fff;
+    border-style: solid;
+    flex: none;
+}
+
+/* ---------- the system icon library ----------
+   sysIcon() sizes each instance inline; the sidebar templates are black
+   with an alpha channel, so they are masked and tinted the way the Finder
+   tints them -- about half strength, letting the vibrancy through. */
+.sysicon { display: block; flex: none; }
+
+/* an icon that should follow its box instead of its own measured size */
+.sysicon.fill { width: 100% !important; height: 100% !important; }
+
+.sideicon {
+    display: block;
+    flex: none;
+    opacity: .55;
+}

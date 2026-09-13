@@ -1,0 +1,275 @@
+{
+  "busybutclickable": {
+    "svg": "busybutclickable.svg",
+    "hotx": 5,
+    "hoty": 5,
+    "hotx_scaled": 5.0,
+    "hoty_scaled": 5
+  },
+  "cell": {
+    "svg": "cell.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 9,
+    "hoty_scaled": 9
+  },
+  "closedhand": {
+    "svg": "closedhand.svg",
+    "hotx": 16,
+    "hoty": 16,
+    "hotx_scaled": 16,
+    "hoty_scaled": 16
+  },
+  "contextualmenu": {
+    "svg": "contextualmenu.svg",
+    "hotx": 5,
+    "hoty": 5,
+    "hotx_scaled": 5,
+    "hoty_scaled": 5
+  },
+  "copy": {
+    "svg": "copy.svg",
+    "hotx": 5,
+    "hoty": 5,
+    "hotx_scaled": 5,
+    "hoty_scaled": 5
+  },
+  "countingdownhand": {
+    "svg": "countingdownhand.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12.0,
+    "hoty_scaled": 12
+  },
+  "countingupandownhand": {
+    "svg": "countingupandownhand.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12.0,
+    "hoty_scaled": 12
+  },
+  "countinguphand": {
+    "svg": "countinguphand.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12.0,
+    "hoty_scaled": 12
+  },
+  "cross": {
+    "svg": "cross.svg",
+    "hotx": 11,
+    "hoty": 11,
+    "hotx_scaled": 12,
+    "hoty_scaled": 11
+  },
+  "help": {
+    "svg": "help.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 9,
+    "hoty_scaled": 9
+  },
+  "ibeamvertical": {
+    "svg": "ibeamvertical.svg",
+    "hotx": 7,
+    "hoty": 4,
+    "hotx_scaled": 15,
+    "hoty_scaled": 16
+  },
+  "makealias": {
+    "svg": "makealias.svg",
+    "hotx": 11,
+    "hoty": 3,
+    "hotx_scaled": 13,
+    "hoty_scaled": 3
+  },
+  "move": {
+    "svg": "move.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "notallowed": {
+    "svg": "notallowed.svg",
+    "hotx": 5,
+    "hoty": 5,
+    "hotx_scaled": 5,
+    "hoty_scaled": 5
+  },
+  "openhand": {
+    "svg": "openhand.svg",
+    "hotx": 16,
+    "hoty": 16,
+    "hotx_scaled": 16,
+    "hoty_scaled": 16
+  },
+  "pointinghand": {
+    "svg": "pointinghand.svg",
+    "hotx": 13,
+    "hoty": 8,
+    "hotx_scaled": 13,
+    "hoty_scaled": 8
+  },
+  "poof": {
+    "svg": "poof.svg",
+    "hotx": 5,
+    "hoty": 5,
+    "hotx_scaled": 5,
+    "hoty_scaled": 5
+  },
+  "resizedown": {
+    "svg": "resizedown.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12,
+    "hoty_scaled": 10
+  },
+  "resizeeast": {
+    "svg": "resizeeast.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizeeastwest": {
+    "svg": "resizeeastwest.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizeleft": {
+    "svg": "resizeleft.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 13,
+    "hoty_scaled": 12
+  },
+  "resizeleftright": {
+    "svg": "resizeleftright.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12,
+    "hoty_scaled": 12
+  },
+  "resizenorth": {
+    "svg": "resizenorth.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizenortheast": {
+    "svg": "resizenortheast.svg",
+    "hotx": 10,
+    "hoty": 8,
+    "hotx_scaled": 9,
+    "hoty_scaled": 7
+  },
+  "resizenortheastsouthwest": {
+    "svg": "resizenortheastsouthwest.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizenorthsouth": {
+    "svg": "resizenorthsouth.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizenorthwest": {
+    "svg": "resizenorthwest.svg",
+    "hotx": 8,
+    "hoty": 8,
+    "hotx_scaled": 7,
+    "hoty_scaled": 7
+  },
+  "resizenorthwestsoutheast": {
+    "svg": "resizenorthwestsoutheast.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizeright": {
+    "svg": "resizeright.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 11,
+    "hoty_scaled": 12
+  },
+  "resizesouth": {
+    "svg": "resizesouth.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "resizesoutheast": {
+    "svg": "resizesoutheast.svg",
+    "hotx": 10,
+    "hoty": 9,
+    "hotx_scaled": 9,
+    "hoty_scaled": 9
+  },
+  "resizesouthwest": {
+    "svg": "resizesouthwest.svg",
+    "hotx": 8,
+    "hoty": 9,
+    "hotx_scaled": 7,
+    "hoty_scaled": 9
+  },
+  "resizeup": {
+    "svg": "resizeup.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12,
+    "hoty_scaled": 14
+  },
+  "resizeupdown": {
+    "svg": "resizeupdown.svg",
+    "hotx": 12,
+    "hoty": 12,
+    "hotx_scaled": 12,
+    "hoty_scaled": 12
+  },
+  "resizewest": {
+    "svg": "resizewest.svg",
+    "hotx": 9,
+    "hoty": 9,
+    "hotx_scaled": 8,
+    "hoty_scaled": 8
+  },
+  "screenshotselection": {
+    "svg": "screenshotselection.svg",
+    "hotx": 15,
+    "hoty": 15,
+    "hotx_scaled": 15,
+    "hoty_scaled": 15
+  },
+  "screenshotwindow": {
+    "svg": "screenshotwindow.svg",
+    "hotx": 14,
+    "hoty": 11,
+    "hotx_scaled": 14,
+    "hoty_scaled": 11
+  },
+  "zoomin": {
+    "svg": "zoomin.svg",
+    "hotx": 8,
+    "hoty": 7,
+    "hotx_scaled": 8,
+    "hoty_scaled": 7
+  },
+  "zoomout": {
+    "svg": "zoomout.svg",
+    "hotx": 8,
+    "hoty": 7,
+    "hotx_scaled": 8,
+    "hoty_scaled": 7
+  }
+}

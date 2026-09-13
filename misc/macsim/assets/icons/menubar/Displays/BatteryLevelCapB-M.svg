@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="2.6666667"
+   height="10.666667"
+   viewBox="0 0 2.6666667 10.666667"
+   sodipodi:docname="BatteryLevelCapB-M.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3">
+      <path
+         d="m -12.5415,7.4994002 h 2 v -8.00000021 h -2 z"
+         id="path3" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="2.6666667"
+       height="10.666667"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-MC0">
+      <path
+         id="path2"
+         d="m 0,0 c 0,-0.275 -0.226,-0.5 -0.505,-0.5 h -14.969 c -0.279,0 -0.505,0.225 -0.505,0.5 v 6.999 c 0,0.275 0.226,0.5 0.505,0.5 H -0.505 C -0.226,7.499 0,7.274 0,6.999 Z"
+         style="fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,16.722,9.9992)"
+         clip-path="url(#clipPath3)" />
+    </g>
+  </g>
+</svg>

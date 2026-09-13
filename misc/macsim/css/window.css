@@ -1,0 +1,269 @@
+/* window chrome, the Finder insides, and the About This Mac panel */
+
+#windows {
+    position: absolute;
+    top: var(--menubar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 300;
+    pointer-events: none;
+}
+
+.win {
+    position: absolute;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    min-height: 180px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 12px 44px rgba(0, 0, 0, .36), 0 0 0 .5px rgba(0, 0, 0, .32);
+    overflow: hidden;
+}
+
+.win.inactive {
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .22), 0 0 0 .5px rgba(0, 0, 0, .22);
+}
+
+.win.zoomed { border-radius: 0; }
+
+.win.minimizing {
+    transition: transform .32s cubic-bezier(.4, 0, .7, .4), opacity .32s;
+    transform-origin: bottom center;
+    opacity: 0;
+}
+
+/* ---------- title bar ----------
+   Measured on the 11.21 Finder shots: the window's top edge is a 1px grey
+   line, then a 54px unified bar -- a 22px title row over a 32px toolbar row
+   -- shading #f5f4f5 down to #d1cfd1, closed by a 1px #979697 rule.  The
+   traffic lights are 12px on 20px centres, the first 8px in from the edge
+   and 11px down from the top. */
+.titlebar {
+    position: relative;
+    height: 22px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: linear-gradient(180deg, #f5f4f5, #e6e4e6);
+    font: 600 13px/1 var(--sf-text);
+    color: rgba(0, 0, 0, .75);
+}
+
+/* a plain window closes the bar off itself; a Finder window lets its
+   toolbar continue the same gradient */
+.win:not(.unified) .titlebar {
+    background: linear-gradient(180deg, #f5f4f5, #d1cfd1);
+    border-bottom: 1px solid #979697;
+}
+
+.titlebar .ticon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+
+.titlebar .ticon img { width: 16px; height: 16px; }
+
+.win.inactive .titlebar {
+    background: #f6f6f6;
+    color: rgba(0, 0, 0, .38);
+    border-bottom-color: #dcdcdc;
+}
+
+.win.inactive .titlebar .ticon { opacity: .5; }
+
+/* a Finder window runs its toolbar into the title bar */
+.win.unified .titlebar {
+    border-bottom: none;
+    background: linear-gradient(180deg, #f5f4f5, #e9e7e9);
+}
+
+.lights {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    display: flex;
+    gap: 8px;
+}
+
+.lights i {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+}
+
+.lights i::after {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 700 9px/1 var(--sf-text);
+    color: rgba(0, 0, 0, .55);
+    opacity: 0;
+}
+
+.lights:hover i::after { opacity: 1; }
+
+.lights .close { background: #ff5f57; box-shadow: inset 0 0 0 .5px #e0443e; }
+.lights .min   { background: #ffbd2e; box-shadow: inset 0 0 0 .5px #dea123; }
+.lights .zoom  { background: #28c940; box-shadow: inset 0 0 0 .5px #1aad2b; }
+
+.lights .close::after { content: "\00d7"; font-size: 11px; }
+.lights .min::after   { content: "\2013"; }
+.lights .zoom::after  { content: "+"; font-size: 10px; }
+
+.win.inactive .lights i {
+    background: #d6d6d6;
+    box-shadow: inset 0 0 0 .5px #b8b8b8;
+}
+
+.win.inactive .lights i::after { opacity: 0; }
+
+/* ---------- generic window body ---------- */
+.win-body {
+    flex: 1;
+    overflow: auto;
+    background: #fff;
+    min-height: 0;
+}
+
+.placeholder-app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(0, 0, 0, .5);
+    font: 13px/1.5 var(--sf-text);
+    text-align: center;
+    padding: 24px;
+}
+
+.placeholder-app .big {
+    width: 96px;
+    height: 96px;
+    border-radius: 22%;
+    background: linear-gradient(180deg, #fdfdfd, #d3d7dc);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .13);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 600 34px/1 var(--sf-display);
+    color: rgba(0, 0, 0, .45);
+}
+
+.placeholder-app h2 {
+    font: 400 22px/1 var(--sf-display);
+    color: rgba(0, 0, 0, .8);
+}
+
+/* the grip in the bottom-right corner */
+.resizer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 15px;
+    height: 15px;
+}
+
+/* ---------- About This Mac ---------- */
+.about {
+    padding: 0 0 22px;
+    text-align: center;
+    font: 13px/1.45 var(--sf-text);
+    color: rgba(0, 0, 0, .8);
+}
+
+.about .hero {
+    padding: 20px 0 8px;
+    font: 100 58px/1 var(--sf-display);
+    letter-spacing: -1px;
+    color: #4a4a4a;
+}
+
+.about .ver {
+    font: 400 15px/1 var(--sf-display);
+    color: rgba(0, 0, 0, .55);
+    margin-bottom: 18px;
+}
+
+.about table { margin: 0 auto; border-spacing: 0 3px; }
+.about td { font-size: 12px; padding: 0 5px; }
+.about td.k { text-align: right; color: rgba(0, 0, 0, .55); }
+.about td.v { text-align: left; }
+
+.about .btns { margin-top: 18px; display: flex; gap: 10px; justify-content: center; }
+
+.btn {
+    height: 20px;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #fefefe, #f0f0f0);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .22), 0 1px 1px rgba(0, 0, 0, .06);
+    font: 13px/20px var(--sf-text);
+}
+
+.btn:active { background: linear-gradient(180deg, #d9d9d9, #e9e9e9); }
+
+.btn.default {
+    background: linear-gradient(180deg, #6fa9ff, #2f79f5);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+    color: #fff;
+}
+
+/* ---------- Preview (a double-clicked screenshot) ---------- */
+.preview-body {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #4b4b4b;
+    padding: 10px;
+}
+
+.preview-body img {
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, .5);
+}
+
+/* ---------- TextEdit ---------- */
+.te-body {
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 14px 18px;
+    font: 13px/1.5 "Helvetica Neue", var(--sf-text);
+    color: #000;
+}
+
+/* ---------- Force Quit ---------- */
+.fq-body { padding: 10px 14px 14px; font: 13px/1.4 var(--sf-text); }
+
+.fq-list {
+    margin: 8px 0 12px;
+    height: 152px;
+    overflow: auto;
+    border: 1px solid rgba(0, 0, 0, .22);
+    border-radius: 4px;
+    background: #fff;
+}
+
+.fq-list .r { display: flex; align-items: center; gap: 7px; height: 22px; padding: 0 8px; }
+.fq-list .r .art { width: 16px; height: 16px; display: inline-flex; flex: none; }
+.fq-list .r.sel { background: var(--hl); color: #fff; }
+.fq-foot { display: flex; justify-content: flex-end; }

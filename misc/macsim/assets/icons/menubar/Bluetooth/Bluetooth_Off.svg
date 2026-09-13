@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="14.666667"
+   height="22.666668"
+   viewBox="0 0 14.666667 22.666668"
+   sodipodi:docname="Bluetooth_Off.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2">
+      <path
+         d="M -7.9473172,11.6069 H 1.5254 V -4.6068731 h -9.4727172 z"
+         id="path2" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4">
+      <path
+         d="M 0,0 H 14.666667 V 22.666667 H 0 Z"
+         id="path4" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="14.666667"
+       height="22.666668"
+       margin="0.52416933 0.97640002 0.52413332 1.0599773"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-MC0">
+      <g
+         opacity="0.199997"
+         id="g3"
+         clip-path="url(#clipPath4)">
+        <path
+           d="M 0,0 -2.735,-2.393 V 2.393 Z M -2.735,9.393 0,7.001 -2.735,4.607 Z m 4.26,-2.392 -5.264,4.606 V 4.636 L -7.271,7.85 -7.947,7.107 -3.983,3.5 -7.947,-0.106 -7.271,-0.849 -3.739,2.364 V -4.607 L 1.525,0 l -4,3.5 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           transform="matrix(1.3333333,0,0,-1.3333333,11.6564,16)"
+           clip-path="url(#clipPath2)"
+           id="path3" />
+      </g>
+    </g>
+  </g>
+</svg>

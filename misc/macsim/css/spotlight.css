@@ -1,0 +1,171 @@
+/* Spotlight: the search field, the result list, and the preview pane */
+
+#spotlight {
+    position: absolute;
+    left: 50%;
+    top: 160px;
+    width: 680px;
+    margin-left: -340px;
+    z-index: 800;
+    border-radius: 7px;
+    box-shadow: 0 16px 60px rgba(0, 0, 0, .4), 0 0 0 .5px rgba(0, 0, 0, .25);
+    overflow: hidden;
+    font: 13px/1 var(--sf-text);
+    animation: spotIn .1s ease-out;
+}
+
+@keyframes spotIn {
+    from { opacity: 0; transform: scale(.985); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+#spotField {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 56px;
+    padding: 0 16px;
+}
+
+#spotField > svg {
+    width: 24px;
+    height: 24px;
+    fill: rgba(0, 0, 0, .55);
+    flex: none;
+}
+
+#spotInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: 100 30px/1 var(--sf-display);
+    color: rgba(0, 0, 0, .88);
+    caret-color: rgba(0, 0, 0, .7);
+}
+
+#spotInput::placeholder { color: rgba(0, 0, 0, .3); }
+
+/* the top hit's icon, parked at the right end of the field */
+#spotHitIcon {
+    width: 30px;
+    height: 30px;
+    flex: none;
+}
+
+#spotResults {
+    display: flex;
+    max-height: 432px;
+    border-top: 1px solid rgba(0, 0, 0, .12);
+}
+
+#spotList {
+    width: 290px;
+    flex: none;
+    overflow: auto;
+    padding-bottom: 6px;
+    border-right: 1px solid rgba(0, 0, 0, .1);
+}
+
+#spotList .head {
+    padding: 7px 12px 3px;
+    font: 600 10px/1 var(--sf-text);
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, .42);
+}
+
+#spotList .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 26px;
+    padding: 0 12px;
+}
+
+#spotList .row .art {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#spotList .row .art img { max-width: 16px; max-height: 16px; }
+
+#spotList .row .nm {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#spotList .row.on { background: var(--hl); color: #fff; }
+#spotList .row.on .art svg { fill: #fff; }
+
+#spotPreview {
+    flex: 1;
+    min-width: 0;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: auto;
+}
+
+#spotPreview .art {
+    width: 128px;
+    height: 128px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+#spotPreview .art img { max-width: 128px; max-height: 128px; }
+
+#spotPreview .art .ph {
+    width: 128px;
+    height: 128px;
+    border-radius: 22%;
+    background: linear-gradient(180deg, #fdfdfd, #d3d7dc);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .13);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 600 44px/1 var(--sf-display);
+    color: rgba(0, 0, 0, .42);
+}
+
+#spotPreview .art .shot { box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+
+#spotPreview h3 {
+    font: 400 20px/1.2 var(--sf-display);
+    color: rgba(0, 0, 0, .85);
+}
+
+#spotPreview .sub {
+    margin-top: 4px;
+    color: rgba(0, 0, 0, .5);
+    font-size: 12px;
+}
+
+#spotPreview table {
+    margin: 18px auto 0;
+    border-spacing: 0 3px;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    padding-top: 12px;
+}
+
+#spotPreview td { font-size: 12px; padding: 0 6px; }
+#spotPreview td.k { text-align: right; color: rgba(0, 0, 0, .5); }
+#spotPreview td.v { text-align: left; }
+
+#spotEmpty {
+    padding: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, .45);
+}

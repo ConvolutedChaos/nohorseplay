@@ -1,0 +1,203 @@
+/* the Dock: bottom-anchored, translucent, with cursor magnification.
+
+   Measured off the reference shots (1280x800): the panel runs x 101..1178
+   and starts at y 723, so it is 1078 x 77.  Icon art is 61px on a 65px
+   pitch (first centre 137, last app centre 1047), the running dot is 4x4
+   with its bottom 2px clear of the screen edge, and the rule before the
+   Trash is a single dark column at x 1095 spanning y 733..789. */
+
+#dock {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 600;
+    display: flex;
+    align-items: flex-end;
+    height: var(--dock-h);
+    padding: 5px 3px 10px;      /* with the 1px border: 6 + 61 + 10 = 77 */
+    border-radius: 6px 6px 0 0;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-bottom: none;
+    box-shadow: 0 0 14px rgba(0, 0, 0, .22);
+    background: rgba(190, 190, 190, .36);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+    #dock { background: rgba(222, 224, 226, .88); }
+}
+
+#dock.hidden-dock {
+    transform: translateX(-50%) translateY(calc(var(--dock-h) - 4px));
+    transition: transform .22s ease-in;
+}
+
+.dock-item {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 61px;
+    height: 61px;
+    margin: 0 2px;              /* 61 + 4 = the measured 65px pitch */
+    flex: none;
+}
+
+.dock-item img,
+.dock-item .ph {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .3));
+}
+
+.dock-item img { display: block; }
+
+/* the Dock tile keeps a fixed type size, since it scales with the icon */
+.dock-item .ph { font-size: 22px; }
+
+/* running indicator: 4x4, four pixels below the icon, which puts it two
+   pixels clear of the bottom of the screen */
+.dock-item .dot {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: rgba(20, 20, 20, .78);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .7);
+}
+
+/* tooltip above the icon */
+.dock-item .tip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -9px);
+    padding: 3px 9px 4px;
+    border-radius: 4px;
+    background: rgba(250, 250, 250, .94);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(0, 0, 0, .08);
+    font: 13px/1 var(--sf-text);
+    color: #000;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .1s;
+}
+
+.dock-item .tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: rgba(250, 250, 250, .94);
+    border-bottom-width: 0;
+}
+
+.dock-item.tipped .tip { opacity: 1; }
+
+/* the rule between the app half of the Dock and the Trash: 30px of space
+   with a 1px line down the middle, 57px tall and level with the icon feet */
+.dock-sep {
+    width: 30px;
+    height: 57px;
+    flex: none;
+    align-self: flex-end;
+    /* a colour cannot be sized, so the hairline is a 1px-wide gradient */
+    background-image: linear-gradient(rgba(0, 0, 0, .33), rgba(0, 0, 0, .33));
+    background-size: 1px 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ------------------------------------------------------------------ */
+/* LAUNCH                                                              */
+/* ------------------------------------------------------------------ */
+/* Both halves are traced from ref_pic/app open.mp4 (96x174 at 60fps).
+
+   Holding the mouse down darkens the icon to 0.43 of its brightness -- a
+   straight multiply, measured the same on light and dark pixels alike.
+
+   Letting go throws the icon 17px into the air and lets it fall back over
+   690ms: frame-by-frame tracking gives a parabola (a ballistic toss) to
+   within 0.4px, so the rise is a quadratic ease-out and the fall the
+   matching ease-in, and it bounces exactly once.  The tooltip rides up with
+   the icon; the running dot, which appears as the bounce starts, does not. */
+.dock-item.pressed img,
+.dock-item.pressed .ph {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .3)) brightness(.43);
+}
+
+@keyframes dockBounce {
+    0% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(.333, .667, .667, 1);
+    }
+
+    48% {
+        transform: translateY(-17px);
+        animation-timing-function: cubic-bezier(.333, 0, .667, .333);
+    }
+
+    100% { transform: translateY(0); }
+}
+
+@keyframes dockBounceTip {
+    0% {
+        transform: translate(-50%, -9px);
+        animation-timing-function: cubic-bezier(.333, .667, .667, 1);
+    }
+
+    48% {
+        transform: translate(-50%, -26px);
+        animation-timing-function: cubic-bezier(.333, 0, .667, .333);
+    }
+
+    100% { transform: translate(-50%, -9px); }
+}
+
+.dock-item.bouncing img,
+.dock-item.bouncing .ph {
+    animation: dockBounce .69s 1;
+}
+
+.dock-item.bouncing .tip {
+    animation: dockBounceTip .69s 1;
+}
+
+/* the Trash lights up while something is dragged over it */
+.dock-item.drop-target .ph,
+.dock-item.drop-target img {
+    filter: drop-shadow(0 0 7px rgba(120, 190, 255, .95)) brightness(1.12);
+}
+
+/* ---------- a minimised window's tile ----------
+   Measured on the clip: the thumbnail keeps the window's proportions,
+   fitted to the slot's width and centred in it, with no running dot. */
+.dock-item.dock-min .thumb {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    align-self: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+
+.dock-item.dock-min {
+    align-items: center;
+}
+
+.dock-item.dock-min .shotwrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+.dock-item.dock-min.pressed .thumb { filter: brightness(.43); }

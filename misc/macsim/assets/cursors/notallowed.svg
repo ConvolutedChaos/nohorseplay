@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="37.333332"
+   height="53.333332"
+   viewBox="0 0 37.333332 53.333332"
+   sodipodi:docname="cursor.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2">
+      <path
+         d="M -9.5000005,16 H 9.5 V -3.0000001 H -9.5000005 Z"
+         id="path2" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4">
+      <path
+         d="M 0,0 H 37.333333 V 53.333333 H 0 Z"
+         id="path4" />
+    </clipPath>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,-18,-18,0,14,24)"
+       spreadMethod="pad"
+       id="linearGradient7">
+      <stop
+         style="stop-opacity:1;stop-color:#f1f1f1"
+         offset="0"
+         id="stop6" />
+      <stop
+         style="stop-opacity:1;stop-color:#d6d6d6"
+         offset="1"
+         id="stop7" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       inkscape:label="1"
+       id="page1"
+       width="37.333332"
+       height="53.333332"
+       margin="7.3333335 6 3.2091999 5.3333068"
+       bleed="0" />
+  </sodipodi:namedview>
+  <g
+     id="g1"
+     inkscape:groupmode="layer"
+     inkscape:label="1">
+    <g
+       id="group-MC0">
+      <g
+         opacity="0"
+         id="g3"
+         clip-path="url(#clipPath4)">
+        <path
+           d="m 0,0 c -3.584,0 -6.5,2.916 -6.5,6.5 0,1.22 0.337,2.391 0.98,3.421 L 3.421,0.98 C 2.391,0.337 1.22,0 0,0 M -3.393,12.037 C -2.37,12.669 -1.208,13 0,13 3.584,13 6.5,10.084 6.5,6.5 6.5,5.292 6.169,4.13 5.537,3.107 Z M 0,16 C -5.238,16 -9.5,11.738 -9.5,6.5 -9.5,1.262 -5.238,-3 0,-3 5.238,-3 9.5,1.262 9.5,6.5 9.5,11.738 5.238,16 0,16"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           transform="matrix(1.3333333,0,0,-1.3333333,18.666667,42)"
+           clip-path="url(#clipPath2)"
+           id="path3" />
+      </g>
+      <path
+         id="path5"
+         d="M 0,0 V 16.015 L 11.591,4.396 H 4.55 L 4.399,4.272 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,5.3333333,24.562533)" />
+      <path
+         id="path6"
+         d="m 0,0 v -11.188 l 2.969,2.866 0.16,0.139 h 5.036 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,6.6666667,6.4186667)" />
+      <path
+         id="path7"
+         d="M 5,15 C 5,10.03 9.03,6 14,6 v 0 c 4.97,0 9,4.03 9,9 v 0 c 0,4.971 -4.03,9 -9,9 v 0 C 9.03,24 5,19.971 5,15 m 4.826,5.61 C 10.993,21.479 12.434,22 14,22 v 0 c 3.866,0 7,-3.134 7,-7 v 0 c 0,-1.567 -0.52,-3.008 -1.39,-4.174 v 0 z M 7,15 c 0,1.578 0.529,3.029 1.409,4.199 v 0 l 9.79,-9.79 C 17.028,8.528 15.577,8 14,8 v 0 c -3.866,0 -7,3.134 -7,7"
+         transform="matrix(1.3333333,0,0,-1.3333333,0,53.333333)"
+         style="fill:url(#linearGradient7);stroke:none" />
+    </g>
+  </g>
+</svg>

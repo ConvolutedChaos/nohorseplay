@@ -1,0 +1,256 @@
+/* About This Mac: a 586 x 355 window whose 37px title bar carries the tab
+   control, measured off the 12.59 reference shots. */
+
+.win.about-mac .titlebar {
+    height: 37px;
+    background: linear-gradient(180deg, #f2f1f2, #e3e2e3);
+    border-bottom: 1px solid #aaa9aa;
+}
+
+.win.about-mac .lights { top: 12px; }
+
+/* a window that cannot be zoomed greys that light out rather than hiding
+   it, which is how About This Mac shows it */
+.win.no-zoom .lights .zoom {
+    background: #d6d6d6;
+    box-shadow: inset 0 0 0 .5px #b8b8b8;
+    pointer-events: none;
+}
+
+.win.no-zoom .lights:hover .zoom::after { opacity: 0; }
+
+.about-tabs {
+    display: flex;
+    height: 20px;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .26);
+    background: linear-gradient(180deg, #fdfdfd, #f0f0f0);
+    font-weight: 400;
+}
+
+.about-tabs .seg {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-right: 1px solid rgba(0, 0, 0, .2);
+    font: 12px/1 var(--sf-text);
+    color: rgba(0, 0, 0, .8);
+}
+
+.about-tabs .seg:last-child { border-right: none; }
+
+.about-tabs .seg.on {
+    background: linear-gradient(180deg, #8b8b8b, #797979);
+    color: #fff;
+}
+
+.about-body {
+    background: #f6f6f6;
+    font: 13px/1.45 var(--sf-text);
+    color: rgba(0, 0, 0, .85);
+    overflow: hidden;
+    position: relative;
+}
+
+.about-body .btn { font-size: 12px; height: 21px; line-height: 21px; }
+.about-body .link { color: #2a6fc9; }
+.about-body .link:hover { text-decoration: underline; }
+
+/* ---------- Overview ---------- */
+.ab-overview {
+    display: flex;
+    height: 100%;
+    padding: 26px 24px 0 20px;
+    gap: 18px;
+}
+
+.ab-overview .logo { flex: none; padding-top: 26px; }
+
+.ab-overview h1 {
+    font: 100 27px/1 var(--sf-display);
+    letter-spacing: -.4px;
+    color: rgba(0, 0, 0, .88);
+}
+
+.ab-overview h1 b { font-weight: 400; }
+.ab-overview .ver { font-size: 12px; color: rgba(0, 0, 0, .72); margin-top: 4px; }
+.ab-overview table { margin-top: 20px; border-spacing: 0 3px; }
+.ab-overview td { font-size: 12px; vertical-align: top; }
+
+.ab-overview td.k {
+    text-align: right;
+    padding-right: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ab-overview td.v.model { font-weight: 600; }
+.ab-overview .btns { margin-top: 18px; display: flex; gap: 8px; }
+
+.ab-overview .legal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(0, 0, 0, .55);
+}
+
+/* ---------- Displays ---------- */
+.ab-centre {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 0;
+    text-align: center;
+}
+
+.ab-centre h2 { font: 600 14px/1 var(--sf-text); margin: 18px 0 10px; }
+.ab-centre p { font-size: 12px; margin-bottom: 4px; }
+
+.ab-centre .foot {
+    position: absolute;
+    right: 22px;
+    bottom: 18px;
+}
+
+/* ---------- Storage ---------- */
+.ab-storage {
+    height: 100%;
+    overflow: auto;
+    padding: 14px 22px 14px 14px;
+}
+
+.ab-vol { display: flex; gap: 14px; margin-bottom: 22px; }
+
+.ab-vol .art {
+    flex: none;
+    width: 96px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ab-vol .art svg, .ab-vol .art img { margin: 0 auto; }
+.ab-vol .art .cap { font-size: 11px; color: rgba(0, 0, 0, .72); margin-top: 4px; line-height: 1.25; }
+.ab-vol .bars { flex: 1; min-width: 0; padding-top: 4px; }
+.ab-vol .head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.ab-vol .head b { font-weight: 400; }
+
+.ab-vol .bar {
+    height: 15px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .28);
+    display: flex;
+    overflow: hidden;
+}
+
+.ab-vol .bar i { display: block; height: 100%; }
+
+.ab-vol .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-top: 7px;
+    font-size: 10px;
+}
+
+.ab-vol .legend span { display: flex; flex-direction: column; align-items: flex-start; }
+.ab-vol .legend em { width: 8px; height: 8px; border-radius: 1px; display: inline-block; }
+
+.ab-vol .legend span {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    column-gap: 4px;
+    align-items: center;
+    font-weight: 600;
+}
+
+.ab-vol .legend span b {
+    grid-column: 1 / span 2;
+    font-weight: 400;
+    color: rgba(0, 0, 0, .6);
+    margin-top: 1px;
+}
+
+.ab-vol p { font-size: 12px; }
+
+/* ---------- Memory ---------- */
+.ab-memory { height: 100%; padding: 20px 22px; }
+.ab-memory .top { display: flex; gap: 22px; }
+
+.ab-memory .chip {
+    flex: none;
+    width: 100px;
+    height: 56px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #63b4e0, #4a9fd0);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+
+.ab-memory .chip b { font: 600 17px/1 var(--sf-text); }
+.ab-memory .chip span { font-size: 11px; margin-top: 3px; }
+.ab-memory .note { flex: 1; font-size: 12px; }
+.ab-memory .note p { margin-bottom: 10px; }
+
+.ab-memory .slots {
+    display: flex;
+    gap: 20px;
+    margin-top: 22px;
+}
+
+.ab-memory .slots div {
+    flex: 1;
+    height: 38px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #9a9a9a, #8c8c8c);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 600 14px/1 var(--sf-text);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .25);
+}
+
+.ab-memory .foot { position: absolute; right: 22px; bottom: 14px; font-size: 12px; }
+
+/* ---------- Support and Service ---------- */
+.ab-support, .ab-service { height: 100%; padding: 18px 22px; overflow: auto; }
+
+.ab-support .grp {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 0;
+}
+
+.ab-support .lab { flex: none; width: 120px; font: 600 12px var(--sf-text); }
+.ab-support .art { flex: none; width: 86px; display: flex; justify-content: center; }
+.ab-support .art.apple svg { width: 58px; height: 68px; fill: #8c8c8c; }
+.ab-support .links { flex: 1; }
+.ab-support .links .link, .ab-service .link { font-size: 12px; margin: 6px 0; }
+
+.ab-support .rule, .ab-service .rule {
+    height: 1px;
+    background: rgba(0, 0, 0, .14);
+    margin: 6px 0;
+}
+
+.ab-service .grp { display: flex; gap: 18px; padding: 8px 0; }
+.ab-service .art { flex: none; width: 86px; display: flex; justify-content: center; }
+.ab-service .body { flex: 1; font-size: 12px; }
+.ab-service .body p { margin-bottom: 9px; }
+.ab-service .link { margin: 4px 0 4px 14px; }
