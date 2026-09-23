@@ -162,17 +162,31 @@ function contextMenu(e, def) {
     menuOpenId = "context";
 }
 
-/* a Dock menu sits above the icon with a pointer aimed at it */
+/* a Dock menu sits beside the icon, on whichever side the Dock isn't
+   flush against a screen edge, with a pointer aimed back at it */
 function dockMenu(item, def) {
     menuCloseAll();
     var r = item.getBoundingClientRect();
     var m = menuBuild(def, "vibrant-light dock-menu");
     menuLayer.appendChild(m);
     var w = m.offsetWidth, h = m.offsetHeight;
-    m.style.left = clamp(r.left + r.width / 2 - w / 2, 4, window.innerWidth - w - 4) + "px";
-    m.style.top = (r.top - h - 12) + "px";
+    var side = sys.dockPosition;
     var tip = el("div", "point");
-    tip.style.left = (r.left + r.width / 2 - m.offsetLeft - 8) + "px";
+    if (side === "left") {
+        m.style.left = (r.right + 12) + "px";
+        m.style.top = clamp(r.top + r.height / 2 - h / 2, 4, window.innerHeight - h - 4) + "px";
+        tip.classList.add("point-left");
+        tip.style.top = (r.top + r.height / 2 - m.offsetTop - 8) + "px";
+    } else if (side === "right") {
+        m.style.left = (r.left - w - 12) + "px";
+        m.style.top = clamp(r.top + r.height / 2 - h / 2, 4, window.innerHeight - h - 4) + "px";
+        tip.classList.add("point-right");
+        tip.style.top = (r.top + r.height / 2 - m.offsetTop - 8) + "px";
+    } else {
+        m.style.left = clamp(r.left + r.width / 2 - w / 2, 4, window.innerWidth - w - 4) + "px";
+        m.style.top = (r.top - h - 12) + "px";
+        tip.style.left = (r.left + r.width / 2 - m.offsetLeft - 8) + "px";
+    }
     m.appendChild(tip);
     menuStack = [m];
     menuLayer.classList.remove("idle");

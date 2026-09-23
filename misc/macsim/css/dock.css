@@ -39,8 +39,9 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    width: 61px;
-    height: 61px;
+    /* 61px until the screen is too narrow for it (js/dock.js dockFit) */
+    width: var(--dock-icon);
+    height: var(--dock-icon);
     margin: 0 2px;              /* 61 + 4 = the measured 65px pitch */
     flex: none;
 }
@@ -103,11 +104,33 @@
 
 .dock-item.tipped .tip { opacity: 1; }
 
+/* ---------- a running app's temporary tile appearing/disappearing ----------
+   Traced from ref_pic/app open not in dock.mp4: width, height, margin and
+   opacity all collapse to nothing together, eased out, over about 10 frames
+   at 60fps -- no overshoot. The transition only lives on .dock-anim, added
+   for the run of the animation and then dropped, so it never fights the
+   Dock's own (untransitioned, cursor-tracking) magnification. */
+.dock-item.dock-anim {
+    transition:
+        width .18s cubic-bezier(.2, .8, .3, 1),
+        height .18s cubic-bezier(.2, .8, .3, 1),
+        margin .18s cubic-bezier(.2, .8, .3, 1),
+        opacity .18s cubic-bezier(.2, .8, .3, 1);
+}
+
+.dock-item.entering,
+.dock-item.leaving {
+    width: 0;
+    height: 0;
+    margin: 0;
+    opacity: 0;
+}
+
 /* the rule between the app half of the Dock and the Trash: 30px of space
    with a 1px line down the middle, 57px tall and level with the icon feet */
 .dock-sep {
     width: 30px;
-    height: 57px;
+    height: calc(var(--dock-icon) - 4px);
     flex: none;
     align-self: flex-end;
     /* a colour cannot be sized, so the hairline is a 1px-wide gradient */
@@ -201,3 +224,121 @@
 }
 
 .dock-item.dock-min.pressed .thumb { filter: brightness(.43); }
+
+/* ------------------------------------------------------------------ */
+/* LEFT / RIGHT DOCK                                                   */
+/* ------------------------------------------------------------------ */
+/* "Position on Screen" turns the Dock on its side: same chrome, laid out
+   as a column instead of a row, flush against the left or right edge
+   instead of the bottom. #screen carries the dock-pos-left/-right class
+   (js/dock.js dockSetPosition); no class means the default, bottom, and
+   every rule above this point is untouched by it. */
+#screen.dock-pos-left #dock,
+#screen.dock-pos-right #dock {
+    left: auto;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    width: var(--dock-h);
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, .22);
+}
+
+#screen.dock-pos-left #dock {
+    left: 0;
+    align-items: flex-start;
+    padding: 3px 5px 3px 10px;
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+}
+
+#screen.dock-pos-right #dock {
+    right: 0;
+    align-items: flex-end;
+    padding: 3px 10px 3px 5px;
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+}
+
+#screen.dock-pos-left #dock.hidden-dock {
+    transform: translateY(-50%) translateX(calc(-1 * (var(--dock-h) - 4px)));
+}
+
+#screen.dock-pos-right #dock.hidden-dock {
+    transform: translateY(-50%) translateX(calc(var(--dock-h) - 4px));
+}
+
+#screen.dock-pos-left .dock-item,
+#screen.dock-pos-right .dock-item {
+    margin: 2px 0;
+}
+
+/* the running dot moves from under the icon to its outer edge */
+#screen.dock-pos-left .dock-item .dot {
+    bottom: auto;
+    left: -8px;
+    top: 50%;
+    margin-left: 0;
+    margin-top: -2px;
+}
+
+#screen.dock-pos-right .dock-item .dot {
+    bottom: auto;
+    left: auto;
+    right: -8px;
+    top: 50%;
+    margin-left: 0;
+    margin-top: -2px;
+}
+
+/* the tooltip moves from above the icon to beside it, arrow rotated to match */
+#screen.dock-pos-left .dock-item .tip {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translate(9px, -50%);
+}
+
+#screen.dock-pos-left .dock-item .tip::after {
+    top: 50%;
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-top: -5px;
+    border-top-color: transparent;
+    border-bottom-width: 5px;
+    border-right-color: rgba(250, 250, 250, .94);
+    border-left-width: 0;
+}
+
+#screen.dock-pos-right .dock-item .tip {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translate(-9px, -50%);
+}
+
+#screen.dock-pos-right .dock-item .tip::after {
+    top: 50%;
+    left: 100%;
+    margin-left: 0;
+    margin-top: -5px;
+    border-top-color: transparent;
+    border-bottom-width: 5px;
+    border-left-color: rgba(250, 250, 250, .94);
+    border-right-width: 0;
+}
+
+/* the rule before the Trash becomes a horizontal hairline */
+#screen.dock-pos-left .dock-sep,
+#screen.dock-pos-right .dock-sep {
+    width: calc(var(--dock-icon) - 4px);
+    height: 30px;
+    background-size: 100% 1px;
+}
+
+#screen.dock-pos-left .dock-sep { align-self: flex-start; }
+#screen.dock-pos-right .dock-sep { align-self: flex-end; }

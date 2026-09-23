@@ -12,6 +12,13 @@ var cursorEl = null;
 var curCursorName = null;
 var curFrame = 0;
 var curTimer = null;
+/* set while the Mac has no pointer on screen (off, booting, signing in);
+   the image still follows the mouse, it just isn't drawn */
+var cursorHidden = false;
+/* how many things are currently hung; while any are, the beach ball wins
+   over whatever the pointer is resting on */
+var cursorBusyCount = 0;
+var cursorLast = { x: 0, y: 0, target: null };
 
 function cursorInit() {
     cursorEl = document.createElement("img");
@@ -20,14 +27,54 @@ function cursorInit() {
     document.body.appendChild(cursorEl);
 
     document.addEventListener("mousemove", function (e) {
-        cursorEl.style.visibility = "visible";
-        var owner = e.target.closest && e.target.closest("[data-cursor]");
-        setCursor(owner ? owner.dataset.cursor : "main-pointer");
+        cursorEl.style.visibility = cursorHidden ? "hidden" : "visible";
+        cursorLast = { x: e.clientX, y: e.clientY, target: e.target };
+        setCursor(cursorBusyCount ? "spinner" : cursorFor(e.target));
         cursorMove(e.clientX, e.clientY);
     });
     document.documentElement.addEventListener("mouseleave", function () {
         cursorEl.style.visibility = "hidden";
     });
+}
+
+/* anything you can type into gets the I-beam without having to tag it */
+var NON_TEXT_INPUTS = /^(checkbox|radio|range|button|submit|reset|color|file|image)$/;
+function isTextField(el) {
+    if (el.isContentEditable || el.tagName === "TEXTAREA") return true;
+    return el.tagName === "INPUT" && !NON_TEXT_INPUTS.test(el.type);
+}
+
+function cursorFor(target) {
+    if (!target || !target.closest) return "main-pointer";
+    if (isTextField(target)) return "ibeam";
+    var owner = target.closest("[data-cursor]");
+    return owner ? owner.dataset.cursor : "main-pointer";
+}
+
+/* the spinning beach ball, on and off, without waiting for the mouse to
+   move -- calls nest, so two hangs at once need two offs */
+function cursorBusy(on) {
+    cursorBusyCount = Math.max(0, cursorBusyCount + (on ? 1 : -1));
+    setCursor(cursorBusyCount ? "spinner" : cursorFor(cursorLast.target));
+    cursorMove(cursorLast.x, cursorLast.y);
+}
+
+function cursorHide(hide) {
+    cursorHidden = hide;
+    cursorEl.style.visibility = hide ? "hidden" : "visible";
+}
+
+function cursorIsShown() {
+    return !cursorHidden;
+}
+
+/* Puts the arrow somewhere on its own and shows it.  The browser can't
+   move the real pointer, so the next mousemove takes it back to wherever
+   the mouse actually is. */
+function cursorPlace(x, y) {
+    setCursor("main-pointer");
+    cursorMove(x, y);
+    cursorHide(false);
 }
 
 function cursorMove(x, y) {
@@ -57,7 +104,9 @@ function setCursor(name) {
           d.shadow.blur + "px " + d.shadow.color + ")"
         : "none";
     cursorEl.classList.toggle("spin", !!d.spin);
-    cursorEl.style.transform = d.spin ? "" : "scale(var(--cs))";
+    cursorEl.style.transform = d.spin ? "" :
+        "scale(var(--cs))" + (d.zoom ? " scale(" + d.zoom + ")" : "") +
+        (d.rotate ? " rotate(" + d.rotate + "deg)" : "");
 
     if (d.frames > 1) {
         cursorEl.classList.add("strip");

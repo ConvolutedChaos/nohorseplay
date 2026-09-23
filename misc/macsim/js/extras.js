@@ -2,15 +2,7 @@
 /* the menu extras on the right of the bar, and the popups they drop */
 
 var WIFI = [
-    { n: "ALLO SmartTown Wi-Fi", bars: 1 },
-    { n: "lord of the pings", bars: 3 },
-    { n: "pretty fly for a wifi", bars: 3 },
-    { n: "pretty fly for a wifi_5GHz", bars: 3 },
-    { n: "PUhlir", bars: 2 },
-    { n: "RODGERS", bars: 2 },
-    { n: "Rodgers Deco", bars: 3 },
-    { n: "SpectrumSetup-D1", bars: 2 },
-    { n: "TP-LINK_54E4-2.4GHZ", bars: 3 }
+    { n: "Wifi", bars: 3 }
 ];
 
 function extrasRender() {

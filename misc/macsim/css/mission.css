@@ -1,0 +1,282 @@
+/* Mission Control and Spaces.
+
+   From the 7.24 shots (1280x800).  Collapsed, the bar is 40px of light
+   vibrancy closed by a 1px line and a soft shadow, the names 14px with the
+   current one in a 22px pill of black at 8%, and the + 16px wide centred at
+   x 1248, y 22.  Open, it is 146px: 144 x 90 thumbnails on a 176px pitch
+   with their tops at y 28, the current one ringed 3px #4899f9 a pixel
+   clear, names 12px below; the + centres at 1246, 73, and hovering it
+   brings up a 32px disc and slides a new desktop 56px in from the edge. */
+
+#mc {
+    position: absolute;
+    inset: 0;
+    z-index: 590;               /* over the desktop, under the Dock */
+}
+
+/* the windows themselves stay in #windows and are transformed in place;
+   lifted over the overlay so a dragged one passes over the bar, and deaf
+   to the pointer so the overlay's hit boxes get every click */
+#screen.mc-fading #windows { z-index: 595; }
+#screen.mc-open .win { pointer-events: none; }
+
+#screen.mc-fading #menubar,
+#screen.mc-fading #desktop {
+    transition: opacity .22s cubic-bezier(.42, 0, .58, 1);
+}
+
+#screen.mc-open #menubar,
+#screen.mc-open #desktop {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s cubic-bezier(.42, 0, .58, 1);
+}
+
+/* ---------- the bar ---------- */
+#mcBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    /* colour-matched to the open-bar shot: a blue-white wash that holds the
+       wallpaper's colour down rather than pushing it up the way menus do */
+    background: rgba(198, 222, 250, .72);
+    -webkit-backdrop-filter: blur(24px) saturate(.9);
+    backdrop-filter: blur(24px) saturate(.9);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .2), 0 1px 6px rgba(0, 0, 0, .22);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .22s cubic-bezier(.42, 0, .58, 1), height .25s cubic-bezier(.42, 0, .58, 1);
+}
+
+#mc.on #mcBar {
+    opacity: 1;
+    transition: opacity .25s cubic-bezier(.42, 0, .58, 1), height .25s cubic-bezier(.42, 0, .58, 1);
+}
+
+#mc.expanded #mcBar { height: 146px; }
+
+#mcNames,
+#mcThumbs {
+    position: absolute;
+    inset: 0;
+    transition: opacity .2s ease;
+}
+
+#mcThumbs { opacity: 0; pointer-events: none; }
+#mc.expanded #mcThumbs { opacity: 1; pointer-events: auto; }
+#mc.expanded #mcNames { opacity: 0; pointer-events: none; }
+
+.mc-name {
+    position: absolute;
+    top: 9px;
+    height: 22px;
+    padding: 0 11px;
+    transform: translateX(-50%);
+    border-radius: 4px;
+    font: 14px/22px var(--sf-text);
+    color: rgba(0, 0, 0, .85);
+    white-space: nowrap;
+}
+
+.mc-name.cur { background: rgba(0, 0, 0, .08); }
+
+.mc-thumb {
+    position: absolute;
+    top: 28px;
+    width: 144px;
+    height: 90px;
+    transition: left .25s cubic-bezier(.42, 0, .58, 1);
+}
+
+.mc-shot {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+}
+
+.mc-thumb.cur .mc-shot {
+    outline: 3px solid #4899f9;
+    outline-offset: 1px;
+    border-radius: 1px;
+}
+
+/* a window dragged over a desktop lights it up */
+.mc-thumb.drop .mc-shot { outline: 3px solid rgba(255, 255, 255, .9); outline-offset: 1px; }
+.mc-name.drop { background: rgba(0, 0, 0, .16); }
+
+.mc-shot-inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    pointer-events: none;
+}
+
+.mc-shot-wins {
+    position: absolute;
+    top: var(--menubar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.mc-shot-wins .win { pointer-events: none; }
+
+.mc-tlabel {
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: 12px/14px var(--sf-text);
+    color: rgba(0, 0, 0, .78);
+    white-space: nowrap;
+}
+
+/* the close button: a little grey disc on the thumbnail's top-left corner,
+   in the same frosted style as the + disc beside it.  Hovering a desktop
+   shows its own; holding Option shows them all.  The last desktop has none. */
+.mc-x {
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(185, 182, 195, .88);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3), inset 0 0 0 .5px rgba(0, 0, 0, .15);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .12s ease;
+    z-index: 2;
+}
+
+.mc-x svg {
+    width: 10px;
+    height: 10px;
+    stroke: #000;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    fill: none;
+    pointer-events: none;
+}
+
+#mc.multi .mc-x { display: flex; }
+#mc.multi .mc-thumb:hover .mc-x,
+#mc.multi.alt .mc-x { opacity: 1; }
+#mc.dragging .mc-x { display: none; }
+
+/* ---------- the + ---------- */
+#mcAdd {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 100%;
+}
+
+#mcAdd .peek {
+    position: absolute;
+    top: 28px;
+    left: 60px;
+    width: 144px;
+    height: 90px;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+    transition: left .2s cubic-bezier(.2, .8, .3, 1);
+}
+
+#mcAdd .disc {
+    position: absolute;
+    left: 10px;
+    top: 57px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(185, 175, 190, .82);
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+
+#mcAdd .plus {
+    position: absolute;
+    left: 20px;
+    top: 14px;
+    width: 16px;
+    height: 16px;
+    transition: left .25s cubic-bezier(.42, 0, .58, 1), top .25s cubic-bezier(.42, 0, .58, 1);
+}
+
+#mcAdd .plus::before,
+#mcAdd .plus::after {
+    content: "";
+    position: absolute;
+    background: #000;
+}
+
+#mcAdd .plus::before { left: 0; top: 7px; width: 16px; height: 2px; }
+#mcAdd .plus::after { left: 7px; top: 0; width: 2px; height: 16px; }
+
+#mc.expanded #mcAdd .plus { left: 18px; top: 65px; }
+#mc.expanded #mcAdd:hover .peek,
+#mcAdd.drop .peek { left: 4px; }
+#mc.expanded #mcAdd:hover .disc,
+#mcAdd.drop .disc { opacity: 1; }
+
+/* ---------- the windows' stand-ins ---------- */
+#mcHits {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.mc-hit {
+    position: absolute;
+    border-radius: 4px;
+    pointer-events: auto;
+}
+
+.mc-hit.on {
+    outline: 4px solid #4592ee;
+    outline-offset: 1px;
+}
+
+#mc.dragging .mc-hit.on { outline: none; }
+
+/* ---------- Spaces: the slide between desktops ---------- */
+#windows > .space {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+}
+
+#windows > .space.current,
+#windows > .space.sliding { display: block; }
+
+#screen.sp-sliding #windows { z-index: 350; }
+
+.space-back {
+    position: absolute;
+    top: calc(-1 * var(--menubar-h));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+}
+
+.space-back .space-icons {
+    position: absolute;
+    top: var(--menubar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}

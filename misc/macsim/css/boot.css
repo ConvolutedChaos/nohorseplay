@@ -1,0 +1,404 @@
+/* power-on, the boot screen, and the login window -- js/boot.js.
+
+   Boot screen, from boot.png / "boot-with progress bar.png" (2560x1440 at
+   2x): a flat #cbcbcb ground, the Apple mark in #6f6f6f about 77pt wide
+   dead centre, and a 234 x 6 bar whose centre sits 120pt under it -- a
+   #a9a9a9 track with a near-black fill.
+
+   Login window, from the four 2.43/2.44 shots (1280x800), all measured
+   from the screen centre: a 72px avatar centred 108px above it, the name
+   45px above, the 164 x 29 password field on the centre line flanked by
+   the 24px back button (centre -104) and, once something is typed, the
+   22px go button (centre +104).  The power buttons sit on a 100px pitch
+   with their glyphs centred 110px off the bottom edge and labels at 76. */
+
+#screen.locked #menubar,
+#screen.locked #desktop,
+#screen.locked #windows,
+#screen.locked #banners {
+    opacity: 0;
+}
+
+#screen.locked #dock {
+    transform: translateX(-50%) translateY(calc(var(--dock-h) + 24px));
+}
+
+#screen.locked.dock-pos-left #dock {
+    transform: translateY(-50%) translateX(calc(-1 * (var(--dock-h) + 24px)));
+}
+
+#screen.locked.dock-pos-right #dock {
+    transform: translateY(-50%) translateX(calc(var(--dock-h) + 24px));
+}
+
+/* the desktop arriving: bar, then icons, then the Dock rising */
+#screen.arriving #menubar { transition: opacity .45s ease .45s; }
+#screen.arriving #desktop,
+#screen.arriving #windows { transition: opacity .5s ease .6s; }
+#screen.arriving #dock { transition: transform .6s cubic-bezier(.2, .85, .3, 1) .9s; }
+
+#boot {
+    position: absolute;
+    inset: 0;
+    z-index: 950;               /* over everything but the sleep veil */
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    font: 13px var(--sf-text);
+    transition: opacity .7s ease;
+}
+
+#boot.gone {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.b-stage {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .9s ease, visibility 0s linear .9s;
+}
+
+.b-stage.on {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .9s ease, visibility 0s;
+}
+
+/* ---------- off ---------- */
+.b-off {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.b-off .hint {
+    color: rgba(255, 255, 255, .8);
+    animation: veilPulse 2.4s ease-in-out infinite;
+}
+
+/* ---------- boot screen ---------- */
+/* the screen lights at once, so no fade either way */
+.b-chime,
+.b-chime.on {
+    background: #cbcbcb;
+    transition: none;
+}
+
+/* the drawing's ink is ~10.8 of its 14 units wide, so 100px gets 77 */
+.b-apple {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    height: 121px;
+    margin: -61px 0 0 -50px;
+    fill: #6f6f6f;
+}
+
+.b-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 234px;
+    height: 6px;
+    margin: 117px 0 0 -117px;
+    border-radius: 3px;
+    background: #a9a9a9;
+    box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .08);
+    overflow: hidden;
+}
+
+.b-bar i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 3px;
+    background: #161616;
+}
+
+.b-apple:not(.show),
+.b-bar:not(.show) {
+    visibility: hidden;
+}
+
+/* ---------- login ---------- */
+.b-login {
+    background: #26303a;
+}
+
+/* pushed past the edges so the blur has no soft border to fade into */
+.b-wall {
+    position: absolute;
+    inset: -80px;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+    filter: blur(42px) brightness(.74) saturate(.95);
+}
+
+.b-login .fadeable {
+    transition: opacity .35s ease;
+}
+
+/* signing in takes the extras and the power buttons away */
+.b-login.signing .fadeable {
+    opacity: 0;
+}
+
+/* the menu extras, with no bar behind them */
+.b-extras {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    font-size: 14px;
+    text-shadow: 0 0 3px rgba(0, 0, 0, .2);
+}
+
+.b-extras .batt-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.b-extras .bar-glyph { filter: brightness(0) invert(1); }
+.b-extras .batt { position: relative; display: block; }
+.b-extras svg { width: 20px; height: 15px; fill: #fff; color: #fff; display: block; }
+
+.b-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+}
+
+.b-avatar {
+    position: absolute;
+    left: -36px;
+    top: -144px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(180deg, #d5d8dc, #a9aeb4);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+}
+
+.b-avatar img {
+    position: absolute;
+    left: 6px;
+    top: 10px;
+    width: 60px;
+    height: 60px;
+    max-width: none;
+    max-height: none;
+    opacity: .42;
+}
+
+.b-name {
+    position: absolute;
+    left: -150px;
+    top: -54px;
+    width: 300px;
+    text-align: center;
+    line-height: 16px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.b-row {
+    position: absolute;
+    left: -116px;
+    top: -14px;
+    width: 232px;
+    height: 29px;
+}
+
+.b-row.checking > * { visibility: hidden; }
+
+.b-row.shake { animation: bootShake .55s linear; }
+
+@keyframes bootShake {
+    0%, 100% { transform: translateX(0); }
+    12% { transform: translateX(-16px); }
+    25% { transform: translateX(14px); }
+    38% { transform: translateX(-11px); }
+    51% { transform: translateX(8px); }
+    64% { transform: translateX(-5px); }
+    77% { transform: translateX(3px); }
+    88% { transform: translateX(-1px); }
+}
+
+.b-round {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.b-round svg {
+    fill: none;
+    stroke-width: 1.6;
+}
+
+.b-back {
+    left: 0;
+    top: 2.5px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, .55);
+}
+
+.b-back svg { width: 12px; height: 12px; stroke: rgba(30, 34, 40, .75); }
+
+.b-go {
+    left: 209px;
+    top: 3.5px;
+    width: 22px;
+    height: 22px;
+    background: rgba(255, 255, 255, .3);
+    visibility: hidden;
+}
+
+.b-go svg { width: 12px; height: 12px; stroke: rgba(70, 76, 84, .85); }
+
+.b-row.typed .b-go { visibility: visible; }
+.b-row.checking .b-go { visibility: hidden; }
+
+.b-field {
+    position: absolute;
+    left: 34px;
+    top: 0;
+    width: 164px;
+    height: 29px;
+}
+
+.b-field input {
+    width: 100%;
+    height: 100%;
+    padding: 0 26px 0 10px;
+    border: 0;
+    border-radius: 4px;
+    outline: none;
+    background: rgba(255, 255, 255, .24);
+    color: #fff;
+    caret-color: #fff;
+    font: 13px var(--sf-text);
+    letter-spacing: 1px;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.b-field input::placeholder {
+    color: rgba(255, 255, 255, .55);
+    letter-spacing: 0;
+}
+
+.b-field input::selection { background: rgba(120, 165, 255, .6); }
+
+.b-q {
+    position: absolute;
+    right: 9px;
+    top: 7.5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, .32);
+    color: rgba(255, 255, 255, .92);
+    font: 600 11px/14px var(--sf-text);
+    text-align: center;
+}
+
+.b-row.typed .b-q { visibility: hidden; }
+
+.b-spinner {
+    position: absolute;
+    left: -9px;
+    top: -9px;
+    width: 18px;
+    height: 18px;
+    display: none;
+    animation: bootSpin .9s steps(12) infinite;
+}
+
+.b-spinner.on { display: block; }
+
+@keyframes bootSpin { to { transform: rotate(360deg); } }
+
+/* the hint drops from the field on a little arrow */
+.b-hint {
+    position: absolute;
+    left: -161px;
+    top: 21px;
+    width: 322px;
+    min-height: 62px;
+    padding: 9px 14px 12px;
+    border-radius: 4px;
+    background: rgba(236, 238, 242, .93);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .25);
+    color: #333;
+    display: none;
+}
+
+.b-hint.on { display: block; }
+
+.b-hint::before {
+    content: "";
+    position: absolute;
+    left: 153px;
+    top: -8px;
+    border: 8px solid transparent;
+    border-top: 0;
+    border-bottom-color: rgba(236, 238, 242, .93);
+}
+
+.b-hint .t {
+    text-align: center;
+    line-height: 16px;
+    color: #3c3c3c;
+}
+
+.b-hint .m {
+    margin-top: 9px;
+    line-height: 16px;
+}
+
+.b-power {
+    position: absolute;
+    left: 50%;
+    top: calc(100% - 126px);
+    width: 0;
+}
+
+.b-pbtn {
+    position: absolute;
+    top: 0;
+    width: 90px;
+    margin-left: -45px;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+.b-pbtn svg {
+    display: block;
+    width: 32px;
+    height: 32px;
+    margin: 0 auto;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.3;
+}
+
+.b-pbtn span {
+    display: block;
+    margin-top: 10px;
+    line-height: 16px;
+}
+
+.b-pbtn:active { opacity: .6; }

@@ -3,6 +3,7 @@
 
 function keyInit() {
     document.addEventListener("keydown", function (e) {
+        if (!loggedIn) return;          /* the login window owns the keyboard */
         var mod = e.metaKey || e.ctrlKey;
         var k = e.key.toLowerCase();
 
@@ -59,15 +60,22 @@ function boot() {
     dockInit();
     spotInit();
     ncInit();
+    /* before keyInit, so these hear the keyboard first */
+    spacesInit();
+    lpInit();
+    mcInit();
     keyInit();
     batteryInit();
     tick();
 
-    /* the desktop starts with the Finder frontmost and nothing selected,
-       exactly as it is in the reference shots */
-    setTimeout(function () {
-        ncBanner("Welcome", "Double-click an icon, or press ⌘Space for Spotlight.", "finder");
-    }, 900);
+    /* the desktop is built now but held behind the power-on sequence; it
+       starts with the Finder frontmost and nothing selected, exactly as it
+       is in the reference shots */
+    bootInit(function () {
+        setTimeout(function () {
+            console.log("hi from devtools")
+        }, 900);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", boot);

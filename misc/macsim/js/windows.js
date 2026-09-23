@@ -4,12 +4,13 @@
 
 var wins = [], zTop = 10, winSeq = 0, cascade = 0;
 
-function winLayer() { return $("windows"); }
+/* new windows open on the desktop that is showing (js/spaces.js) */
+function winLayer() { return spaceLayer(curSpace); }
 
 function frontWindow() {
     var best = null;
     wins.forEach(function (w) {
-        if (w.minimized || w.hidden) return;
+        if (w.minimized || w.hidden || w.space !== curSpace) return;
         if (!best || w.z > best.z) best = w;
     });
     return best;
@@ -19,6 +20,7 @@ function winCreate(o) {
     var w = {
         id: "w" + (++winSeq),
         app: o.app || "finder",
+        space: curSpace,
         title: o.title || "Untitled",
         kind: o.kind || "plain",
         x: o.x, y: o.y, w: o.w || 560, h: o.h || 380,
@@ -68,6 +70,7 @@ function winCreate(o) {
     wins.push(w);
     winFocus(w);
     dockSync();
+    if (mcOn) mcLayout(MC_OPEN_MS);    /* a window arriving mid-Mission Control joins the layout */
     return w;
 }
 
@@ -86,6 +89,8 @@ function winSetTitle(w, t, iconHTML) {
 function winFocus(w) {
     if (!w) return;
     if (w.minimized) { winRestore(w); return; }
+    /* a window on another desktop takes the screen over there with it */
+    if (w.space !== curSpace) spaceSwitch(w.space, { keepFocus: true });
     if (w.hidden) { w.hidden = false; w.node.classList.remove("hidden"); }
     w.z = ++zTop;
     w.node.style.zIndex = w.z;
@@ -102,6 +107,7 @@ function winClose(w) {
     if (next) winFocus(next);
     else if (!wins.length) setActiveApp(appRunning(w.app) ? w.app : "finder");
     dockSync();
+    if (mcOn) mcLayout(MC_OPEN_MS);
 }
 
 function quickLookToggle() {
@@ -137,14 +143,14 @@ function winZoom(w) {
 }
 
 function cycleWindows() {
-    var live = wins.filter(function (w) { return !w.minimized && !w.hidden; });
+    var live = wins.filter(function (w) { return !w.minimized && !w.hidden && w.space === curSpace; });
     if (live.length < 2) return;
     live.sort(function (a, b) { return a.z - b.z; });
     winFocus(live[0]);
 }
 
 function bringAllToFront() {
-    wins.filter(function (w) { return w.app === activeApp; })
+    wins.filter(function (w) { return w.app === activeApp && w.space === curSpace; })
         .forEach(function (w) { winFocus(w); });
 }
 
@@ -202,17 +208,36 @@ function setActiveApp(id) {
     barRender();
 }
 
+/* A cold start takes a beat: the Dock icon keeps bouncing until the app's
+   first window is up.  Now and then an app hangs on the way up instead --
+   eight seconds, with the beach ball out once it has been stuck for two. */
+var LAUNCH_MS = [600, 1600];
+var LAUNCH_HANG_CHANCE = 0.05;
+var LAUNCH_HANG_MS = 8000;
+var BEACHBALL_AFTER_MS = 2000;
+var launching = {};
+
 function launch(id, forceNew) {
     var app = appById(id);
     if (!app) return;
+    if (id === "launchpad") { if (mcOn) mcClose(); lpToggle(); return; }
+    if (id === "mission-control") { if (lpOn) lpClose(); mcToggle(); return; }
+    /* whatever opens next opens over the desktop */
+    if (lpOn) lpClose();
+    if (mcOn) mcClose();
     if (app.kind === "none") { dockBounce(id); return; }
+    if (launching[id]) return;          /* already on its way */
+    if (!running[id] && id !== "finder") { launchCold(app); return; }
 
     running[id] = true;
     setActiveApp(id);
 
     if (!forceNew) {
+        /* a window on this desktop first; otherwise go to where one is */
         var open = wins.filter(function (w) { return w.app === id; });
-        if (open.length) { winFocus(open[open.length - 1]); dockSync(); return; }
+        var here = open.filter(function (w) { return w.space === curSpace && !w.minimized; });
+        var pool = here.length ? here : open;
+        if (pool.length) { winFocus(pool[pool.length - 1]); dockSync(); return; }
     }
 
     dockBounce(id);
@@ -221,9 +246,40 @@ function launch(id, forceNew) {
     dockSync();
 }
 
+function launchCold(app) {
+    var id = app.id;
+    var hang = Math.random() < LAUNCH_HANG_CHANCE;
+    var wait = hang ? LAUNCH_HANG_MS : LAUNCH_MS[0] + Math.random() * (LAUNCH_MS[1] - LAUNCH_MS[0]);
+
+    launching[id] = true;
+    running[id] = true;                 /* the dot shows as the bouncing starts */
+    if (!dockPinned(id)) dockRunningAdd(id);
+    dockSync();
+    dockBounce(id);
+    var bounce = setInterval(function () { dockBounce(id); }, BOUNCE_MS);
+    var ball = null, balled = false;
+    if (hang) {
+        ball = setTimeout(function () { balled = true; cursorBusy(true); }, BEACHBALL_AFTER_MS);
+    }
+
+    setTimeout(function () {
+        clearInterval(bounce);
+        clearTimeout(ball);
+        if (balled) cursorBusy(false);
+        delete launching[id];
+        if (!running[id]) return;       /* quit from the Dock before it opened */
+        setActiveApp(id);
+        openPlaceholder(id, app.name, null, app);
+        dockSync();
+    }, wait);
+}
+
 function quitApp(id) {
     wins.filter(function (w) { return w.app === id; }).forEach(winClose);
-    if (id !== "finder") delete running[id];
+    if (id !== "finder") {
+        delete running[id];
+        if (!dockPinned(id)) dockRunningRemove(id);
+    }
     setActiveApp("finder");
     dockSync();
 }
@@ -468,13 +524,12 @@ function powerDown(kind) {
     }
     v.classList.add("on", "boot");
     v.innerHTML = '<div class="mark">' + ICON.apple + '</div><div class="spinner"></div>';
-    if (kind === "restart") {
-        setTimeout(function () { location.reload(); }, 2200);
-    } else {
-        setTimeout(function () {
-            v.innerHTML = '<div class="hint">' +
-                (kind === "shutdown" ? "Your Mac is off. Reload the page to power it on."
-                    : "Logged out. Reload the page to log back in.") + "</div>";
-        }, 1800);
-    }
+    /* a fresh page is a fresh Mac; js/boot.js reads the note and picks up
+       at the chime (restart), the login window (log out), or powered off */
+    setTimeout(function () {
+        try {
+            if (kind !== "shutdown") sessionStorage.setItem("macsim-boot", kind === "restart" ? "restart" : "login");
+        } catch (e) { /* storage blocked: it just comes back up powered off */ }
+        location.reload();
+    }, kind === "restart" ? 2200 : 1800);
 }

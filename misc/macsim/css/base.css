@@ -43,6 +43,7 @@
     --sep: rgba(0, 0, 0, .13);
 
     --menubar-h: 22px;
+    --dock-icon: 61px;      /* both shrink with a narrow screen: js/dock.js */
     --dock-h: 77px;
 }
 
@@ -75,6 +76,13 @@ body {
     user-select: none;
     -webkit-user-select: none;
     -webkit-font-smoothing: antialiased;
+}
+
+/* form controls get their own cursor from the browser's stylesheet (the
+   OS I-beam over a text field), which would show through beside
+   #cursorLayer -- so nothing on the page may bring the real one back */
+*, *::before, *::after {
+    cursor: none !important;
 }
 
 /* ---------- the screen ---------- */

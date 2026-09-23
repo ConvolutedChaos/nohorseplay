@@ -3,6 +3,13 @@
    is sized to one frame at its native points (object-fit: none keeps a
    multi-frame strip from being squashed into that box), and scaled up
    around its own hotspot by --cs, so the hot pixel never drifts. */
+/* one full turn of the beach ball every this many seconds -- smaller is
+   faster (Apple's real one runs close to 1s; this is a hair quicker so it
+   reads as busy rather than stalled) */
+:root {
+    --beachball-spin-s: .5s;
+}
+
 #cursorLayer {
     position: fixed;
     top: 0;
@@ -19,7 +26,7 @@
 }
 
 #cursorLayer.spin {
-    animation: cursorSpin 1s linear infinite;
+    animation: cursorSpin var(--beachball-spin-s) linear infinite;
 }
 
 @keyframes cursorSpin {

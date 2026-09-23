@@ -24,19 +24,21 @@ var MONS = ["January", "February", "March", "April", "May", "June", "July",
 /* Everything a menu extra can toggle lives here so the popups can read
    their own checkmarks back out of it. */
 var sys = {
-    user: "Timmy Toenails",
+    user: "Jimmy Neutron",
     volume: 0.62,
     muted: false,
     bluetooth: true,
     wifi: true,
-    network: "lord of the pings",
+    network: "Wifi",
     battery: 52,
     charging: false,
     showPct: false,
     analogClock: false,
     reopenWindows: true,
     dockMagnify: true,
-    dockHide: false
+    dockHide: false,
+    dockPosition: "bottom",
+    dockMinimizeEffect: "genie"
 };
 
 /* ------------------------------------------------------------------ */
@@ -186,10 +188,15 @@ function batteryIcon() {
             ? barGlyph("Displays/BatteryChargedAndPlugged", 23, 14)
             : barGlyph("Displays/BatteryCharging", 24, 14);
     }
-    var w = clamp(sys.battery / 100 * 16, 0, 16);
+    /* whole pixels only -- the three slices below tile the fill exactly at
+       any integer width, but a fractional one leaves each slice's edges to
+       be rounded to the screen's pixels separately, which do not always
+       agree: on a low-DPI panel that shows up as a stray sliver of a gap
+       (or overlap) between them, worse the smaller the bar is drawn. */
+    var w = Math.round(clamp(sys.battery / 100 * 16, 0, 16));
     var cap = "Displays/BatteryLevelCap" + (sys.battery <= 10 ? "R" : "B");
     return '<span class="batt">' + barGlyph("Displays/BatteryEmpty", 23, 12) +
-        '<span class="lvl" style="width:' + w.toFixed(2) + 'px">' +
+        '<span class="lvl" style="width:' + w + 'px">' +
         barGlyph(cap + "-L", 2, 8) +
         (w > 4 ? barGlyph(cap + "-M", 2, 8).replace('style="', 'style="transform:scaleX(' +
             ((w - 4) / 2).toFixed(3) + ");") : "") +

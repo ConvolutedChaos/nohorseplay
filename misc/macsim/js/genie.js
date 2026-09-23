@@ -31,21 +31,34 @@ function genieTarget(w) {
     var tile = $("dockmin-" + w.id);
     if (tile) {
         var r = tile.getBoundingClientRect();
-        return { x: r.left + r.width / 2, y: r.top, w: r.width, h: r.height };
+        return { left: r.left, top: r.top, w: r.width, h: r.height };
     }
-    var d = dockEl ? dockEl.getBoundingClientRect() : { left: 0, width: window.innerWidth, top: window.innerHeight - 70 };
-    return { x: d.left + d.width - 90, y: d.top + 6, w: DOCK_ICON, h: DOCK_ICON };
+    var d = dockEl ? dockEl.getBoundingClientRect() :
+        { left: 0, top: window.innerHeight - 70, width: window.innerWidth, height: 70 };
+    return { left: d.left + d.width - 90, top: d.top + 6, w: DOCK_ICON, h: DOCK_ICON };
 }
 
-/* one band: a clone of the window clipped to the rows it owns */
-function genieBand(w, i, bandH, rect) {
+/* one band: a clone of the window clipped to the slice it owns. Bottom
+   Dock bands are horizontal rows stacked down the window (as traced); a
+   side Dock's are vertical columns stacked across it instead, since the
+   window falls sideways into a Dock on the left or right. */
+function genieBand(st, i) {
+    var rect = st.rect, bandSize = st.bandSize;
     var band = el("div", "genie-band");
-    band.style.cssText = "position:absolute;left:" + rect.left + "px;top:" +
-        (rect.top + i * bandH) + "px;width:" + rect.width + "px;height:" + bandH +
-        "px;overflow:hidden;transform-origin:0 0;will-change:transform";
-    var clone = w.node.cloneNode(true);
-    clone.style.cssText = "position:absolute;left:0;top:" + (-i * bandH) + "px;width:" +
-        rect.width + "px;height:" + rect.height + "px;margin:0;box-shadow:none";
+    var clone = st.w.node.cloneNode(true);
+    if (st.axis === "y") {
+        band.style.cssText = "position:absolute;left:" + rect.left + "px;top:" +
+            (rect.top + i * bandSize) + "px;width:" + rect.width + "px;height:" + bandSize +
+            "px;overflow:hidden;transform-origin:0 0;will-change:transform";
+        clone.style.cssText = "position:absolute;left:0;top:" + (-i * bandSize) + "px;width:" +
+            rect.width + "px;height:" + rect.height + "px;margin:0;box-shadow:none";
+    } else {
+        band.style.cssText = "position:absolute;left:" + (rect.left + i * bandSize) + "px;top:" +
+            rect.top + "px;width:" + bandSize + "px;height:" + rect.height +
+            "px;overflow:hidden;transform-origin:0 0;will-change:transform";
+        clone.style.cssText = "position:absolute;left:" + (-i * bandSize) + "px;top:0;width:" +
+            rect.width + "px;height:" + rect.height + "px;margin:0;box-shadow:none";
+    }
     clone.classList.remove("inactive");
     band.appendChild(clone);
     return band;
@@ -53,44 +66,76 @@ function genieBand(w, i, bandH, rect) {
 
 /* Building the bands and positioning them are kept apart so the effect can
    be driven by a clock or seeked straight to one moment, which is how it
-   gets compared against the recording frame by frame. */
+   gets compared against the recording frame by frame.
+
+   axis is which screen axis the Dock sits across: "y" (bottom Dock, the
+   traced case) bands the window into rows and falls it straight down;
+   "x" (left/right Dock) bands it into columns and falls it sideways.
+   invert flags the one case where the leading edge is the *smaller*
+   coordinate (a left Dock, where the window's own left edge -- not its
+   right -- is the one closest to the target and so the one that moves
+   first); see genieEdge. */
 function genieBuild(w) {
     var rect = w.node.getBoundingClientRect();
     if (!rect.width || !rect.height) return null;
 
     var t = genieTarget(w);
+    var axis = sys.dockPosition === "bottom" ? "y" : "x";
     var n = GENIE_BANDS;
-    var bandH = rect.height / n;
+
+    var st = { w: w, rect: rect, t: t, n: n, axis: axis };
+    if (axis === "y") {
+        st.bandSize = rect.height / n;
+        st.srcMin = rect.top; st.srcMax = rect.top + rect.height;
+        st.tgtMin = t.top; st.tgtMax = t.top + t.h;
+        st.srcCross = rect.left + rect.width / 2; st.srcCrossExtent = rect.width;
+        st.tgtCross = t.left + t.w / 2; st.tgtCrossExtent = t.w;
+        st.invert = false;
+    } else {
+        st.bandSize = rect.width / n;
+        st.srcMin = rect.left; st.srcMax = rect.left + rect.width;
+        st.tgtMin = t.left; st.tgtMax = t.left + t.w;
+        st.srcCross = rect.top + rect.height / 2; st.srcCrossExtent = rect.height;
+        st.tgtCross = t.top + t.h / 2; st.tgtCrossExtent = t.h;
+        st.invert = sys.dockPosition === "left";
+    }
 
     var layer = el("div", "genie");
     layer.style.cssText = "position:fixed;inset:0;z-index:640;pointer-events:none";
     var bands = [];
+    st.layer = layer; st.bands = bands;
     for (var i = 0; i < n; i++) {
-        var b = genieBand(w, i, bandH, rect);
+        var b = genieBand(st, i);
         bands.push(b);
         layer.appendChild(b);
     }
     document.body.appendChild(layer);
     w.node.style.visibility = "hidden";
     w._genie = layer;
-    return {
-        w: w, layer: layer, bands: bands, rect: rect, t: t,
-        n: n, bandH: bandH, srcCx: rect.left + rect.width / 2
-    };
+    return st;
 }
 
-/* Where a horizontal line at depth u (0 at the window's top, 1 at its
-   foot) sits at progress q, and how wide it is there.  Every band asks this
-   for its own top and bottom edge, so neighbouring bands share an edge
-   exactly and the ribbon is continuous. */
-function genieEdge(st, u, q) {
-    var s = clamp(q * (1 + GENIE_SPREAD) - (1 - u) * GENIE_SPREAD, 0, 1);
+/* Where a line at depth f (0 at the window's physically first edge, 1 at
+   its last, always in ascending screen-coordinate order) sits at progress
+   q, and how wide the ribbon is there.  Every band asks this for its own
+   near and far edge, so neighbouring bands share an edge exactly and the
+   ribbon is continuous.
+
+   f only fixes *where* a band's geometry falls; the deformation *timing*
+   is driven separately by lead, which is 1 at whichever edge is closest to
+   the Dock (leads the fall) and 0 at the far edge (lags) -- for a bottom
+   or right Dock that is the larger-coordinate edge, same as f itself, but
+   for a left Dock the near edge is the *smaller* one, hence invert. */
+function genieEdge(st, f, q) {
+    var lead = st.invert ? 1 - f : f;
+    var s = clamp(q * (1 + GENIE_SPREAD) - (1 - lead) * GENIE_SPREAD, 0, 1);
     var e = easeInOut(s);
+    var srcP = st.srcMin + f * (st.srcMax - st.srcMin);
+    var tgtP = st.tgtMin + f * (st.tgtMax - st.tgtMin);
     return {
-        y: (st.rect.top + u * st.rect.height) +
-            (st.t.y + u * st.t.h - (st.rect.top + u * st.rect.height)) * e,
-        cx: st.srcCx + (st.t.x - st.srcCx) * Math.pow(e, 1.35),
-        w: st.rect.width + (st.t.w - st.rect.width) * e
+        p: srcP + (tgtP - srcP) * e,
+        c: st.srcCross + (st.tgtCross - st.srcCross) * Math.pow(e, 1.35),
+        s: st.srcCrossExtent + (st.tgtCrossExtent - st.srcCrossExtent) * e
     };
 }
 
@@ -132,17 +177,29 @@ function quadTransform(W, H, c) {
 /* q is 0 for the window at rest and 1 for it fully swallowed */
 function genieApply(st, q) {
     for (var i = 0; i < st.n; i++) {
-        var top = genieEdge(st, i / st.n, q);
-        var bot = genieEdge(st, (i + 1) / st.n, q);
-        /* relative to the band's own top-left corner */
-        var ox = st.rect.left, oy = st.rect.top + i * st.bandH;
-        var quad = [
-            [top.cx - top.w / 2 - ox, top.y - oy],
-            [top.cx + top.w / 2 - ox, top.y - oy],
-            [bot.cx + bot.w / 2 - ox, bot.y - oy],
-            [bot.cx - bot.w / 2 - ox, bot.y - oy]
-        ];
-        st.bands[i].style.transform = quadTransform(st.rect.width, st.bandH, quad);
+        var e1 = genieEdge(st, i / st.n, q);
+        var e2 = genieEdge(st, (i + 1) / st.n, q);
+        var quad;
+        if (st.axis === "y") {
+            /* relative to the band's own top-left corner */
+            var ox = st.rect.left, oy = st.rect.top + i * st.bandSize;
+            quad = [
+                [e1.c - e1.s / 2 - ox, e1.p - oy],
+                [e1.c + e1.s / 2 - ox, e1.p - oy],
+                [e2.c + e2.s / 2 - ox, e2.p - oy],
+                [e2.c - e2.s / 2 - ox, e2.p - oy]
+            ];
+            st.bands[i].style.transform = quadTransform(st.rect.width, st.bandSize, quad);
+        } else {
+            var ox2 = st.rect.left + i * st.bandSize, oy2 = st.rect.top;
+            quad = [
+                [e1.p - ox2, e1.c - e1.s / 2 - oy2],
+                [e2.p - ox2, e2.c - e2.s / 2 - oy2],
+                [e2.p - ox2, e2.c + e2.s / 2 - oy2],
+                [e1.p - ox2, e1.c + e1.s / 2 - oy2]
+            ];
+            st.bands[i].style.transform = quadTransform(st.bandSize, st.rect.height, quad);
+        }
     }
 }
 
@@ -179,15 +236,62 @@ function genieFreeze(w, p) {
 }
 
 /* ------------------------------------------------------------------ */
+/* SCALE EFFECT                                                        */
+/* ------------------------------------------------------------------ */
+/* The plainer alternative to the genie: no bands, the window's clone just
+   scales and slides as one piece into its Dock slot.  There's no reference
+   clip for this one -- only the genie was frame-traced -- so the timing
+   borrows the genie's own 730ms and easing rather than guessing at new
+   numbers of its own. */
+function scaleEffect(w, dir, done) {
+    if (w._genie) return;
+    var rect = w.node.getBoundingClientRect();
+    if (!rect.width || !rect.height) { if (done) done(); return; }
+    var t = genieTarget(w);
+    var sx = t.w / rect.width, sy = t.h / rect.height;
+    var dx = t.left - rect.left, dy = t.top - rect.top;
+
+    var clone = w.node.cloneNode(true);
+    clone.classList.remove("inactive");
+    clone.style.cssText = "position:fixed;left:" + rect.left + "px;top:" + rect.top +
+        "px;width:" + rect.width + "px;height:" + rect.height +
+        "px;margin:0;box-shadow:none;z-index:640;pointer-events:none;transform-origin:0 0;will-change:transform";
+    document.body.appendChild(clone);
+    w.node.style.visibility = "hidden";
+    w._genie = clone;
+
+    var setAt = function (q) {
+        var e = easeInOut(q);
+        clone.style.transform = "translate(" + (dx * e).toFixed(2) + "px," + (dy * e).toFixed(2) +
+            "px) scale(" + (1 + (sx - 1) * e).toFixed(4) + "," + (1 + (sy - 1) * e).toFixed(4) + ")";
+    };
+
+    var t0 = null;
+    var frame = function (now) {
+        if (t0 === null) t0 = now;
+        var p = clamp((now - t0) / GENIE_MS, 0, 1);
+        setAt(dir > 0 ? p : 1 - p);
+        if (p < 1) { w._genieRaf = requestAnimationFrame(frame); return; }
+        clone.remove();
+        w._genie = null;
+        if (done) done();
+    };
+    setAt(dir > 0 ? 0 : 1);
+    w._genieRaf = requestAnimationFrame(frame);
+}
+
+/* ------------------------------------------------------------------ */
 /* MINIMISE AND COME BACK                                              */
 /* ------------------------------------------------------------------ */
+function dockMinimizeFn() { return sys.dockMinimizeEffect === "scale" ? scaleEffect : genie; }
+
 function winMinimize(w) {
     if (!w || w.minimized || w._genie) return;
     if (w.zoomed) winZoom(w);          /* a zoomed window un-zooms first */
     w.minimized = true;
     w.thumbHTML = w.node.outerHTML;    /* the Dock tile's picture of it */
     dockRender();                      /* make room, so the target exists */
-    genie(w, 1, function () {
+    dockMinimizeFn()(w, 1, function () {
         w.node.classList.add("hidden");
         w.node.style.visibility = "";
         var next = frontWindow();
@@ -198,9 +302,12 @@ function winMinimize(w) {
 
 function winRestore(w) {
     if (!w || !w.minimized || w._genie) return;
+    if (mcOn) mcClose();
+    /* it comes back out onto the desktop that is showing */
+    if (w.space !== curSpace) winMoveToSpace(w, curSpace);
     w.minimized = false;
     w.node.classList.remove("hidden");
-    genie(w, -1, function () {
+    dockMinimizeFn()(w, -1, function () {
         w.node.style.visibility = "";
         dockRender();
         winFocus(w);

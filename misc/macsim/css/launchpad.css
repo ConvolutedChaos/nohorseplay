@@ -1,0 +1,265 @@
+/* Launchpad: the blurred wallpaper, the app grid, search, and folders.
+
+   Measured off the 1280x800 shots in ref_pic/: the search field is 250 x 24
+   at y 25 with a 1px white-at-18% rim over a white-at-5% fill.  Idle, its
+   glass sits 79px in with the placeholder at 99; focused or typed in, they
+   slide to 7 and 27 and a 14px clear button appears 13px from the right.
+   Icons are 64px on a 157 x 117 pitch, first centred at 168, 112; labels
+   are 13px white with their baseline 47px under the icon's centre.  The
+   search highlight is a 94 x 107 box of black at 40%.
+
+   Timing is from ref_pic/launchpad_open.mp4 (60fps): opening takes 12
+   frames, the page settling from 1.05x while it, the blur and the fading
+   menu bar all cross over near-linearly; closing is the same in reverse
+   over 13 frames, front-loaded. */
+
+#launchpad {
+    position: absolute;
+    inset: 0;
+    z-index: 590;               /* over the windows, under the Dock */
+    overflow: hidden;
+    color: #fff;
+}
+
+/* the login screen's blur, but darker: colour-matched against the search
+   shot, the backdrop comes out at a little over half the wallpaper's
+   brightness with a faint cool cast (the ::after wash) */
+#launchpad .lp-wall {
+    position: absolute;
+    inset: -80px;
+    background: #2b3a46 url("../assets/img/wallpaper.jpg") center / cover no-repeat;
+    filter: blur(42px) brightness(.56) saturate(.85);
+    opacity: 0;
+    transition: opacity .22s cubic-bezier(0, 0, .4, 1);
+}
+
+#launchpad .lp-wall::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(70, 120, 200, .12);
+}
+
+#lpStage {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.05);
+    transform-origin: 50% calc((100% - var(--dock-h)) / 2);
+    transition: opacity .22s cubic-bezier(0, 0, .4, 1), transform .22s cubic-bezier(0, 0, .4, 1);
+}
+
+/* a side Dock takes no vertical space, so the zoom centres normally */
+#screen.dock-pos-left #lpStage,
+#screen.dock-pos-right #lpStage {
+    transform-origin: 50% 50%;
+}
+
+#launchpad.on .lp-wall {
+    opacity: 1;
+    transition: opacity .2s linear;
+}
+
+#launchpad.on #lpStage {
+    opacity: 1;
+    transform: none;
+    transition: opacity .2s linear, transform .2s cubic-bezier(.3, .3, .6, 1);
+}
+
+/* what Launchpad takes off the screen while it is up */
+#screen.lp-fading #menubar,
+#screen.lp-fading #desktop,
+#screen.lp-fading #windows {
+    transition: opacity .22s cubic-bezier(0, 0, .4, 1);
+}
+
+#screen.lp-open #menubar,
+#screen.lp-open #desktop,
+#screen.lp-open #windows {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s linear;
+}
+
+/* ---------- search ---------- */
+#lpSearch {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    width: 250px;
+    height: 24px;
+    margin-left: -125px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .05);
+    transition: opacity .2s;
+}
+
+#lpSearch .glass {
+    position: absolute;
+    top: 5px;
+    left: 78px;
+    width: 12px;
+    height: 12px;
+    color: rgba(255, 255, 255, .85);
+    pointer-events: none;
+    transition: left .15s ease;
+}
+
+#lpSearch .glass svg { display: block; width: 12px; height: 12px; }
+
+#lpInput {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0 26px 0 98px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: 17px/22px var(--sf-text);
+    color: #fff;
+    caret-color: #fff;
+    transition: padding-left .15s ease;
+}
+
+#lpInput::placeholder { color: rgba(255, 255, 255, .38); }
+
+#lpSearch:focus-within .glass,
+#lpSearch.typed .glass { left: 6px; }
+
+#lpSearch:focus-within #lpInput,
+#lpSearch.typed #lpInput { padding-left: 26px; }
+
+#lpClear {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    width: 14px;
+    height: 14px;
+    display: none;
+}
+
+#lpClear svg { display: block; width: 14px; height: 14px; }
+#lpSearch.typed #lpClear { display: block; }
+
+/* ---------- the page ---------- */
+#lpPage {
+    position: absolute;
+    inset: 0;
+    transition: filter .24s ease, opacity .24s ease;
+}
+
+.lp-cell {
+    position: absolute;
+    width: 94px;
+    height: 107px;
+    border-radius: 5px;
+}
+
+.lp-cell.sel { background: rgba(0, 0, 0, .4); }
+
+.lp-icon {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lp-icon > img {
+    width: 64px;
+    height: 64px;
+    display: block;
+    pointer-events: none;
+}
+
+.lp-icon > .ph { font-size: 20px; }
+
+/* held down, the icon darkens the way a Dock icon does */
+.lp-cell.pressed .lp-icon { filter: brightness(.43); }
+
+/* the name runs wider than the box when it needs to ("System Preferences") */
+.lp-label {
+    position: absolute;
+    top: 82px;
+    left: 50%;
+    max-width: 150px;
+    transform: translateX(-50%);
+    font: 13px/16px var(--sf-text);
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, .25);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+/* a folder's tile: 60 x 60 of white at 47%, holding nine 12px icons on a
+   17px pitch starting 7px in */
+.lp-ftile {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    padding: 7px 0 0 7px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .47);
+    display: grid;
+    grid-template-columns: repeat(3, 12px);
+    grid-auto-rows: 12px;
+    gap: 5px;
+    pointer-events: none;
+}
+
+.lp-ftile .mini { width: 12px; height: 12px; display: block; }
+.lp-ftile .mini img { width: 12px; height: 12px; display: block; }
+.lp-ftile .mini .ph { border-radius: 3px; font-size: 4px; }
+
+/* ---------- an open folder ---------- */
+/* Timing and layout checked against ref_pic/launchpad_folder_open.mp4: the
+   panel grows fast out of the folder's own tile (scale .12 -> 1 in ~12
+   frames at 60fps) before the background page catches up and blurs in;
+   closing is the same transition in reverse, since it is the same
+   transform/opacity rule on the base selector either way. */
+#lpFolder {
+    position: absolute;
+    inset: 0;
+}
+
+#launchpad.folder-open #lpPage {
+    filter: blur(14px);
+    opacity: .35;
+}
+
+#launchpad.folder-open #lpSearch { opacity: 0; pointer-events: none; }
+
+#lpFolderTitle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font: 200 30px/40px var(--sf-display);
+    color: #fff;
+    opacity: 0;
+    transition: opacity .2s ease;
+    pointer-events: none;
+}
+
+#lpFolderPanel {
+    position: absolute;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .13);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08), 0 10px 40px rgba(0, 0, 0, .18);
+    opacity: 0;
+    transform: scale(.12);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2, .8, .3, 1);
+}
+
+#launchpad.folder-open #lpFolderTitle { opacity: 1; }
+
+#launchpad.folder-open #lpFolderPanel {
+    opacity: 1;
+    transform: none;
+}

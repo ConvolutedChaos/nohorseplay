@@ -365,20 +365,29 @@ function fwRenderSidebar(w) {
 function fwRenderView(w) {
     var t = curTab(w);
     fwHideTip(w);
+    /* a click that only changes the selection (a background click to clear
+       it, say) rebuilds this whole pane from scratch -- remember where the
+       old one was scrolled to and put the new one back there */
+    var oldScroll = w.viewEl.querySelector(".fw-scroll");
+    var scrollTop = oldScroll ? oldScroll.scrollTop : 0;
     w.viewEl.innerHTML = "";
 
     if (t.loc === TRASH) fwTrashBar(w);
-    if (t.query) { fwRenderSearch(w); return; }
-    if (t.loc.place === "airdrop") { fwRenderAirDrop(w); return; }
-    if (t.loc.place === "icloud") { fwRenderICloud(w); return; }
+    if (t.query) { fwRenderSearch(w); }
+    else if (t.loc.place === "airdrop") { fwRenderAirDrop(w); }
+    else if (t.loc.place === "icloud") { fwRenderICloud(w); }
+    else {
+        var kids = fwSorted(w, locChildren(t));
+        if (t.view === "cols") { fwRenderColumns(w, kids); }
+        else if (t.view === "flow") { fwRenderFlow(w, kids); }
+        else if (t.view === "list") { fwRenderList(w, kids); }
+        else { fwRenderIcons(w, kids); }
 
-    var kids = fwSorted(w, locChildren(t));
-    if (t.view === "cols") { fwRenderColumns(w, kids); }
-    else if (t.view === "flow") { fwRenderFlow(w, kids); }
-    else if (t.view === "list") { fwRenderList(w, kids); }
-    else { fwRenderIcons(w, kids); }
+        fwStatus(w, kids);
+    }
 
-    fwStatus(w, kids);
+    var newScroll = w.viewEl.querySelector(".fw-scroll");
+    if (newScroll) newScroll.scrollTop = scrollTop;
 }
 
 /* the strip the Trash window carries under its toolbar (12.01.41) */
@@ -644,6 +653,16 @@ function fwWireItem(w, node, n) {
             fwRenderView(w);
             return;
         }
+        /* fwRenderView rebuilds this whole pane on every click (see there),
+           which replaces the very element the browser is tracking a click
+           streak against -- so its native dblclick would never fire here.
+           Count double-clicks by hand instead, against the data node, which
+           survives the rebuild the DOM element doesn't. */
+        var now = Date.now();
+        var dbl = !e.shiftKey && !e.metaKey && !e.ctrlKey &&
+            t._lastClick && t._lastClick.n === n && now - t._lastClick.t < 500;
+        t._lastClick = { n: n, t: now };
+
         if (e.shiftKey || e.metaKey || e.ctrlKey) {
             var i = t.sel.indexOf(n);
             if (i >= 0) t.sel.splice(i, 1); else t.sel.push(n);
@@ -652,9 +671,7 @@ function fwWireItem(w, node, n) {
         }
         fwRenderView(w);
         fwRenderToolbar(w);
-    });
-    node.addEventListener("dblclick", function () {
-        if (n.children) fwGo(w, n); else openNode(n);
+        if (dbl) { t._lastClick = null; n.children ? fwGo(w, n) : openNode(n); }
     });
     node.addEventListener("contextmenu", function (e) {
         e.stopPropagation();

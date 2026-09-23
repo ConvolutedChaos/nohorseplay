@@ -18,6 +18,10 @@ var CURSOR_DATA = {
     "cross": { src: "assets/cursors/cross.svg", w: 32, h: 32, hotx: 11, hoty: 11 },
     "help": { src: "assets/cursors/help.svg", w: 24, h: 24, hotx: 9, hoty: 9, shadow: { dx: 0, dy: 1, blur: 1.8, color: "rgba(0,0,0,0.65)" } },
     "ibeamvertical": { src: "assets/cursors/ibeamvertical.svg", w: 42.6667, h: 42.6667, hotx: 7, hoty: 4 },
+    /* Apple ships no plain horizontal-text I-beam, but it is exactly
+       ibeamvertical stood upright -- turned a quarter around the centre of
+       its own drawing, which is where the hotspot sits too */
+    "ibeam": { src: "assets/cursors/ibeamvertical.svg", w: 42.6667, h: 42.6667, hotx: 21.29, hoty: 22, rotate: 90, zoom: 0.8 },
     "makealias": { src: "assets/cursors/makealias.svg", w: 21.3333, h: 28, hotx: 11, hoty: 3, shadow: { dx: 0, dy: 1, blur: 1.8, color: "rgba(0,0,0,0.65)" } },
     "move": { src: "assets/cursors/move.svg", w: 24, h: 24, hotx: 9, hoty: 9, shadow: { dx: 0, dy: 1, blur: 1.8, color: "rgba(0,0,0,0.65)" } },
     "notallowed": { src: "assets/cursors/notallowed.svg", w: 37.3333, h: 53.3333, hotx: 5, hoty: 5, shadow: { dx: 0, dy: 1, blur: 1.8, color: "rgba(0,0,0,0.65)" } },

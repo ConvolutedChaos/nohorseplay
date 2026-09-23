@@ -45,11 +45,35 @@ var EXTRA_APPS = [
     { id: "automator", name: "Automator", ph: "Au", ver: "2.6", w: 720, h: 470 },
     { id: "dvd-player", name: "DVD Player", ph: "DVD", ver: "5.8", w: 560, h: 420 },
     { id: "backup", name: "Time Machine", icon: "backup", ph: "TM", ver: "1.3", w: 700, h: 460 },
-    /* no artwork shipped for these four, so they keep a lettered tile */
-    { id: "disk-utility", name: "Disk Utility", ph: "DU", ver: "15.0", w: 660, h: 440 },
-    { id: "terminal", name: "Terminal", ph: ">_", ver: "2.6", w: 600, h: 400 },
-    { id: "activity-monitor", name: "Activity Monitor", ph: "AM", ver: "10.11", w: 700, h: 440 },
-    { id: "grab", name: "Grab", ph: "G", ver: "1.9", w: 520, h: 380 }
+    { id: "chess", name: "Chess", ph: "Ch", ver: "3.13", w: 560, h: 560 },
+    /* the Utilities -- their own Applications subfolder, see UTIL_APP_IDS */
+    { id: "disk-utility", name: "Disk Utility", icon: "DiskUtility", ph: "DU", ver: "15.0", w: 660, h: 440 },
+    { id: "terminal", name: "Terminal", icon: "Terminal", ph: ">_", ver: "2.6", w: 600, h: 400 },
+    { id: "activity-monitor", name: "Activity Monitor", icon: "ActivityMonitor", ph: "AM", ver: "10.11", w: 700, h: 440 },
+    { id: "grab", name: "Grab", icon: "Grab", ph: "G", ver: "1.9", w: 520, h: 380 },
+    { id: "grapher", name: "Grapher", icon: "Grapher", ph: "Gr", ver: "2.5", w: 700, h: 480 },
+    { id: "airport-utility", name: "AirPort Utility", icon: "AirPortUtility", ph: "AU", ver: "6.3.9", w: 620, h: 460 },
+    { id: "audio-midi-setup", name: "Audio MIDI Setup", icon: "AudioMIDISetup", ph: "AMS", ver: "3.1", w: 680, h: 420 },
+    { id: "bluetooth-file-exchange", name: "Bluetooth File Exchange", icon: "BluetoothFileExchange", ph: "BT", ver: "6.5.9", w: 480, h: 360 },
+    { id: "boot-camp-assistant", name: "Boot Camp Assistant", icon: "BootCampAssistant", ph: "BC", ver: "6.1.0", w: 600, h: 440 },
+    { id: "colorsync-utility", name: "ColorSync Utility", icon: "ColorSyncUtility", ph: "CS", ver: "4.9.0", w: 640, h: 440 },
+    { id: "console", name: "Console", icon: "Console", ph: "Co", ver: "10.11", w: 720, h: 460 },
+    { id: "digital-color-meter", name: "Digital Color Meter", icon: "DigitalColorMeter", ph: "DC", ver: "5.11", w: 360, h: 200 },
+    { id: "keychain-access", name: "Keychain Access", icon: "KeychainAccess", ph: "KA", ver: "9.0", w: 680, h: 440 },
+    { id: "migration-assistant", name: "Migration Assistant", icon: "MigrationAssistant", ph: "MA", ver: "10.11", w: 560, h: 420 },
+    { id: "script-editor", name: "Script Editor", icon: "ScriptEditor", ph: "SE", ver: "2.7", w: 640, h: 460 },
+    { id: "system-information", name: "System Information", icon: "SystemInformation", ph: "SI", ver: "10.11", w: 680, h: 460 },
+    { id: "voiceover-utility", name: "VoiceOver Utility", icon: "VoiceOverUtility", ph: "VO", ver: "8.0", w: 640, h: 440 },
+    { id: "x11", name: "X11", icon: "X11", ph: "X11", ver: "2.7.4", w: 600, h: 440 }
+];
+
+/* the 18 that Finder files in Applications/Utilities rather than loose in
+   Applications -- see the Utilities screenshot in ref_pic/ */
+var UTIL_APP_IDS = [
+    "activity-monitor", "airport-utility", "audio-midi-setup", "bluetooth-file-exchange",
+    "boot-camp-assistant", "colorsync-utility", "console", "digital-color-meter",
+    "disk-utility", "grab", "grapher", "keychain-access", "migration-assistant",
+    "script-editor", "system-information", "terminal", "voiceover-utility", "x11"
 ];
 
 var ALL_APPS = APPS.filter(function (a) { return a.kind !== "none"; }).concat(EXTRA_APPS);
@@ -240,13 +264,23 @@ function shots() {
     });
 }
 
+function appFsNode(a) {
+    return node(a.name, "app", {
+        app: a.id, bytes: (3 + a.name.length) * 1100000,
+        modified: on(2015, 8, 2, 12, 5), created: on(2015, 8, 2, 12, 5)
+    });
+}
+
 var FS = folder("Macintosh HD", [
-    folder("Applications", ALL_APPS.map(function (a) {
-        return node(a.name, "app", {
-            app: a.id, bytes: (3 + a.name.length) * 1100000,
-            modified: on(2015, 8, 2, 12, 5), created: on(2015, 8, 2, 12, 5)
-        });
-    }), { glyph: "applications" }),
+    folder("Applications", ALL_APPS.filter(function (a) {
+        /* the Finder isn't really an application, and doesn't show up in
+           its own Applications folder on a real Mac */
+        return a.id !== "finder" && UTIL_APP_IDS.indexOf(a.id) < 0;
+    }).map(appFsNode).concat([
+        folder("Utilities", UTIL_APP_IDS.map(function (id) {
+            return appFsNode(appById(id));
+        }), { glyph: "utilities" })
+    ]), { glyph: "applications" }),
     folder("Users", [
         folder("timmytoenails", [
             folder("Desktop", shots().concat([

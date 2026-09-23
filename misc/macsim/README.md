@@ -99,6 +99,46 @@ icon, the running dot (which appears as the bounce starts) stays put, and a
 click on an app that is already open does not bounce at all. Replayed back
 against the recording, our curve tracks it to a mean of 0.3px.
 
+**Launchpad** — from the three `ref_pic/` shots and `launchpad_open.mp4`
+(1280x800, 60fps). Seven columns on a 157px pitch (middle column at x 639),
+rows 117px apart from y 112, 64px icons, 13px labels. The search field is
+250 x 24 at y 25; idle, its glass and placeholder sit centred-ish at 79 and
+99, and focusing or typing slides them to 7 and 27 and shows the 14px clear
+button. A search result's highlight is a 94 x 107 box of black at 40%, and
+fewer than a row of results centre themselves. Matching is word-start, with
+a capital inside a name counting as a word ("t" finds FaceTime, iTunes,
+QuickTime Player, TextEdit, Time Machine and Terminal, in page order, just as
+the shot does). Opening takes 12 frames: the page settles from 1.05x while
+it, the blurred wallpaper and the fading menu bar and desktop icons cross
+over near-linearly; closing is the reverse over 13 frames, front-loaded. The
+backdrop was colour-matched to the search shot. The Other folder's tile is
+60 x 60 of white at 47% with nine 12px icons; the *opened* folder has no
+reference yet and is a best guess.
+
+**Mission Control** — from the four 7.24 shots and `mission control open.mp4`
+(real time, 60fps). Tracking a window through the clip gives 15 frames
+(250ms) to open and 13 (220ms) to close, both CSS ease-in-out; the menu bar
+and desktop icons fade over the same stretch and the wallpaper is left
+alone. The Spaces bar starts 40px tall (names 14px, the current one in a
+22px pill of black at 8%, a 16px + at 1248, 22) and grows to 146px when the
+pointer reaches it: 144 x 90 thumbnails on a 176px pitch, tops at y 28, the
+current one ringed 3px #4899f9 a pixel clear, 12px names below, the + at
+1246, 73. Hovering the + brings up a 32px disc and slides a new desktop 56px
+in from the edge. A hovered window gets a 4px #4592ee ring. The bar's
+vibrancy was colour-matched to the open-bar shot.
+
+The window layout was reverse-engineered from the shots: every window takes
+the same scale, which is the largest at which its rows fit, with 10px gaps,
+in the area 18px in from the sides, 28px under the bar and 44px over the
+Dock. Rows are justified edge to edge; the first sits at the top and the
+last on the bottom. Against the reference that gives 0.522 (measured 0.52)
+with every window within 2px across. The one miss is the App Store's height,
+57px higher than Apple puts it. With the bar open it gives 0.501 (measured
+0.507). The row arrangement is always found with the bar collapsed, so
+opening the bar resizes the layout instead of reshuffling it. Not measured:
+the bar's grow animation, the desktop close button (drawn in the same style
+as the + disc), and the slide between desktops (420ms).
+
 **Menu bar** — 22px tall over a 1px border. 10px inset, then the Apple item
 (glyph 13x16 at x 21) and titles at 9px padding, 14px text with the app name
 semibold: Finder 55, File 117, Edit 158, View 201, Go 251, Window 288,
@@ -159,6 +199,23 @@ middle-truncated the way Finder does it.
   browser exposes it; Show Percentage toggles), clock (analog or digital).
 - **Spotlight** — ⌘Space or the magnifier. Apps, files, bookmarks, a
   definition row, and arithmetic. Arrow keys move, Return opens.
+- **Launchpad** — the Dock's rocket or F4. Typing anywhere searches and the
+  first result is highlighted; Return opens the highlighted app, the arrow
+  keys move the highlight, Esc clears the search and then closes. Clicking
+  the background closes it, and clicking an app closes it and launches the
+  app. The Other folder opens into a panel (click off it or Esc to shut it).
+  Chrome, SyphonInject, OBS and VLC from the reference are left out, since
+  the sim doesn't have them.
+- **Mission Control** — the Dock icon, F3 or Ctrl+↑. Click a window to bring
+  it forward, click the wallpaper or press Esc to leave. Move to the top to
+  open the Spaces bar: + adds a desktop, hovering a desktop shows its close
+  button (Option shows them all), clicking a desktop goes there. Drag a
+  window onto a desktop (or onto the +) to move it.
+- **Desktops** — each has its own windows, and new windows open on the one
+  showing. Ctrl+← / Ctrl+→ slides between them, with a bump past either end.
+  Clicking an app in the Dock whose windows are on another desktop goes
+  there. A minimised window comes back onto the current desktop, and closing
+  a desktop moves its windows to the one before it.
 - **Notification Center** — the menu icon at the far right; Today and
   Notifications, and the desktop slides aside for it.
 - **Desktop** — click, shift-click, rubber-band select, drag, drag to the
@@ -174,7 +231,11 @@ middle-truncated the way Finder does it.
   sound, returns the file to the folder it came from, and opens a new window
   there with the item selected, exactly as the real one does.
 - **Dock** — magnification, tooltips, running dots, bounce on launch, and
-  right-click menus on items, the Trash and the Dock itself.
+  right-click menus on items, the Trash and the Dock itself. It never runs
+  off the screen. In a narrow browser window, or when minimised windows
+  crowd it, the icons shrink below 61px until it fits, and it grows back
+  when there's room again. While magnifying, a Dock whose ends reach the
+  screen edges (4px in) gets shorter as a whole until the pointer leaves.
 - **Finder** — tabs (each with its own folder, view, selection and history),
   all four views (icons, list with sortable columns, columns with a preview
   pane, Cover Flow), a sidebar of Favourites, Devices and Tags, search that
@@ -188,6 +249,13 @@ middle-truncated the way Finder does it.
   laid out with the caution icon on the left.
 - **Windows** — drag, resize, traffic lights, zoom, minimise into the Dock,
   stacking, About This Mac and Force Quit.
+- **Boot and login** (`js/boot.js`, `css/boot.css`) — the page opens powered
+  off; a click lights the grey boot screen with the chime
+  (`assets/audio/chime.mp3` if present, otherwise synthesised), the Apple mark
+  and the progress bar, then the pointer and the login window. The password
+  is `12345` (hint "Easy to guess"); a wrong one spins, shakes and selects
+  what was typed, and three misses show the hint. Restart and Log Out reload
+  into the chime or the login window; Shut Down reloads powered off.
 - **Power** — Sleep, Restart, Shut Down and Log Out from the Apple menu.
   Sleep goes straight to sleep; the other three put up the 11.01 shots'
   confirmation panel (Apple's 112px artwork from `assets/icons/112/`, a
@@ -196,7 +264,8 @@ middle-truncated the way Finder does it.
 
 ## Keyboard
 
-⌘Space Spotlight · ⌘N new Finder window · ⌘W close · ⌘M minimise ·
+⌘Space Spotlight · F4 Launchpad · F3 or Ctrl+↑ Mission Control ·
+Ctrl+← / → switch desktops · ⌘N new Finder window · ⌘W close · ⌘M minimise ·
 ⌘A select all · ⌘I Get Info · ⌘D duplicate · ⌘Z undo · ⌘⌫ move to Trash ·
 ⌘Q quit · Return rename · Esc dismiss.
 
@@ -205,11 +274,12 @@ middle-truncated the way Finder does it.
     css/   base, menubar, menus, desktop, window, dock, spotlight,
            notification-center
     css/   base, menubar, menus, desktop, window, finder, panels, dock,
-           spotlight, notification-center
+           launchpad, mission, spotlight, notification-center
     js/    core (helpers, icons, clock) · fs (apps, file system, artwork) ·
            menu (the menu engine) · windows · finder (tabs + the four views) ·
            panels (Get Info, Quick Look, dialogs) · desktop · menubar ·
-           extras · dock · spotlight · notifications ·
+           extras · dock · spaces (desktops + the slide) · launchpad ·
+           mission (Mission Control) · spotlight · notifications ·
            cursor-data + cursors (the custom pointer) · start
     assets/fonts   SF UI Text / Display
     assets/img     wallpaper.jpg
