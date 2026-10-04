@@ -13,7 +13,10 @@ var APPS = [
     { id: "finder", name: "Finder", icon: "Finder", ph: "F", kind: "finder", w: 760, h: 480 },
     { id: "launchpad", name: "Launchpad", ph: "L", kind: "none" },
     { id: "mission-control", name: "Mission Control", ph: "M", kind: "none" },
-    { id: "app-store", name: "App Store", ph: "A", ver: "2.1", w: 720, h: 460 },
+    {
+        id: "app-store", name: "App Store", ph: "A", ver: "2.1 (463.9)", w: 720, h: 460,
+        copyright: "Copyright © 2010–2015 Apple Inc.\nAll rights reserved."
+    },
     { id: "mail", name: "Mail", ph: "M", ver: "9.3", w: 720, h: 460 },
     { id: "safari", name: "Safari", icon: "compass", ph: "S", ver: "9.1.2", w: 800, h: 500 },
     { id: "facetime", name: "FaceTime", ph: "FT", ver: "3.0", w: 480, h: 380 },

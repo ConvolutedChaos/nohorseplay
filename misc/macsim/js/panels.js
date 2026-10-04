@@ -39,7 +39,8 @@ function openAlert(title, msg, onOK, opts) {
     var caCls = "btn" + (opts.cancelDefault ? " default" : "");
     w.body.innerHTML =
         '<div class="alert">' +
-        '<div class="ico">' + (opts.icon === "finder" ? finderIcon64() : cautionIcon()) + "</div>" +
+        '<div class="ico">' + (opts.icon === "finder" ? finderIcon64() :
+            (!opts.icon || opts.icon === "caution") ? cautionIcon() : opts.icon) + "</div>" +
         '<div class="msg"><div class="t">' + esc(title) + "</div>" +
         (msg ? '<div class="m">' + esc(msg) + "</div>" : "") +
         '<div class="btns">' +
@@ -401,9 +402,10 @@ function showClipboard() {
     return w;
 }
 
-function openMacHelp() {
+function openMacHelp(title) {
+    title = title || "Mac Help";
     var w = winCreate({
-        app: "finder", title: "Mac Help", w: 390, h: 570, unified: true,
+        app: activeApp, title: title, w: 390, h: 570, unified: true,
         x: window.innerWidth - 410, y: 60
     });
     w.body.className = "win-body machelp";

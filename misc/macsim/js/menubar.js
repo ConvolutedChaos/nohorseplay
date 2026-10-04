@@ -313,6 +313,10 @@ var helpQuery = "";
 
 function helpResults() {
     if (!helpQuery.trim()) {
+        if (activeApp !== "finder") {
+            var an = (appById(activeApp) || {}).name || "App";
+            return [{ sep: 1 }, { l: an + " Help", act: function () { openMacHelp(an + " Help"); } }];
+        }
         return [
             { sep: 1 },
             { l: "Mac Help", act: openMacHelp },
@@ -353,6 +357,58 @@ function helpResults() {
         out.push({ l: "Show All Help Topics", ico: sysIcon("HelpIcon", 32), act: openMacHelp });
     }
     return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* APP STORE -- from the 9.23 reference shots                         */
+/* ------------------------------------------------------------------ */
+/* Real to the reference: the app menu skips Preferences (the real app
+   has none), and Store trades File for Back/Forward/Reload/Search plus
+   the sign-in commands. Sign In... and Check for Unfinished Downloads...
+   both raise the same sign-in sheet; Create Account... does nothing --
+   that is the real app's behaviour offline, not a bug to fix. */
+function appStoreAppMenu(app) {
+    return [
+        { l: "About " + app.name, act: function () { openAboutApp(app); } },
+        { sep: 1 },
+        {
+            l: "Services", sub: [
+                { l: "No Services Apply", d: 1 },
+                { sep: 1 },
+                { l: "Services Preferences…", ico: appIconHTML(appById("system-preferences"), 32), act: function () { launch("system-preferences"); } }
+            ]
+        },
+        { sep: 1 },
+        { l: "Hide " + app.name, k: kk(K.cmd, "H"), act: function () { hideApp(app.id); } },
+        { l: "Hide Others", k: kk(K.opt, K.cmd, "H"), act: function () { hideOthers(app.id); } },
+        { l: "Show All", d: !anyHidden(), act: showAllApps },
+        { sep: 1 },
+        { l: "Quit " + app.name, k: kk(K.cmd, "Q"), act: function () { quitApp(app.id); } }
+    ];
+}
+
+function storeMenu() {
+    return [
+        { l: "Back", k: kk(K.cmd, "["), d: 1 },
+        { l: "Forward", k: kk(K.cmd, "]"), d: 1 },
+        { l: "Reload Page", k: kk(K.cmd, "R"), act: asReload },
+        { l: "Search", k: kk(K.cmd, "F"), act: asFocusSearch },
+        { sep: 1 },
+        { l: "Sign In…", act: openAppStoreSignIn },
+        { l: "Create Account…" },
+        { l: "Check for Unfinished Downloads…", act: openAppStoreSignIn }
+    ];
+}
+
+function appStoreWindowMenu() {
+    var fw = frontWindow();
+    return [
+        { l: "Close", k: kk(K.cmd, "W"), d: !fw, act: closeFrontWindow },
+        { l: "Minimize", k: kk(K.cmd, "M"), d: !fw, act: function () { winMinimize(fw); } },
+        { l: "Zoom", d: !fw, act: function () { winZoom(fw); } },
+        { sep: 1 },
+        { l: "Enter Full Screen", k: kk(K.ctrl, K.cmd, "F"), d: !fw, act: function () { winZoom(fw); } }
+    ];
 }
 
 /* ------------------------------------------------------------------ */
@@ -400,6 +456,16 @@ function menuTitles() {
             { id: "view", name: "View", def: viewMenu },
             { id: "go", name: "Go", def: goMenu },
             { id: "window", name: "Window", def: windowMenu },
+            { id: "help", name: "Help", def: helpMenu }
+        ];
+    }
+    if (activeApp === "app-store") {
+        var store = appById("app-store");
+        return [
+            { id: "app", name: store.name, app: true, def: function () { return appStoreAppMenu(store); } },
+            { id: "edit", name: "Edit", def: editMenu },
+            { id: "store", name: "Store", def: storeMenu },
+            { id: "window", name: "Window", def: appStoreWindowMenu },
             { id: "help", name: "Help", def: helpMenu }
         ];
     }

@@ -249,6 +249,17 @@ middle-truncated the way Finder does it.
   laid out with the caution icon on the left.
 - **Windows** — drag, resize, traffic lights, zoom, minimise into the Dock,
   stacking, About This Mac and Force Quit.
+- **App Store** (`js/app-store.js`, `css/app-store.css`) — from the 9.23
+  reference shots. The toolbar (Featured, Top Charts, Categories, Purchases,
+  Updates, a search field, and back/forward that stay dim -- there is
+  nowhere to go) sits over the "Cannot Connect to the App Store" empty
+  state every tab shows, because the sim has no network. The menu bar is
+  real to the reference too: the app menu has no Preferences, and Store
+  trades File for Back/Forward/Reload Page/Search plus Sign In…, Create
+  Account… and Check for Unfinished Downloads…. Sign In… and Check for
+  Unfinished Downloads… both raise the sign-in sheet, and clicking Sign In
+  there always fails with "An unexpected error occurred while signing
+  in." — Create Account… does nothing, both true to the real app offline.
 - **Boot and login** (`js/boot.js`, `css/boot.css`) — the page opens powered
   off; a click lights the grey boot screen with the chime
   (`assets/audio/chime.mp3` if present, otherwise synthesised), the Apple mark

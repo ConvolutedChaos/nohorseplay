@@ -21,7 +21,7 @@ function winCreate(o) {
         id: "w" + (++winSeq),
         app: o.app || "finder",
         space: curSpace,
-        title: o.title || "Untitled",
+        title: o.title != null ? o.title : "Untitled",
         kind: o.kind || "plain",
         x: o.x, y: o.y, w: o.w || 560, h: o.h || 380,
         minimized: false, hidden: false, zoomed: false,
@@ -242,6 +242,7 @@ function launch(id, forceNew) {
 
     dockBounce(id);
     if (id === "finder") { openFinder(DESKTOP); return; }
+    if (id === "app-store") { openAppStore(); dockSync(); return; }
     openPlaceholder(id, app.name, null, app);
     dockSync();
 }
@@ -269,7 +270,7 @@ function launchCold(app) {
         delete launching[id];
         if (!running[id]) return;       /* quit from the Dock before it opened */
         setActiveApp(id);
-        openPlaceholder(id, app.name, null, app);
+        if (id === "app-store") openAppStore(); else openPlaceholder(id, app.name, null, app);
         dockSync();
     }, wait);
 }
@@ -309,11 +310,12 @@ function openAboutApp(app) {
     var w = winCreate({
         app: app.id, title: "", w: 380, h: 260, resizable: false, zoomable: false, minimizable: false
     });
+    var copyright = (app.copyright || "© 2026 Apple Inc.").split("\n").map(esc).join("<br>");
     w.body.innerHTML = '<div class="about"><div style="padding:22px 0 10px">' +
         '<div style="width:96px;height:96px;margin:0 auto">' + appIconHTML(app, 256) + "</div></div>" +
-        '<div style="font:400 20px var(--sf-display)">' + esc(app.name) + "</div>" +
+        '<div style="font:700 20px var(--sf-display)">' + esc(app.name) + "</div>" +
         '<div class="ver">Version ' + esc(app.ver || "1.0") + "</div>" +
-        '<div style="font-size:11px;color:rgba(0,0,0,.45)">© 2026 Apple Inc.</div></div>';
+        '<div style="font-size:11px;color:rgba(0,0,0,.45);margin-top:14px">' + copyright + "</div></div>";
     return w;
 }
 
